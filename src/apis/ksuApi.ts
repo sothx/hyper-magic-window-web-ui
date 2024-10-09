@@ -7,6 +7,10 @@ interface ExecResult {
     stderr: string;
 }
 
+export interface SmartFocusIOResult extends ExecResult {
+    stdout: 'on' | 'off'
+}
+
 export const getDeviceCharacteristics = (): Promise<string> => {
     return new Promise(async (resolve, reject) => {
         const { errno, stdout, stderr }: ExecResult = await exec("getprop ro.build.characteristics");
@@ -14,19 +18,41 @@ export const getDeviceCharacteristics = (): Promise<string> => {
     });
 }
 
-export const getAndroidTargetSdk = (): Promise<string> => {
+export const getAndroidTargetSdk = (): Promise<number> => {
     return new Promise(async (resolve, reject) => {
         const { errno, stdout, stderr }: ExecResult = await exec("getprop ro.build.version.sdk");
+        errno ? reject(stderr) : resolve(Number(stdout));
+    });
+}
+
+export const getMIOSVersion = (): Promise<number> => {
+    return new Promise(async (resolve, reject) => {
+        const { errno, stdout, stderr }: ExecResult = await exec("getprop ro.mi.os.version.code");
+        errno ? reject(stderr) : resolve(Number(stdout));
+    });
+}
+
+export const getSmartFocusIO = (): Promise<SmartFocusIOResult["stdout"]> => {
+    return new Promise(async (resolve, reject) => {
+        const { errno, stdout, stderr }: SmartFocusIOResult = await exec("getprop persist.sys.stability.smartfocusio");
         errno ? reject(stderr) : resolve(stdout);
     });
 }
 
-export const getMIOSVersion = (): Promise<string> => {
+export const getDeviceSocName = (): Promise<string> => {
     return new Promise(async (resolve, reject) => {
-        const { errno, stdout, stderr }: ExecResult = await exec("getprop ro.mi.os.version.code");
+        const { errno, stdout, stderr }: ExecResult = await exec("getprop ro.vendor.qti.soc_name");
         errno ? reject(stderr) : resolve(stdout);
     });
 }
+
+export const getDeviceSocModel = (): Promise<string> => {
+    return new Promise(async (resolve, reject) => {
+        const { errno, stdout, stderr }: ExecResult = await exec("getprop ro.vendor.qti.soc_model");
+        errno ? reject(stderr) : resolve(stdout);
+    });
+}
+
 
 export const getSourceEmbeddedRulesList = (): Promise<string> => {
     return new Promise(async (resolve, reject) => {
