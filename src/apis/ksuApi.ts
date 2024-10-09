@@ -11,6 +11,10 @@ export interface SmartFocusIOResult extends ExecResult {
     stdout: 'on' | 'off'
 }
 
+export interface MiuiCompatResult extends Omit<ExecResult, 'stdout'> {
+    stdout: boolean;
+}
+
 export const getDeviceCharacteristics = (): Promise<string> => {
     return new Promise(async (resolve, reject) => {
         const { errno, stdout, stderr }: ExecResult = await exec("getprop ro.build.characteristics");
@@ -52,6 +56,22 @@ export const getDeviceSocModel = (): Promise<string> => {
         errno ? reject(stderr) : resolve(stdout);
     });
 }
+
+export const getMiuiCompatEnable = (): Promise<boolean> => {
+    return new Promise(async (resolve, reject) => {
+        const { errno, stdout, stderr }: MiuiCompatResult = await exec("getprop ro.config.miui_compat_enable");
+        errno ? reject(stderr) : resolve(stdout);
+    });
+}
+
+
+export const getMiuiAppCompatEnable = (): Promise<boolean> => {
+    return new Promise(async (resolve, reject) => {
+        const { errno, stdout, stderr }: MiuiCompatResult = await exec("getprop ro.config.miui_appcompat_enable");
+        errno ? reject(stderr) : resolve(stdout);
+    });
+}
+
 
 
 export const getSourceEmbeddedRulesList = (): Promise<string> => {

@@ -16,6 +16,8 @@ export const useDeviceStore = defineStore("device", () => {
   const deviceSocName = ref<string>();
   const deviceSocModel = ref<string>();
   const smartFocusIO = ref<ksuApi.SmartFocusIOResult["stdout"]>();
+  const miuiCompatEnable = ref<boolean>();
+  const miuiAppCompatEnable = ref<boolean>();
   const loading = ref<boolean>(true);
   const errorLogging = reactive<ErrorLogging[]>([]);
 
@@ -67,6 +69,11 @@ export const useDeviceStore = defineStore("device", () => {
     } else {
       deviceSocName.value = getDeviceSocNameRes;
     }
+    // 游戏显示布局 *弱校验
+    const [, getMiuiCompatEnableRes] = await $to(ksuApi.getMiuiCompatEnable());
+    miuiCompatEnable.value = getMiuiCompatEnableRes;
+    const [, getMiuiAppCompatEnableRes] = await $to(ksuApi.getMiuiAppCompatEnable());
+    miuiAppCompatEnable.value = getMiuiAppCompatEnableRes;
     // Xiaomi Hyper OS 版本号 *弱校验
     const [, getMIOSVersionRes] = await $to(ksuApi.getMIOSVersion());
     MIOSVersion.value = getMIOSVersionRes;
@@ -88,6 +95,8 @@ export const useDeviceStore = defineStore("device", () => {
     deviceSocName,
     deviceSocModel,
     smartFocusIO,
+    miuiCompatEnable,
+    miuiAppCompatEnable,
     loading,
     initDefault,
   };

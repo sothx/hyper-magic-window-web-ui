@@ -29,23 +29,9 @@ const columns = createColumns({
 })
 const activeDrawer = ref(false)
 const pagination = false as const
-const deviceCharacteristics = ref<string>()
-const androidTargetSdk = ref<string>()
 const sourceEmbeddedRulesList = ref<string>()
 
 onMounted(async () => {
-  // 测试获取设备类型
-  const [deviceCharacteristicsErr,deviceCharacteristicsData] = await $to(ksuApi.getDeviceCharacteristics())
-  if (deviceCharacteristicsErr) {
-    message.error(`报错了，呜呜呜`)
-  }
-  deviceStore.deviceCharacteristics = deviceCharacteristicsData
-  // 测试获取AndroidTarget版本号
-  const [androidTargetSdkErr,androidTargetSdkData] = await $to(ksuApi.getAndroidTargetSdk())
-  if (androidTargetSdkErr) {
-    message.error(`报错了，呜呜呜`)
-  }
-  deviceStore.androidTargetSdk = Number(androidTargetSdkData)
   // 测试获取XML文件
   const [sourceEmbeddedRulesListErr,sourceEmbeddedRulesListData] = await $to(ksuApi.getSourceEmbeddedRulesList())
   if (sourceEmbeddedRulesListErr) {
@@ -105,9 +91,13 @@ function createColumns({
       <n-drawer v-model:show="activeDrawer" :width="502" placement="right">
         <n-drawer-content title="测试抽屉" closable>
           <p>获取设备信息</p>
-          <p>{{ deviceCharacteristics }}</p>
+          <p>{{ deviceStore.deviceCharacteristics }}</p>
           <p>获取设备Android Target</p>
-          <p>{{ androidTargetSdk }}</p>
+          <p>{{ deviceStore.androidTargetSdk }}</p>
+          <p>获取设备Soc类型</p>
+          <p>{{ deviceStore.deviceSocModel }}</p>
+          <p>获取设备Soc名称</p>
+          <p>{{  deviceStore.deviceSocName  }}</p>
           <p>获取XML文件内容</p>
           <p>{{  sourceEmbeddedRulesList  }}</p>
         </n-drawer-content>
