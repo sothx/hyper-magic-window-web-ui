@@ -10,11 +10,3 @@ export const useCounterStore = defineStore('counter', () => {
 
   return { count, doubleCount, increment }
 })
-
-
-export const useDeviceStore = defineStore('device',() => {
-  const deviceCharacteristics = ref<string>()
-  const androidTargetSdk = ref<string>()
-
-  return { deviceCharacteristics, androidTargetSdk }
-})

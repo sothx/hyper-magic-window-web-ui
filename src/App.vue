@@ -2,6 +2,17 @@
 import { RouterLink, RouterView } from 'vue-router'
 import HelloWorld from './components/HelloWorld.vue'
 import { Sidebar } from './components/Sidebar'
+import { ref, onMounted } from 'vue'
+import { useDeviceStore } from './stores/device'
+import { useEmbeddedStore } from './stores/embedded'
+
+const deviceStore = useDeviceStore()
+const embeddedStore = useEmbeddedStore()
+
+onMounted(() => {
+  deviceStore.initDefault()
+})
+
 </script>
 
 <template>
