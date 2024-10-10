@@ -13,6 +13,7 @@ import {
     // create naive ui
     NDrawer,
     NDrawerContent,
+    NSwitch,
     NTable,
     NDataTable,
     NMessageProvider,
