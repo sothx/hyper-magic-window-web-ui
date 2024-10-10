@@ -4,9 +4,9 @@ import type SettingRuleItem from "@/types/SettingRuleItem";
 
 export default interface MergeRuleItem {
     name: string;
-    settingMode: string;
+    settingMode: 'fullScreen' | 'embedded' | 'fixedOrientation' | 'disabled';
     isSupportEmbedded: boolean;
-    ruleMode: string;
+    ruleMode: 'module' | 'custom';
     embeddedRules?: Omit<EmbeddedRuleItem, "name">;
     fixedOrientationRule?: Omit<FixedOrientationRuleItem, "name">;
     settingRule?: Omit<SettingRuleItem, "name">;

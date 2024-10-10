@@ -1,6 +1,7 @@
-<script setup lang="ts">
+<script setup lang="tsx">
 import TheWelcome from '../components/TheWelcome.vue'
-import { ref, h, onMounted } from 'vue'
+import { ref, h, onMounted, type VNode, type VNodeChild, reactive } from 'vue'
+import type MergeRuleItem from "@/types/MergeRuleItem";
 import $to from 'await-to-js'
 // @ts-ignore
 import { exec } from 'kernelsu';
@@ -9,55 +10,48 @@ import * as ksuApi from '@/apis/ksuApi'
 import { useDeviceStore } from '@/stores/device';
 import * as xmlFormat from '@/utils/xmlFormat';
 import axios from 'axios';
-
-interface Song {
-  no: number
-  title: string
-  length: string
-}
+import { useEmbeddedStore } from '@/stores/embedded';
 
 const deviceStore = useDeviceStore()
+const embeddedStore = useEmbeddedStore()
 const { message } = createDiscreteApi(['message'])
-
-const data: Song[] = [
-  { no: 3, title: 'Wonderwall', length: '4:18' },
-  { no: 4, title: 'Don\'t Look Back in Anger', length: '4:48' },
-  { no: 12, title: 'Champagne Supernova', length: '7:27' }
-]
 const columns = createColumns({
-  play(row: Song) {
-    message.info(`Play ${row.title}`)
+  play(row: MergeRuleItem) {
+    message.info(`暂未开放`)
   }
 })
 const activeDrawer = ref(false)
-const pagination = false as const
 const sourceEmbeddedRulesList = ref<string>()
+
+const pagination = reactive({
+  page: 1,
+  pageSize: 10,
+  showSizePicker: true,
+  onChange: (page: number) => {
+    pagination.page = page
+  },
+  onUpdatePageSize: (pageSize: number) => {
+    pagination.pageSize = pageSize
+    pagination.page = 1
+  }
+})
 
 onMounted(async () => {
   // // 测试获取XML文件
   try {
-    const response = await axios.get('/data/embedded_rules_list.xml');
+    const response = await axios.get('/data/origin/embedded_rules_list.xml');
     const xmlText = response.data; // 这是 XML 内容
     console.log(xmlFormat.parseXMLToArray(xmlText), 'array')
     console.log(xmlFormat.parseXMLToObject(xmlText), 'object')
 
-    const data = {
-      package1: {
-        isShowDivider: true,
-        supportFullSize: false,
-      },
-      package2: {
-        isShowDivider: false,
-        supportFullSize: true,
-      },
-    };
+    // data = embeddedStore.mergeRuleList;
 
-    // 调用函数并输出结果
-    const xmlWithParent = xmlFormat.objectToXML(data, 'packageRules', 'package');
-    console.log(xmlWithParent);
+    // // 调用函数并输出结果
+    // const xmlWithParent = xmlFormat.objectToXML(data, 'packageRules', 'package');
+    // console.log(xmlWithParent);
 
-    const xmlWithoutParent = xmlFormat.objectToXML(data, undefined, 'package');
-    console.log(xmlWithoutParent);
+    // const xmlWithoutParent = xmlFormat.objectToXML(data, undefined, 'package');
+    // console.log(xmlWithoutParent);
   } catch (error) {
     console.error('Error fetching XML data:', error);
   }
@@ -72,34 +66,63 @@ onMounted(async () => {
 function createColumns({
   play
 }: {
-  play: (row: Song) => void
-}): DataTableColumns<Song> {
+  play: (row: MergeRuleItem) => void
+}): DataTableColumns<MergeRuleItem> {
   return [
     {
-      title: 'No',
-      key: 'no'
+      title: '应用包名',
+      key: 'name'
     },
     {
-      title: 'Title',
-      key: 'title'
-    },
-    {
-      title: 'Length',
-      key: 'length'
-    },
-    {
-      title: 'Action',
-      key: 'actions',
+      title: '规则来源',
+      key: 'ruleMode',
       render(row) {
-        return h(
-          NButton,
-          {
-            strong: true,
-            tertiary: true,
-            size: 'small',
-            onClick: () => play(row)
+        if (row.ruleMode === 'custom') {
+          return (
+            <n-tag type="info">自定义规则</n-tag>
+          )
+        }
+        return (
+          <n-tag type="error">模块规则</n-tag>
+        )
+      }
+    },
+    {
+      title: '当前规则',
+      key: 'settingMode',
+      render(row, index) {
+        const modeMap = {
+          embedded: {
+            type: 'success',
+            name: '平行窗口',
+            onClick(row: MergeRuleItem, index: number) {
+              message.info('功能尚未开放')
+            }
           },
-          { default: () => 'Play' }
+          fullScreen: {
+            type: 'info',
+            name: '全屏',
+            onClick(row: MergeRuleItem, index: number) {
+              message.info('功能尚未开放')
+            }
+          },
+          fixedOrientation: {
+            type: 'warning',
+            name: '居中布局',
+            onClick(row: MergeRuleItem, index: number) {
+              message.info('功能尚未开放')
+            }
+          },
+          disabled: {
+            type: 'error',
+            name: '原始布局',
+            onClick(row: MergeRuleItem, index: number) {
+              message.info('功能尚未开放')
+            }
+          }
+        }
+        return (
+          <n-button size="small" strong dashed type={modeMap[row.settingMode].type} onClick={() => modeMap[row.settingMode].onClick(row, index)}>{modeMap[row.settingMode].name}</n-button>
         )
       }
     }
@@ -109,10 +132,9 @@ function createColumns({
 
 <template>
   <main>
-    <n-data-table :columns="columns" :data="data" :bordered="false" />
     <div>
-      <p class="text-blue-600 text-2xl text-center text-indigo-600">完美横屏应用计划 Web UI 管理后台正在建设中，敬请期待~</p>
-      <div class="text-center mt-10">
+      <p class="text-blue-600 text-2xl text-center text-indigo-600">完美横屏应用计划 Web UI 管理后台正在开发中，敬请期待~</p>
+      <div class="text-center mt-10 mb-10">
         <n-button @click="activeDrawer = true">
           这是一个测试用的抽屉~内容是小米的往年标语~
         </n-button>
@@ -128,9 +150,17 @@ function createColumns({
           <p>获取设备Soc名称</p>
           <p>{{ deviceStore.deviceSocName }}</p>
           <p>获取XML文件内容</p>
-          <p>{{ sourceEmbeddedRulesList }}</p>
+          <!-- <p>{{ embeddedStore.customConfigEmbeddedRulesList }}</p> -->
+          <p>{{ embeddedStore.mergeRuleList }}</p>
         </n-drawer-content>
       </n-drawer>
     </div>
+    <n-card title="操作栏" size="small">
+      <n-button class="mt-10 mb-10" type="info">
+        添加应用
+      </n-button>
+      <n-input class="ml-5" placeholder="搜索应用包名" autosize style="min-width: 80%" />
+    </n-card>
+    <n-data-table :columns="columns" :data="embeddedStore.mergeRuleList" :pagination="pagination" />
   </main>
 </template>

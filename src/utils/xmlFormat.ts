@@ -3,33 +3,50 @@ import type EmbeddedRuleItem from "@/types/EmbeddedRuleItem";
 import type FixedOrientationRuleItem from "@/types/FixedOrientationRuleItem";
 import type SettingRuleItem from "@/types/SettingRuleItem";
 import type MergeRuleItem from "@/types/MergeRuleItem";
+import { omit } from "lodash-es";
 
 const transformValues = <T>(obj: Record<string, T>): Record<string, T> => {
-    return mapValues(obj, (value) => {
-      if (typeof value === "string") {
-        // 转换布尔值字符串
-        if (toLower(value) === "true") {
-          return true;
-        } else if (toLower(value) === "false") {
-          return false;
-        } else if (!isNaN(Number(value))) {
-          // 如果是数字字符串，转换为数字
-          return Number(value);
-        }
-        return value; // 保持原始值
-      } else if (typeof value === "number") {
-        return value; // 直接保留数字
-      } else if (typeof value === "boolean") {
-        return value; // 直接保留布尔值
+  return mapValues(obj, (value) => {
+    if (typeof value === "string") {
+      // 转换布尔值字符串
+      if (toLower(value) === "true") {
+        return true;
+      } else if (toLower(value) === "false") {
+        return false;
+      } else if (!isNaN(Number(value))) {
+        // 如果是数字字符串，转换为数字
+        return Number(value);
       }
       return value; // 保持原始值
-    }) as Record<string, T>; // 强制转换为所需类型
+    } else if (typeof value === "number") {
+      return value; // 直接保留数字
+    } else if (typeof value === "boolean") {
+      return value; // 直接保留布尔值
+    }
+    return value; // 保持原始值
+  }) as Record<string, T>; // 强制转换为所需类型
+};
+
+export const parseXMLToObject = <T>(
+  xml: string,
+  parentTag: string = "package_config",
+  childTag: string = "package"
+): Record<string, T> => {
+  const parser = new DOMParser();
+
+  // 尝试解析 XML
+  let xmlDoc = parser.parseFromString(xml, "application/xml");
+
+  // 检查解析是否成功
+  const parserError = xmlDoc.getElementsByTagName("parsererror");
+  if (parserError.length > 0) {
+    // 检查是否有根节点，如果没有则添加一个虚拟根节点
+    xml = `<${parentTag}>\n${xml}\n</${parentTag}>`;
+    console.log(xml,'xml')
+    xmlDoc = parser.parseFromString(xml, "application/xml"); // 重新解析
   }
 
-export const parseXMLToObject = <T>(xml: string): Record<string, T> => {
-  const parser = new DOMParser();
-  const xmlDoc = parser.parseFromString(xml, "application/xml");
-  const packages = xmlDoc.getElementsByTagName("package");
+  const packages = xmlDoc.getElementsByTagName(childTag);
   const result: Record<string, T> = {}; // 使用对象存储结果
 
   Array.from(packages).forEach((pkg) => {
@@ -49,15 +66,18 @@ export const parseXMLToObject = <T>(xml: string): Record<string, T> => {
     }
   });
 
+
   return result;
 };
 
 export const parseXMLToArray = <T>(
-  xml: string
+  xml: string,
+  parentTag: string = "package_config",
+  childTag: string = "package"
 ): Array<T & { name: string }> => {
   const parser = new DOMParser();
   const xmlDoc = parser.parseFromString(xml, "application/xml");
-  const packages = xmlDoc.getElementsByTagName("package");
+  const packages = xmlDoc.getElementsByTagName(childTag);
   const result: Record<string, T> = {}; // 使用对象存储去重后的项
 
   Array.from(packages).forEach((pkg) => {
@@ -85,7 +105,7 @@ type PackageData = Record<string, Record<string, string | boolean | number>>;
 
 export const objectToXML = (
   obj: PackageData,
-  parentTag?: string,
+  parentTag: string = "package_config",
   childTag: string = "package"
 ): string => {
   const createXMLString = (data: PackageData): string => {
@@ -115,80 +135,97 @@ export const objectToXML = (
   }
 };
 
-
 // 辅助函数，用于排除对象中的 name 属性
-const omitName = <T extends { name: string }>(obj: T): Omit<T, 'name'> => {
-    const { name, ...rest } = obj; // 解构并排除 name
-    return rest; // 返回不包含 name 的对象
+const omitName = <T extends { name: string }>(obj: T): Omit<T, "name"> => {
+  return omit(obj, "name"); // 返回不包含 name 的对象
 };
 
 export const mergeRule = (
-    embeddedRules: Record<string, EmbeddedRuleItem>,
-    fixedOrientationRules: Record<string, FixedOrientationRuleItem>,
-    settingRules: Record<string, SettingRuleItem>,
-    customEmbeddedRules: Record<string, EmbeddedRuleItem> = {}, // 默认值为 {}
-    customFixedOrientationRules: Record<string, FixedOrientationRuleItem> = {}, // 默认值为 {}
+  embeddedRules: Record<string, EmbeddedRuleItem>,
+  fixedOrientationRules: Record<string, FixedOrientationRuleItem>,
+  settingRules: Record<string, SettingRuleItem>,
+  customEmbeddedRules: Record<string, EmbeddedRuleItem> = {}, // 默认值为 {}
+  customFixedOrientationRules: Record<string, FixedOrientationRuleItem> = {} // 默认值为 {}
 ): MergeRuleItem[] => {
-    const result: MergeRuleItem[] = [];
+  const result: MergeRuleItem[] = [];
+  console.log(Object.keys(embeddedRules), "embeddedRules");
+  const allPackages = new Set([
+    ...Object.keys(embeddedRules),
+    ...Object.keys(fixedOrientationRules),
+    ...Object.keys(settingRules),
+    ...Object.keys(customEmbeddedRules),
+    ...Object.keys(customFixedOrientationRules),
+  ]);
 
-    const allPackages = new Set([
-        ...Object.keys(embeddedRules),
-        ...Object.keys(fixedOrientationRules),
-        ...Object.keys(settingRules),
-        ...Object.keys(customEmbeddedRules),
-        ...Object.keys(customFixedOrientationRules),
-    ]);
+  console.log(allPackages, "allPackages");
 
-    allPackages.forEach(pkgName => {
-        const embeddedConfig = embeddedRules[pkgName];
-        const fixedOrientationConfig = fixedOrientationRules[pkgName];
-        const settingConfig = settingRules[pkgName];
+  allPackages.forEach((pkgName) => {
+    const embeddedConfig = embeddedRules[pkgName];
+    const fixedOrientationConfig = fixedOrientationRules[pkgName];
+    const settingConfig = settingRules[pkgName];
 
-        // Determine currentMode
-        let settingMode: string = 'original';
-        let isSupportEmbedded = false;
-        let ruleMode: string = 'module';
+    // Determine currentMode
+    let settingMode: MergeRuleItem["settingMode"] = "disabled";
+    let isSupportEmbedded = embeddedConfig ? !embeddedConfig.fullRule : false; // 判断 isSupportEmbedded
+    let ruleMode: MergeRuleItem["ruleMode"] = "module";
 
-        // Determine settingMode and isSupportEmbedded
-        if (embeddedConfig) {
-            settingMode = 'embedded';
-            if (embeddedConfig.fullRule) {
-                settingMode = 'fullScreen';
-            }
-            isSupportEmbedded = !('fullRule' in embeddedConfig && embeddedConfig.fullRule); // if no fullRule
-        } else if (fixedOrientationConfig && !embeddedConfig) {
-            settingMode = 'fixedOrientation';
+    if (embeddedConfig) {
+      // 根据 settingConfig 的存在与否来判断 settingMode
+      if (!settingConfig || settingConfig.embeddedEnable) {
+        settingMode = embeddedConfig.fullRule ? "fullScreen" : "embedded";
+      }
+
+      // 如果 settingConfig 存在但 embeddedEnable 为 false，且有 fixedOrientationConfig
+      if (
+        settingConfig &&
+        !settingConfig.embeddedEnable &&
+        fixedOrientationConfig
+      ) {
+        settingMode = "fixedOrientation";
+      }
+    } else if (fixedOrientationConfig) {
+      settingMode = "fixedOrientation";
+    }
+
+    // 检查 fixedOrientationConfig.disable 属性
+    if (
+      fixedOrientationConfig?.disable &&
+      (!settingConfig || (settingConfig && !settingConfig.embeddedEnable))
+    ) {
+      settingMode = "disabled";
+    }
+    // Merge custom configurations with existing ones
+    const mergedEmbeddedConfig = customEmbeddedRules[pkgName]
+      ? {
+          ...omitName(embeddedConfig),
+          ...omitName(customEmbeddedRules[pkgName]),
         }
+      : omitName(embeddedConfig);
 
-        // Determine ruleMode
-        if (customEmbeddedRules[pkgName] || customFixedOrientationRules[pkgName]) {
-            ruleMode = 'custom';
+    const mergedFixedOrientationConfig = customFixedOrientationRules[pkgName]
+      ? {
+          ...omitName(fixedOrientationConfig),
+          ...omitName(customFixedOrientationRules[pkgName]),
         }
+      : omitName(fixedOrientationConfig);
 
-        // Merge custom configurations with existing ones
-        const mergedEmbeddedConfig = customEmbeddedRules[pkgName]
-            ? { ...omitName(embeddedConfig), ...omitName(customEmbeddedRules[pkgName]) }
-            : omitName(embeddedConfig);
-        
-        const mergedFixedOrientationConfig = customFixedOrientationRules[pkgName]
-            ? { ...omitName(fixedOrientationConfig), ...omitName(customFixedOrientationRules[pkgName]) }
-            : omitName(fixedOrientationConfig);
+    const mergedSettingConfig = omitName(settingConfig);
 
-        const mergedSettingConfig = omitName(settingConfig)
+    // Build the result object
+    const ruleData: MergeRuleItem = {
+      name: pkgName,
+      settingMode,
+      isSupportEmbedded,
+      ruleMode,
+      embeddedRules: mergedEmbeddedConfig ? mergedEmbeddedConfig : undefined, // 排除 name 属性
+      fixedOrientationRule: mergedFixedOrientationConfig
+        ? mergedFixedOrientationConfig
+        : undefined, // 排除 name 属性
+      settingRule: mergedSettingConfig ? mergedSettingConfig : undefined, // 排除 name 属性
+    };
 
-        // Build the result object
-        const ruleData: MergeRuleItem = {
-            name: pkgName,
-            settingMode,
-            isSupportEmbedded,
-            ruleMode,
-            embeddedRules: mergedEmbeddedConfig ? mergedEmbeddedConfig : undefined, // 排除 name 属性
-            fixedOrientationRule: mergedFixedOrientationConfig ? mergedFixedOrientationConfig : undefined, // 排除 name 属性
-            settingRule: mergedSettingConfig ? mergedSettingConfig : undefined, // 排除 name 属性
-        };
+    result.push(ruleData);
+  });
 
-        result.push(ruleData);
-    });
-
-    return result;
+  return result;
 };

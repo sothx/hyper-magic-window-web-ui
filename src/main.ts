@@ -17,14 +17,17 @@ import {
     NTable,
     NDataTable,
     NMessageProvider,
-    create
+    NTag,
+    NInput,
+    NCard,
+    create,
   } from 'naive-ui'
 
 import App from './App.vue'
 import router from './router'
 
 const naive = create({
-    components: [NButton,NDrawer,NDrawerContent,NTable,NDataTable,NMessageProvider]
+    components: [NButton,NDrawer,NDrawerContent,NTable,NDataTable,NMessageProvider,NSwitch,NTag,NInput,NCard]
 })
 
 const app = createApp(App)
