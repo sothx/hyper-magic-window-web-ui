@@ -7,6 +7,8 @@ import { exec } from 'kernelsu';
 import { NButton, createDiscreteApi, type DataTableColumns, type MessageApi } from 'naive-ui'
 import * as ksuApi from '@/apis/ksuApi'
 import { useDeviceStore } from '@/stores/device';
+import * as xmlFormat from '@/utils/xmlFormat';
+import axios from 'axios';
 
 interface Song {
   no: number
@@ -32,12 +34,39 @@ const pagination = false as const
 const sourceEmbeddedRulesList = ref<string>()
 
 onMounted(async () => {
-  // 测试获取XML文件
-  const [sourceEmbeddedRulesListErr,sourceEmbeddedRulesListData] = await $to(ksuApi.getSourceEmbeddedRulesList())
-  if (sourceEmbeddedRulesListErr) {
-    message.error(`报错了，呜呜呜`)
+  // // 测试获取XML文件
+  try {
+    const response = await axios.get('/data/embedded_rules_list.xml');
+    const xmlText = response.data; // 这是 XML 内容
+    console.log(xmlFormat.parseXMLToArray(xmlText), 'array')
+    console.log(xmlFormat.parseXMLToObject(xmlText), 'object')
+
+    const data = {
+      package1: {
+        isShowDivider: true,
+        supportFullSize: false,
+      },
+      package2: {
+        isShowDivider: false,
+        supportFullSize: true,
+      },
+    };
+
+    // 调用函数并输出结果
+    const xmlWithParent = xmlFormat.objectToXML(data, 'packageRules', 'package');
+    console.log(xmlWithParent);
+
+    const xmlWithoutParent = xmlFormat.objectToXML(data, undefined, 'package');
+    console.log(xmlWithoutParent);
+  } catch (error) {
+    console.error('Error fetching XML data:', error);
   }
-  sourceEmbeddedRulesList.value = sourceEmbeddedRulesListData
+
+  // const [sourceEmbeddedRulesListErr,sourceEmbeddedRulesListData] = await $to(ksuApi.getSourceEmbeddedRulesList())
+  // if (sourceEmbeddedRulesListErr) {
+  //   message.error(`报错了，呜呜呜`)
+  // }
+  // sourceEmbeddedRulesList.value = sourceEmbeddedRulesListData
 
 })
 function createColumns({
@@ -97,9 +126,9 @@ function createColumns({
           <p>获取设备Soc类型</p>
           <p>{{ deviceStore.deviceSocModel }}</p>
           <p>获取设备Soc名称</p>
-          <p>{{  deviceStore.deviceSocName  }}</p>
+          <p>{{ deviceStore.deviceSocName }}</p>
           <p>获取XML文件内容</p>
-          <p>{{  sourceEmbeddedRulesList  }}</p>
+          <p>{{ sourceEmbeddedRulesList }}</p>
         </n-drawer-content>
       </n-drawer>
     </div>

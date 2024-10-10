@@ -1,7 +1,7 @@
 /**
  * 表示平行窗口的规则配置项。
  */
-interface EmbeddedRuleItem {
+export default interface EmbeddedRuleItem {
     /** 应用包名（必填） */
     name: string;
   

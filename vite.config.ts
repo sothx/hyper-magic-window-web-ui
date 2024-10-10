@@ -12,6 +12,7 @@ export default defineConfig({
     vueJsx(),
     vueDevTools(),
   ],
+  assetsInclude: ['**/*.xml'], // 添加这一行以包括 XML 文件
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))

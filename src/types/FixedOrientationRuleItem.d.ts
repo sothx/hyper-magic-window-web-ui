@@ -2,7 +2,7 @@
 /**
  * 表示固定方向的规则配置项。
  */
-interface FixedOrientationRuleItem {
+export default interface FixedOrientationRuleItem {
     /** 应用包名（必填） */
     name: string;
     
