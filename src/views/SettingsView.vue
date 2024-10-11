@@ -1,7 +1,12 @@
 <script setup lang="ts">
 import { useDeviceStore } from '@/stores/device';
 import type { CSSProperties } from 'vue'
+import { createDiscreteApi } from 'naive-ui'
 const deviceStore = useDeviceStore()
+const { message } = createDiscreteApi(['message'])
+const handleSmartFocusIOChange = (value:boolean) => {
+  message.info('功能尚未上线，无任何实际效果，请等待后续更新！')
+}
 const railStyle = ({
   focused,
   checked
@@ -68,7 +73,7 @@ const railStyle = ({
           <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
             <dt class="text-sm font-medium leading-6 text-gray-900">智能IO调度</dt>
             <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-              <n-switch :rail-style="railStyle" v-if="deviceStore.smartFocusIO" checked-value="on"
+              <n-switch :rail-style="railStyle" @update:value="handleSmartFocusIOChange" v-if="deviceStore.smartFocusIO" checked-value="on"
                 unchecked-value="off">
                 <template #checked>
                   已启用智能IO调度

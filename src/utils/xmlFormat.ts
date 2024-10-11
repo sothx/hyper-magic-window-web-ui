@@ -157,8 +157,6 @@ export const mergeRule = (
     ...Object.keys(customFixedOrientationRules),
   ]);
 
-  console.log(allPackages, "allPackages");
-
   allPackages.forEach((pkgName) => {
     const embeddedConfig = embeddedRules[pkgName];
     const fixedOrientationConfig = fixedOrientationRules[pkgName];

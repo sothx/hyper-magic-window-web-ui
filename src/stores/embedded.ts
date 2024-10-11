@@ -32,8 +32,14 @@ export const useEmbeddedStore = defineStore("embedded", () => {
   const embeddedSettingConfig = ref<Record<string, SettingRuleItem>>({});
   // 合并后的配置
   const mergeRuleList = ref<MergeRuleItem[]>([]);
+  // 搜索后的配置列表
+  const filterMergeRuleList = computed(() => {
+    const searchValue = searchName.value.toLowerCase();  // 缓存并提前处理 searchName
+    return mergeRuleList.value.filter(item => item.name.toLowerCase().includes(searchValue));
+  });
   // 应用总数
   const ruleCount = computed(() => mergeRuleList.value.length);
+  const searchName = ref<string>('');
   const loading = ref<boolean>(true);
   const errorLogging = reactive<ErrorLogging[]>([]);
 
@@ -42,7 +48,6 @@ export const useEmbeddedStore = defineStore("embedded", () => {
     const [getSourceEmbeddedRulesListErr, getSourceEmbeddedRulesListRes] =
       await $to(ksuApi.getSourceEmbeddedRulesList());
     if (getSourceEmbeddedRulesListErr) {
-      console.log(getSourceEmbeddedRulesListErr, "err");
       errorLogging.push({
         type: "sourceEmbeddedRulesList",
         msg: getSourceEmbeddedRulesListErr,
@@ -58,13 +63,7 @@ export const useEmbeddedStore = defineStore("embedded", () => {
       getCustomConfigEmbeddedRulesListErr,
       getCustomConfigEmbeddedRulesListRes,
     ] = await $to(ksuApi.getCustomConfigEmbeddedRulesList());
-    if (getCustomConfigEmbeddedRulesListErr) {
-      console.log(getCustomConfigEmbeddedRulesListErr, "err");
-      errorLogging.push({
-        type: "customConfigEmbeddedRulesList",
-        msg: getCustomConfigEmbeddedRulesListErr,
-      });
-    } else {
+    if (!getCustomConfigEmbeddedRulesListErr) {
       customConfigEmbeddedRulesList.value = xmlFormat.parseXMLToObject<EmbeddedRuleItem>(
         getCustomConfigEmbeddedRulesListRes
       );
@@ -74,7 +73,6 @@ export const useEmbeddedStore = defineStore("embedded", () => {
     const [getSourceFixedOrientationListErr, getSourceFixedOrientationListRes] =
       await $to(ksuApi.getSourceFixedOrientationList());
     if (getSourceFixedOrientationListErr) {
-      console.log(getSourceFixedOrientationListErr, "err");
       errorLogging.push({
         type: "sourceFixedOrientationList",
         msg: getSourceFixedOrientationListErr,
@@ -90,13 +88,7 @@ export const useEmbeddedStore = defineStore("embedded", () => {
       getCustomConfigFixedOrientationListErr,
       getCustomConfigFixedOrientationListRes,
     ] = await $to(ksuApi.getCustomConfigFixedOrientationList());
-    if (getCustomConfigFixedOrientationListErr) {
-      console.log(getCustomConfigFixedOrientationListErr, "err");
-      errorLogging.push({
-        type: "customConfigFixedOrientationList",
-        msg: getCustomConfigFixedOrientationListErr,
-      });
-    } else {
+    if (!getCustomConfigFixedOrientationListErr) {
       customConfigFixedOrientationList.value = xmlFormat.parseXMLToObject<FixedOrientationRuleItem>(
         getCustomConfigFixedOrientationListRes
       );
@@ -106,7 +98,6 @@ export const useEmbeddedStore = defineStore("embedded", () => {
     const [getEmbeddedSettingConfigErr, getEmbeddedSettingConfigRes] =
       await $to(ksuApi.getEmbeddedSettingConfig());
     if (getEmbeddedSettingConfigErr) {
-      console.log(getEmbeddedSettingConfigErr, "err");
       errorLogging.push({
         type: "embeddedSettingConfig",
         msg: getEmbeddedSettingConfigErr,
@@ -131,6 +122,10 @@ export const useEmbeddedStore = defineStore("embedded", () => {
     customConfigFixedOrientationList,
     embeddedSettingConfig,
     mergeRuleList,
+    filterMergeRuleList,
+    searchName,
+    errorLogging,
+    loading,
     ruleCount,
     initDefault,
   };

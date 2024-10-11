@@ -151,16 +151,25 @@ function createColumns({
           <p>{{ deviceStore.deviceSocName }}</p>
           <p>获取XML文件内容</p>
           <!-- <p>{{ embeddedStore.customConfigEmbeddedRulesList }}</p> -->
+          <p>{{ embeddedStore.errorLogging }}</p>
           <p>{{ embeddedStore.mergeRuleList }}</p>
         </n-drawer-content>
       </n-drawer>
     </div>
     <n-card title="操作栏" size="small">
-      <n-button class="mt-10 mb-10" type="info">
+      <n-button class="mt-10 mb-10" type="info" @click="() => message.info('功能尚未开放')">
         添加应用
       </n-button>
-      <n-input class="ml-5" placeholder="搜索应用包名" autosize style="min-width: 80%" />
+      <n-button class="mt-10 ml-5 mb-10 mr-5" type="success" @click="() => message.info('功能尚未开放')">
+        刷新 Web UI
+      </n-button>
+      <n-input-group>
+      <n-input v-model:value="embeddedStore.searchName"  placeholder="搜索应用包名" autosize style="min-width: 80%" />
+      <!-- <n-button type="primary" ghost>
+        搜索
+      </n-button> -->
+      </n-input-group>
     </n-card>
-    <n-data-table :columns="columns" :data="embeddedStore.mergeRuleList" :pagination="pagination" />
+    <n-data-table :columns="columns" :data="embeddedStore.filterMergeRuleList" :pagination="pagination" />
   </main>
 </template>
