@@ -29,21 +29,21 @@ const transformValues = <T>(obj: Record<string, T>): Record<string, T> => {
 
 export const parseXMLToObject = <T>(
   xml: string,
-  parentTag: string = "package_config",
-  childTag: string = "package"
+  parentTag: string,
+  childTag: string,
+  isNeedPatchParentTag: boolean = false
 ): Record<string, T> => {
   const parser = new DOMParser();
-
-  // 尝试解析 XML
   let xmlDoc = parser.parseFromString(xml, "application/xml");
 
-  // 检查解析是否成功
-  const parserError = xmlDoc.getElementsByTagName("parsererror");
-  if (parserError.length > 0) {
-    // 检查是否有根节点，如果没有则添加一个虚拟根节点
-    xml = `<${parentTag}>\n${xml}\n</${parentTag}>`;
-    console.log(xml,'xml')
-    xmlDoc = parser.parseFromString(xml, "application/xml"); // 重新解析
+  // 检查是否有根节点，如果没有则添加一个虚拟根节点
+  if (isNeedPatchParentTag) {
+    let rootString = `<${parentTag}>\n
+    ${xml}
+    \n</${parentTag}>`;
+    let sanitizedString = rootString.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '');
+    xmlDoc = parser.parseFromString(sanitizedString, "application/xml");
+    // 将临时文档的子节点（即所有 package 节点）插入到 package_config 根节点
   }
 
   const packages = xmlDoc.getElementsByTagName(childTag);
@@ -66,8 +66,50 @@ export const parseXMLToObject = <T>(
     }
   });
 
-
   return result;
+};
+
+export const testXMLToObject = <T>(
+  xml: string,
+  parentTag: string,
+  childTag: string,
+  isNeedPatchParentTag: boolean = false
+): any => {
+  const parser = new DOMParser();
+  const serializer = new XMLSerializer();
+  let xmlDoc = parser.parseFromString(xml, "application/xml");
+
+  // 检查是否有根节点，如果没有则添加一个虚拟根节点
+  if (isNeedPatchParentTag) {
+    let rootString = `<${parentTag}>\n
+    ${xml}
+    \n</${parentTag}>`;
+    let sanitizedString = rootString.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '');
+    xmlDoc = parser.parseFromString(sanitizedString, "application/xml");
+    // 将临时文档的子节点（即所有 package 节点）插入到 package_config 根节点
+  }
+
+  const packages = xmlDoc.getElementsByTagName(childTag);
+  const result: Record<string, T> = {}; // 使用对象存储结果
+
+  Array.from(packages).forEach((pkg) => {
+    const name = pkg.getAttribute("name");
+    if (name) {
+      const attributes: Record<string, string> = {}; // 属性值都是字符串
+      Array.from(pkg.attributes).forEach((attr) => {
+        // 将每个属性添加到 attributes 对象中
+        attributes[attr.name] = attr.value;
+      });
+
+      // 处理属性并将结果赋值给结果对象
+      result[name] = {
+        name,
+        ...transformValues(attributes), // 将所有属性转换
+      } as T; // 强制转换为所需类型 T
+    }
+  });
+
+  return result
 };
 
 export const parseXMLToArray = <T>(
@@ -158,8 +200,8 @@ export const mergeRule = (
   ]);
 
   allPackages.forEach((pkgName) => {
-    const embeddedConfig = embeddedRules[pkgName];
-    const fixedOrientationConfig = fixedOrientationRules[pkgName];
+    const embeddedConfig = customEmbeddedRules[pkgName] ? customEmbeddedRules[pkgName] : embeddedRules[pkgName];
+    const fixedOrientationConfig = customFixedOrientationRules[pkgName] ? customFixedOrientationRules[pkgName] : fixedOrientationRules[pkgName];
     const settingConfig = settingRules[pkgName];
 
     // Determine currentMode
@@ -167,9 +209,14 @@ export const mergeRule = (
     let isSupportEmbedded = embeddedConfig ? !embeddedConfig.fullRule : false; // 判断 isSupportEmbedded
     let ruleMode: MergeRuleItem["ruleMode"] = "module";
 
+    // 初始化自定义规则类型
+    if (customEmbeddedRules[pkgName] || customFixedOrientationRules[pkgName]) {
+      ruleMode = 'custom';
+    }
+
     if (embeddedConfig) {
       // 根据 settingConfig 的存在与否来判断 settingMode
-      if (!settingConfig ||  settingConfig &&settingConfig.embeddedEnable) {
+      if (!settingConfig || (settingConfig && settingConfig.embeddedEnable)) {
         settingMode = embeddedConfig.fullRule ? "fullScreen" : "embedded";
       }
 
@@ -192,22 +239,12 @@ export const mergeRule = (
     ) {
       settingMode = "disabled";
     }
-    // Merge custom configurations with existing ones
-    const mergedEmbeddedConfig = customEmbeddedRules[pkgName]
-      ? {
-          ...omitName(embeddedConfig),
-          ...omitName(customEmbeddedRules[pkgName]),
-        }
-      : omitName(embeddedConfig);
 
-    const mergedFixedOrientationConfig = customFixedOrientationRules[pkgName]
-      ? {
-          ...omitName(fixedOrientationConfig),
-          ...omitName(customFixedOrientationRules[pkgName]),
-        }
-      : omitName(fixedOrientationConfig);
+    const omitEmbeddedConfig = omitName(embeddedConfig)
 
-    const mergedSettingConfig = omitName(settingConfig);
+    const omitFixedOrientationConfig = omitName(fixedOrientationConfig)
+
+    const omitSettingConfig = omitName(settingConfig);
 
     // Build the result object
     const ruleData: MergeRuleItem = {
@@ -215,11 +252,11 @@ export const mergeRule = (
       settingMode,
       isSupportEmbedded,
       ruleMode,
-      embeddedRules: mergedEmbeddedConfig ? mergedEmbeddedConfig : undefined, // 排除 name 属性
-      fixedOrientationRule: mergedFixedOrientationConfig
-        ? mergedFixedOrientationConfig
+      embeddedRules: omitEmbeddedConfig ? omitEmbeddedConfig : undefined, // 排除 name 属性
+      fixedOrientationRule: omitFixedOrientationConfig
+        ? omitFixedOrientationConfig
         : undefined, // 排除 name 属性
-      settingRule: mergedSettingConfig ? mergedSettingConfig : undefined, // 排除 name 属性
+      settingRule: omitSettingConfig ? omitSettingConfig : undefined, // 排除 name 属性
     };
 
     result.push(ruleData);

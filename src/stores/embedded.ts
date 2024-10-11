@@ -42,9 +42,22 @@ export const useEmbeddedStore = defineStore("embedded", () => {
   const isNeedShowErrorModal = computed(() => Boolean(errorLogging.length > 0));
   // 应用总数
   const ruleCount = computed(() => mergeRuleList.value.length);
+  // 搜索值
   const searchName = ref<string>('');
+  // 加载状态
   const loading = ref<boolean>(true);
+  // 错误存储
   const errorLogging = reactive<ErrorLogging[]>([]);
+  // 
+  const allPackageName = computed(() => {
+    const allPackages = new Set([
+      ...Object.keys(sourceEmbeddedRulesList),
+      ...Object.keys(sourceFixedOrientationList),
+      ...Object.keys(customConfigEmbeddedRulesList),
+      ...Object.keys(customConfigFixedOrientationList),
+    ]);
+    return allPackages
+  })
 
   async function initDefault() {
     // 获取源嵌入规则列表
@@ -58,7 +71,9 @@ export const useEmbeddedStore = defineStore("embedded", () => {
       });
     } else {
       sourceEmbeddedRulesList.value = xmlFormat.parseXMLToObject<EmbeddedRuleItem>(
-        getSourceEmbeddedRulesListRes
+        getSourceEmbeddedRulesListRes,
+        'package_config',
+        'package',
       );
     }
 
@@ -69,8 +84,12 @@ export const useEmbeddedStore = defineStore("embedded", () => {
     ] = await $to(ksuApi.getCustomConfigEmbeddedRulesList());
     if (!getCustomConfigEmbeddedRulesListErr) {
       customConfigEmbeddedRulesList.value = xmlFormat.parseXMLToObject<EmbeddedRuleItem>(
-        getCustomConfigEmbeddedRulesListRes
+        getCustomConfigEmbeddedRulesListRes,
+        'package_config',
+        'package',
+        true
       );
+      console.log(customConfigEmbeddedRulesList.value,'customConfigEmbeddedRulesList.value')
     }
 
     // 获取源固定方向列表
@@ -84,7 +103,9 @@ export const useEmbeddedStore = defineStore("embedded", () => {
       });
     } else {
       sourceFixedOrientationList.value = xmlFormat.parseXMLToObject<FixedOrientationRuleItem>(
-        getSourceFixedOrientationListRes
+        getSourceFixedOrientationListRes,
+        'package_config',
+        'package',
       );
     }
 
@@ -95,7 +116,10 @@ export const useEmbeddedStore = defineStore("embedded", () => {
     ] = await $to(ksuApi.getCustomConfigFixedOrientationList());
     if (!getCustomConfigFixedOrientationListErr) {
       customConfigFixedOrientationList.value = xmlFormat.parseXMLToObject<FixedOrientationRuleItem>(
-        getCustomConfigFixedOrientationListRes
+        getCustomConfigFixedOrientationListRes,
+        'package_config',
+        'package',
+        true
       );
     }
 
@@ -112,7 +136,7 @@ export const useEmbeddedStore = defineStore("embedded", () => {
       embeddedSettingConfig.value = xmlFormat.parseXMLToObject<SettingRuleItem>(
         getEmbeddedSettingConfigRes,
         'setting_rule',
-        'setting'
+        'setting',
       );
     }
 
@@ -150,6 +174,7 @@ export const useEmbeddedStore = defineStore("embedded", () => {
     isNeedShowErrorModal,
     loading,
     ruleCount,
+    allPackageName,
     initDefault,
   };
 });

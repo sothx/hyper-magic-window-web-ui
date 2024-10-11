@@ -1,2 +1,2 @@
-<package name="com.meitu.meipaimv" defaultSettings="false" isShowDivider="true" scaleMode="1" />
-<package name="com.yuantiku.tutor" isShowDivider="false" supportFullSize="true" splitRatio="0.3"/>
+<package name="com.tencent.mobileqq"  fullRule="*" />
+<package name="com.tencent.qqmusic"  fullRule="*" />

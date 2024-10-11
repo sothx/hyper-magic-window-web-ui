@@ -5,7 +5,7 @@ export default interface SettingRuleItem {
     /** 应用包名（必填） */
     name: string;
     
-    /** 是否启用嵌入式规则，默认 false（可选） */
+    /** 是否启用平行窗口规则，默认 false（可选） */
     embeddedEnable?: boolean;
     
     /** 是否启用固定方向规则（Hyper OS 2.0+ 有效），默认 false（可选） */
