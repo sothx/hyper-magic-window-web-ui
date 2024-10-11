@@ -20,7 +20,12 @@ import {
     NTag,
     NInput,
     NInputGroup,
+    NSpin,
+    NSpace,
     NCard,
+    NWatermark,
+    NModal,
+    NAlert,
     create,
   } from 'naive-ui'
 
@@ -28,7 +33,7 @@ import App from './App.vue'
 import router from './router'
 
 const naive = create({
-    components: [NButton,NDrawer,NDrawerContent,NTable,NDataTable,NMessageProvider,NSwitch,NTag,NInputGroup,NInput,NCard]
+    components: [NButton,NDrawer,NDrawerContent,NTable,NDataTable,NMessageProvider,NSwitch,NTag,NInputGroup,NInput,NSpin,NSpace,NModal,NAlert,NCard,NWatermark]
 })
 
 const app = createApp(App)

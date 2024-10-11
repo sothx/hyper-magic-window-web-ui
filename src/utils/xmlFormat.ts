@@ -169,7 +169,7 @@ export const mergeRule = (
 
     if (embeddedConfig) {
       // 根据 settingConfig 的存在与否来判断 settingMode
-      if (!settingConfig || settingConfig.embeddedEnable) {
+      if (!settingConfig ||  settingConfig &&settingConfig.embeddedEnable) {
         settingMode = embeddedConfig.fullRule ? "fullScreen" : "embedded";
       }
 

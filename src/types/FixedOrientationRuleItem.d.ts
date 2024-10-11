@@ -42,7 +42,7 @@ export default interface FixedOrientationRuleItem {
     /** 是否允许嵌入竖屏模式，默认 false（可选） */
     allowEmbInPortrait?: boolean;
     
-    /** 支持的模式列表（可选） */
+    /** 支持的模式列表(Hyper OS 2.0+可用),例如full,fo，支持全屏和居中布局（可选） */
     supportModes?: string;
     
     /** 是否支持相机预览，默认 false（可选） */
@@ -51,10 +51,10 @@ export default interface FixedOrientationRuleItem {
     /** 是否启用透明状态栏，默认 false（可选） */
     transparentBar?: boolean;
     
-    /** 自动 UI 布局规则（可选） */
+    /** 平行窗口应用布局优化规则（可选） */
     autoUI?: string;
     
-    /** 是否启用默认设置，默认 true（可选） */
+    /** 是否配置默认设置(Hyper OS 2.0+可用)，例如full，默认全屏（可选） */
     defaultSettings?: boolean;
     
     /** 是否禁用相机预览，默认 false（可选） */

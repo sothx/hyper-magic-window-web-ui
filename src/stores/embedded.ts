@@ -10,12 +10,13 @@ import * as xmlFormat from "@/utils/xmlFormat";
 
 interface ErrorLogging {
   type: string;
+  title: string;
   msg: Error;
 }
 
 export const useEmbeddedStore = defineStore("embedded", () => {
   // 平行窗口
-  let sourceEmbeddedRulesList = ref<
+  const sourceEmbeddedRulesList = ref<
     Record<EmbeddedRuleItem["name"], EmbeddedRuleItem>
   >({});
   const customConfigEmbeddedRulesList = ref<Record<string, EmbeddedRuleItem>>(
@@ -37,6 +38,8 @@ export const useEmbeddedStore = defineStore("embedded", () => {
     const searchValue = searchName.value.toLowerCase();  // 缓存并提前处理 searchName
     return mergeRuleList.value.filter(item => item.name.toLowerCase().includes(searchValue));
   });
+  // 是否弹出错误信息弹窗
+  const isNeedShowErrorModal = computed(() => Boolean(errorLogging.length > 0));
   // 应用总数
   const ruleCount = computed(() => mergeRuleList.value.length);
   const searchName = ref<string>('');
@@ -50,6 +53,7 @@ export const useEmbeddedStore = defineStore("embedded", () => {
     if (getSourceEmbeddedRulesListErr) {
       errorLogging.push({
         type: "sourceEmbeddedRulesList",
+        title: '[模块]平行窗口配置文件',
         msg: getSourceEmbeddedRulesListErr,
       });
     } else {
@@ -75,6 +79,7 @@ export const useEmbeddedStore = defineStore("embedded", () => {
     if (getSourceFixedOrientationListErr) {
       errorLogging.push({
         type: "sourceFixedOrientationList",
+        title: '[模块]信箱模式配置文件',
         msg: getSourceFixedOrientationListErr,
       });
     } else {
@@ -100,6 +105,7 @@ export const useEmbeddedStore = defineStore("embedded", () => {
     if (getEmbeddedSettingConfigErr) {
       errorLogging.push({
         type: "embeddedSettingConfig",
+        title: '[模块]应用横屏布局配置文件',
         msg: getEmbeddedSettingConfigErr,
       });
     } else {
@@ -113,6 +119,22 @@ export const useEmbeddedStore = defineStore("embedded", () => {
     // 合并最终配置
     mergeRuleList.value = xmlFormat.mergeRule(sourceEmbeddedRulesList.value,sourceFixedOrientationList.value,embeddedSettingConfig.value,customConfigEmbeddedRulesList.value,customConfigFixedOrientationList.value);
 
+    // errorLogging.push({
+    //   type: "sourceEmbeddedRulesList",
+    //   title: '[模块]平行窗口配置文件',
+    //   msg: new Error('发生错误啦'),
+    // });
+
+    // errorLogging.push({
+    //   type: "embeddedSettingConfig",
+    //   title: '[模块]应用横屏布局配置文件',
+    //   msg: new Error('发生错误啦'),
+    // });
+
+    if (!errorLogging.length) {
+      loading.value = false;
+    }
+
   }
 
   return {
@@ -125,6 +147,7 @@ export const useEmbeddedStore = defineStore("embedded", () => {
     filterMergeRuleList,
     searchName,
     errorLogging,
+    isNeedShowErrorModal,
     loading,
     ruleCount,
     initDefault,

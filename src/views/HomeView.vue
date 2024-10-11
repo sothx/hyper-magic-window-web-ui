@@ -1,6 +1,6 @@
 <script setup lang="tsx">
 import TheWelcome from '../components/TheWelcome.vue'
-import { ref, h, onMounted, type VNode, type VNodeChild, reactive } from 'vue'
+import { ref, h, onMounted, type VNode, type VNodeChild, reactive, watch } from 'vue'
 import type MergeRuleItem from "@/types/MergeRuleItem";
 import $to from 'await-to-js'
 // @ts-ignore
@@ -15,6 +15,7 @@ import { useEmbeddedStore } from '@/stores/embedded';
 const deviceStore = useDeviceStore()
 const embeddedStore = useEmbeddedStore()
 const { message } = createDiscreteApi(['message'])
+const testMsg = ref<any>({})
 const columns = createColumns({
   play(row: MergeRuleItem) {
     message.info(`暂未开放`)
@@ -22,6 +23,17 @@ const columns = createColumns({
 })
 const activeDrawer = ref(false)
 const sourceEmbeddedRulesList = ref<string>()
+const showErrorModal = ref(false)
+
+watch(
+  () => embeddedStore.isNeedShowErrorModal,   // 监听的值
+  (newValue, oldValue) => { // 回调函数，值变化时执行
+    if (newValue) {
+      showErrorModal.value = true
+    }
+  },
+  { immediate: false }  // 默认是 false，不需要设置，确保不会在初始时执行
+);
 
 const pagination = reactive({
   page: 1,
@@ -97,6 +109,7 @@ function createColumns({
             name: '平行窗口',
             onClick(row: MergeRuleItem, index: number) {
               message.info('功能尚未开放')
+              testMsg.value = row;
             }
           },
           fullScreen: {
@@ -104,6 +117,7 @@ function createColumns({
             name: '全屏',
             onClick(row: MergeRuleItem, index: number) {
               message.info('功能尚未开放')
+              testMsg.value = row;
             }
           },
           fixedOrientation: {
@@ -111,6 +125,7 @@ function createColumns({
             name: '居中布局',
             onClick(row: MergeRuleItem, index: number) {
               message.info('功能尚未开放')
+              testMsg.value = row;
             }
           },
           disabled: {
@@ -118,6 +133,7 @@ function createColumns({
             name: '原始布局',
             onClick(row: MergeRuleItem, index: number) {
               message.info('功能尚未开放')
+              testMsg.value = row;
             }
           }
         }
@@ -131,14 +147,18 @@ function createColumns({
 </script>
 
 <template>
+  <n-spin :show="embeddedStore.loading">
+  <template v-if="embeddedStore.isNeedShowErrorModal" #description>
+      发生错误，无法加载
+  </template>
   <main>
     <div>
-      <p class="text-blue-600 text-2xl text-center text-indigo-600">完美横屏应用计划 Web UI 管理后台正在开发中，敬请期待~</p>
+      <!-- <p class="text-blue-600 text-2xl text-center text-indigo-600">完美横屏应用计划 Web UI 管理后台正在开发中，敬请期待~</p>
       <div class="text-center mt-10 mb-10">
         <n-button @click="activeDrawer = true">
           这是一个测试用的抽屉~内容是小米的往年标语~
         </n-button>
-      </div>
+      </div> -->
       <n-drawer v-model:show="activeDrawer" :width="502" placement="right">
         <n-drawer-content title="测试抽屉" closable>
           <p>获取设备信息</p>
@@ -149,9 +169,18 @@ function createColumns({
           <p>{{ deviceStore.deviceSocModel }}</p>
           <p>获取设备Soc名称</p>
           <p>{{ deviceStore.deviceSocName }}</p>
-          <p>获取XML文件内容</p>
+          <p>点击获取到的信息</p>
+          <p>{{  testMsg  }}</p>
+          <p>错误信息手机</p>
           <!-- <p>{{ embeddedStore.customConfigEmbeddedRulesList }}</p> -->
           <p>{{ embeddedStore.errorLogging }}</p>
+          <p>模块平行窗口配置</p>
+          <p>{{ embeddedStore.sourceEmbeddedRulesList }}</p>
+          <p>模块信箱模式配置</p>
+          <p>{{ embeddedStore.sourceFixedOrientationList }}</p>
+          <p>模块横屏配置</p>
+          <p>{{ embeddedStore.embeddedSettingConfig }}</p>
+          <p>模块合并配置</p>
           <p>{{ embeddedStore.mergeRuleList }}</p>
         </n-drawer-content>
       </n-drawer>
@@ -163,6 +192,9 @@ function createColumns({
       <n-button class="mt-10 ml-5 mb-10 mr-5" type="success" @click="() => message.info('功能尚未开放')">
         刷新 Web UI
       </n-button>
+      <n-button @click="activeDrawer = true">
+        测试专用按钮
+      </n-button>
       <n-input-group>
       <n-input v-model:value="embeddedStore.searchName"  placeholder="搜索应用包名" autosize style="min-width: 80%" />
       <!-- <n-button type="primary" ghost>
@@ -172,4 +204,15 @@ function createColumns({
     </n-card>
     <n-data-table :columns="columns" :data="embeddedStore.filterMergeRuleList" :pagination="pagination" />
   </main>
+  <n-modal @positive-click="() => showErrorModal = false" style="width: 600px" title="发生错误" block-scroll="false" positive-text="确认" preset="dialog" :mask-closable="true" :show="showErrorModal">
+    <n-card
+    :bordered="false"
+    >
+    <n-alert v-for="errItem in embeddedStore.errorLogging" :title="`[发生错误] ${errItem.type}`" class="mb-5" type="error">
+      <p>错误描述:无法获取{{  errItem.title }}</p>
+      <p>错误详情:{{  errItem.msg.message }}</p>
+    </n-alert>
+    </n-card>
+  </n-modal>
+</n-spin>
 </template>
