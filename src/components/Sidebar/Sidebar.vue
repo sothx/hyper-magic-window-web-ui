@@ -31,11 +31,11 @@ const navigation = [
   { name: '应用布局优化', routeName: 'autoui', href: '/autoui', icon: DocumentDuplicateIcon },
 ]
 const teams = [
-  { id: 1, name: '模块首页', href: 'intent://hyper-magic-window.sothx.com#Intent;scheme=https;package=com.android.browser;end', initial: 'H', current: false },
-  { id: 2, name: '打赏', href: 'intent://hyper-magic-window.sothx.com/donation.html#Intent;scheme=https;package=com.android.browser;end', initial: 'D', current: false },
-  { id: 3, name: '感谢', href: 'intent://hyper-magic-window.sothx.com/thanks.html#Intent;scheme=https;package=com.android.browser;end', initial: 'W', current: false },
-  { id: 4, name: '许可协议', href: 'intent://hyper-magic-window.sothx.com/license-agreement.html#Intent;scheme=https;package=com.android.browser;end', initial: 'L', current: false },
-  { id: 5, name: '问题合集', href: 'intent://hyper-magic-window.sothx.com/FAQ.html.html#Intent;scheme=https;package=com.android.browser;end', initial: 'F', current: false },
+  { id: 1, name: '模块首页', href: '/embedded-webview?url=https://hyper-magic-window.sothx.com', initial: 'H', current: false },
+  { id: 2, name: '打赏', href: '/embedded-webview?url=https://hyper-magic-window.sothx.com/donation.html', initial: 'D', current: false },
+  { id: 3, name: '感谢', href: '/embedded-webview?url=https://hyper-magic-window.sothx.com/thanks.html', initial: 'W', current: false },
+  { id: 4, name: '许可协议', href: '/embedded-webview?url=https://hyper-magic-window.sothx.com/license-agreement.html', initial: 'L', current: false },
+  { id: 5, name: '问题合集', href: '/embedded-webview?url=https://hyper-magic-window.sothx.com/FAQ.html', initial: 'F', current: false },
 ]
 const userNavigation = [
   { name: '个人资料', href: '#' },
@@ -116,13 +116,13 @@ const sidebarOpen = ref(false)
                       <div class="text-xs font-semibold leading-6 text-gray-400">快捷入口</div>
                       <ul role="list" class="-mx-2 mt-2 space-y-1">
                         <li v-for="team in teams" :key="team.name">
-                          <a :href="team.href"
+                          <RouterLink :to="team.href"
                             :class="[team.current ? 'bg-gray-50 text-teal-600' : 'text-gray-700 hover:text-teal-600 hover:bg-gray-50', 'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold']">
                             <span
                               :class="[team.current ? 'text-teal-600 border-teal-600' : 'text-gray-400 border-gray-200 group-hover:border-teal-600 group-hover:text-teal-600', 'flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border text-[0.625rem] font-medium bg-white']">{{
                                 team.initial }}</span>
                             <span class="truncate">{{ team.name }}</span>
-                          </a>
+                          </RouterLink>
                         </li>
                       </ul>
                     </li>
@@ -169,13 +169,13 @@ const sidebarOpen = ref(false)
               <div class="text-xs font-semibold leading-6 text-gray-400">快捷入口</div>
               <ul role="list" class="-mx-2 mt-2 space-y-1">
                 <li v-for="team in teams" :key="team.name">
-                  <a :href="team.href"
+                  <RouterLink :to="team.href"
                     :class="[team.current ? 'bg-gray-50 text-teal-600' : 'text-gray-700 hover:text-teal-600 hover:bg-gray-50', 'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold']">
                     <span
                       :class="[team.current ? 'text-teal-600 border-teal-600' : 'text-gray-400 border-gray-200 group-hover:border-teal-600 group-hover:text-teal-600', 'flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border text-[0.625rem] font-medium bg-white']">{{
                         team.initial }}</span>
                     <span class="truncate">{{ team.name }}</span>
-                  </a>
+                  </RouterLink>
                 </li>
               </ul>
             </li>
