@@ -241,7 +241,7 @@ function createColumns({
         <n-input-group>
           <n-input size="large" v-model:value="embeddedStore.searchKeyWord" placeholder="搜索应用包名" autosize
             style="min-width: 80%" />
-          <n-button size="large" type="primary" ghost @click="() => embeddedStore.searchKeyWord = ''">
+          <n-button size="large" type="primary" @click="() => embeddedStore.searchKeyWord = ''">
             清空
           </n-button>
         </n-input-group>
