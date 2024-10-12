@@ -1,9 +1,12 @@
 import { mapValues, toLower } from "lodash-es";
 import type EmbeddedRuleItem from "@/types/EmbeddedRuleItem";
 import type FixedOrientationRuleItem from "@/types/FixedOrientationRuleItem";
-import type SettingRuleItem from "@/types/SettingRuleItem";
-import type MergeRuleItem from "@/types/MergeRuleItem";
+import type EmbeddedSettingRuleItem from "@/types/EmbeddedSettingRuleItem";
+import type EmbeddedMergeRuleItem from "@/types/EmbeddedMergeRuleItem";
 import { omit } from "lodash-es";
+import type AutoUISettingRuleItem from "@/types/AutoUISettingRuleItem";
+import type AutoUIItem from "@/types/AutoUIItem";
+import type AutoUIMergeRuleItem from "@/types/AutoUIMergeRuleItem";
 
 const transformValues = <T>(obj: Record<string, T>): Record<string, T> => {
   return mapValues(obj, (value) => {
@@ -182,19 +185,20 @@ const omitName = <T extends { name: string }>(obj: T): Omit<T, "name"> => {
   return omit(obj, "name"); // 返回不包含 name 的对象
 };
 
-export const mergeRule = (
+
+
+export const mergeEmbeddedRule = (
   embeddedRules: Record<string, EmbeddedRuleItem>,
   fixedOrientationRules: Record<string, FixedOrientationRuleItem>,
-  settingRules: Record<string, SettingRuleItem>,
+  settingRules: Record<string, EmbeddedSettingRuleItem>,
   customEmbeddedRules: Record<string, EmbeddedRuleItem> = {}, // 默认值为 {}
   customFixedOrientationRules: Record<string, FixedOrientationRuleItem> = {} // 默认值为 {}
-): MergeRuleItem[] => {
-  const result: MergeRuleItem[] = [];
+): EmbeddedMergeRuleItem[] => {
+  const result: EmbeddedMergeRuleItem[] = [];
   console.log(Object.keys(embeddedRules), "embeddedRules");
   const allPackages = new Set([
     ...Object.keys(embeddedRules),
     ...Object.keys(fixedOrientationRules),
-    ...Object.keys(settingRules),
     ...Object.keys(customEmbeddedRules),
     ...Object.keys(customFixedOrientationRules),
   ]);
@@ -205,9 +209,9 @@ export const mergeRule = (
     const settingConfig = settingRules[pkgName];
 
     // Determine currentMode
-    let settingMode: MergeRuleItem["settingMode"] = "disabled";
+    let settingMode: EmbeddedMergeRuleItem["settingMode"] = "disabled";
     let isSupportEmbedded = embeddedConfig ? !embeddedConfig.fullRule : false; // 判断 isSupportEmbedded
-    let ruleMode: MergeRuleItem["ruleMode"] = "module";
+    let ruleMode: EmbeddedMergeRuleItem["ruleMode"] = "module";
 
     // 初始化自定义规则类型
     if (customEmbeddedRules[pkgName] || customFixedOrientationRules[pkgName]) {
@@ -247,7 +251,7 @@ export const mergeRule = (
     const omitSettingConfig = omitName(settingConfig);
 
     // Build the result object
-    const ruleData: MergeRuleItem = {
+    const ruleData: EmbeddedMergeRuleItem = {
       name: pkgName,
       settingMode,
       isSupportEmbedded,
@@ -257,6 +261,46 @@ export const mergeRule = (
         ? omitFixedOrientationConfig
         : undefined, // 排除 name 属性
       settingRule: omitSettingConfig ? omitSettingConfig : undefined, // 排除 name 属性
+    };
+
+    result.push(ruleData);
+  });
+
+  return result;
+};
+
+
+export const mergeAutoUIRule = (
+  sourceAutoUIList: Record<string, AutoUIItem>,
+  customConfigAutoUIList: Record<string, AutoUIItem> = {}, // 默认值为 {}
+  autoUISettingConfig: Record<string, AutoUISettingRuleItem> = {} // 默认值为 {}
+): AutoUIMergeRuleItem[] => {
+  const result: AutoUIMergeRuleItem[] = [];
+  const allPackages = new Set([
+    ...Object.keys(sourceAutoUIList),
+    ...Object.keys(customConfigAutoUIList),
+  ]);
+
+  allPackages.forEach((pkgName) => {
+    const autoUIConfig = customConfigAutoUIList[pkgName] ? customConfigAutoUIList[pkgName] : sourceAutoUIList[pkgName];
+    const settingConfig = autoUISettingConfig[pkgName];
+
+    // Determine currentMode
+    let ruleMode: AutoUIMergeRuleItem["ruleMode"] = "module";
+
+    // 初始化自定义规则类型
+    if (customConfigAutoUIList[pkgName]) {
+      ruleMode = 'custom';
+    }
+
+    const omitAutoUIConfig = omitName(autoUIConfig)
+
+    // Build the result object
+    const ruleData: AutoUIMergeRuleItem = {
+      name: pkgName,
+      ruleMode,
+      enable: settingConfig.enable,
+      autoUIRule: omitAutoUIConfig ? omitAutoUIConfig : undefined, // 排除 name 属性
     };
 
     result.push(ruleData);

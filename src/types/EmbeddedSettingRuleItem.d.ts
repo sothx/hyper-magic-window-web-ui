@@ -1,7 +1,7 @@
 /**
  * 表示设置规则的配置项。
  */
-export default interface SettingRuleItem {
+export default interface EmbeddedSettingRuleItem {
     /** 应用包名（必填） */
     name: string;
     

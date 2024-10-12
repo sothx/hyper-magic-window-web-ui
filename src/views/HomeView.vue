@@ -1,7 +1,7 @@
 <script setup lang="tsx">
 import TheWelcome from '../components/TheWelcome.vue'
 import { ref, h, onMounted, type VNode, type VNodeChild, reactive, watch } from 'vue'
-import type MergeRuleItem from "@/types/MergeRuleItem";
+import type EmbeddedMergeRuleItem from "@/types/EmbeddedMergeRuleItem";
 import $to from 'await-to-js'
 import ErrorModal from '@/components/ErrorModal.vue';
 import EmbeddedAppDrawer from '@/components/EmbeddedAppDrawer.vue';
@@ -23,7 +23,7 @@ const { message } = createDiscreteApi(['message'])
 const testMsg = ref<any>({})
 const testXml = ref<any>('')
 const columns = createColumns({
-  play(row: MergeRuleItem) {
+  play(row: EmbeddedMergeRuleItem) {
     message.info(`暂未开放`)
   }
 })
@@ -69,7 +69,7 @@ const openAddEmbeddedApp = async () => {
   }
 }
 
-const openUpdateEmbeddedApp = async (row: MergeRuleItem, index: number) => {
+const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) => {
   if (updateEmbeddedApp.value) {
     const [updateEmbeddedAppErr,updateEmbeddedAppRes] = await $to(updateEmbeddedApp.value.openDrawer(row))
     if (updateEmbeddedAppErr) {
@@ -105,8 +105,8 @@ onMounted(async () => {
 function createColumns({
   play
 }: {
-  play: (row: MergeRuleItem) => void
-}): DataTableColumns<MergeRuleItem> {
+  play: (row: EmbeddedMergeRuleItem) => void
+}): DataTableColumns<EmbeddedMergeRuleItem> {
   return [
     {
       title: '应用包名',
@@ -134,7 +134,7 @@ function createColumns({
           embedded: {
             type: 'success',
             name: '平行窗口',
-            onClick(row: MergeRuleItem, index: number) {
+            onClick(row: EmbeddedMergeRuleItem, index: number) {
               message.info('功能尚未开放')
               openUpdateEmbeddedApp(row,index)
               testMsg.value = row;
@@ -143,7 +143,7 @@ function createColumns({
           fullScreen: {
             type: 'info',
             name: '全屏',
-            onClick(row: MergeRuleItem, index: number) {
+            onClick(row: EmbeddedMergeRuleItem, index: number) {
               message.info('功能尚未开放')
               openUpdateEmbeddedApp(row,index)
               testMsg.value = row;
@@ -152,7 +152,7 @@ function createColumns({
           fixedOrientation: {
             type: 'warning',
             name: '居中布局',
-            onClick(row: MergeRuleItem, index: number) {
+            onClick(row: EmbeddedMergeRuleItem, index: number) {
               message.info('功能尚未开放')
               openUpdateEmbeddedApp(row,index)
               testMsg.value = row;
@@ -161,7 +161,7 @@ function createColumns({
           disabled: {
             type: 'error',
             name: '原始布局',
-            onClick(row: MergeRuleItem, index: number) {
+            onClick(row: EmbeddedMergeRuleItem, index: number) {
               message.info('功能尚未开放')
               openUpdateEmbeddedApp(row,index)
               testMsg.value = row;
@@ -233,8 +233,8 @@ function createColumns({
           测试专用按钮
         </n-button>
         <n-input-group>
-          <n-input size="large" v-model:value="embeddedStore.searchName" placeholder="搜索应用包名" autosize style="min-width: 80%" />
-          <n-button size="large" type="primary" ghost @click="() => embeddedStore.searchName = ''">
+          <n-input size="large" v-model:value="embeddedStore.searchKeyWord" placeholder="搜索应用包名" autosize style="min-width: 80%" />
+          <n-button size="large" type="primary" ghost @click="() => embeddedStore.searchKeyWord = ''">
             清空
           </n-button>
         </n-input-group>

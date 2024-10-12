@@ -2,7 +2,7 @@
 import { ref, type CSSProperties } from 'vue';
 import { useDeviceStore } from '@/stores/device';
 import { useEmbeddedStore } from '@/stores/embedded';
-import type MergeRuleItem from "@/types/MergeRuleItem";
+import type EmbeddedMergeRuleItem from "@/types/EmbeddedMergeRuleItem";
 import { createDiscreteApi, type NInput } from 'naive-ui';
 import * as validateFun from '@/utils/validateFun';
 const props = defineProps<{
@@ -181,7 +181,7 @@ const railStyle = ({
     return style
 }
 
-const currentSettingMode = ref<MergeRuleItem["settingMode"]>('fullScreen');
+const currentSettingMode = ref<EmbeddedMergeRuleItem["settingMode"]>('fullScreen');
 
 const currentAppName = ref<string>('');
 const currentAppNameInputStatus = ref<string>('')

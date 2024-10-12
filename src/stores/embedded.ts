@@ -2,8 +2,8 @@ import { ref, computed, reactive } from "vue";
 import { defineStore } from "pinia";
 import type EmbeddedRuleItem from "@/types/EmbeddedRuleItem";
 import type FixedOrientationRuleItem from "@/types/FixedOrientationRuleItem";
-import type SettingRuleItem from "@/types/SettingRuleItem";
-import type MergeRuleItem from "@/types/MergeRuleItem";
+import type EmbeddedSettingRuleItem from "@/types/EmbeddedSettingRuleItem";
+import type EmbeddedMergeRuleItem from "@/types/EmbeddedMergeRuleItem";
 import $to from "await-to-js";
 import * as ksuApi from "@/apis/ksuApi";
 import * as xmlFormat from "@/utils/xmlFormat";
@@ -30,12 +30,12 @@ export const useEmbeddedStore = defineStore("embedded", () => {
     Record<string, FixedOrientationRuleItem>
   >({});
   // 配置文件
-  const embeddedSettingConfig = ref<Record<string, SettingRuleItem>>({});
+  const embeddedSettingConfig = ref<Record<string, EmbeddedSettingRuleItem>>({});
   // 合并后的配置
-  const mergeRuleList = ref<MergeRuleItem[]>([]);
+  const mergeRuleList = ref<EmbeddedMergeRuleItem[]>([]);
   // 搜索后的配置列表
   const filterMergeRuleList = computed(() => {
-    const searchValue = searchName.value.toLowerCase();  // 缓存并提前处理 searchName
+    const searchValue = searchKeyWord.value.toLowerCase();  // 缓存并提前处理 searchKeyWord
     return mergeRuleList.value.filter(item => item.name.toLowerCase().includes(searchValue));
   });
   // 是否弹出错误信息弹窗
@@ -43,7 +43,7 @@ export const useEmbeddedStore = defineStore("embedded", () => {
   // 应用总数
   const ruleCount = computed(() => mergeRuleList.value.length);
   // 搜索值
-  const searchName = ref<string>('');
+  const searchKeyWord = ref<string>('');
   // 加载状态
   const loading = ref<boolean>(true);
   // 错误存储
@@ -133,7 +133,7 @@ export const useEmbeddedStore = defineStore("embedded", () => {
         msg: getEmbeddedSettingConfigErr,
       });
     } else {
-      embeddedSettingConfig.value = xmlFormat.parseXMLToObject<SettingRuleItem>(
+      embeddedSettingConfig.value = xmlFormat.parseXMLToObject<EmbeddedSettingRuleItem>(
         getEmbeddedSettingConfigRes,
         'setting_rule',
         'setting',
@@ -141,7 +141,7 @@ export const useEmbeddedStore = defineStore("embedded", () => {
     }
 
     // 合并最终配置
-    mergeRuleList.value = xmlFormat.mergeRule(sourceEmbeddedRulesList.value,sourceFixedOrientationList.value,embeddedSettingConfig.value,customConfigEmbeddedRulesList.value,customConfigFixedOrientationList.value);
+    mergeRuleList.value = xmlFormat.mergeEmbeddedRule(sourceEmbeddedRulesList.value,sourceFixedOrientationList.value,embeddedSettingConfig.value,customConfigEmbeddedRulesList.value,customConfigFixedOrientationList.value);
 
     // errorLogging.push({
     //   type: "sourceEmbeddedRulesList",
@@ -169,7 +169,7 @@ export const useEmbeddedStore = defineStore("embedded", () => {
     embeddedSettingConfig,
     mergeRuleList,
     filterMergeRuleList,
-    searchName,
+    searchKeyWord,
     errorLogging,
     isNeedShowErrorModal,
     loading,
