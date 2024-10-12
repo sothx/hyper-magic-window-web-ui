@@ -31,11 +31,11 @@ const navigation = [
   { name: '应用布局优化', routeName: 'autoui', href: '/autoui', icon: DocumentDuplicateIcon },
 ]
 const teams = [
-  { id: 1, name: '模块首页', href: '#', initial: 'H', current: false },
-  { id: 2, name: '打赏', href: '#', initial: 'T', current: false },
-  { id: 3, name: '感谢', href: '#', initial: 'W', current: false },
-  { id: 4, name: '许可协议', href: '#', initial: 'W', current: false },
-  { id: 4, name: '问题合集', href: '#', initial: 'W', current: false },
+  { id: 1, name: '模块首页', href: 'intent://hyper-magic-window.sothx.com#Intent;scheme=https;package=com.android.browser;end', initial: 'H', current: false },
+  { id: 2, name: '打赏', href: 'intent://hyper-magic-window.sothx.com/donation.html#Intent;scheme=https;package=com.android.browser;end', initial: 'D', current: false },
+  { id: 3, name: '感谢', href: 'intent://hyper-magic-window.sothx.com/thanks.html#Intent;scheme=https;package=com.android.browser;end', initial: 'W', current: false },
+  { id: 4, name: '许可协议', href: 'intent://hyper-magic-window.sothx.com/license-agreement.html#Intent;scheme=https;package=com.android.browser;end', initial: 'L', current: false },
+  { id: 5, name: '问题合集', href: 'intent://hyper-magic-window.sothx.com/FAQ.html.html#Intent;scheme=https;package=com.android.browser;end', initial: 'F', current: false },
 ]
 const userNavigation = [
   { name: '个人资料', href: '#' },
