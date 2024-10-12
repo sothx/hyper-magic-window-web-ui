@@ -6,6 +6,7 @@
                 <p class="mt-1 max-w-2xl text-sm leading-6 text-gray-500">在这里可以快速管理有关应用布局优化的配置</p>
             </div>
         </div>
+        <div>此页面施工中，请等待后续消息</div>
     </main>
 </template>
 
