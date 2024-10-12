@@ -4,7 +4,7 @@ import { ref, h, onMounted, type VNode, type VNodeChild, reactive, watch } from 
 import type MergeRuleItem from "@/types/MergeRuleItem";
 import $to from 'await-to-js'
 import ErrorModal from '@/components/ErrorModal.vue';
-import AddEmbeddedApp from '@/components/AddEmbeddedApp.vue';
+import EmbeddedAppDrawer from '@/components/EmbeddedAppDrawer.vue';
 // @ts-ignore
 import { exec } from 'kernelsu';
 import { NButton, createDiscreteApi, type DataTableColumns, type MessageApi } from 'naive-ui'
@@ -13,9 +13,12 @@ import { useDeviceStore } from '@/stores/device';
 import * as xmlFormat from '@/utils/xmlFormat';
 import axios from 'axios';
 import { useEmbeddedStore } from '@/stores/embedded';
+type EmbeddedAppDrawerInstance = InstanceType<typeof EmbeddedAppDrawer>;
 
 const deviceStore = useDeviceStore()
 const embeddedStore = useEmbeddedStore()
+const addEmbeddedApp = ref<EmbeddedAppDrawerInstance | null>(null);
+const updateEmbeddedApp = ref<EmbeddedAppDrawerInstance | null>(null);
 const { message } = createDiscreteApi(['message'])
 const testMsg = ref<any>({})
 const testXml = ref<any>('')
@@ -54,6 +57,17 @@ const pagination = reactive({
     pagination.page = 1
   }
 })
+
+const openAddEmbeddedApp = async () => {
+  if (addEmbeddedApp.value) {
+    const [addEmbeddedAppErr,addEmbeddedAppRes] = await $to(addEmbeddedApp.value.openDrawer())
+    if (addEmbeddedAppErr) {
+      console.log('操作取消:', addEmbeddedAppErr);
+    } else {
+      console.log('提交的结果:', addEmbeddedAppRes);
+    }
+  }
+}
 
 onMounted(async () => {
   // // 测试获取XML文件
@@ -194,22 +208,18 @@ function createColumns({
         </n-drawer>
       </div>
       <n-card title="操作栏" size="small">
-        <AddEmbeddedApp>
-          <template #default="{ openDrawer }">
-            <n-button class="mt-10 mb-10" type="info" @click="openDrawer">
+        <n-button class="mt-5 mb-5" type="info" @click="openAddEmbeddedApp">
               添加应用
             </n-button>
-          </template>
-        </AddEmbeddedApp>
-        <n-button class="mt-10 ml-5 mb-10 mr-5" type="success" @click="() => reloadPage()">
+        <n-button class="mt-5 ml-5 mb-5 mr-5" type="success" @click="() => reloadPage()">
           刷新 Web UI
         </n-button>
         <n-button @click="activeDrawer = true">
           测试专用按钮
         </n-button>
         <n-input-group>
-          <n-input v-model:value="embeddedStore.searchName" placeholder="搜索应用包名" autosize style="min-width: 80%" />
-          <n-button type="primary" ghost @click="() => embeddedStore.searchName = ''">
+          <n-input size="large" v-model:value="embeddedStore.searchName" placeholder="搜索应用包名" autosize style="min-width: 80%" />
+          <n-button size="large" type="primary" ghost @click="() => embeddedStore.searchName = ''">
             清空
           </n-button>
         </n-input-group>
@@ -217,5 +227,7 @@ function createColumns({
       <n-data-table :columns="columns" :data="embeddedStore.filterMergeRuleList" :pagination="pagination" />
     </main>
     <ErrorModal v-model="showErrorModal" :errorLogging="embeddedStore.errorLogging" />
+    <EmbeddedAppDrawer ref="addEmbeddedApp" type="add" title="添加应用" />
+    <EmbeddedAppDrawer ref="updateEmbeddedApp" type="update" title="更新应用" />
   </n-spin>
 </template>

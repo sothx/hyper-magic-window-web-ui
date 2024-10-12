@@ -30,7 +30,7 @@ const navigation = [
   //   { name: 'Team', href: '#', icon: UsersIcon, current: false },
   //   { name: 'Projects', href: '#', icon: FolderIcon, current: false },
   //   { name: 'Calendar', href: '#', icon: CalendarIcon, current: false },
-  { name: '额外设置', href: '#', icon: DocumentDuplicateIcon, current: false },
+  { name: '应用布局优化', href: '#', icon: DocumentDuplicateIcon, current: false },
   //   { name: 'Reports', href: '#', icon: ChartPieIcon, current: false },
 ]
 const teams = [
