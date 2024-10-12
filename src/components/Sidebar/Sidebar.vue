@@ -117,9 +117,9 @@ const sidebarOpen = ref(false)
                       <ul role="list" class="-mx-2 mt-2 space-y-1">
                         <li v-for="team in teams" :key="team.name">
                           <RouterLink :to="team.href"
-                            :class="[team.current ? 'bg-gray-50 text-teal-600' : 'text-gray-700 hover:text-teal-600 hover:bg-gray-50', 'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold']">
+                            :class="[team.href === route.fullPath ? 'bg-gray-50 text-teal-600' : 'text-gray-700 hover:text-teal-600 hover:bg-gray-50', 'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold']">
                             <span
-                              :class="[team.current ? 'text-teal-600 border-teal-600' : 'text-gray-400 border-gray-200 group-hover:border-teal-600 group-hover:text-teal-600', 'flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border text-[0.625rem] font-medium bg-white']">{{
+                              :class="[team.href === route.fullPath ? 'text-teal-600 border-teal-600' : 'text-gray-400 border-gray-200 group-hover:border-teal-600 group-hover:text-teal-600', 'flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border text-[0.625rem] font-medium bg-white']">{{
                                 team.initial }}</span>
                             <span class="truncate">{{ team.name }}</span>
                           </RouterLink>
@@ -170,9 +170,9 @@ const sidebarOpen = ref(false)
               <ul role="list" class="-mx-2 mt-2 space-y-1">
                 <li v-for="team in teams" :key="team.name">
                   <RouterLink :to="team.href"
-                    :class="[team.current ? 'bg-gray-50 text-teal-600' : 'text-gray-700 hover:text-teal-600 hover:bg-gray-50', 'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold']">
+                    :class="[team.href === route.fullPath ? 'bg-gray-50 text-teal-600' : 'text-gray-700 hover:text-teal-600 hover:bg-gray-50', 'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold']">
                     <span
-                      :class="[team.current ? 'text-teal-600 border-teal-600' : 'text-gray-400 border-gray-200 group-hover:border-teal-600 group-hover:text-teal-600', 'flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border text-[0.625rem] font-medium bg-white']">{{
+                      :class="[team.href === route.fullPath ? 'text-teal-600 border-teal-600' : 'text-gray-400 border-gray-200 group-hover:border-teal-600 group-hover:text-teal-600', 'flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border text-[0.625rem] font-medium bg-white']">{{
                         team.initial }}</span>
                     <span class="truncate">{{ team.name }}</span>
                   </RouterLink>
