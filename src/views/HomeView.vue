@@ -69,6 +69,17 @@ const openAddEmbeddedApp = async () => {
   }
 }
 
+const openUpdateEmbeddedApp = async (row: MergeRuleItem, index: number) => {
+  if (updateEmbeddedApp.value) {
+    const [updateEmbeddedAppErr,updateEmbeddedAppRes] = await $to(updateEmbeddedApp.value.openDrawer(row))
+    if (updateEmbeddedAppErr) {
+      console.log('操作取消:', updateEmbeddedAppErr);
+    } else {
+      console.log('提交的结果:', updateEmbeddedAppRes);
+    }
+  }
+}
+
 onMounted(async () => {
   // // 测试获取XML文件
   const [
@@ -125,6 +136,7 @@ function createColumns({
             name: '平行窗口',
             onClick(row: MergeRuleItem, index: number) {
               message.info('功能尚未开放')
+              openUpdateEmbeddedApp(row,index)
               testMsg.value = row;
             }
           },
@@ -133,6 +145,7 @@ function createColumns({
             name: '全屏',
             onClick(row: MergeRuleItem, index: number) {
               message.info('功能尚未开放')
+              openUpdateEmbeddedApp(row,index)
               testMsg.value = row;
             }
           },
@@ -141,6 +154,7 @@ function createColumns({
             name: '居中布局',
             onClick(row: MergeRuleItem, index: number) {
               message.info('功能尚未开放')
+              openUpdateEmbeddedApp(row,index)
               testMsg.value = row;
             }
           },
@@ -149,6 +163,7 @@ function createColumns({
             name: '原始布局',
             onClick(row: MergeRuleItem, index: number) {
               message.info('功能尚未开放')
+              openUpdateEmbeddedApp(row,index)
               testMsg.value = row;
             }
           }

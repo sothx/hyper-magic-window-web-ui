@@ -225,7 +225,7 @@ defineExpose({
                 </n-tab-pane>
                 <n-tab-pane name="fullScreen" tab="全屏">
                     <n-alert :show-icon="false" :bordered="false" title="应用横屏显示" type="info">
-                        开启后，未适配横屏应用界面将全屏显示，并可更改显示比例
+                        开启后，未适配横屏应用界面将全屏显示，并可更改显示规则
                     </n-alert>
                     <n-card class="mt-2" :bordered="false" title="横屏显示规则" size="small">
                         <n-dropdown v-model="currentFullScreenRuleOptions" size="large" trigger="hover"
