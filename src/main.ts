@@ -8,9 +8,10 @@ import "vfonts/FiraCode.css";
 import { createApp } from "vue";
 import { createPinia } from "pinia";
 import {
+  // create naive ui
+  create,
   // component
   NButton,
-  // create naive ui
   NDrawer,
   NDrawerContent,
   NSwitch,
@@ -34,7 +35,9 @@ import {
   NInputNumber,
   NDropdown,
   NSlider,
-  create,
+  NAvatar,
+  NBreadcrumb,
+  NBreadcrumbItem,
 } from "naive-ui";
 
 import App from "./App.vue";
@@ -65,6 +68,9 @@ const naive = create({
     NInputGroupLabel,
     NInputNumber,
     NSlider,
+    NAvatar,
+    NBreadcrumb,
+    NBreadcrumbItem,
     NWatermark,
   ],
 });

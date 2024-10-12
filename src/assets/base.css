@@ -58,6 +58,11 @@
   font-weight: normal;
 }
 
+html {
+  scrollbar-gutter: stable;
+}
+
+
 body {
   min-height: 100vh;
   color: var(--color-text);

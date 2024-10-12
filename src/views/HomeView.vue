@@ -60,7 +60,7 @@ const pagination = reactive({
 
 const openAddEmbeddedApp = async () => {
   if (addEmbeddedApp.value) {
-    const [addEmbeddedAppErr,addEmbeddedAppRes] = await $to(addEmbeddedApp.value.openDrawer())
+    const [addEmbeddedAppErr, addEmbeddedAppRes] = await $to(addEmbeddedApp.value.openDrawer())
     if (addEmbeddedAppErr) {
       console.log('操作取消:', addEmbeddedAppErr);
     } else {
@@ -71,7 +71,7 @@ const openAddEmbeddedApp = async () => {
 
 const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) => {
   if (updateEmbeddedApp.value) {
-    const [updateEmbeddedAppErr,updateEmbeddedAppRes] = await $to(updateEmbeddedApp.value.openDrawer(row))
+    const [updateEmbeddedAppErr, updateEmbeddedAppRes] = await $to(updateEmbeddedApp.value.openDrawer(row))
     if (updateEmbeddedAppErr) {
       console.log('操作取消:', updateEmbeddedAppErr);
     } else {
@@ -136,7 +136,7 @@ function createColumns({
             name: '平行窗口',
             onClick(row: EmbeddedMergeRuleItem, index: number) {
               message.info('功能尚未开放')
-              openUpdateEmbeddedApp(row,index)
+              openUpdateEmbeddedApp(row, index)
               testMsg.value = row;
             }
           },
@@ -145,7 +145,7 @@ function createColumns({
             name: '全屏',
             onClick(row: EmbeddedMergeRuleItem, index: number) {
               message.info('功能尚未开放')
-              openUpdateEmbeddedApp(row,index)
+              openUpdateEmbeddedApp(row, index)
               testMsg.value = row;
             }
           },
@@ -154,7 +154,7 @@ function createColumns({
             name: '居中布局',
             onClick(row: EmbeddedMergeRuleItem, index: number) {
               message.info('功能尚未开放')
-              openUpdateEmbeddedApp(row,index)
+              openUpdateEmbeddedApp(row, index)
               testMsg.value = row;
             }
           },
@@ -163,7 +163,7 @@ function createColumns({
             name: '原始布局',
             onClick(row: EmbeddedMergeRuleItem, index: number) {
               message.info('功能尚未开放')
-              openUpdateEmbeddedApp(row,index)
+              openUpdateEmbeddedApp(row, index)
               testMsg.value = row;
             }
           }
@@ -182,7 +182,7 @@ function createColumns({
     <template v-if="embeddedStore.isNeedShowErrorModal" #description>
       发生错误，无法加载
     </template>
-    <main>
+    <main class="mb-10">
       <div>
         <!-- <p class="text-blue-600 text-2xl text-center text-indigo-600">完美横屏应用计划 Web UI 管理后台正在开发中，敬请期待~</p>
       <div class="text-center mt-10 mb-10">
@@ -222,10 +222,16 @@ function createColumns({
           </n-drawer-content>
         </n-drawer>
       </div>
+      <div class="mt-5">
+        <div class="px-4 sm:px-0 mb-5">
+          <h3 class="text-base font-semibold leading-7 text-gray-900">应用横屏配置</h3>
+          <p class="mt-1 max-w-2xl text-sm leading-6 text-gray-500">在这里可以快速管理平板在横屏应用下的配置</p>
+        </div>
+      </div>
       <n-card title="操作栏" size="small">
         <n-button class="mt-5 mb-5" type="info" @click="openAddEmbeddedApp">
-              添加应用
-            </n-button>
+          添加应用
+        </n-button>
         <n-button class="mt-5 ml-5 mb-5 mr-5" type="success" @click="() => reloadPage()">
           刷新 Web UI
         </n-button>
@@ -233,7 +239,8 @@ function createColumns({
           测试专用按钮
         </n-button>
         <n-input-group>
-          <n-input size="large" v-model:value="embeddedStore.searchKeyWord" placeholder="搜索应用包名" autosize style="min-width: 80%" />
+          <n-input size="large" v-model:value="embeddedStore.searchKeyWord" placeholder="搜索应用包名" autosize
+            style="min-width: 80%" />
           <n-button size="large" type="primary" ghost @click="() => embeddedStore.searchKeyWord = ''">
             清空
           </n-button>

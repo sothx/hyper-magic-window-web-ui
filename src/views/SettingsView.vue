@@ -32,7 +32,7 @@ const railStyle = ({
 </script>
 <template>
   <div class="setting">
-    <div>
+    <div class="mt-5">
       <div class="px-4 sm:px-0">
         <h3 class="text-base font-semibold leading-7 text-gray-900">模块设置</h3>
         <p class="mt-1 max-w-2xl text-sm leading-6 text-gray-500">在这里可以快速了解模块当前的运行数据</p>
