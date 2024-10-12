@@ -118,7 +118,7 @@ function createColumns({
       render(row) {
         if (row.ruleMode === 'custom') {
           return (
-            <n-tag type="info">自定义规则</n-tag>
+            <n-button size="small" dashed type="info">自定义规则</n-button>
           )
         }
         return (
