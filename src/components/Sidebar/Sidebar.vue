@@ -94,7 +94,7 @@ const sidebarOpen = ref(false)
               </TransitionChild>
               <!-- Sidebar component, swap this element with another sidebar if you like -->
               <div class="flex grow flex-col gap-y-5 overflow-y-auto bg-white px-6 pb-4">
-                <div class="flex h-16 shrink-0 items-center">
+                <div class="flex h-2 shrink-0 items-center">
                   <!-- <img class="h-8 w-auto" src="@/assets/logo.svg" alt="Your Company" /> -->
                 </div>
                 <nav class="flex flex-1 flex-col">
