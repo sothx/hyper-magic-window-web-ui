@@ -8,7 +8,7 @@
 
 ## 项目说明
 
-本项目为《HyperOS For Pad/Fold 完美横屏应用计划》支撑的 Web UI 端，提供可视化界面修改模块部分配置的能力。
+本项目为支撑《HyperOS For Pad/Fold 完美横屏应用计划》模块的 Web UI 端，提供可视化界面修改模块部分配置的能力。
 
 ## 推荐IDE
 
