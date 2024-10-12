@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, type CSSProperties } from 'vue';
+import { onMounted, ref, type CSSProperties } from 'vue';
 import { useDeviceStore } from '@/stores/device';
 import { useEmbeddedStore } from '@/stores/embedded';
 import type EmbeddedMergeRuleItem from "@/types/EmbeddedMergeRuleItem";
@@ -200,6 +200,10 @@ defineExpose({
     openDrawer: embeddedAppDrawer.value.openDrawer // 传递 openDrawer 方法
 })
 
+onMounted(() => {
+    console.log(import.meta.env,'import.meta.env')
+})
+
 
 </script>
 
@@ -217,7 +221,7 @@ defineExpose({
                     :readonly="props.type === 'update'" placeholder="请输入应用包名"
                     @input="(value: string) => validAppNameBlur(value)" />
             </n-input-group>
-            <n-tabs type="segment" animated size="large" v-model:value="currentSettingMode">
+            <n-tabs type="segment" v-if="deviceStore.androidTargetSdk && (deviceStore.androidTargetSdk <= 34 && deviceStore.androidTargetSdk >= 32) && (deviceStore.MIOSVersion ? deviceStore.MIOSVersion < 2 : true)" animated size="large" v-model:value="currentSettingMode">
                 <n-tab-pane name="embedded" tab="平行窗口" v-if="props.type === 'update' && isSupportEmbedded">
                     <n-alert :show-icon="false" :bordered="false" title="应用分屏显示" type="success">
                         开启后，未适配横屏应用界面将通过平行窗口显示
@@ -230,14 +234,14 @@ defineExpose({
                     <n-card class="mt-2" :bordered="false" title="横屏显示规则" size="small">
                         <n-dropdown v-model="currentFullScreenRuleOptions" size="large" trigger="hover"
                             :options="fullScreenRuleOptions" @select="handleFullScreenRuleSelect">
-                            <n-button block size="large" type="info" dashed>{{ currentFullScreenRuleOptions.label
+                            <n-button block type="info" dashed>{{ currentFullScreenRuleOptions.label
                                 }}</n-button>
                         </n-dropdown>
                     </n-card>
                     <n-card v-if="currentFullScreenRuleOptions.key === 'fullScreen_custom'" class="mt-2"
                         :bordered="false" title="自定义横屏规则" size="small">
                         <n-input-group class="mb-5">
-                            <n-input size="large" v-model="currentFullRule" placeholder="请输入横屏规则" />
+                            <n-input v-model="currentFullRule" placeholder="请输入横屏规则" />
                         </n-input-group>
                     </n-card>
                     <n-card class="mt-2" :bordered="false" title="平行窗口滑动条" size="small">
@@ -263,7 +267,7 @@ defineExpose({
                     <n-card class="mt-2" :bordered="false" title="居中显示比例" size="small">
                         <n-dropdown v-model="currentFixedOrientationRatio" size="large" trigger="hover"
                             :options="fixedOrientationRatioOptions" @select="handleFixedOrientationRatioSelect">
-                            <n-button size="large" block type="error" dashed>{{ currentFixedOrientationRatio.label
+                            <n-button block type="error" dashed>{{ currentFixedOrientationRatio.label
                                 }}</n-button>
                         </n-dropdown>
                     </n-card>

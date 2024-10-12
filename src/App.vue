@@ -12,6 +12,7 @@ const embeddedStore = useEmbeddedStore()
 onMounted(() => {
   deviceStore.initDefault()
   embeddedStore.initDefault()
+  
 })
 
 </script>

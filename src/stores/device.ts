@@ -75,7 +75,8 @@ export const useDeviceStore = defineStore("device", () => {
     const [, getMiuiAppCompatEnableRes] = await $to(ksuApi.getMiuiAppCompatEnable());
     miuiAppCompatEnable.value = getMiuiAppCompatEnableRes;
     // Xiaomi Hyper OS 版本号 *弱校验
-    const [, getMIOSVersionRes] = await $to(ksuApi.getMIOSVersion());
+    const [getMIOSVersionErr, getMIOSVersionRes] = await $to(ksuApi.getMIOSVersion());
+    console.log(getMIOSVersionErr,'getMIOSVersionErr')
     MIOSVersion.value = getMIOSVersionRes;
 
     // 智能IO调度 *弱校验
