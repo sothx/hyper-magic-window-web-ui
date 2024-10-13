@@ -216,52 +216,58 @@ export const getAutoUISettingConfig = ():Promise<string> => {
 }
 
 export interface updateEmbeddedApp {
-    customEmbeddedRulesListXML: string,
-    customFixedOrientationListXML: string,
-    settingConfigXML: string,
+    customEmbeddedRulesListXML: string;
+    customFixedOrientationListXML: string;
+    settingConfigXML: string;
     switchAction?: {
-        name: string
-        action: 'enable' | 'disable'
-    }
+        name: string;
+        action: 'enable' | 'disable';
+    };
 }
 
 export interface updateEmbeddedAppErrorLoggingItem {
-    type: string,
-    name: string,
-    message: string | string[]
+    type: string;
+    name: string;
+    message: string | string[];
 }
 
 export interface updateEmbeddedAppSuccessLoggingItem {
-    type: string,
-    name: string,
-    message: string | string[]
-}
+    type: string;
+    name: string;
+    message: string | string[];
+} 
 
+// 将 logging 定义为一个对象，其属性为字符串，值为数组
 export const updateEmbeddedApp = (params: updateEmbeddedApp): Promise<{
     type: 'success' | 'error';  // 操作的类型，成功或错误
     message: string;             // 操作的消息
-    logging?: Set<updateEmbeddedAppErrorLoggingItem> | Set<updateEmbeddedAppSuccessLoggingItem>; // 日志记录
+    logging?: {
+        error?: updateEmbeddedAppErrorLoggingItem[]; // 错误日志
+        success?: updateEmbeddedAppSuccessLoggingItem[]; // 成功日志
+    }; 
 }> => {
     return new Promise(async (resolve, reject) => {
         if (import.meta.env.MODE === 'development') {
             resolve({
                 type: 'success',
                 message: '更新成功',
-                logging: new Set() // 返回一个空的 Set
+                logging: {} // 返回一个空的对象
             });
         } else {
-            const errorLogging = new Set<updateEmbeddedAppErrorLoggingItem>();
-            const successLogging = new Set<updateEmbeddedAppSuccessLoggingItem>();
+            const logging = {
+                error: [] as updateEmbeddedAppErrorLoggingItem[],
+                success: [] as updateEmbeddedAppSuccessLoggingItem[]
+            };
 
             const { errno: EmErrno, stdout: EmStdout, stderr: EmStderr }: ExecResult = await exec(`echo '${params.customEmbeddedRulesListXML}' > /data/adb/MIUI_MagicWindow+/config/embedded_rules_list.xml`);
             if (EmErrno) {
-                errorLogging.add({
+                logging.error.push({
                     type: 'customEmbeddedRulesListXML',
                     name: '[自定义规则]平行窗口配置文件',
                     message: EmStderr
                 });
             } else {
-                successLogging.add({
+                logging.success.push({
                     type: 'customEmbeddedRulesListXML',
                     name: '[自定义规则]平行窗口配置文件',
                     message: '更新成功'
@@ -270,13 +276,13 @@ export const updateEmbeddedApp = (params: updateEmbeddedApp): Promise<{
 
             const { errno: FixErrno, stdout: FixStdout, stderr: FixStderr }: ExecResult = await exec(`echo '${params.customFixedOrientationListXML}' > /data/adb/MIUI_MagicWindow+/config/fixed_orientation_list.xml`);
             if (FixErrno) {
-                errorLogging.add({
+                logging.error.push({
                     type: 'customFixedOrientationListXML',
                     name: '[自定义规则]信箱模式配置文件',
                     message: FixStderr
                 });
             } else {
-                successLogging.add({
+                logging.success.push({
                     type: 'customFixedOrientationListXML',
                     name: '[自定义规则]信箱模式配置文件',
                     message: '更新成功'
@@ -285,13 +291,13 @@ export const updateEmbeddedApp = (params: updateEmbeddedApp): Promise<{
 
             const { errno: SettingsErrno, stdout: SettingsStdout, stderr: SettingsStderr }: ExecResult = await exec(`echo '${params.settingConfigXML}' > /data/system/users/0/embedded_setting_config.xml`);
             if (SettingsErrno) {
-                errorLogging.add({
+                logging.error.push({
                     type: 'settingConfigXML',
                     name: '[模块]应用横屏布局配置文件',
                     message: SettingsStderr
                 });
             } else {
-                successLogging.add({
+                logging.success.push({
                     type: 'settingConfigXML',
                     name: '[模块]应用横屏布局配置文件',
                     message: '更新成功'
@@ -300,13 +306,13 @@ export const updateEmbeddedApp = (params: updateEmbeddedApp): Promise<{
 
             const { errno: UpdateRuleErrno, stdout: UpdateRuleStdout, stderr: UpdateRuleStderr }: ExecResult = await exec(`sh /data/adb/modules/MIUI_MagicWindow+/common/source/update_rule/update_rule.sh`);
             if (UpdateRuleErrno) {
-                errorLogging.add({
+                logging.error.push({
                     type: 'updateMiuiEmbeddingWindowRule',
                     name: '[模块]重新载入模块应用横屏布局规则',
                     message: UpdateRuleStderr
                 });
             } else {
-                successLogging.add({
+                logging.success.push({
                     type: 'updateMiuiEmbeddingWindowRule',
                     name: '[模块]重新载入模块应用横屏布局规则',
                     message: UpdateRuleStdout.split('\n')
@@ -316,13 +322,13 @@ export const updateEmbeddedApp = (params: updateEmbeddedApp): Promise<{
             if (params.switchAction) {
                 const { errno: SwitchActionErrno, stdout: SwitchActionStdout, stderr: SwitchActionStderr }: ExecResult = await exec(`cmd miui_embedding_window ${params.switchAction.action} ${params.switchAction.name}`);
                 if (SwitchActionErrno) {
-                    errorLogging.add({
+                    logging.error.push({
                         type: 'updateMiuiEmbeddingWindowSwitchAction',
                         name: `[模块]更新${params.switchAction.action}的设置`,
                         message: SwitchActionStderr
                     });
                 } else {
-                    successLogging.add({
+                    logging.success.push({
                         type: 'updateMiuiEmbeddingWindowSwitchAction',
                         name: `[模块]更新${params.switchAction.action}的设置`,
                         message: `更新成功`
@@ -330,17 +336,18 @@ export const updateEmbeddedApp = (params: updateEmbeddedApp): Promise<{
                 }
             }
 
-            if (errorLogging.size) {
+            // 根据 logging 对象的内容判断是否存在错误
+            if (logging.error.length) {
                 reject({
                     type: 'error',
                     message: '发生错误,提交失败',
-                    logging: errorLogging // 直接返回 Set
+                    logging // 直接返回 logging 对象
                 });
             } else {
                 resolve({
                     type: 'success',
                     message: '更新成功',
-                    logging: successLogging // 直接返回 Set
+                    logging // 直接返回 logging 对象
                 });
             }
         }
