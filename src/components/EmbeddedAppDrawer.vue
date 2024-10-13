@@ -201,7 +201,7 @@ defineExpose({
 })
 
 onMounted(() => {
-    console.log(import.meta.env,'import.meta.env')
+    // console.log(import.meta.env, 'import.meta.env')
 })
 
 
@@ -221,7 +221,9 @@ onMounted(() => {
                     :readonly="props.type === 'update'" placeholder="请输入应用包名"
                     @input="(value: string) => validAppNameBlur(value)" />
             </n-input-group>
-            <n-tabs type="segment" v-if="deviceStore.androidTargetSdk && (deviceStore.androidTargetSdk <= 34 && deviceStore.androidTargetSdk >= 32) && (deviceStore.MIOSVersion ? deviceStore.MIOSVersion < 2 : true)" animated size="large" v-model:value="currentSettingMode">
+            <n-tabs type="segment"
+                v-if="deviceStore.androidTargetSdk && (deviceStore.androidTargetSdk <= 34 && deviceStore.androidTargetSdk >= 32) && (deviceStore.MIOSVersion ? deviceStore.MIOSVersion < 2 : true)"
+                animated size="large" v-model:value="currentSettingMode">
                 <n-tab-pane name="embedded" tab="平行窗口" v-if="props.type === 'update' && isSupportEmbedded">
                     <n-alert :show-icon="false" :bordered="false" title="应用分屏显示" type="success">
                         开启后，未适配横屏应用界面将通过平行窗口显示
@@ -231,23 +233,38 @@ onMounted(() => {
                     <n-alert :show-icon="false" :bordered="false" title="应用横屏显示" type="info">
                         开启后，未适配横屏应用界面将全屏显示，并可更改显示规则
                     </n-alert>
-                    <n-card class="mt-2" :bordered="false" title="横屏显示规则" size="small">
+                    <n-card :bordered="false" title="横屏显示规则" size="small">
                         <n-dropdown v-model="currentFullScreenRuleOptions" size="large" trigger="hover"
                             :options="fullScreenRuleOptions" @select="handleFullScreenRuleSelect">
                             <n-button block type="info" dashed>{{ currentFullScreenRuleOptions.label
                                 }}</n-button>
                         </n-dropdown>
                     </n-card>
-                    <n-card v-if="currentFullScreenRuleOptions.key === 'fullScreen_custom'" class="mt-2"
-                        :bordered="false" title="自定义横屏规则" size="small">
-                        <n-input-group class="mb-5">
+                    <n-card v-if="currentFullScreenRuleOptions.key === 'fullScreen_custom'" :bordered="false"
+                        title="自定义横屏规则" size="small">
+                        <n-input-group>
                             <n-input v-model="currentFullRule" placeholder="请输入横屏规则" />
                         </n-input-group>
                     </n-card>
-                    <n-card class="mt-2" :bordered="false" title="平行窗口滑动条" size="small">
+                    <n-card class="" :bordered="false" title="跳过应用自适配声明" size="small">
                         <div class="mb-4">
                             <n-tag :bordered="false" type="success">
-                                适用于原生适配 Android Embedded 的应用
+                                适用于即使设置了 <span class="font-bold">横屏规则</span> 仍无法横屏的应用
+                            </n-tag>
+                        </div>
+                        <n-switch :rail-style="railStyle" size="large">
+                            <template #checked>
+                                跳过自适配声明
+                            </template>
+                            <template #unchecked>
+                                不跳过自适配声明
+                            </template>
+                        </n-switch>
+                    </n-card>
+                    <n-card :bordered="false" title="平行窗口滑动条" size="small">
+                        <div class="mb-4">
+                            <n-tag :bordered="false" type="success">
+                                适用于原生适配 <span class="font-bold">Android Embedded</span> 的应用
                             </n-tag>
                         </div>
                         <n-switch :rail-style="railStyle" size="large">
@@ -264,15 +281,15 @@ onMounted(() => {
                     <n-alert :show-icon="false" :bordered="false" title="应用居中显示" type="warning">
                         开启后，未适配横屏应用界面将居中显示，并可更改显示比例
                     </n-alert>
-                    <n-card class="mt-2" :bordered="false" title="居中显示比例" size="small">
+                    <n-card :bordered="false" title="居中显示比例" size="small">
                         <n-dropdown v-model="currentFixedOrientationRatio" size="large" trigger="hover"
                             :options="fixedOrientationRatioOptions" @select="handleFixedOrientationRatioSelect">
                             <n-button block type="error" dashed>{{ currentFixedOrientationRatio.label
                                 }}</n-button>
                         </n-dropdown>
                     </n-card>
-                    <n-card v-if="currentFixedOrientationRatio.key === 'ratio_custom'" class="mt-2" :bordered="false"
-                        title="自定义显示比例" size="small">
+                    <n-card v-if="currentFixedOrientationRatio.key === 'ratio_custom'" :bordered="false" title="自定义显示比例"
+                        size="small">
                         <n-slider size="small" v-model:value="currentRatio" :min="1.01" :max="1.99" :step="0.01" />
                         <n-input-number class="pt-3" placeholder="请输入自定义显示比例" v-model:value="currentRatio" :min="1.01"
                             :max="1.99" :step="0.01" />

@@ -146,7 +146,7 @@ export const parseXMLToArray = <T>(
   return Object.values(result) as Array<T & { name: string }>;
 };
 
-type PackageData = Record<string, Record<string, string | boolean | number>>;
+type PackageData = Record<string, Record<string, any>>;
 
 export const objectToXML = (
   obj: PackageData,
@@ -204,45 +204,97 @@ export const mergeEmbeddedRule = (
   ]);
 
   allPackages.forEach((pkgName) => {
-    const embeddedConfig = customEmbeddedRules[pkgName] ? customEmbeddedRules[pkgName] : embeddedRules[pkgName];
-    const fixedOrientationConfig = customFixedOrientationRules[pkgName] ? customFixedOrientationRules[pkgName] : fixedOrientationRules[pkgName];
+    const embeddedConfig = customEmbeddedRules[pkgName] ?? embeddedRules[pkgName];
+    const fixedOrientationConfig = customFixedOrientationRules[pkgName] ?? fixedOrientationRules[pkgName];
     const settingConfig = settingRules[pkgName];
 
-    // Determine currentMode
+    // 初始化模式
     let settingMode: EmbeddedMergeRuleItem["settingMode"] = "disabled";
-    let isSupportEmbedded = embeddedConfig ? !embeddedConfig.fullRule : false; // 判断 isSupportEmbedded
-    let ruleMode: EmbeddedMergeRuleItem["ruleMode"] = "module";
+    let isSupportEmbedded = embeddedConfig ? !embeddedConfig.fullRule : false;
+    let ruleMode: EmbeddedMergeRuleItem["ruleMode"] = customEmbeddedRules[pkgName] || customFixedOrientationRules[pkgName] ? "custom" : "module";
 
-    // 初始化自定义规则类型
-    if (customEmbeddedRules[pkgName] || customFixedOrientationRules[pkgName]) {
-      ruleMode = 'custom';
-    }
-
-    if (embeddedConfig) {
-      // 根据 settingConfig 的存在与否来判断 settingMode
-      if (!settingConfig || (settingConfig && settingConfig.embeddedEnable)) {
-        settingMode = embeddedConfig.fullRule ? "fullScreen" : "embedded";
+    if (settingConfig?.hasOwnProperty('embeddedEnable')) {
+      if (settingConfig.embeddedEnable && embeddedConfig) {
+        settingMode = embeddedConfig.fullRule ? 'fullScreen' : 'embedded';
+      } else if (fixedOrientationConfig) {
+        if (!fixedOrientationConfig.hasOwnProperty('disable') || !fixedOrientationConfig.disable) {
+          settingMode = "fixedOrientation";
+        }
       }
-
-      // 如果 settingConfig 存在但 embeddedEnable 为 false，且有 fixedOrientationConfig
-      if (
-        settingConfig &&
-        !settingConfig.embeddedEnable &&
-        fixedOrientationConfig
-      ) {
+    } else {
+      if (fixedOrientationConfig && (!fixedOrientationConfig.hasOwnProperty('disable') || !fixedOrientationConfig.disable)) {
         settingMode = "fixedOrientation";
       }
-    } else if (fixedOrientationConfig) {
-      settingMode = "fixedOrientation";
+    
+      if (embeddedConfig) {
+        const hasDefaultSettings = embeddedConfig.hasOwnProperty('defaultSettings') && embeddedConfig.defaultSettings;
+        if (!embeddedConfig.hasOwnProperty('defaultSettings') || hasDefaultSettings) {
+          settingMode = embeddedConfig.fullRule ? 'fullScreen' : 'embedded';
+        }
+      }
     }
 
-    // 检查 fixedOrientationConfig.disable 属性
-    if (
-      fixedOrientationConfig?.disable &&
-      (!settingConfig || (settingConfig && !settingConfig.embeddedEnable))
-    ) {
-      settingMode = "disabled";
-    }
+    // if (settingConfig && settingConfig.hasOwnProperty('embeddedEnable')) {
+    //   if (settingConfig.embeddedEnable) {
+    //     if (embeddedConfig) {
+    //       if (embeddedConfig.hasOwnProperty('fullRule')) {
+    //         if (embeddedConfig.fullRule) {
+    //           settingMode = 'fullScreen'
+    //         } else {
+    //           settingMode = 'embedded'
+    //         }
+    //       } else {
+    //         settingMode = 'embedded'
+    //       }
+    //     }
+    //   } else {      
+    //     if (fixedOrientationConfig) {
+    //       if (fixedOrientationConfig.hasOwnProperty('disable')) {
+    //         if (!fixedOrientationConfig.disable) {
+    //           settingMode = "fixedOrientation";
+    //         }
+    //       } else {
+    //         settingMode = "fixedOrientation";
+    //       }
+    //     }  
+    //   }
+    // } else {
+    //   if (fixedOrientationConfig) {
+    //     if (fixedOrientationConfig.hasOwnProperty('disable')) {
+    //       if (!fixedOrientationConfig.disable) {
+    //         settingMode = "fixedOrientation";
+    //       }
+    //     } else {
+    //       settingMode = "fixedOrientation";
+    //     }
+    //   }
+    //   if (embeddedConfig) {
+    //     if(embeddedConfig.hasOwnProperty('defaultSettings')) {
+    //       if (embeddedConfig.defaultSettings) {
+    //         if (embeddedConfig.hasOwnProperty('fullRule')) {
+    //           if (embeddedConfig.fullRule) {
+    //             settingMode = 'fullScreen'
+    //           } else {
+    //             settingMode = 'embedded'
+    //           }
+    //         } else {
+    //           settingMode = 'embedded'
+    //         }
+    //       }
+    //     } else {
+    //       if (embeddedConfig.hasOwnProperty('fullRule')) {
+    //         if (embeddedConfig.fullRule) {
+    //           settingMode = 'fullScreen'
+    //         } else {
+    //           settingMode = 'embedded'
+    //         }
+    //       } else {
+    //         settingMode = 'embedded'
+    //       }
+    //     }
+    //   }
+    // }
+
 
     const omitEmbeddedConfig = omitName(embeddedConfig)
 

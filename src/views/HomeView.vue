@@ -80,6 +80,31 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
   }
 }
 
+const testAction = async () => {
+  const [err, res] = await $to(ksuApi.updateEmbeddedApp({
+    customEmbeddedRulesListXML: xmlFormat.objectToXML(embeddedStore.sourceEmbeddedRulesList),
+    customFixedOrientationListXML: xmlFormat.objectToXML(embeddedStore.sourceFixedOrientationList),
+    settingConfigXML: '',
+    switchAction: {
+      name: 'com.tencent.mobileqq',
+      action: 'disable'
+    }
+  }))
+
+  if (err) {
+    errorTest.value = err;
+  } else {
+    successTest.value = res;
+  }
+
+  message.info('成功了')
+
+}
+
+const successTest = ref<any>([]);
+
+const errorTest = ref<any>([]);
+
 onMounted(async () => {
   // // 测试获取XML文件
   const [
@@ -192,6 +217,10 @@ function createColumns({
       </div> -->
         <n-drawer v-model:show="activeDrawer" :width="502" placement="right">
           <n-drawer-content title="测试抽屉" closable>
+            <p>测试成功信息</p>
+            {{ successTest }}
+            <p>测试失败信息</p>
+            {{ errorTest }}
             <p>获取设备信息</p>
             <p>{{ deviceStore.deviceCharacteristics }}</p>
             <p>获取设备Android Target</p>
@@ -229,14 +258,17 @@ function createColumns({
         </div>
       </div>
       <n-card title="操作栏" size="small">
-        <n-button class="mt-5 mb-5" type="info" @click="openAddEmbeddedApp">
+        <n-button class="my-5" type="info" @click="openAddEmbeddedApp">
           添加应用
         </n-button>
-        <n-button class="mt-5 ml-5 mb-5 mr-5" type="success" @click="() => reloadPage()">
+        <n-button class="m-5" type="success" @click="() => reloadPage()">
           刷新 Web UI
         </n-button>
-        <n-button @click="activeDrawer = true">
+        <n-button class="m-5" @click="activeDrawer = true">
           测试专用按钮
+        </n-button>
+        <n-button class="m-5" @click="testAction">
+          测试提交
         </n-button>
         <n-input-group>
           <n-input size="large" v-model:value="embeddedStore.searchKeyWord" placeholder="搜索应用包名" autosize
