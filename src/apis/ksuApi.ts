@@ -237,106 +237,112 @@ export interface updateEmbeddedAppSuccessLoggingItem {
     message: string | string[]
 }
 
-export const updateEmbeddedApp = (params: updateEmbeddedApp):Promise<{
+export const updateEmbeddedApp = (params: updateEmbeddedApp): Promise<{
     type: 'success' | 'error';  // 操作的类型，成功或错误
     message: string;             // 操作的消息
-    logging?: updateEmbeddedAppErrorLoggingItem[] | updateEmbeddedAppSuccessLoggingItem[]; // 日志记录
+    logging?: Set<updateEmbeddedAppErrorLoggingItem> | Set<updateEmbeddedAppSuccessLoggingItem>; // 日志记录
 }> => {
     return new Promise(async (resolve, reject) => {
         if (import.meta.env.MODE === 'development') {
             resolve({
                 type: 'success',
                 message: '更新成功',
-                logging: []
-            })
+                logging: new Set() // 返回一个空的 Set
+            });
         } else {
-            const errorLogging:updateEmbeddedAppErrorLoggingItem[] = []
-            const successLogging:updateEmbeddedAppSuccessLoggingItem[] = []
+            const errorLogging = new Set<updateEmbeddedAppErrorLoggingItem>();
+            const successLogging = new Set<updateEmbeddedAppSuccessLoggingItem>();
+
             const { errno: EmErrno, stdout: EmStdout, stderr: EmStderr }: ExecResult = await exec(`echo '${params.customEmbeddedRulesListXML}' > /data/adb/MIUI_MagicWindow+/config/embedded_rules_list.xml`);
             if (EmErrno) {
-                errorLogging.push({
+                errorLogging.add({
                     type: 'customEmbeddedRulesListXML',
                     name: '[自定义规则]平行窗口配置文件',
                     message: EmStderr
-                })
+                });
             } else {
-                successLogging.push({
+                successLogging.add({
                     type: 'customEmbeddedRulesListXML',
                     name: '[自定义规则]平行窗口配置文件',
                     message: '更新成功'
-                })
+                });
             }
+
             const { errno: FixErrno, stdout: FixStdout, stderr: FixStderr }: ExecResult = await exec(`echo '${params.customFixedOrientationListXML}' > /data/adb/MIUI_MagicWindow+/config/fixed_orientation_list.xml`);
             if (FixErrno) {
-                errorLogging.push({
+                errorLogging.add({
                     type: 'customFixedOrientationListXML',
                     name: '[自定义规则]信箱模式配置文件',
                     message: FixStderr
-                })
+                });
             } else {
-                successLogging.push({
+                successLogging.add({
                     type: 'customFixedOrientationListXML',
                     name: '[自定义规则]信箱模式配置文件',
                     message: '更新成功'
-                })
+                });
             }
+
             const { errno: SettingsErrno, stdout: SettingsStdout, stderr: SettingsStderr }: ExecResult = await exec(`echo '${params.settingConfigXML}' > /data/system/users/0/embedded_setting_config.xml`);
             if (SettingsErrno) {
-                errorLogging.push({
+                errorLogging.add({
                     type: 'settingConfigXML',
                     name: '[模块]应用横屏布局配置文件',
                     message: SettingsStderr
-                })
+                });
             } else {
-                successLogging.push({
+                successLogging.add({
                     type: 'settingConfigXML',
                     name: '[模块]应用横屏布局配置文件',
                     message: '更新成功'
-                })
+                });
             }
+
             const { errno: UpdateRuleErrno, stdout: UpdateRuleStdout, stderr: UpdateRuleStderr }: ExecResult = await exec(`sh /data/adb/modules/MIUI_MagicWindow+/common/source/update_rule/update_rule.sh`);
             if (UpdateRuleErrno) {
-                errorLogging.push({
+                errorLogging.add({
                     type: 'updateMiuiEmbeddingWindowRule',
                     name: '[模块]重新载入模块应用横屏布局规则',
                     message: UpdateRuleStderr
-                })
+                });
             } else {
-                successLogging.push({
+                successLogging.add({
                     type: 'updateMiuiEmbeddingWindowRule',
                     name: '[模块]重新载入模块应用横屏布局规则',
                     message: UpdateRuleStdout.split('\n')
-                })
+                });
             }
+
             if (params.switchAction) {
                 const { errno: SwitchActionErrno, stdout: SwitchActionStdout, stderr: SwitchActionStderr }: ExecResult = await exec(`cmd miui_embedding_window ${params.switchAction.action} ${params.switchAction.name}`);
                 if (SwitchActionErrno) {
-                    errorLogging.push({
+                    errorLogging.add({
                         type: 'updateMiuiEmbeddingWindowSwitchAction',
-                        name: `[模块]更新${params.switchAction.action}的设置"`,
+                        name: `[模块]更新${params.switchAction.action}的设置`,
                         message: SwitchActionStderr
-                    })
+                    });
                 } else {
-                    successLogging.push({
+                    successLogging.add({
                         type: 'updateMiuiEmbeddingWindowSwitchAction',
-                        name: `[模块]更新${params.switchAction.action}的设置"`,
+                        name: `[模块]更新${params.switchAction.action}的设置`,
                         message: `更新成功`
-                    })
+                    });
                 }
             }
-            if (errorLogging.length) {
+
+            if (errorLogging.size) {
                 reject({
                     type: 'error',
                     message: '发生错误,提交失败',
-                    logging: errorLogging
-                })
+                    logging: errorLogging // 直接返回 Set
+                });
             } else {
                 resolve({
                     type: 'success',
                     message: '更新成功',
-                    logging: successLogging
-                })
+                    logging: successLogging // 直接返回 Set
+                });
             }
         }
-    })
+    });
 }
