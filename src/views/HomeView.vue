@@ -60,6 +60,8 @@ const openAddEmbeddedApp = async () => {
     if (addEmbeddedAppErr) {
       console.log('操作取消:', addEmbeddedAppErr);
     } else {
+      addEmbeddedAppRes.loadingCallback && addEmbeddedAppRes.loadingCallback()
+      addEmbeddedAppRes.closeCallback && addEmbeddedAppRes.closeCallback()
       console.log('提交的结果:', addEmbeddedAppRes);
     }
   }
@@ -71,7 +73,10 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
     if (updateEmbeddedAppErr) {
       console.log('操作取消:', updateEmbeddedAppErr);
     } else {
+      updateEmbeddedAppRes.loadingCallback && updateEmbeddedAppRes.loadingCallback()
+      updateEmbeddedAppRes.closeCallback && updateEmbeddedAppRes.closeCallback()
       console.log('提交的结果:', updateEmbeddedAppRes);
+      
     }
   }
 }

@@ -17,7 +17,21 @@ const deviceStore = useDeviceStore();
 const embeddedStore = useEmbeddedStore();
 const { message } = createDiscreteApi(['message'])
 
-let resolvePromise: (result: any) => void; // 用于保存Promise的resolve
+export interface EmbeddedAppDrawerSubmitResult {
+    name: string;
+    settingMode: EmbeddedMergeRuleItem["settingMode"];
+    modePayload: {
+        fullRule?: string;
+        skipSelfAdaptive?: boolean;
+        isShowDivider?: boolean;
+        supportFullSize?: boolean;
+        ratio?: number;
+    };
+    loadingCallback: () => void;
+    closeCallback: () => void;
+}
+
+let resolvePromise: (result: EmbeddedAppDrawerSubmitResult) => void; // 用于保存Promise的resolve
 let rejectPromise: (reason?: any) => void; // 用于保存Promise的reject
 
 // 各类选项的定义
@@ -88,7 +102,7 @@ const currentFixedOrientationRatio = ref<fixedOrientationRatioOptions>(fixedOrie
 const currentRatio = ref<number>();
 
 const embeddedAppDrawer = ref({
-    openDrawer: (initialParams?: EmbeddedMergeRuleItem) => {
+    openDrawer: (initialParams?: EmbeddedMergeRuleItem): Promise<EmbeddedAppDrawerSubmitResult> => {
         return new Promise((resolve, reject) => {
             if (props.type === 'update' && !initialParams) {
                 reject(new Error('更新模式下必须传入初始化参数'));
@@ -114,14 +128,14 @@ const embeddedAppDrawer = ref({
                 currentSkipSelfAdaptive.value = initialParams.fixedOrientationRule?.disable ?? false
                 currentIsShowDivider.value = initialParams.fixedOrientationRule?.isShowDivider ?? false
                 currentFullRule.value = initialParams.embeddedRules?.fullRule ?? undefined
-                if (currentFullRule.value === 'nra:cr:rcr:nr') {
+                if (currentFullRule.value === 'nra:cr:rcr:nr' || (initialParams.embeddedRules && !initialParams.embeddedRules.hasOwnProperty('fullRule'))) {
                     currentFullScreenRuleOptions.value = fullScreenRuleOptions[0]
                 } else if (currentFullRule.value === '*') {
                     currentFullScreenRuleOptions.value = fullScreenRuleOptions[1]
                 } else {
                     currentFullScreenRuleOptions.value = fullScreenRuleOptions[2]
                 }
-                currentSupportFullSize.value =  initialParams.embeddedRules?.supportFullSize ?? false
+                currentSupportFullSize.value = initialParams.embeddedRules?.supportFullSize ?? false
                 currentRatio.value = initialParams.fixedOrientationRule?.ratio ?? undefined
                 if (currentRatio.value) {
                     if (currentRatio.value === 1.5) {
@@ -155,18 +169,6 @@ const handleFixedOrientationRatioSelect = (key: string, option: fixedOrientation
     currentRatio.value = ['ratio_11_10', 'ratio_15_10', 'ratio_18:10'].includes(key) ? option.ratio : (key === 'ratio_custom' ? 1.5 : undefined);
 };
 
-// 提交时处理数据并解析Promise
-const handleSubmit = () => {
-    const result = {
-        fullScreenRule: currentFullScreenRuleOptions.value,
-        fixedOrientationRatio: currentFixedOrientationRatio.value,
-        customRatio: currentRatio.value
-    };
-    resolvePromise(result); // 解析Promise并返回结果
-    message.info('参数已提交');
-    activeDrawer.value = false; // 关闭drawer
-};
-
 const railStyle = ({
     focused,
     checked
@@ -192,22 +194,45 @@ const railStyle = ({
 
 const currentSettingMode = ref<EmbeddedMergeRuleItem["settingMode"]>('fullScreen');
 
-const currentSkipSelfAdaptive =  ref<boolean>(false);
+const currentSkipSelfAdaptive = ref<boolean>(false);
 
 const currentIsShowDivider = ref<boolean>(true);
 
 const currentAppName = ref<string>('');
 const currentAppNameInputStatus = ref<string>('')
 
-const validAppNameBlur = (value: string) => {
-    if (!value) {
-        currentAppNameInputStatus.value = 'error'
-    } else {
-        currentAppNameInputStatus.value = ''
+const isSupportEmbedded = ref<boolean>(false);
+
+const handleDrawerSubmit = () => {
+    // 开启loading
+    drawerSubmitLoading.value = true;
+
+    const closeCallback = () => {
+        drawerSubmitLoading.value = false;
+        activeDrawer.value = false; // 关闭drawer
     }
+
+    const loadingCallback = () => {
+        drawerSubmitLoading.value = false;
+    }
+
+    const result: EmbeddedAppDrawerSubmitResult = {
+        name: currentAppName.value,
+        settingMode: currentSettingMode.value,
+        modePayload: {
+            ...(currentSettingMode.value === 'fullScreen' && { fullRule: currentFullRule.value }),
+            ...(currentSettingMode.value === 'fullScreen' && { skipSelfAdaptive: currentSkipSelfAdaptive.value }),
+            ...(currentSettingMode.value === 'fullScreen' && { isShowDivider: currentIsShowDivider.value }),
+            ...(currentSettingMode.value === 'fullScreen' && currentIsShowDivider.value && { supportFullSize: currentSupportFullSize.value }),
+            ...(currentSettingMode.value === 'fixedOrientation' && { ratio: currentRatio.value })
+        },
+        loadingCallback,
+        closeCallback
+    };
+    resolvePromise(result)
 }
 
-const isSupportEmbedded = ref<boolean>(false);
+const drawerSubmitLoading = ref<boolean>(false);
 
 defineExpose({
     openDrawer: embeddedAppDrawer.value.openDrawer // 传递 openDrawer 方法
@@ -231,8 +256,7 @@ onMounted(() => {
                 <n-input-group-label size="large">应用包名</n-input-group-label>
                 <n-input size="large" :status="currentAppNameInputStatus" v-model:value="currentAppName"
                     :allow-input="(value: string) => validateFun.validateAndroidPackageName(value)"
-                    :readonly="props.type === 'update'" placeholder="请输入应用包名"
-                    @input="(value: string) => validAppNameBlur(value)" />
+                    :readonly="props.type === 'update'" placeholder="请输入应用包名" />
             </n-input-group>
             <n-tabs type="segment"
                 v-if="deviceStore.androidTargetSdk && (deviceStore.androidTargetSdk <= 34 && deviceStore.androidTargetSdk >= 32) && (deviceStore.MIOSVersion ? deviceStore.MIOSVersion < 2 : true)"
@@ -330,10 +354,7 @@ onMounted(() => {
                 </n-tab-pane>
             </n-tabs>
             <template #footer>
-                <n-button type="info" @click="() => {
-                    message.info('开发中，未开放，请期待后续消息')
-                    resolvePromise({})
-                }">
+                <n-button type="info" v-model:loading="drawerSubmitLoading" @click="() => handleDrawerSubmit()">
                     提交
                 </n-button>
             </template>
