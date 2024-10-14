@@ -248,6 +248,7 @@ export const updateEmbeddedApp = (params: updateEmbeddedApp): Promise<{
             resolve({
                 type: 'success',
                 message: '更新成功',
+                errorLogging: [],
                 successLogging: [] // 返回一个空的成功日志
             });
         } else {

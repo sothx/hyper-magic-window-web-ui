@@ -19,14 +19,10 @@ const deviceStore = useDeviceStore()
 const embeddedStore = useEmbeddedStore()
 const addEmbeddedApp = ref<EmbeddedAppDrawerInstance | null>(null);
 const updateEmbeddedApp = ref<EmbeddedAppDrawerInstance | null>(null);
-const { message } = createDiscreteApi(['message'])
+const { message, modal } = createDiscreteApi(['message','modal'])
 const testMsg = ref<any>({})
 const testXml = ref<any>('')
-const columns = createColumns({
-  play(row: EmbeddedMergeRuleItem) {
-    message.info(`暂未开放`)
-  }
-})
+const columns = createColumns()
 const activeDrawer = ref(false)
 const sourceEmbeddedRulesList = ref<string>()
 const showErrorModal = ref(false)
@@ -127,11 +123,34 @@ onMounted(async () => {
   // sourceEmbeddedRulesList.value = sourceEmbeddedRulesListData
 
 })
-function createColumns({
-  play
-}: {
-  play: (row: EmbeddedMergeRuleItem) => void
-}): DataTableColumns<EmbeddedMergeRuleItem> {
+
+const handleRuleMode = (row: EmbeddedMergeRuleItem, index: number,ruleMode: EmbeddedMergeRuleItem["ruleMode"]) => {
+  if (ruleMode === 'module') {
+    modal.create({
+      title: '模块规则说明',
+        type: 'warning',
+        preset: 'dialog',
+        content: () => (<p>模块已对 <span class="font-bold text-gray-600">{ row.name }</span> 配置了合适的适配规则，且不可被移除，仅有自定义规则可以被移除哦~</p>)
+    })
+  }
+
+  if (ruleMode === 'custom') {
+    modal.create({
+      title: '想清除自定义规则吗？',
+        type: 'warning',
+        preset: 'dialog',
+        content: () => (<p>清除自定义规则后，你对 <span class="font-bold text-gray-600">{ row.name }</span> 所做的所有自定义配置将丢失，如果该应用同时还存在 <span class="font-bold text-gray-600">模块规则</span> ，将会还原回模块自身的适配规则。确定要继续吗？</p>),
+        positiveText: '确定清除',
+        negativeText: '我再想想',
+        onPositiveClick: () => {
+            message.info('该功能尚在开发中，请等待后续消息')
+        }
+    })
+  }
+}
+
+
+function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
   return [
     {
       title: '应用包名',
@@ -140,14 +159,14 @@ function createColumns({
     {
       title: '规则来源',
       key: 'ruleMode',
-      render(row) {
+      render(row,index) {
         if (row.ruleMode === 'custom') {
           return (
-            <n-button size="small" dashed type="info">自定义规则</n-button>
+            <n-button size="small" dashed type="info" onClick={() => handleRuleMode(row,index,'custom')}>自定义规则</n-button>
           )
         }
         return (
-          <n-tag type="error">模块规则</n-tag>
+          <n-button size="small" dashed type="error" onClick={() => handleRuleMode(row,index,"module")}>模块规则</n-button>
         )
       }
     },
@@ -160,7 +179,6 @@ function createColumns({
             type: 'success',
             name: '平行窗口',
             onClick(row: EmbeddedMergeRuleItem, index: number) {
-              message.info('功能尚未开放')
               openUpdateEmbeddedApp(row, index)
               testMsg.value = row;
             }
@@ -169,7 +187,6 @@ function createColumns({
             type: 'info',
             name: '全屏',
             onClick(row: EmbeddedMergeRuleItem, index: number) {
-              message.info('功能尚未开放')
               openUpdateEmbeddedApp(row, index)
               testMsg.value = row;
             }
@@ -178,7 +195,6 @@ function createColumns({
             type: 'warning',
             name: '居中布局',
             onClick(row: EmbeddedMergeRuleItem, index: number) {
-              message.info('功能尚未开放')
               openUpdateEmbeddedApp(row, index)
               testMsg.value = row;
             }
@@ -187,7 +203,6 @@ function createColumns({
             type: 'error',
             name: '原始布局',
             onClick(row: EmbeddedMergeRuleItem, index: number) {
-              message.info('功能尚未开放')
               openUpdateEmbeddedApp(row, index)
               testMsg.value = row;
             }
@@ -258,16 +273,16 @@ function createColumns({
         </div>
       </div>
       <n-card title="操作栏" size="small">
-        <n-button class="my-5" type="info" @click="openAddEmbeddedApp">
+        <n-button class="mb-3 mr-3" type="info" @click="openAddEmbeddedApp">
           添加应用
         </n-button>
-        <n-button class="m-5" type="success" @click="() => reloadPage()">
+        <n-button class="mb-3 mr-3" type="success" @click="() => reloadPage()">
           刷新 Web UI
         </n-button>
-        <n-button class="m-5" @click="activeDrawer = true">
+        <n-button class="mb-3 mr-3" @click="activeDrawer = true">
           测试专用按钮
         </n-button>
-        <n-button class="m-5" @click="testAction">
+        <n-button class="mb-3" @click="testAction">
           测试提交
         </n-button>
         <n-input-group>

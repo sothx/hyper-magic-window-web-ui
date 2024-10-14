@@ -77,23 +77,18 @@ const fixedOrientationRatioOptions: fixedOrientationRatioOptions[] = [
 ]
 
 // 选项的状态
-const currentFullScreenRuleOptions = ref<fullScreenRuleOptions>({
-    label: '强制应用所有界面横屏',
-    key: 'fullScreen_nra:cr:rcr:nr',
-    rule: 'nra:cr:rcr:nr'
-})
+const currentFullScreenRuleOptions = ref<fullScreenRuleOptions>(fullScreenRuleOptions[0])
 
 const currentFullRule = ref<fullScreenRuleOptions['rule']>();
 
-const currentFixedOrientationRatio = ref<fixedOrientationRatioOptions>({
-    label: '中尺寸',
-    key: 'ratio_default'
-})
+const currentSupportFullSize = ref<boolean>(true);
+
+const currentFixedOrientationRatio = ref<fixedOrientationRatioOptions>(fixedOrientationRatioOptions[1])
 
 const currentRatio = ref<number>();
 
 const embeddedAppDrawer = ref({
-    openDrawer: (initialParams?: any) => {
+    openDrawer: (initialParams?: EmbeddedMergeRuleItem) => {
         return new Promise((resolve, reject) => {
             if (props.type === 'update' && !initialParams) {
                 reject(new Error('更新模式下必须传入初始化参数'));
@@ -113,15 +108,29 @@ const embeddedAppDrawer = ref({
 
             // 如果是update模式，初始化参数
             if (props.type === 'update' && initialParams) {
-                if (initialParams.fullScreenRule) {
-                    const foundRule = fullScreenRuleOptions.find(option => option.key === initialParams.fullScreenRule.key);
-                    currentFullScreenRuleOptions.value = foundRule || fullScreenRuleOptions[0];
-                    currentFullRule.value = foundRule?.rule;
+                currentAppName.value = initialParams.name
+                isSupportEmbedded.value = initialParams.isSupportEmbedded
+                currentSettingMode.value = initialParams.settingMode;
+                currentSkipSelfAdaptive.value = initialParams.fixedOrientationRule?.disable ?? false
+                currentIsShowDivider.value = initialParams.fixedOrientationRule?.isShowDivider ?? false
+                currentFullRule.value = initialParams.embeddedRules?.fullRule ?? undefined
+                if (currentFullRule.value === 'nra:cr:rcr:nr') {
+                    currentFullScreenRuleOptions.value = fullScreenRuleOptions[0]
+                } else if (currentFullRule.value === '*') {
+                    currentFullScreenRuleOptions.value = fullScreenRuleOptions[1]
+                } else {
+                    currentFullScreenRuleOptions.value = fullScreenRuleOptions[2]
                 }
-                if (initialParams.fixedOrientationRatio) {
-                    const foundRatio = fixedOrientationRatioOptions.find(option => option.key === initialParams.fixedOrientationRatio.key);
-                    currentFixedOrientationRatio.value = foundRatio || fixedOrientationRatioOptions[0];
-                    currentRatio.value = foundRatio?.ratio;
+                currentSupportFullSize.value =  initialParams.embeddedRules?.supportFullSize ?? false
+                currentRatio.value = initialParams.fixedOrientationRule?.ratio ?? undefined
+                if (currentRatio.value) {
+                    if (currentRatio.value === 1.5) {
+                        currentFixedOrientationRatio.value = fixedOrientationRatioOptions[2]
+                    } else if (currentRatio.value === 1.8) {
+                        currentFixedOrientationRatio.value = fixedOrientationRatioOptions[3]
+                    } else {
+                        currentFixedOrientationRatio.value = fixedOrientationRatioOptions[4]
+                    }
                 }
             }
 
@@ -183,6 +192,10 @@ const railStyle = ({
 
 const currentSettingMode = ref<EmbeddedMergeRuleItem["settingMode"]>('fullScreen');
 
+const currentSkipSelfAdaptive =  ref<boolean>(false);
+
+const currentIsShowDivider = ref<boolean>(true);
+
 const currentAppName = ref<string>('');
 const currentAppNameInputStatus = ref<string>('')
 
@@ -216,7 +229,7 @@ onMounted(() => {
         <n-drawer-content :title="props.title" closable>
             <n-input-group class="mb-5">
                 <n-input-group-label size="large">应用包名</n-input-group-label>
-                <n-input size="large" :status="currentAppNameInputStatus" v-model="currentAppName"
+                <n-input size="large" :status="currentAppNameInputStatus" v-model:value="currentAppName"
                     :allow-input="(value: string) => validateFun.validateAndroidPackageName(value)"
                     :readonly="props.type === 'update'" placeholder="请输入应用包名"
                     @input="(value: string) => validAppNameBlur(value)" />
@@ -234,7 +247,7 @@ onMounted(() => {
                         开启后，未适配横屏应用界面将全屏显示，并可更改显示规则
                     </n-alert>
                     <n-card :bordered="false" title="横屏显示规则" size="small">
-                        <n-dropdown v-model="currentFullScreenRuleOptions" size="large" trigger="hover"
+                        <n-dropdown v-model="currentFullScreenRuleOptions" size="large" trigger="click"
                             :options="fullScreenRuleOptions" @select="handleFullScreenRuleSelect">
                             <n-button block type="info" dashed>{{ currentFullScreenRuleOptions.label
                                 }}</n-button>
@@ -243,7 +256,7 @@ onMounted(() => {
                     <n-card v-if="currentFullScreenRuleOptions.key === 'fullScreen_custom'" :bordered="false"
                         title="自定义横屏规则" size="small">
                         <n-input-group>
-                            <n-input v-model="currentFullRule" placeholder="请输入横屏规则" />
+                            <n-input v-model:value="currentFullRule" placeholder="请输入横屏规则" />
                         </n-input-group>
                     </n-card>
                     <n-card class="" :bordered="false" title="跳过应用自适配声明" size="small">
@@ -252,7 +265,7 @@ onMounted(() => {
                                 适用于即使设置了 <span class="font-bold">横屏规则</span> 仍无法横屏的应用
                             </n-tag>
                         </div>
-                        <n-switch :rail-style="railStyle" size="large">
+                        <n-switch :rail-style="railStyle" v-model:value="currentSkipSelfAdaptive" size="large">
                             <template #checked>
                                 跳过自适配声明
                             </template>
@@ -267,12 +280,27 @@ onMounted(() => {
                                 适用于原生适配 <span class="font-bold">Android Embedded</span> 的应用
                             </n-tag>
                         </div>
-                        <n-switch :rail-style="railStyle" size="large">
+                        <n-switch :rail-style="railStyle" v-model:value="currentIsShowDivider" size="large">
                             <template #checked>
                                 启用平行窗口滑动条
                             </template>
                             <template #unchecked>
-                                禁用平行窗口滑动条
+                                关闭平行窗口滑动条
+                            </template>
+                        </n-switch>
+                    </n-card>
+                    <n-card :bordered="false" title="平行窗口可滑动至全屏" v-if="currentIsShowDivider" size="small">
+                        <div class="mb-4">
+                            <n-tag :bordered="false" type="success">
+                                适用于原生适配 <span class="font-bold">Android Embedded</span> 的应用
+                            </n-tag>
+                        </div>
+                        <n-switch :rail-style="railStyle" v-model:value="currentSupportFullSize" size="large">
+                            <template #checked>
+                                平行窗口可滑动至全屏
+                            </template>
+                            <template #unchecked>
+                                平行窗口不可滑动至全屏
                             </template>
                         </n-switch>
                     </n-card>
@@ -282,7 +310,7 @@ onMounted(() => {
                         开启后，未适配横屏应用界面将居中显示，并可更改显示比例
                     </n-alert>
                     <n-card :bordered="false" title="居中显示比例" size="small">
-                        <n-dropdown v-model="currentFixedOrientationRatio" size="large" trigger="hover"
+                        <n-dropdown v-model:value="currentFixedOrientationRatio" size="large" trigger="click"
                             :options="fixedOrientationRatioOptions" @select="handleFixedOrientationRatioSelect">
                             <n-button block type="error" dashed>{{ currentFixedOrientationRatio.label
                                 }}</n-button>
@@ -302,7 +330,10 @@ onMounted(() => {
                 </n-tab-pane>
             </n-tabs>
             <template #footer>
-                <n-button type="info" @click="() => resolvePromise({})">
+                <n-button type="info" @click="() => {
+                    message.info('开发中，未开放，请期待后续消息')
+                    resolvePromise({})
+                }">
                     提交
                 </n-button>
             </template>
