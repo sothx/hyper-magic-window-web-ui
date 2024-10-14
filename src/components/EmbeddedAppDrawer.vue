@@ -236,7 +236,7 @@ onMounted(() => {
             </n-input-group>
             <n-tabs type="segment"
                 v-if="deviceStore.androidTargetSdk && (deviceStore.androidTargetSdk <= 34 && deviceStore.androidTargetSdk >= 32) && (deviceStore.MIOSVersion ? deviceStore.MIOSVersion < 2 : true)"
-                animated size="large" v-model:value="currentSettingMode">
+                animated v-model:value="currentSettingMode">
                 <n-tab-pane name="embedded" tab="平行窗口" v-if="props.type === 'update' && isSupportEmbedded">
                     <n-alert :show-icon="false" :bordered="false" title="应用分屏显示" type="success">
                         开启后，未适配横屏应用界面将通过平行窗口显示
