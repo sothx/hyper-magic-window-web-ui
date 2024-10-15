@@ -150,15 +150,19 @@ type PackageData = Record<string, Record<string, any>>;
 
 export const objectToXML = (
   obj: PackageData,
-  parentTag: string = "package_config",
-  childTag: string = "package"
+  childTag: string,
+  parentTag?: string,
 ): string => {
   const createXMLString = (data: PackageData): string => {
     let xmlString = ""; // 初始化 XML 字符串
 
+    if (!Object.keys(obj)) {
+      return xmlString;
+    }
+
     for (const key in data) {
       if (data.hasOwnProperty(key)) {
-        xmlString += `<${childTag} name="${key}"`; // 开始子项标签
+        xmlString += `    <${childTag}`; // 开始子项标签
 
         // 将对象的每个属性添加为子项的属性
         for (const [attrKey, attrValue] of Object.entries(data[key])) {
@@ -174,7 +178,7 @@ export const objectToXML = (
 
   // 处理有父级标签的情况
   if (parentTag) {
-    return `<${parentTag}>\n${createXMLString(obj)}</${parentTag}>`; // 包裹在父级标签中
+    return `<?xml version="1.0" encoding="utf-8" standalone="yes" ?>\n<${parentTag}>\n${createXMLString(obj)}</${parentTag}>`; // 包裹在父级标签中
   } else {
     return createXMLString(obj); // 仅返回 package 标签
   }
@@ -195,7 +199,6 @@ export const mergeEmbeddedRule = (
   customFixedOrientationRules: Record<string, FixedOrientationRuleItem> = {} // 默认值为 {}
 ): EmbeddedMergeRuleItem[] => {
   const result: EmbeddedMergeRuleItem[] = [];
-  console.log(Object.keys(embeddedRules), "embeddedRules");
   const allPackages = new Set([
     ...Object.keys(embeddedRules),
     ...Object.keys(fixedOrientationRules),

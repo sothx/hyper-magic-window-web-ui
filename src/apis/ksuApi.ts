@@ -223,6 +223,9 @@ export interface updateEmbeddedAppParams {
         name: string;
         action: 'enable' | 'disable';
     };
+    reloadRuleAction?: {
+        name: string;
+    }
 }
 
 export interface updateEmbeddedAppErrorLoggingItem {

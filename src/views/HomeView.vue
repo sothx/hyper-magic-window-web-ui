@@ -101,9 +101,9 @@ const openAddEmbeddedApp = async () => {
         embeddedEnable: ['embedded', 'fullScreen'].includes(addEmbeddedAppRes.settingMode) ? true : false
       }
       const [submitAddEmbeddedAppErr, submitAddEmbeddedAppRes] = await $to(ksuApi.updateEmbeddedApp({
-        customEmbeddedRulesListXML: xmlFormat.objectToXML(embeddedStore.customConfigEmbeddedRulesList),
-        customFixedOrientationListXML: xmlFormat.objectToXML(embeddedStore.customConfigFixedOrientationList),
-        settingConfigXML: xmlFormat.objectToXML(embeddedStore.embeddedSettingConfig),
+        customEmbeddedRulesListXML: xmlFormat.objectToXML(embeddedStore.customConfigEmbeddedRulesList,'package',undefined),
+        customFixedOrientationListXML: xmlFormat.objectToXML(embeddedStore.customConfigFixedOrientationList,'package',undefined),
+        settingConfigXML: xmlFormat.objectToXML(embeddedStore.embeddedSettingConfig,'setting','setting_rule'),
         switchAction: {
           name: addEmbeddedAppRes.name,
           action: ['embedded', 'fullScreen'].includes(addEmbeddedAppRes.settingMode) ? 'enable' : 'disable'
@@ -154,9 +154,15 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
             }
           }
           if (embeddedStore.customConfigFixedOrientationList[row.name]) {
-            embeddedStore.customConfigFixedOrientationList[row.name].isShowDivider = updateEmbeddedAppRes.modePayload.isShowDivider
-            embeddedStore.customConfigFixedOrientationList[row.name].disable = updateEmbeddedAppRes.modePayload.skipSelfAdaptive
-            embeddedStore.customConfigFixedOrientationList[row.name].supportFullSize = updateEmbeddedAppRes.modePayload.supportFullSize
+            if (updateEmbeddedAppRes.modePayload.hasOwnProperty('isShowDivider')) {
+              embeddedStore.customConfigFixedOrientationList[row.name].isShowDivider = updateEmbeddedAppRes.modePayload.isShowDivider
+            }
+            if (updateEmbeddedAppRes.modePayload.hasOwnProperty('skipSelfAdaptive')) {
+              embeddedStore.customConfigFixedOrientationList[row.name].disable = updateEmbeddedAppRes.modePayload.skipSelfAdaptive
+            }
+            if (updateEmbeddedAppRes.modePayload.hasOwnProperty('supportFullSize')) {
+              embeddedStore.customConfigFixedOrientationList[row.name].supportFullSize = updateEmbeddedAppRes.modePayload.supportFullSize
+            }
           } else {
             embeddedStore.customConfigFixedOrientationList[row.name] = {
               name: row.name,
@@ -210,9 +216,9 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
         embeddedEnable: ['embedded', 'fullScreen'].includes(updateEmbeddedAppRes.settingMode) ? true : false
       }
       const [submitUpdateEmbeddedAppErr, submitUpdateEmbeddedAppRes] = await $to(ksuApi.updateEmbeddedApp({
-        customEmbeddedRulesListXML: xmlFormat.objectToXML(embeddedStore.customConfigEmbeddedRulesList),
-        customFixedOrientationListXML: xmlFormat.objectToXML(embeddedStore.customConfigFixedOrientationList),
-        settingConfigXML: xmlFormat.objectToXML(embeddedStore.embeddedSettingConfig),
+        customEmbeddedRulesListXML: xmlFormat.objectToXML(embeddedStore.customConfigEmbeddedRulesList,'package',undefined),
+        customFixedOrientationListXML: xmlFormat.objectToXML(embeddedStore.customConfigFixedOrientationList,'package',undefined),
+        settingConfigXML: xmlFormat.objectToXML(embeddedStore.embeddedSettingConfig,'setting','setting_rule'),
         switchAction: {
           name: row.name,
           action: ['embedded', 'fullScreen'].includes(updateEmbeddedAppRes.settingMode) ? 'enable' : 'disable'
@@ -289,9 +295,13 @@ const handleRuleMode = (row: EmbeddedMergeRuleItem, index: number, ruleMode: Emb
           delete embeddedStore.customConfigFixedOrientationList[row.name]
         }
         const [submitUpdateEmbeddedAppErr, submitUpdateEmbeddedAppRes] = await $to(ksuApi.updateEmbeddedApp({
-          customEmbeddedRulesListXML: xmlFormat.objectToXML(embeddedStore.customConfigEmbeddedRulesList),
-          customFixedOrientationListXML: xmlFormat.objectToXML(embeddedStore.customConfigFixedOrientationList),
-          settingConfigXML: xmlFormat.objectToXML(embeddedStore.embeddedSettingConfig)
+          customEmbeddedRulesListXML: xmlFormat.objectToXML(embeddedStore.customConfigEmbeddedRulesList,'package',undefined),
+          customFixedOrientationListXML: xmlFormat.objectToXML(embeddedStore.customConfigFixedOrientationList,'package',undefined),
+          settingConfigXML: xmlFormat.objectToXML(embeddedStore.embeddedSettingConfig,'setting','setting_rule'),
+          switchAction: {
+            name: row.name,
+            action: embeddedStore.sourceEmbeddedRulesList[row.name] ? 'enable' : 'disable'
+          }
         }))
         if (submitUpdateEmbeddedAppErr) {
           modal.create({

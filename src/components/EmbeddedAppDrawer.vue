@@ -294,7 +294,7 @@ const handleDrawerSubmit = async () => {
             ...(currentSettingMode.value === 'fullScreen' && { fullRule: currentFullRule.value }),
             ...(currentSettingMode.value === 'fullScreen' && { skipSelfAdaptive: currentSkipSelfAdaptive.value }),
             ...(currentSettingMode.value === 'fullScreen' && { isShowDivider: currentIsShowDivider.value }),
-            ...(currentSettingMode.value === 'fullScreen' && currentIsShowDivider.value && { supportFullSize: currentSupportFullSize.value }),
+            ...(currentSettingMode.value === 'fullScreen' && { supportFullSize: currentSupportFullSize.value }),
             ...(currentSettingMode.value === 'fixedOrientation' && { ratio: currentRatio.value })
         },
         loadingCallback,
