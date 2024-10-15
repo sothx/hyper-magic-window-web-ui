@@ -103,10 +103,20 @@ const openAddEmbeddedApp = async () => {
         }
       }))
       if (submitAddEmbeddedAppErr) {
-        message.error('发生错误')
+        modal.create({
+          title: '应用添加失败',
+          type: 'error',
+          preset: 'dialog',
+          content: () => (<p>发生异常错误，添加失败了QwQ，该功能尚在测试阶段，尚不稳定，出现异常请及时反馈~</p>)
+        })
         addEmbeddedAppRes.loadingCallback && addEmbeddedAppRes.loadingCallback()
       } else {
-        message.info('添加成功')
+        modal.create({
+          title: '应用添加成功',
+          type: 'success',
+          preset: 'dialog',
+          content: () => (<p>好耶w，应用配置添加成功了OwO~如果应用更新后的规则不生效，可以尝试重启平板再试试~</p>)
+        })
         embeddedStore.updateMergeRuleList()
         addEmbeddedAppRes.loadingCallback && addEmbeddedAppRes.loadingCallback()
         addEmbeddedAppRes.closeCallback && addEmbeddedAppRes.closeCallback()
@@ -200,10 +210,20 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
         }
       }))
       if (submitUpdateEmbeddedAppErr) {
-        message.error('发生错误')
+        modal.create({
+          title: '应用更新失败',
+          type: 'error',
+          preset: 'dialog',
+          content: () => (<p>发生异常错误，更新失败了QwQ，该功能尚在测试阶段，尚不稳定，出现异常请及时反馈~</p>)
+        })
         updateEmbeddedAppRes.loadingCallback && updateEmbeddedAppRes.loadingCallback()
       } else {
-        message.info('更新成功')
+        modal.create({
+          title: '应用更新成功',
+          type: 'success',
+          preset: 'dialog',
+          content: () => (<p>好耶w，应用配置更新成功了OwO~如果应用更新后的规则不生效，可以尝试重启平板再试试~</p>)
+        })
         embeddedStore.updateMergeRuleList()
         updateEmbeddedAppRes.loadingCallback && updateEmbeddedAppRes.loadingCallback()
         updateEmbeddedAppRes.closeCallback && updateEmbeddedAppRes.closeCallback()
@@ -253,9 +273,19 @@ const handleRuleMode = (row: EmbeddedMergeRuleItem, index: number, ruleMode: Emb
           settingConfigXML: xmlFormat.objectToXML(embeddedStore.embeddedSettingConfig)
         }))
         if (submitUpdateEmbeddedAppErr) {
-          message.error('清除自定义规则失败')
+          modal.create({
+          title: '清除自定义规则失败',
+          type: 'error',
+          preset: 'dialog',
+          content: () => (<p>发生异常错误，更新失败了QwQ，该功能尚在测试阶段，尚不稳定，出现异常请及时反馈~</p>)
+        })
         } else {
-          message.info('清除自定义规则成功')
+          modal.create({
+          title: '清除自定义规则成功',
+          type: 'success',
+          preset: 'dialog',
+          content: () => (<p>好耶w，清除自定义规则成功了OwO~如果应用更新后的规则不生效，可以尝试重启平板再试试~</p>)
+        })
           embeddedStore.updateMergeRuleList()
         }
       }

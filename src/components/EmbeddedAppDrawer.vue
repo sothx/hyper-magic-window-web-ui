@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup lang="tsx">
 import { onMounted, ref, type CSSProperties } from 'vue';
 import { useDeviceStore } from '@/stores/device';
 import { useEmbeddedStore } from '@/stores/embedded';
@@ -15,8 +15,7 @@ const emit = defineEmits(['submit'])
 const activeDrawer = ref(false); // 控制drawer显示
 const deviceStore = useDeviceStore();
 const embeddedStore = useEmbeddedStore();
-const { message } = createDiscreteApi(['message'])
-
+const { message, modal } = createDiscreteApi(['message', 'modal'])
 export interface EmbeddedAppDrawerSubmitResult {
     name: string;
     settingMode: EmbeddedMergeRuleItem["settingMode"];
@@ -208,6 +207,24 @@ const currentAppNameInputStatus = ref<string>('')
 const isSupportEmbedded = ref<boolean>(false);
 
 const handleDrawerSubmit = () => {
+    if (!currentAppName.value) {
+        modal.create({
+          title: '应用包名不能为空',
+          type: 'error',
+          preset: 'dialog',
+          content: () => (<p>噫？应用包名不能为空（敲</p>)
+        })
+        return
+    }
+    if (currentSettingMode.value === 'fullScreen' && !currentFullRule.value) {
+        modal.create({
+          title: '应用全屏规则不能为空',
+          type: 'error',
+          preset: 'dialog',
+          content: () => (<p>噫？应用全屏规则不能为空（敲</p>)
+        })
+        return
+    }
     // 开启loading
     drawerSubmitLoading.value = true;
 
