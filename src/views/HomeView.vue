@@ -49,6 +49,15 @@ const pagination = reactive({
 })
 
 const openAddEmbeddedApp = async () => {
+  if (deviceStore.deviceCharacteristics !== 'tablet') {
+    modal.create({
+      title: '不兼容说明',
+      type: 'warning',
+      preset: 'dialog',
+      content: () => (<p>该功能仅兼容平板设备，暂时不兼容折叠屏设备，请等待后续更新情况！</p>)
+    })
+    return;
+  }
   if (deviceStore.androidTargetSdk && ![32, 33, 34].includes(deviceStore.androidTargetSdk)) {
     modal.create({
       title: '不兼容说明',
@@ -234,6 +243,15 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 }
 
 const handleRuleMode = (row: EmbeddedMergeRuleItem, index: number, ruleMode: EmbeddedMergeRuleItem["ruleMode"]) => {
+  if (deviceStore.deviceCharacteristics !== 'tablet') {
+    modal.create({
+      title: '不兼容说明',
+      type: 'warning',
+      preset: 'dialog',
+      content: () => (<p>该功能仅兼容平板设备，暂时不兼容折叠屏设备，请等待后续更新情况！</p>)
+    })
+    return;
+  }
   if (deviceStore.androidTargetSdk && ![32, 33, 34].includes(deviceStore.androidTargetSdk)) {
     modal.create({
       title: '不兼容说明',
@@ -274,18 +292,18 @@ const handleRuleMode = (row: EmbeddedMergeRuleItem, index: number, ruleMode: Emb
         }))
         if (submitUpdateEmbeddedAppErr) {
           modal.create({
-          title: '清除自定义规则失败',
-          type: 'error',
-          preset: 'dialog',
-          content: () => (<p>发生异常错误，更新失败了QwQ，该功能尚在测试阶段，尚不稳定，出现异常请及时反馈~</p>)
-        })
+            title: '清除自定义规则失败',
+            type: 'error',
+            preset: 'dialog',
+            content: () => (<p>发生异常错误，更新失败了QwQ，该功能尚在测试阶段，尚不稳定，出现异常请及时反馈~</p>)
+          })
         } else {
           modal.create({
-          title: '清除自定义规则成功',
-          type: 'success',
-          preset: 'dialog',
-          content: () => (<p>好耶w，清除自定义规则成功了OwO~如果应用更新后的规则不生效，可以尝试重启平板再试试~</p>)
-        })
+            title: '清除自定义规则成功',
+            type: 'success',
+            preset: 'dialog',
+            content: () => (<p>好耶w，清除自定义规则成功了OwO~如果应用更新后的规则不生效，可以尝试重启平板再试试~</p>)
+          })
           embeddedStore.updateMergeRuleList()
         }
       }
@@ -323,6 +341,15 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
             type: 'success',
             name: '平行窗口',
             onClick(row: EmbeddedMergeRuleItem, index: number) {
+              if (deviceStore.deviceCharacteristics !== 'tablet') {
+                modal.create({
+                  title: '不兼容说明',
+                  type: 'warning',
+                  preset: 'dialog',
+                  content: () => (<p>该功能仅兼容平板设备，暂时不兼容折叠屏设备，请等待后续更新情况！</p>)
+                })
+                return;
+              }
               if (deviceStore.androidTargetSdk && ![32, 33, 34].includes(deviceStore.androidTargetSdk)) {
                 modal.create({
                   title: '不兼容说明',
@@ -339,6 +366,15 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
             type: 'info',
             name: '全屏',
             onClick(row: EmbeddedMergeRuleItem, index: number) {
+              if (deviceStore.deviceCharacteristics !== 'tablet') {
+                modal.create({
+                  title: '不兼容说明',
+                  type: 'warning',
+                  preset: 'dialog',
+                  content: () => (<p>该功能仅兼容平板设备，暂时不兼容折叠屏设备，请等待后续更新情况！</p>)
+                })
+                return;
+              }
               if (deviceStore.androidTargetSdk && ![32, 33, 34].includes(deviceStore.androidTargetSdk)) {
                 modal.create({
                   title: '不兼容说明',
@@ -355,6 +391,15 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
             type: 'warning',
             name: '居中布局',
             onClick(row: EmbeddedMergeRuleItem, index: number) {
+              if (deviceStore.deviceCharacteristics !== 'tablet') {
+                modal.create({
+                  title: '不兼容说明',
+                  type: 'warning',
+                  preset: 'dialog',
+                  content: () => (<p>该功能仅兼容平板设备，暂时不兼容折叠屏设备，请等待后续更新情况！</p>)
+                })
+                return;
+              }
               if (deviceStore.androidTargetSdk && ![32, 33, 34].includes(deviceStore.androidTargetSdk)) {
                 modal.create({
                   title: '不兼容说明',
@@ -371,6 +416,15 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
             type: 'error',
             name: '原始布局',
             onClick(row: EmbeddedMergeRuleItem, index: number) {
+              if (deviceStore.deviceCharacteristics !== 'tablet') {
+                modal.create({
+                  title: '不兼容说明',
+                  type: 'warning',
+                  preset: 'dialog',
+                  content: () => (<p>该功能仅兼容平板设备，暂时不兼容折叠屏设备，请等待后续更新情况！</p>)
+                })
+                return;
+              }
               if (deviceStore.androidTargetSdk && ![32, 33, 34].includes(deviceStore.androidTargetSdk)) {
                 modal.create({
                   title: '不兼容说明',
