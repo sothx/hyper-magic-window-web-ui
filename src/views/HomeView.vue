@@ -74,10 +74,10 @@ const openAddEmbeddedApp = async () => {
       }
       if (addEmbeddedAppRes.settingMode === 'fixedOrientation') {
         embeddedStore.customConfigFixedOrientationList[addEmbeddedAppRes.name] = {
-              name: addEmbeddedAppRes.name,
-              ...(addEmbeddedAppRes.modePayload.ratio !== undefined) ? {
-                ratio: addEmbeddedAppRes.modePayload.ratio
-              } : {}
+          name: addEmbeddedAppRes.name,
+          ...(addEmbeddedAppRes.modePayload.ratio !== undefined) ? {
+            ratio: addEmbeddedAppRes.modePayload.ratio
+          } : {}
         }
       }
       if (addEmbeddedAppRes.settingMode === 'disabled') {
@@ -85,6 +85,10 @@ const openAddEmbeddedApp = async () => {
           name: addEmbeddedAppRes.name,
           disable: true
         }
+      }
+      embeddedStore.embeddedSettingConfig[addEmbeddedAppRes.name] = {
+        name: addEmbeddedAppRes.name,
+        embeddedEnable: ['embedded', 'fullScreen'].includes(addEmbeddedAppRes.settingMode) ? true : false
       }
       const [submitAddEmbeddedAppErr, submitAddEmbeddedAppRes] = await $to(ksuApi.updateEmbeddedApp({
         customEmbeddedRulesListXML: xmlFormat.objectToXML(embeddedStore.customConfigEmbeddedRulesList),
@@ -177,6 +181,10 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
               embeddedStore.sourceEmbeddedRulesList[row.name].defaultSettings = true
             }
           }
+        }
+        embeddedStore.embeddedSettingConfig[row.name] = {
+          name: row.name,
+          embeddedEnable: ['embedded', 'fullScreen'].includes(updateEmbeddedAppRes.settingMode) ? true : false
         }
       }
       const [submitUpdateEmbeddedAppErr, submitUpdateEmbeddedAppRes] = await $to(ksuApi.updateEmbeddedApp({

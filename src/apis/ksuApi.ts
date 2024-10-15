@@ -237,7 +237,7 @@ export interface updateEmbeddedAppSuccessLoggingItem {
     message: string | string[];
 } 
 
-export const updateEmbeddedApp = (params: updateEmbeddedApp): Promise<{
+export const updateEmbeddedApp = (params: updateEmbeddedAppParams): Promise<{
     type: 'success' | 'error';  // 操作的类型，成功或错误
     message: string;             // 操作的消息
     errorLogging?: updateEmbeddedAppErrorLoggingItem[]; // 错误日志记录

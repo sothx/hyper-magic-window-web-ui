@@ -128,7 +128,11 @@ const embeddedAppDrawer = ref({
                 currentSkipSelfAdaptive.value = initialParams.fixedOrientationRule?.disable ?? false
                 currentIsShowDivider.value = initialParams.fixedOrientationRule?.isShowDivider ?? false
                 currentFullRule.value = initialParams.embeddedRules?.fullRule ?? undefined
-                if (currentFullRule.value === 'nra:cr:rcr:nr' || (initialParams.embeddedRules && !initialParams.embeddedRules.hasOwnProperty('fullRule'))) {
+                if (currentFullRule.value === 'nra:cr:rcr:nr') {
+                    currentFullScreenRuleOptions.value = fullScreenRuleOptions[0]
+
+                }else if (initialParams.embeddedRules && !initialParams.embeddedRules.hasOwnProperty('fullRule')) {
+                    currentFullRule.value = 'nra:cr:rcr:nr'
                     currentFullScreenRuleOptions.value = fullScreenRuleOptions[0]
                 } else if (currentFullRule.value === '*') {
                     currentFullScreenRuleOptions.value = fullScreenRuleOptions[1]
