@@ -34,6 +34,11 @@ const router = createRouter({
       path: '/embedded-webview',
       name: 'embedded-webview',
       component: () => import('../views/EmbeddedWebView.vue')
+    },
+    {
+       path: '/project',
+       name: 'project',
+       component: () => import('../views/Project.vue')
     }
   ]
 })

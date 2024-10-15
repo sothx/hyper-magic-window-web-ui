@@ -29,6 +29,7 @@ const route = useRoute();
 const navigation = [
   { name: '应用横屏配置', routeName: 'home', href: '/', icon: HomeIcon },
   { name: '应用布局优化', routeName: 'autoui', href: '/autoui', icon: DocumentDuplicateIcon },
+  { name: '开发路线图', routeName: 'project', href: '/project', icon: ChartPieIcon },
 ]
 const teams = [
   { id: 1, name: '模块首页', href: '/embedded-webview?url=https://hyper-magic-window.sothx.com', initial: 'H', current: false },
