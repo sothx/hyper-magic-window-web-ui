@@ -38,6 +38,7 @@ import {
   NAvatar,
   NBreadcrumb,
   NBreadcrumbItem,
+  NSkeleton,
 } from "naive-ui";
 
 import App from "./App.vue";
@@ -72,6 +73,7 @@ const naive = create({
     NBreadcrumb,
     NBreadcrumbItem,
     NWatermark,
+    NSkeleton
   ],
 });
 

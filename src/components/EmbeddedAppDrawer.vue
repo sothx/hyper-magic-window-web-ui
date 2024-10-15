@@ -151,7 +151,9 @@ const embeddedAppDrawer = ref({
                 currentSupportFullSize.value = initialParams.embeddedRules?.supportFullSize ?? false
                 currentRatio.value = initialParams.fixedOrientationRule?.ratio ?? undefined
                 if (currentRatio.value) {
-                    if (currentRatio.value === 1.5) {
+                    if (currentRatio.value === 1.1) {
+                        currentFixedOrientationRatio.value = fixedOrientationRatioOptions[0]
+                    } else if (currentRatio.value === 1.5) {
                         currentFixedOrientationRatio.value = fixedOrientationRatioOptions[2]
                     } else if (currentRatio.value === 1.8) {
                         currentFixedOrientationRatio.value = fixedOrientationRatioOptions[3]

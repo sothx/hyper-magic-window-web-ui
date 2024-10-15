@@ -180,6 +180,8 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
           }
           if (updateEmbeddedAppRes.modePayload.ratio !== undefined) {
             embeddedStore.customConfigFixedOrientationList[row.name].ratio = updateEmbeddedAppRes.modePayload.ratio
+          } else {
+            delete embeddedStore.customConfigFixedOrientationList[row.name].ratio
           }
         } else {
           embeddedStore.customConfigFixedOrientationList[row.name] = {
@@ -463,7 +465,7 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 </script>
 
 <template>
-  <n-spin :show="embeddedStore.loading">
+  <n-spin :show="false">
     <template v-if="embeddedStore.isNeedShowErrorModal" #description>
       发生错误，无法加载
     </template>
@@ -475,10 +477,10 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
         </div>
       </div>
       <n-card title="操作栏" size="small">
-        <n-button class="mb-3 mr-3" type="info" @click="openAddEmbeddedApp">
+        <n-button class="mb-3 mr-3" type="info" :loading="embeddedStore.loading" @click="openAddEmbeddedApp">
           添加应用
         </n-button>
-        <n-button class="mb-3 mr-3" type="success" @click="() => reloadPage()">
+        <n-button class="mb-3 mr-3" type="success" :loading="embeddedStore.loading" @click="() => reloadPage()">
           刷新 Web UI
         </n-button>
         <n-input-group>
@@ -489,7 +491,7 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
           </n-button>
         </n-input-group>
       </n-card>
-      <n-data-table :columns="columns" :data="embeddedStore.filterMergeRuleList" :pagination="pagination" />
+      <n-data-table :loading="embeddedStore.loading" :columns="columns" :data="embeddedStore.filterMergeRuleList" :pagination="pagination" />
     </main>
     <ErrorModal v-model="showErrorModal" :errorLogging="embeddedStore.errorLogging" />
     <EmbeddedAppDrawer ref="addEmbeddedApp" type="add" title="添加应用" />
