@@ -123,7 +123,7 @@ const openAddEmbeddedApp = async () => {
           type: 'success',
           preset: 'dialog',
           content: () => (
-            <p>好耶w， <span class="font-bold text-gray-600">{ addEmbeddedAppRes.name }</span> 的应用配置添加成功了OwO~如果应用添加后的规则不生效，可以尝试重启平板并且在 <span class="font-bold text-gray-600">"平板专区-平行窗口"</span> 内 <span class="font-bold text-gray-600">{['embedded', 'fullScreen'].includes(addEmbeddedAppRes.settingMode) ? '打开' : '关闭'}</span> 该应用的开关再做尝试~</p>
+            <p>好耶w， <span class="font-bold text-gray-600">{addEmbeddedAppRes.name}</span> 的应用配置添加成功了OwO~如果应用添加后的规则不生效，可以尝试重启平板并且在 <span class="font-bold text-gray-600">"平板专区-平行窗口"</span> 内 <span class="font-bold text-gray-600">{['embedded', 'fullScreen'].includes(addEmbeddedAppRes.settingMode) ? '打开' : '关闭'}</span> 该应用的开关再做尝试~</p>
           )
         })
         embeddedStore.updateMergeRuleList()
@@ -140,8 +140,7 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
     if (updateEmbeddedAppCancel) {
       console.log('操作取消:', updateEmbeddedAppCancel);
     } else {
-      if (row.settingMode !== updateEmbeddedAppRes.settingMode) {
-        if (updateEmbeddedAppRes.settingMode === 'fullScreen') {
+      if (updateEmbeddedAppRes.settingMode === 'fullScreen') {
           if (embeddedStore.customConfigEmbeddedRulesList[row.name]) {
             embeddedStore.customConfigEmbeddedRulesList[row.name].fullRule = updateEmbeddedAppRes.modePayload.fullRule
             const hasDefaultSettings = embeddedStore.sourceEmbeddedRulesList[row.name].hasOwnProperty('defaultSettings')
@@ -166,48 +165,49 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
               ...(updateEmbeddedAppRes.modePayload.supportFullSize) ? { supportFullSize: true } : {}
             }
           }
-        }
-        if (updateEmbeddedAppRes.settingMode === 'fixedOrientation') {
-          if (embeddedStore.customConfigFixedOrientationList[row.name]) {
-            const hasDisable = embeddedStore.customConfigFixedOrientationList[row.name].hasOwnProperty('disable')
-            if (hasDisable) {
-              delete embeddedStore.customConfigFixedOrientationList[row.name].disable
-            }
-            if (updateEmbeddedAppRes.modePayload.ratio !== undefined) {
-              embeddedStore.customConfigFixedOrientationList[row.name].ratio = updateEmbeddedAppRes.modePayload.ratio
-            }
-          } else {
-            embeddedStore.customConfigFixedOrientationList[row.name] = {
-              name: row.name,
-              ...(updateEmbeddedAppRes.modePayload.ratio !== undefined) ? {
-                ratio: updateEmbeddedAppRes.modePayload.ratio
-              } : {}
-            }
+      }
+      if (updateEmbeddedAppRes.settingMode === 'fixedOrientation') {
+        if (embeddedStore.customConfigFixedOrientationList[row.name]) {
+          const hasDisable = embeddedStore.customConfigFixedOrientationList[row.name].hasOwnProperty('disable')
+          if (hasDisable) {
+            delete embeddedStore.customConfigFixedOrientationList[row.name].disable
+          }
+          if (updateEmbeddedAppRes.modePayload.ratio !== undefined) {
+            embeddedStore.customConfigFixedOrientationList[row.name].ratio = updateEmbeddedAppRes.modePayload.ratio
+          }
+        } else {
+          embeddedStore.customConfigFixedOrientationList[row.name] = {
+            name: row.name,
+            ...(updateEmbeddedAppRes.modePayload.ratio !== undefined) ? {
+              ratio: updateEmbeddedAppRes.modePayload.ratio
+            } : {}
           }
         }
-        if (updateEmbeddedAppRes.settingMode === 'disabled') {
-          if (embeddedStore.customConfigFixedOrientationList[row.name]) {
-            embeddedStore.customConfigFixedOrientationList[row.name].disable = true
-          } else {
-            embeddedStore.customConfigFixedOrientationList[row.name] = {
-              name: row.name,
-              disable: true
-            }
+      }
+      if (updateEmbeddedAppRes.settingMode === 'disabled' && row.settingMode !== updateEmbeddedAppRes.settingMode) {
+        if (embeddedStore.customConfigFixedOrientationList[row.name]) {
+          embeddedStore.customConfigFixedOrientationList[row.name].disable = true
+        } else {
+          embeddedStore.customConfigFixedOrientationList[row.name] = {
+            name: row.name,
+            disable: true
           }
         }
-        if (updateEmbeddedAppRes.settingMode === 'embedded') {
+      }
+      if (updateEmbeddedAppRes.settingMode === 'embedded') {
+        if (row.settingMode !== updateEmbeddedAppRes.settingMode) {
           if (row.ruleMode === 'custom' && row.isSupportEmbedded) {
             delete embeddedStore.customConfigEmbeddedRulesList[row.name]
-            const hasDefaultSettings = embeddedStore.sourceEmbeddedRulesList[row.name].hasOwnProperty('defaultSettings')
-            if (hasDefaultSettings) {
-              embeddedStore.sourceEmbeddedRulesList[row.name].defaultSettings = true
-            }
           }
         }
-        embeddedStore.embeddedSettingConfig[row.name] = {
-          name: row.name,
-          embeddedEnable: ['embedded', 'fullScreen'].includes(updateEmbeddedAppRes.settingMode) ? true : false
+        const hasDefaultSettings = embeddedStore.sourceEmbeddedRulesList[row.name].hasOwnProperty('defaultSettings')
+        if (hasDefaultSettings) {
+          embeddedStore.sourceEmbeddedRulesList[row.name].defaultSettings = true
         }
+      }
+      embeddedStore.embeddedSettingConfig[row.name] = {
+        name: row.name,
+        embeddedEnable: ['embedded', 'fullScreen'].includes(updateEmbeddedAppRes.settingMode) ? true : false
       }
       const [submitUpdateEmbeddedAppErr, submitUpdateEmbeddedAppRes] = await $to(ksuApi.updateEmbeddedApp({
         customEmbeddedRulesListXML: xmlFormat.objectToXML(embeddedStore.customConfigEmbeddedRulesList),
@@ -232,7 +232,7 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
           type: 'success',
           preset: 'dialog',
           content: () => (
-            <p>好耶w， <span class="font-bold text-gray-600">{ row.name }</span> 的应用配置更新成功了OwO~如果应用更新后的规则不生效，可以尝试重启平板并且在 <span class="font-bold text-gray-600">"平板专区-平行窗口"</span> 内 <span class="font-bold text-gray-600">{['embedded', 'fullScreen'].includes(updateEmbeddedAppRes.settingMode) ? '打开' : '关闭'}</span> 该应用的开关再做尝试~</p>
+            <p>好耶w， <span class="font-bold text-gray-600">{row.name}</span> 的应用配置更新成功了OwO~如果应用更新后的规则不生效，可以尝试重启平板并且在 <span class="font-bold text-gray-600">"平板专区-平行窗口"</span> 内 <span class="font-bold text-gray-600">{['embedded', 'fullScreen'].includes(updateEmbeddedAppRes.settingMode) ? '打开' : '关闭'}</span> 该应用的开关再做尝试~</p>
           )
         })
         embeddedStore.updateMergeRuleList()
