@@ -130,11 +130,12 @@ export const useEmbeddedStore = defineStore("embedded", () => {
     const [getEmbeddedSettingConfigErr, getEmbeddedSettingConfigRes] =
       await $to(ksuApi.getEmbeddedSettingConfig());
     if (getEmbeddedSettingConfigErr) {
-      errorLogging.push({
-        type: "embeddedSettingConfig",
-        title: '[模块]应用横屏布局配置文件',
-        msg: getEmbeddedSettingConfigErr,
-      });
+      // errorLogging.push({
+      //   type: "embeddedSettingConfig",
+      //   title: '[模块]应用横屏布局配置文件',
+      //   msg: getEmbeddedSettingConfigErr,
+      // });
+      embeddedSettingConfig.value = {}
     } else {
       embeddedSettingConfig.value = xmlFormat.parseXMLToObject<EmbeddedSettingRuleItem>(
         getEmbeddedSettingConfigRes,
