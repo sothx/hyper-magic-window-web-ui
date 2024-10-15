@@ -215,7 +215,7 @@ export const getAutoUISettingConfig = ():Promise<string> => {
     });
 }
 
-export interface updateEmbeddedApp {
+export interface updateEmbeddedAppParams {
     customEmbeddedRulesListXML: string;
     customFixedOrientationListXML: string;
     settingConfigXML: string;

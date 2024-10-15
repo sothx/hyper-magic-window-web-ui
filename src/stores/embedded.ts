@@ -59,6 +59,10 @@ export const useEmbeddedStore = defineStore("embedded", () => {
     return allPackages
   })
 
+  function updateMergeRuleList() {
+    mergeRuleList.value = xmlFormat.mergeEmbeddedRule(sourceEmbeddedRulesList.value,sourceFixedOrientationList.value,embeddedSettingConfig.value,customConfigEmbeddedRulesList.value,customConfigFixedOrientationList.value);
+  }
+
   async function initDefault() {
     // 获取源嵌入规则列表
     const [getSourceEmbeddedRulesListErr, getSourceEmbeddedRulesListRes] =
@@ -176,5 +180,6 @@ export const useEmbeddedStore = defineStore("embedded", () => {
     ruleCount,
     allPackageName,
     initDefault,
+    updateMergeRuleList,
   };
 });

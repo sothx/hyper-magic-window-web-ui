@@ -19,7 +19,7 @@ const deviceStore = useDeviceStore()
 const embeddedStore = useEmbeddedStore()
 const addEmbeddedApp = ref<EmbeddedAppDrawerInstance | null>(null);
 const updateEmbeddedApp = ref<EmbeddedAppDrawerInstance | null>(null);
-const { message, modal } = createDiscreteApi(['message','modal'])
+const { message, modal } = createDiscreteApi(['message', 'modal'])
 const testMsg = ref<any>({})
 const testXml = ref<any>('')
 const columns = createColumns()
@@ -60,9 +60,50 @@ const openAddEmbeddedApp = async () => {
     if (addEmbeddedAppErr) {
       console.log('操作取消:', addEmbeddedAppErr);
     } else {
-      addEmbeddedAppRes.loadingCallback && addEmbeddedAppRes.loadingCallback()
-      addEmbeddedAppRes.closeCallback && addEmbeddedAppRes.closeCallback()
-      console.log('提交的结果:', addEmbeddedAppRes);
+      if (addEmbeddedAppRes.settingMode === 'fullScreen') {
+        embeddedStore.customConfigEmbeddedRulesList[addEmbeddedAppRes.name] = {
+          name: addEmbeddedAppRes.name,
+          fullRule: addEmbeddedAppRes.modePayload.fullRule
+        }
+        embeddedStore.customConfigFixedOrientationList[addEmbeddedAppRes.name] = {
+          name: addEmbeddedAppRes.name,
+          ...(addEmbeddedAppRes.modePayload.isShowDivider) ? { isShowDivider: true } : {},
+          ...(addEmbeddedAppRes.modePayload.skipSelfAdaptive) ? { disable: true } : {},
+          ...(addEmbeddedAppRes.modePayload.supportFullSize) ? { supportFullSize: true } : {}
+        }
+      }
+      if (addEmbeddedAppRes.settingMode === 'fixedOrientation') {
+        embeddedStore.customConfigFixedOrientationList[addEmbeddedAppRes.name] = {
+              name: addEmbeddedAppRes.name,
+              ...(addEmbeddedAppRes.modePayload.ratio !== undefined) ? {
+                ratio: addEmbeddedAppRes.modePayload.ratio
+              } : {}
+        }
+      }
+      if (addEmbeddedAppRes.settingMode === 'disabled') {
+        embeddedStore.customConfigFixedOrientationList[addEmbeddedAppRes.name] = {
+          name: addEmbeddedAppRes.name,
+          disable: true
+        }
+      }
+      const [submitAddEmbeddedAppErr, submitAddEmbeddedAppRes] = await $to(ksuApi.updateEmbeddedApp({
+        customEmbeddedRulesListXML: xmlFormat.objectToXML(embeddedStore.customConfigEmbeddedRulesList),
+        customFixedOrientationListXML: xmlFormat.objectToXML(embeddedStore.customConfigFixedOrientationList),
+        settingConfigXML: xmlFormat.objectToXML(embeddedStore.embeddedSettingConfig),
+        switchAction: {
+          name: addEmbeddedAppRes.name,
+          action: ['embedded', 'fullScreen'].includes(addEmbeddedAppRes.settingMode) ? 'enable' : 'disable'
+        }
+      }))
+      if (submitAddEmbeddedAppErr) {
+        message.error('发生错误')
+        addEmbeddedAppRes.loadingCallback && addEmbeddedAppRes.loadingCallback()
+      } else {
+        message.info('添加成功')
+        embeddedStore.updateMergeRuleList()
+        addEmbeddedAppRes.loadingCallback && addEmbeddedAppRes.loadingCallback()
+        addEmbeddedAppRes.closeCallback && addEmbeddedAppRes.closeCallback()
+      }
     }
   }
 }
@@ -73,10 +114,90 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
     if (updateEmbeddedAppErr) {
       console.log('操作取消:', updateEmbeddedAppErr);
     } else {
-      updateEmbeddedAppRes.loadingCallback && updateEmbeddedAppRes.loadingCallback()
-      updateEmbeddedAppRes.closeCallback && updateEmbeddedAppRes.closeCallback()
-      console.log('提交的结果:', updateEmbeddedAppRes);
-      
+      if (row.settingMode !== updateEmbeddedAppRes.settingMode) {
+        if (updateEmbeddedAppRes.settingMode === 'fullScreen') {
+          if (embeddedStore.customConfigEmbeddedRulesList[row.name]) {
+            embeddedStore.customConfigEmbeddedRulesList[row.name].fullRule = updateEmbeddedAppRes.modePayload.fullRule
+            const hasDefaultSettings = embeddedStore.sourceEmbeddedRulesList[row.name].hasOwnProperty('defaultSettings')
+            if (hasDefaultSettings) {
+              embeddedStore.sourceEmbeddedRulesList[row.name].defaultSettings = true
+            }
+          } else {
+            embeddedStore.customConfigEmbeddedRulesList[row.name] = {
+              name: row.name,
+              fullRule: updateEmbeddedAppRes.modePayload.fullRule
+            }
+          }
+          if (embeddedStore.customConfigFixedOrientationList[row.name]) {
+            embeddedStore.customConfigFixedOrientationList[row.name].isShowDivider = updateEmbeddedAppRes.modePayload.isShowDivider
+            embeddedStore.customConfigFixedOrientationList[row.name].disable = updateEmbeddedAppRes.modePayload.skipSelfAdaptive
+            embeddedStore.customConfigFixedOrientationList[row.name].supportFullSize = updateEmbeddedAppRes.modePayload.supportFullSize
+          } else {
+            embeddedStore.customConfigFixedOrientationList[row.name] = {
+              name: row.name,
+              ...(updateEmbeddedAppRes.modePayload.isShowDivider) ? { isShowDivider: true } : {},
+              ...(updateEmbeddedAppRes.modePayload.skipSelfAdaptive) ? { disable: true } : {},
+              ...(updateEmbeddedAppRes.modePayload.supportFullSize) ? { supportFullSize: true } : {}
+            }
+          }
+        }
+        if (updateEmbeddedAppRes.settingMode === 'fixedOrientation') {
+          if (embeddedStore.customConfigFixedOrientationList[row.name]) {
+            const hasDisable = embeddedStore.customConfigFixedOrientationList[row.name].hasOwnProperty('disable')
+            if (hasDisable) {
+              delete embeddedStore.customConfigFixedOrientationList[row.name].disable
+            }
+            if (updateEmbeddedAppRes.modePayload.ratio !== undefined) {
+              embeddedStore.customConfigFixedOrientationList[row.name].ratio = updateEmbeddedAppRes.modePayload.ratio
+            }
+          } else {
+            embeddedStore.customConfigFixedOrientationList[row.name] = {
+              name: row.name,
+              ...(updateEmbeddedAppRes.modePayload.ratio !== undefined) ? {
+                ratio: updateEmbeddedAppRes.modePayload.ratio
+              } : {}
+            }
+          }
+        }
+        if (updateEmbeddedAppRes.settingMode === 'disabled') {
+          if (embeddedStore.customConfigFixedOrientationList[row.name]) {
+            embeddedStore.customConfigFixedOrientationList[row.name].disable = true
+          } else {
+            embeddedStore.customConfigFixedOrientationList[row.name] = {
+              name: row.name,
+              disable: true
+            }
+          }
+        }
+        if (updateEmbeddedAppRes.settingMode === 'embedded') {
+          if (row.ruleMode === 'custom' && row.isSupportEmbedded) {
+            delete embeddedStore.customConfigEmbeddedRulesList[row.name]
+            const hasDefaultSettings = embeddedStore.sourceEmbeddedRulesList[row.name].hasOwnProperty('defaultSettings')
+            if (hasDefaultSettings) {
+              embeddedStore.sourceEmbeddedRulesList[row.name].defaultSettings = true
+            }
+          }
+        }
+      }
+      const [submitUpdateEmbeddedAppErr, submitUpdateEmbeddedAppRes] = await $to(ksuApi.updateEmbeddedApp({
+        customEmbeddedRulesListXML: xmlFormat.objectToXML(embeddedStore.customConfigEmbeddedRulesList),
+        customFixedOrientationListXML: xmlFormat.objectToXML(embeddedStore.customConfigFixedOrientationList),
+        settingConfigXML: xmlFormat.objectToXML(embeddedStore.embeddedSettingConfig),
+        switchAction: {
+          name: row.name,
+          action: ['embedded', 'fullScreen'].includes(updateEmbeddedAppRes.settingMode) ? 'enable' : 'disable'
+        }
+      }))
+      if (submitUpdateEmbeddedAppErr) {
+        message.error('发生错误')
+        updateEmbeddedAppRes.loadingCallback && updateEmbeddedAppRes.loadingCallback()
+      } else {
+        message.info('更新成功')
+        embeddedStore.updateMergeRuleList()
+        updateEmbeddedAppRes.loadingCallback && updateEmbeddedAppRes.loadingCallback()
+        updateEmbeddedAppRes.closeCallback && updateEmbeddedAppRes.closeCallback()
+      }
+
     }
   }
 }
@@ -129,27 +250,27 @@ onMounted(async () => {
 
 })
 
-const handleRuleMode = (row: EmbeddedMergeRuleItem, index: number,ruleMode: EmbeddedMergeRuleItem["ruleMode"]) => {
+const handleRuleMode = (row: EmbeddedMergeRuleItem, index: number, ruleMode: EmbeddedMergeRuleItem["ruleMode"]) => {
   if (ruleMode === 'module') {
     modal.create({
       title: '模块规则说明',
-        type: 'warning',
-        preset: 'dialog',
-        content: () => (<p>模块已对 <span class="font-bold text-gray-600">{ row.name }</span> 配置了合适的适配规则，且不可被移除，仅有自定义规则可以被移除哦~</p>)
+      type: 'warning',
+      preset: 'dialog',
+      content: () => (<p>模块已对 <span class="font-bold text-gray-600">{row.name}</span> 配置了合适的适配规则，且不可被移除，仅有自定义规则可以被移除哦~</p>)
     })
   }
 
   if (ruleMode === 'custom') {
     modal.create({
       title: '想清除自定义规则吗？',
-        type: 'warning',
-        preset: 'dialog',
-        content: () => (<p>清除自定义规则后，你对 <span class="font-bold text-gray-600">{ row.name }</span> 所做的所有自定义配置将丢失，如果该应用同时还存在 <span class="font-bold text-gray-600">模块规则</span> ，将会还原回模块自身的适配规则。确定要继续吗？</p>),
-        positiveText: '确定清除',
-        negativeText: '我再想想',
-        onPositiveClick: () => {
-            message.info('该功能尚在开发中，请等待后续消息')
-        }
+      type: 'warning',
+      preset: 'dialog',
+      content: () => (<p>清除自定义规则后，你对 <span class="font-bold text-gray-600">{row.name}</span> 所做的所有自定义配置将丢失，如果该应用同时还存在 <span class="font-bold text-gray-600">模块规则</span> ，将会还原回模块自身的适配规则。确定要继续吗？</p>),
+      positiveText: '确定清除',
+      negativeText: '我再想想',
+      onPositiveClick: () => {
+        message.info('该功能尚在开发中，请等待后续消息')
+      }
     })
   }
 }
@@ -164,14 +285,14 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
     {
       title: '规则来源',
       key: 'ruleMode',
-      render(row,index) {
+      render(row, index) {
         if (row.ruleMode === 'custom') {
           return (
-            <n-button size="small" dashed type="info" onClick={() => handleRuleMode(row,index,'custom')}>自定义规则</n-button>
+            <n-button size="small" dashed type="info" onClick={() => handleRuleMode(row, index, 'custom')}>自定义规则</n-button>
           )
         }
         return (
-          <n-button size="small" dashed type="error" onClick={() => handleRuleMode(row,index,"module")}>模块规则</n-button>
+          <n-button size="small" dashed type="error" onClick={() => handleRuleMode(row, index, "module")}>模块规则</n-button>
         )
       }
     },
