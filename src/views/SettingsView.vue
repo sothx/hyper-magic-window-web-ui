@@ -4,7 +4,7 @@ import type { CSSProperties } from 'vue'
 import { createDiscreteApi } from 'naive-ui'
 const deviceStore = useDeviceStore()
 const { message } = createDiscreteApi(['message'])
-const handleSmartFocusIOChange = (value:boolean) => {
+const handleSmartFocusIOChange = (value: boolean) => {
   message.info('功能尚未上线，无任何实际效果，请等待后续更新！')
 }
 const railStyle = ({
@@ -31,6 +31,8 @@ const railStyle = ({
 }
 </script>
 <template>
+  <n-watermark v-if="true" content="开发中，功能不可用" cross fullscreen :font-size="16" :line-height="16" :width="384"
+    :height="384" :x-offset="12" :y-offset="60" :rotate="-15" :z-index="9999" />
   <div class="setting">
     <div class="mt-5">
       <div class="px-4 sm:px-0">
@@ -50,11 +52,13 @@ const railStyle = ({
           </div>
           <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
             <dt class="text-sm font-medium leading-6 text-gray-900">设备Soc类型</dt>
-            <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ deviceStore.deviceSocModel || '非Android设备环境' }}</dd>
+            <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ deviceStore.deviceSocModel ||
+              '非Android设备环境' }}</dd>
           </div>
           <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
             <dt class="text-sm font-medium leading-6 text-gray-900">设备Soc名称</dt>
-            <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ deviceStore.deviceSocName || '非Android设备环境' }}</dd>
+            <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ deviceStore.deviceSocName ||
+              '非Android设备环境' }}</dd>
           </div>
           <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
             <dt class="text-sm font-medium leading-6 text-gray-900">Xiaomi Hyper OS 版本号</dt>
@@ -63,7 +67,8 @@ const railStyle = ({
           </div>
           <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
             <dt class="text-sm font-medium leading-6 text-gray-900">Android Target Version</dt>
-            <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ deviceStore.androidTargetSdk || '非Android设备环境' }}
+            <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ deviceStore.androidTargetSdk ||
+              '非Android设备环境' }}
             </dd>
           </div>
           <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
@@ -73,8 +78,8 @@ const railStyle = ({
           <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
             <dt class="text-sm font-medium leading-6 text-gray-900">智能IO调度</dt>
             <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-              <n-switch :rail-style="railStyle" @update:value="handleSmartFocusIOChange" v-if="deviceStore.smartFocusIO" checked-value="on"
-                unchecked-value="off">
+              <n-switch :rail-style="railStyle" @update:value="handleSmartFocusIOChange" v-if="deviceStore.smartFocusIO"
+                checked-value="on" unchecked-value="off">
                 <template #checked>
                   已启用智能IO调度
                 </template>

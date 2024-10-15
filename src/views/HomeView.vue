@@ -6,12 +6,10 @@ import $to from 'await-to-js'
 import ErrorModal from '@/components/ErrorModal.vue';
 import EmbeddedAppDrawer from '@/components/EmbeddedAppDrawer.vue';
 // @ts-ignore
-import { exec } from 'kernelsu';
-import { NButton, createDiscreteApi, type DataTableColumns, type MessageApi } from 'naive-ui'
+import { NButton, createDiscreteApi, type DataTableColumns } from 'naive-ui'
 import * as ksuApi from '@/apis/ksuApi'
 import { useDeviceStore } from '@/stores/device';
 import * as xmlFormat from '@/utils/xmlFormat';
-import axios from 'axios';
 import { useEmbeddedStore } from '@/stores/embedded';
 type EmbeddedAppDrawerInstance = InstanceType<typeof EmbeddedAppDrawer>;
 
@@ -20,11 +18,7 @@ const embeddedStore = useEmbeddedStore()
 const addEmbeddedApp = ref<EmbeddedAppDrawerInstance | null>(null);
 const updateEmbeddedApp = ref<EmbeddedAppDrawerInstance | null>(null);
 const { message, modal } = createDiscreteApi(['message', 'modal'])
-const testMsg = ref<any>({})
-const testXml = ref<any>('')
 const columns = createColumns()
-const activeDrawer = ref(false)
-const sourceEmbeddedRulesList = ref<string>()
 const showErrorModal = ref(false)
 
 watch(
@@ -55,6 +49,15 @@ const pagination = reactive({
 })
 
 const openAddEmbeddedApp = async () => {
+  if (deviceStore.androidTargetSdk && ![32, 33, 34].includes(deviceStore.androidTargetSdk)) {
+    modal.create({
+      title: '不兼容说明',
+      type: 'warning',
+      preset: 'dialog',
+      content: () => (<p>该功能尚未对 Android 11 或 Android 15+ 做兼容，请等待后续更新情况！</p>)
+    })
+    return;
+  }
   if (addEmbeddedApp.value) {
     const [addEmbeddedAppErr, addEmbeddedAppRes] = await $to(addEmbeddedApp.value.openDrawer())
     if (addEmbeddedAppErr) {
@@ -210,55 +213,16 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
   }
 }
 
-const testAction = async () => {
-  const [err, res] = await $to(ksuApi.updateEmbeddedApp({
-    customEmbeddedRulesListXML: xmlFormat.objectToXML(embeddedStore.sourceEmbeddedRulesList),
-    customFixedOrientationListXML: xmlFormat.objectToXML(embeddedStore.sourceFixedOrientationList),
-    settingConfigXML: '',
-    switchAction: {
-      name: 'com.tencent.mobileqq',
-      action: 'disable'
-    }
-  }))
-
-  if (err) {
-    errorTest.value = err;
-  } else {
-    successTest.value = res;
-  }
-
-  message.info('成功了')
-
-}
-
-const successTest = ref<any>([]);
-
-const errorTest = ref<any>([]);
-
-onMounted(async () => {
-  // // 测试获取XML文件
-  const [
-    getCustomConfigEmbeddedRulesListErr,
-    getCustomConfigEmbeddedRulesListRes,
-  ] = await $to(ksuApi.getCustomConfigEmbeddedRulesList());
-  if (!getCustomConfigEmbeddedRulesListErr) {
-    testXml.value = xmlFormat.testXMLToObject<any>(
-      getCustomConfigEmbeddedRulesListRes,
-      'package_config',
-      'package',
-      true
-    );
-    // testXml.value = xml;
-  }
-  // const [sourceEmbeddedRulesListErr,sourceEmbeddedRulesListData] = await $to(ksuApi.getSourceEmbeddedRulesList())
-  // if (sourceEmbeddedRulesListErr) {
-  //   message.error(`报错了，呜呜呜`)
-  // }
-  // sourceEmbeddedRulesList.value = sourceEmbeddedRulesListData
-
-})
-
 const handleRuleMode = (row: EmbeddedMergeRuleItem, index: number, ruleMode: EmbeddedMergeRuleItem["ruleMode"]) => {
+  if (deviceStore.androidTargetSdk && ![32, 33, 34].includes(deviceStore.androidTargetSdk)) {
+    modal.create({
+      title: '不兼容说明',
+      type: 'warning',
+      preset: 'dialog',
+      content: () => (<p>该功能尚未对 Android 11 或 Android 15+ 做兼容，请等待后续更新情况！</p>)
+    })
+    return;
+  }
   if (ruleMode === 'module') {
     modal.create({
       title: '模块规则说明',
@@ -276,8 +240,24 @@ const handleRuleMode = (row: EmbeddedMergeRuleItem, index: number, ruleMode: Emb
       content: () => (<p>清除自定义规则后，你对 <span class="font-bold text-gray-600">{row.name}</span> 所做的所有自定义配置将丢失，如果该应用同时还存在 <span class="font-bold text-gray-600">模块规则</span> ，将会还原回模块自身的适配规则。确定要继续吗？</p>),
       positiveText: '确定清除',
       negativeText: '我再想想',
-      onPositiveClick: () => {
-        message.info('该功能尚在开发中，请等待后续消息')
+      onPositiveClick: async () => {
+        if (embeddedStore.customConfigEmbeddedRulesList[row.name]) {
+          delete embeddedStore.customConfigEmbeddedRulesList[row.name]
+        }
+        if (embeddedStore.customConfigFixedOrientationList[row.name]) {
+          delete embeddedStore.customConfigFixedOrientationList[row.name]
+        }
+        const [submitUpdateEmbeddedAppErr, submitUpdateEmbeddedAppRes] = await $to(ksuApi.updateEmbeddedApp({
+          customEmbeddedRulesListXML: xmlFormat.objectToXML(embeddedStore.customConfigEmbeddedRulesList),
+          customFixedOrientationListXML: xmlFormat.objectToXML(embeddedStore.customConfigFixedOrientationList),
+          settingConfigXML: xmlFormat.objectToXML(embeddedStore.embeddedSettingConfig)
+        }))
+        if (submitUpdateEmbeddedAppErr) {
+          message.error('清除自定义规则失败')
+        } else {
+          message.info('清除自定义规则成功')
+          embeddedStore.updateMergeRuleList()
+        }
       }
     })
   }
@@ -313,32 +293,64 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
             type: 'success',
             name: '平行窗口',
             onClick(row: EmbeddedMergeRuleItem, index: number) {
+              if (deviceStore.androidTargetSdk && ![32, 33, 34].includes(deviceStore.androidTargetSdk)) {
+                modal.create({
+                  title: '不兼容说明',
+                  type: 'warning',
+                  preset: 'dialog',
+                  content: () => (<p>该功能尚未对 Android 11 或 Android 15+ 做兼容，请等待后续更新情况！</p>)
+                })
+                return;
+              }
               openUpdateEmbeddedApp(row, index)
-              testMsg.value = row;
             }
           },
           fullScreen: {
             type: 'info',
             name: '全屏',
             onClick(row: EmbeddedMergeRuleItem, index: number) {
+              if (deviceStore.androidTargetSdk && ![32, 33, 34].includes(deviceStore.androidTargetSdk)) {
+                modal.create({
+                  title: '不兼容说明',
+                  type: 'warning',
+                  preset: 'dialog',
+                  content: () => (<p>该功能尚未对 Android 11 或 Android 15+ 做兼容，请等待后续更新情况！</p>)
+                })
+                return;
+              }
               openUpdateEmbeddedApp(row, index)
-              testMsg.value = row;
             }
           },
           fixedOrientation: {
             type: 'warning',
             name: '居中布局',
             onClick(row: EmbeddedMergeRuleItem, index: number) {
+              if (deviceStore.androidTargetSdk && ![32, 33, 34].includes(deviceStore.androidTargetSdk)) {
+                modal.create({
+                  title: '不兼容说明',
+                  type: 'warning',
+                  preset: 'dialog',
+                  content: () => (<p>该功能尚未对 Android 11 或 Android 15+ 做兼容，请等待后续更新情况！</p>)
+                })
+                return;
+              }
               openUpdateEmbeddedApp(row, index)
-              testMsg.value = row;
             }
           },
           disabled: {
             type: 'error',
             name: '原始布局',
             onClick(row: EmbeddedMergeRuleItem, index: number) {
+              if (deviceStore.androidTargetSdk && ![32, 33, 34].includes(deviceStore.androidTargetSdk)) {
+                modal.create({
+                  title: '不兼容说明',
+                  type: 'warning',
+                  preset: 'dialog',
+                  content: () => (<p>该功能尚未对 Android 11 或 Android 15+ 做兼容，请等待后续更新情况！</p>)
+                })
+                return;
+              }
               openUpdateEmbeddedApp(row, index)
-              testMsg.value = row;
             }
           }
         }
@@ -357,49 +369,6 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
       发生错误，无法加载
     </template>
     <main class="mb-10">
-      <div>
-        <!-- <p class="text-blue-600 text-2xl text-center text-indigo-600">完美横屏应用计划 Web UI 管理后台正在开发中，敬请期待~</p>
-      <div class="text-center mt-10 mb-10">
-        <n-button @click="activeDrawer = true">
-          这是一个测试用的抽屉~内容是小米的往年标语~
-        </n-button>
-      </div> -->
-        <n-drawer v-model:show="activeDrawer" :width="502" placement="right">
-          <n-drawer-content title="测试抽屉" closable>
-            <p>测试成功信息</p>
-            {{ successTest }}
-            <p>测试失败信息</p>
-            {{ errorTest }}
-            <p>获取设备信息</p>
-            <p>{{ deviceStore.deviceCharacteristics }}</p>
-            <p>获取设备Android Target</p>
-            <p>{{ deviceStore.androidTargetSdk }}</p>
-            <p>获取设备Soc类型</p>
-            <p>{{ deviceStore.deviceSocModel }}</p>
-            <p>获取设备Soc名称</p>
-            <p>{{ deviceStore.deviceSocName }}</p>
-            <p>点击获取到的信息</p>
-            <p>{{ testMsg }}</p>
-            <p>测试xml</p>
-            <p>{{ testXml }}</p>
-            <p>错误信息收集</p>
-            <p>{{ embeddedStore.errorLogging }}</p>
-            <p>自定义平行窗口配置</p>
-            <p>{{ embeddedStore.customConfigEmbeddedRulesList }}</p>
-            <p>自定义信息模式配置</p>
-            <p>{{ embeddedStore.customConfigFixedOrientationList }}</p>
-            <!-- <p>{{ embeddedStore.customConfigEmbeddedRulesList }}</p> -->
-            <p>模块平行窗口配置</p>
-            <p>{{ embeddedStore.sourceEmbeddedRulesList }}</p>
-            <p>模块信箱模式配置</p>
-            <p>{{ embeddedStore.sourceFixedOrientationList }}</p>
-            <p>模块横屏配置</p>
-            <p>{{ embeddedStore.embeddedSettingConfig }}</p>
-            <p>模块合并配置</p>
-            <p>{{ embeddedStore.mergeRuleList }}</p>
-          </n-drawer-content>
-        </n-drawer>
-      </div>
       <div class="mt-5">
         <div class="px-4 sm:px-0 mb-5">
           <h3 class="text-base font-semibold leading-7 text-gray-900">应用横屏配置</h3>
@@ -412,12 +381,6 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
         </n-button>
         <n-button class="mb-3 mr-3" type="success" @click="() => reloadPage()">
           刷新 Web UI
-        </n-button>
-        <n-button class="mb-3 mr-3" @click="activeDrawer = true">
-          测试专用按钮
-        </n-button>
-        <n-button class="mb-3" @click="testAction">
-          测试提交
         </n-button>
         <n-input-group>
           <n-input size="large" v-model:value="embeddedStore.searchKeyWord" placeholder="搜索应用包名" autosize

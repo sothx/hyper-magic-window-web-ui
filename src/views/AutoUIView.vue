@@ -1,4 +1,6 @@
 <template>
+    <n-watermark v-if="true" content="开发中，功能不可用" cross fullscreen :font-size="16" :line-height="16" :width="384"
+        :height="384" :x-offset="12" :y-offset="60" :rotate="-15" :z-index="9999" />
     <main class="autoui-view">
         <div class="mt-5">
             <div class="px-4 sm:px-0 mb-5">
