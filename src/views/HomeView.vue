@@ -122,9 +122,9 @@ const openAddEmbeddedApp = async () => {
           title: '应用添加成功',
           type: 'success',
           preset: 'dialog',
-          content: () => (<div>
-            <p>好耶w， <span class="font-bold text-gray-600">{ addEmbeddedAppRes.name }</span> 的应用配置添加成功了OwO~如果应用添加后的规则不生效，可以尝试重启平板后并在 <span class="font-bold text-gray-600">"平板专区-平行窗口"</span> 内 <span class="font-bold text-gray-600">{['embedded', 'fullScreen'].includes(addEmbeddedAppRes.settingMode) ? '打开' : '关闭'}</span> 该应用的开关再尝试~</p>
-          </div>)
+          content: () => (
+            <p>好耶w， <span class="font-bold text-gray-600">{ addEmbeddedAppRes.name }</span> 的应用配置添加成功了OwO~如果应用添加后的规则不生效，可以尝试重启平板并且在 <span class="font-bold text-gray-600">"平板专区-平行窗口"</span> 内 <span class="font-bold text-gray-600">{['embedded', 'fullScreen'].includes(addEmbeddedAppRes.settingMode) ? '打开' : '关闭'}</span> 该应用的开关再做尝试~</p>
+          )
         })
         embeddedStore.updateMergeRuleList()
         addEmbeddedAppRes.loadingCallback && addEmbeddedAppRes.loadingCallback()
@@ -231,9 +231,9 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
           title: '应用更新成功',
           type: 'success',
           preset: 'dialog',
-          content: () => (<div>
-            <p>好耶w， <span class="font-bold text-gray-600">{ row.name }</span> 的应用配置更新成功了OwO~如果应用更新后的规则不生效，可以尝试重启平板后并在 <span class="font-bold text-gray-600">"平板专区-平行窗口"</span> 内 <span class="font-bold text-gray-600">{['embedded', 'fullScreen'].includes(updateEmbeddedAppRes.settingMode) ? '打开' : '关闭'}</span> 该应用的开关再尝试~</p>
-          </div>)
+          content: () => (
+            <p>好耶w， <span class="font-bold text-gray-600">{ row.name }</span> 的应用配置更新成功了OwO~如果应用更新后的规则不生效，可以尝试重启平板并且在 <span class="font-bold text-gray-600">"平板专区-平行窗口"</span> 内 <span class="font-bold text-gray-600">{['embedded', 'fullScreen'].includes(updateEmbeddedAppRes.settingMode) ? '打开' : '关闭'}</span> 该应用的开关再做尝试~</p>
+          )
         })
         embeddedStore.updateMergeRuleList()
         updateEmbeddedAppRes.loadingCallback && updateEmbeddedAppRes.loadingCallback()
