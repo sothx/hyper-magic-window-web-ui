@@ -33,7 +33,7 @@ export const getDeviceCharacteristics = (): Promise<string> => {
 export const getAndroidTargetSdk = (): Promise<number> => {
     return new Promise(async (resolve, reject) => {
         if (import.meta.env.MODE === 'development') {
-            resolve(35)
+            resolve(34)
             return;
         }
         const { errno, stdout, stderr }: ExecResult = await exec("getprop ro.build.version.sdk");

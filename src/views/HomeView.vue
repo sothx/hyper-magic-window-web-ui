@@ -271,7 +271,7 @@ const handleRuleMode = (row: EmbeddedMergeRuleItem, index: number, ruleMode: Emb
   }
 
   if (ruleMode === 'custom') {
-    modal.create({
+    const cleanCustomModal = modal.create({
       title: '想清除自定义规则吗？',
       type: 'warning',
       preset: 'dialog',
@@ -279,6 +279,7 @@ const handleRuleMode = (row: EmbeddedMergeRuleItem, index: number, ruleMode: Emb
       positiveText: '确定清除',
       negativeText: '我再想想',
       onPositiveClick: async () => {
+        cleanCustomModal.loading = true
         if (embeddedStore.customConfigEmbeddedRulesList[row.name]) {
           delete embeddedStore.customConfigEmbeddedRulesList[row.name]
         }
@@ -297,6 +298,7 @@ const handleRuleMode = (row: EmbeddedMergeRuleItem, index: number, ruleMode: Emb
             preset: 'dialog',
             content: () => (<p>发生异常错误，更新失败了QwQ，该功能尚在测试阶段，尚不稳定，出现异常请及时反馈~</p>)
           })
+          cleanCustomModal.loading = false
         } else {
           modal.create({
             title: '清除自定义规则成功',
@@ -304,6 +306,7 @@ const handleRuleMode = (row: EmbeddedMergeRuleItem, index: number, ruleMode: Emb
             preset: 'dialog',
             content: () => (<p>好耶w，清除自定义规则成功了OwO~如果应用更新后的规则不生效，可以尝试重启平板再试试~</p>)
           })
+          cleanCustomModal.loading = false
           embeddedStore.updateMergeRuleList()
         }
       }
