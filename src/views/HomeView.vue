@@ -1,11 +1,9 @@
 <script setup lang="tsx">
-import TheWelcome from '../components/TheWelcome.vue'
-import { ref, h, onMounted, type VNode, type VNodeChild, reactive, watch } from 'vue'
+import { ref, reactive, watch } from 'vue'
 import type EmbeddedMergeRuleItem from "@/types/EmbeddedMergeRuleItem";
 import $to from 'await-to-js'
 import ErrorModal from '@/components/ErrorModal.vue';
 import EmbeddedAppDrawer from '@/components/EmbeddedAppDrawer.vue';
-// @ts-ignore
 import { NButton, createDiscreteApi, type DataTableColumns } from 'naive-ui'
 import * as ksuApi from '@/apis/ksuApi'
 import { useDeviceStore } from '@/stores/device';
@@ -68,9 +66,9 @@ const openAddEmbeddedApp = async () => {
     return;
   }
   if (addEmbeddedApp.value) {
-    const [addEmbeddedAppErr, addEmbeddedAppRes] = await $to(addEmbeddedApp.value.openDrawer())
-    if (addEmbeddedAppErr) {
-      console.log('操作取消:', addEmbeddedAppErr);
+    const [addEmbeddedAppCancel, addEmbeddedAppRes] = await $to(addEmbeddedApp.value.openDrawer())
+    if (addEmbeddedAppCancel) {
+      console.log('操作取消:', addEmbeddedAppCancel);
     } else {
       if (addEmbeddedAppRes.settingMode === 'fullScreen') {
         embeddedStore.customConfigEmbeddedRulesList[addEmbeddedAppRes.name] = {
@@ -124,7 +122,9 @@ const openAddEmbeddedApp = async () => {
           title: '应用添加成功',
           type: 'success',
           preset: 'dialog',
-          content: () => (<p>好耶w，应用配置添加成功了OwO~如果应用更新后的规则不生效，可以尝试重启平板再试试~</p>)
+          content: () => (<div>
+            <p>好耶w， <span class="font-bold text-gray-600">{ addEmbeddedAppRes.name }</span> 的应用配置添加成功了OwO~如果应用添加后的规则不生效，可以尝试重启平板后并在 <span class="font-bold text-gray-600">"平板专区-平行窗口"</span> 内 <span class="font-bold text-gray-600">{['embedded', 'fullScreen'].includes(addEmbeddedAppRes.settingMode) ? '打开' : '关闭'}</span> 该应用的开关再尝试~</p>
+          </div>)
         })
         embeddedStore.updateMergeRuleList()
         addEmbeddedAppRes.loadingCallback && addEmbeddedAppRes.loadingCallback()
@@ -136,9 +136,9 @@ const openAddEmbeddedApp = async () => {
 
 const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) => {
   if (updateEmbeddedApp.value) {
-    const [updateEmbeddedAppErr, updateEmbeddedAppRes] = await $to(updateEmbeddedApp.value.openDrawer(row))
-    if (updateEmbeddedAppErr) {
-      console.log('操作取消:', updateEmbeddedAppErr);
+    const [updateEmbeddedAppCancel, updateEmbeddedAppRes] = await $to(updateEmbeddedApp.value.openDrawer(row))
+    if (updateEmbeddedAppCancel) {
+      console.log('操作取消:', updateEmbeddedAppCancel);
     } else {
       if (row.settingMode !== updateEmbeddedAppRes.settingMode) {
         if (updateEmbeddedAppRes.settingMode === 'fullScreen') {
@@ -231,7 +231,9 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
           title: '应用更新成功',
           type: 'success',
           preset: 'dialog',
-          content: () => (<p>好耶w，应用配置更新成功了OwO~如果应用更新后的规则不生效，可以尝试重启平板再试试~</p>)
+          content: () => (<div>
+            <p>好耶w， <span class="font-bold text-gray-600">{ row.name }</span> 的应用配置更新成功了OwO~如果应用更新后的规则不生效，可以尝试重启平板后并在 <span class="font-bold text-gray-600">"平板专区-平行窗口"</span> 内 <span class="font-bold text-gray-600">{['embedded', 'fullScreen'].includes(updateEmbeddedAppRes.settingMode) ? '打开' : '关闭'}</span> 该应用的开关再尝试~</p>
+          </div>)
         })
         embeddedStore.updateMergeRuleList()
         updateEmbeddedAppRes.loadingCallback && updateEmbeddedAppRes.loadingCallback()

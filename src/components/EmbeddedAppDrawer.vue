@@ -5,6 +5,7 @@ import { useEmbeddedStore } from '@/stores/embedded';
 import type EmbeddedMergeRuleItem from "@/types/EmbeddedMergeRuleItem";
 import { createDiscreteApi, type NInput } from 'naive-ui';
 import * as validateFun from '@/utils/validateFun';
+import $to from 'await-to-js'
 const props = defineProps<{
     type: 'add' | 'update',
     title: string
@@ -96,6 +97,8 @@ const currentFullRule = ref<fullScreenRuleOptions['rule']>();
 
 const currentSupportFullSize = ref<boolean>(true);
 
+const currentRuleMode = ref<EmbeddedMergeRuleItem["ruleMode"]>();
+
 const currentFixedOrientationRatio = ref<fixedOrientationRatioOptions>(fixedOrientationRatioOptions[1])
 
 const currentRatio = ref<number>();
@@ -119,8 +122,15 @@ const embeddedAppDrawer = ref({
             resolvePromise = resolve;
             rejectPromise = reject;
 
+            // add模式，初始化参数
+            if (props.type === 'add') {
+                currentFullScreenRuleOptions.value = fullScreenRuleOptions[0]
+                currentFullRule.value = 'nra:cr:rcr:nr'
+            }
+
             // 如果是update模式，初始化参数
             if (props.type === 'update' && initialParams) {
+                currentRuleMode.value = initialParams.ruleMode
                 currentAppName.value = initialParams.name
                 isSupportEmbedded.value = initialParams.isSupportEmbedded
                 currentSettingMode.value = initialParams.settingMode;
@@ -130,7 +140,7 @@ const embeddedAppDrawer = ref({
                 if (currentFullRule.value === 'nra:cr:rcr:nr') {
                     currentFullScreenRuleOptions.value = fullScreenRuleOptions[0]
 
-                }else if (initialParams.embeddedRules && !initialParams.embeddedRules.hasOwnProperty('fullRule')) {
+                } else if (initialParams.embeddedRules && !initialParams.embeddedRules.hasOwnProperty('fullRule')) {
                     currentFullRule.value = 'nra:cr:rcr:nr'
                     currentFullScreenRuleOptions.value = fullScreenRuleOptions[0]
                 } else if (currentFullRule.value === '*') {
@@ -206,24 +216,64 @@ const currentAppNameInputStatus = ref<string>('')
 
 const isSupportEmbedded = ref<boolean>(false);
 
-const handleDrawerSubmit = () => {
+const handleDrawerSubmit = async () => {
     if (!currentAppName.value) {
         modal.create({
-          title: '应用包名不能为空',
-          type: 'error',
-          preset: 'dialog',
-          content: () => (<p>噫？应用包名不能为空（敲</p>)
+            title: '应用包名不能为空',
+            type: 'error',
+            preset: 'dialog',
+            content: () => (<p>噫？应用包名不能为空（敲</p>)
         })
         return
     }
     if (currentSettingMode.value === 'fullScreen' && !currentFullRule.value) {
         modal.create({
-          title: '应用全屏规则不能为空',
-          type: 'error',
-          preset: 'dialog',
-          content: () => (<p>噫？应用全屏规则不能为空（敲</p>)
+            title: '应用全屏规则不能为空',
+            type: 'error',
+            preset: 'dialog',
+            content: () => (<p>噫？应用全屏规则不能为空（敲</p>)
         })
         return
+    }
+    if (props.type === 'add' && embeddedStore.allPackageName.has(currentAppName.value)) {
+        modal.create({
+            title: '应用包名已存在',
+            type: 'error',
+            preset: 'dialog',
+            content: () => (<p>噫？这个应用包名已经存在列表中了（敲</p>)
+        })
+        return
+    }
+    if (props.type === 'update' && isSupportEmbedded.value && currentSettingMode.value === 'fullScreen') {
+        const [embeddedToFullScreenModalNegative] = await $to(new Promise<string>((resolve, reject) => {
+            modal.create({
+                title: '确认使用全屏规则吗？',
+                type: 'warning',
+                preset: 'dialog',
+                content: () => {
+                    if (currentRuleMode.value === 'custom') {
+                        return (
+                            <p>当前应用已存在 <span class="font-bold text-gray-600">平行窗口的自定义规则</span> ，继续提交将导致 <span class="font-bold text-gray-600">平行窗口的自定义规则</span> 丢失。确定要继续吗？</p>
+                        )
+                    } else {
+                        return (
+                            <p>当前应用已存在 <span class="font-bold text-gray-600">平行窗口的模块规则</span> ，继续更新将会被更替为 <span class="font-bold text-gray-600">全屏规则</span> ，如后续需要改回 <span class="font-bold text-gray-600">平行窗口的模块规则</span> 则需要先清除自定义规则，确定要继续吗？</p>
+                        )
+                    }
+                },
+                positiveText: '确定继续',
+                negativeText: '我再想想',
+                onPositiveClick: () => {
+                    resolve('positiveClick')
+                },
+                onNegativeClick: () => {
+                    reject('negativeClick')
+                }
+            })
+        }))
+        if (embeddedToFullScreenModalNegative) {
+            return;
+        }
     }
     // 开启loading
     drawerSubmitLoading.value = true;

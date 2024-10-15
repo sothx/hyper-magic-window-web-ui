@@ -50,13 +50,12 @@ export const useEmbeddedStore = defineStore("embedded", () => {
   const errorLogging = reactive<ErrorLogging[]>([]);
   // 
   const allPackageName = computed(() => {
-    const allPackages = new Set([
-      ...Object.keys(sourceEmbeddedRulesList),
-      ...Object.keys(sourceFixedOrientationList),
-      ...Object.keys(customConfigEmbeddedRulesList),
-      ...Object.keys(customConfigFixedOrientationList),
+    return new Set([
+      ...Object.keys(sourceEmbeddedRulesList.value),
+      ...Object.keys(sourceFixedOrientationList.value),
+      ...Object.keys(customConfigEmbeddedRulesList.value),
+      ...Object.keys(customConfigFixedOrientationList.value),
     ]);
-    return allPackages
   })
 
   function updateMergeRuleList() {
