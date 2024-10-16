@@ -26,8 +26,8 @@ const { message } = createDiscreteApi(['message'])
             </n-alert>
           </div>
           <div class="px-4 flex sm:grid sm:px-0 mt-5">
-            <n-alert title="[未开始] 应用布局优化"  type="info">
-             已确定，未开始，提供可视化简易适配应用的布局规则，暂定规则有全局强制缩放、全局强制拉伸及自定义。
+            <n-alert title="[开发中] 应用布局优化"  type="info">
+             开发中，提供可视化简易适配应用的布局规则，暂定规则有全局强制缩放、全局强制拉伸及自定义。
             </n-alert>
           </div>
           <div class="px-4 flex sm:grid sm:px-0 mt-5">

@@ -325,7 +325,7 @@ onMounted(() => {
     <slot v-bind="{ openDrawer: embeddedAppDrawer.openDrawer }"></slot>
 
     <!-- Drawer -->
-    <n-drawer v-model:show="activeDrawer" :width="502" placement="right">
+    <n-drawer v-model:show="activeDrawer" :default-width="500" placement="right">
         <n-drawer-content :title="props.title" closable>
             <n-input-group class="mb-5">
                 <n-input-group-label size="large">应用包名</n-input-group-label>
