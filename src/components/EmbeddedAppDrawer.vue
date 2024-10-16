@@ -416,7 +416,7 @@ onMounted(() => {
                     <n-card v-if="currentFixedOrientationRatio.key === 'ratio_custom'" :bordered="false" title="自定义显示比例"
                         size="small">
                         <n-slider size="small" v-model:value="currentRatio" :min="1.01" :max="1.99" :step="0.01" />
-                        <n-input-number class="pt-3" placeholder="请输入自定义显示比例" v-model:value="currentRatio" :min="1.01"
+                        <n-input-number :show-button="false" class="pt-3" readonly placeholder="请输入自定义显示比例" v-model:value="currentRatio" :min="1.01"
                             :max="1.99" :step="0.01" />
                     </n-card>
                 </n-tab-pane>
