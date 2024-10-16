@@ -11,7 +11,7 @@ import * as xmlFormat from "@/utils/xmlFormat";
 interface ErrorLogging {
   type: string;
   title: string;
-  msg: Error;
+  msg: string;
 }
 
 export const useEmbeddedStore = defineStore("embedded", () => {
@@ -85,20 +85,22 @@ export const useEmbeddedStore = defineStore("embedded", () => {
   async function initDefault() {
     // 获取源嵌入规则列表
     const [getSourceEmbeddedRulesListErr, getSourceEmbeddedRulesListRes] =
-      await $to(ksuApi.getSourceEmbeddedRulesList());
+      await $to<string,string>(ksuApi.getSourceEmbeddedRulesList());
     if (getSourceEmbeddedRulesListErr) {
       errorLogging.push({
         type: "sourceEmbeddedRulesList",
         title: "[模块]平行窗口配置文件",
         msg: getSourceEmbeddedRulesListErr,
       });
-    } else {
+    }
+
+    if (getSourceEmbeddedRulesListRes) {
       sourceEmbeddedRulesList.value =
-        xmlFormat.parseXMLToObject<EmbeddedRuleItem>(
-          getSourceEmbeddedRulesListRes,
-          "package_config",
-          "package"
-        );
+      xmlFormat.parseXMLToObject<EmbeddedRuleItem>(
+        getSourceEmbeddedRulesListRes,
+        "package_config",
+        "package"
+      );
     }
 
     // 获取自定义配置嵌入规则列表
@@ -122,20 +124,22 @@ export const useEmbeddedStore = defineStore("embedded", () => {
 
     // 获取源固定方向列表
     const [getSourceFixedOrientationListErr, getSourceFixedOrientationListRes] =
-      await $to(ksuApi.getSourceFixedOrientationList());
+      await $to<string,string>(ksuApi.getSourceFixedOrientationList());
     if (getSourceFixedOrientationListErr) {
       errorLogging.push({
         type: "sourceFixedOrientationList",
         title: "[模块]信箱模式配置文件",
         msg: getSourceFixedOrientationListErr,
       });
-    } else {
+    }
+
+    if (getSourceFixedOrientationListRes) {
       sourceFixedOrientationList.value =
-        xmlFormat.parseXMLToObject<FixedOrientationRuleItem>(
-          getSourceFixedOrientationListRes,
-          "package_config",
-          "package"
-        );
+      xmlFormat.parseXMLToObject<FixedOrientationRuleItem>(
+        getSourceFixedOrientationListRes,
+        "package_config",
+        "package"
+      );
     }
 
     // 获取自定义配置固定方向列表
@@ -184,13 +188,13 @@ export const useEmbeddedStore = defineStore("embedded", () => {
     // errorLogging.push({
     //   type: "sourceEmbeddedRulesList",
     //   title: '[模块]平行窗口配置文件',
-    //   msg: new Error('发生错误啦'),
+    //   msg: '发生错误啦',
     // });
 
     // errorLogging.push({
     //   type: "embeddedSettingConfig",
     //   title: '[模块]应用横屏布局配置文件',
-    //   msg: new Error('发生错误啦'),
+    //   msg: '发生错误啦',
     // });
 
     if (!errorLogging.length) {

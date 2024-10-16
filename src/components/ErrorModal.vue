@@ -27,7 +27,7 @@ const close = () => {
         <n-card :bordered="false">
             <n-alert v-for="errItem in props.errorLogging" :title="`[发生错误] ${errItem.type}`" class="mb-5" type="error">
                 <p>错误描述:无法获取{{ errItem.title }}</p>
-                <p>错误详情:{{ errItem.msg.message }}</p>
+                <p>错误详情:{{ errItem.msg }}</p>
             </n-alert>
         </n-card>
     </n-modal>

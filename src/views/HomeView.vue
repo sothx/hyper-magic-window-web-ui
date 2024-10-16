@@ -36,40 +36,21 @@ const reloadPage = () => {
 };
 
 const testBtn = () => {
-  ksuApi.getUserAppList().then((res) => {
-    console.log(res, 'res')
-    if (Array.isArray(res)) {
-      const seen = new Set();  // 用于保存已遇到的 package_name
-      const duplicates: any[] = [];   // 用于保存重复的 package_name 项
-
-      res.map((item) => {
-        // const regex = /[a-zA-Z]/;
-
-        // // 先检查 package_name 是否包含字母
-        // if (!regex.test(item.package_name)) {
-        //   return false;  // 不包含字母的项直接过滤掉
-        // }
-
-        // 判断 package_name 是否重复
-        if (seen.has(item.package_name)) {
-          // 如果重复，将 item 加入到 duplicates 数组中
-          duplicates.push(item);
-        } else {
-          // 如果不重复，将 package_name 保存到 Set 中
-          seen.add(item.package_name);
-        }
-      });
-
-      // 输出重复的 package_name 项
-      console.log("重复的项：", duplicates);
-      console.log("不重复的项：", seen);
-
-      // 如果需要 JSON 格式
-      const duplicatesJson = JSON.stringify(duplicates);
-      console.log("重复项的 JSON：", duplicatesJson);
-      // console.log(test, 'test')
-    }
-  })
+  // ksuApi.getInstalledApps().then((res:any) => {
+  //   modal.create({
+  //     title: '兼容说明',
+  //     type: 'warning',
+  //     preset: 'dialog',
+  //     content: () => (<p>{JSON.stringify(res)}</p>)
+  //   })
+  // }).catch((err) => {
+  //   modal.create({
+  //     title: '不兼容说明',
+  //     type: 'warning',
+  //     preset: 'dialog',
+  //     content: () => (<p>{err}</p>)
+  //   })
+  // })
 }
 
 const pagination = reactive({
@@ -518,12 +499,12 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
       <n-button class="mb-3 mr-3" type="success" :loading="embeddedStore.loading" @click="() => reloadPage()">
         刷新 Web UI
       </n-button>
-      <!-- <n-button class="mb-3 mr-3" type="success" :loading="embeddedStore.loading" @click="() => testBtn()">
+      <n-button class="mb-3 mr-3" type="success" :loading="embeddedStore.loading" @click="() => testBtn()">
         测试按钮
-      </n-button> -->
+      </n-button>
       <n-input-group>
-        <n-input size="large" clearable v-model:value="embeddedStore.searchKeyWord" ref="searchKeyWordInput" placeholder="搜索应用包名" autosize
-          style="min-width: 80%" />
+        <n-input size="large" clearable v-model:value="embeddedStore.searchKeyWord" ref="searchKeyWordInput"
+          placeholder="搜索应用包名" autosize style="min-width: 80%" />
         <n-button size="large" type="primary" @click="() => {
           searchKeyWordInput?.blur()
         }">
