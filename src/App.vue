@@ -5,13 +5,16 @@ import { Sidebar } from './components/Sidebar'
 import { ref, onMounted } from 'vue'
 import { useDeviceStore } from './stores/device'
 import { useEmbeddedStore } from './stores/embedded'
+import { useAutoUIStore } from '@/stores/autoui';
 
 const deviceStore = useDeviceStore()
 const embeddedStore = useEmbeddedStore()
+const autoUIStore = useAutoUIStore()
 
 onMounted(() => {
   deviceStore.initDefault()
   embeddedStore.initDefault()
+  autoUIStore.initDefault()
   
 })
 

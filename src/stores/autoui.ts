@@ -24,9 +24,19 @@ export const useAutoUIStore = defineStore("autoui", () => {
   // 搜索后的配置列表
   const filterMergeRuleList = computed(() => {
     const searchValue = searchKeyWord.value.toLowerCase(); // 缓存并提前处理 searchKeyWord
-    return mergeRuleList.value.filter((item) =>
-      item.name.toLowerCase().includes(searchValue)
-    );
+    return mergeRuleList.value
+      .filter((item) => item.name.toLowerCase().includes(searchValue))
+      .sort((a, b) => {
+        // 将 ruleType 为 'custom' 的项排在前面
+        if (a.ruleMode === "custom" && b.ruleMode !== "custom") {
+          return -1; // a 在前
+        }
+        if (a.ruleMode !== "custom" && b.ruleMode === "custom") {
+          return 1; // b 在前
+        }
+        // 如果两者都是 'custom' 或都不是，按名称排序
+        return a.name.localeCompare(b.name);
+      });
   });
   // 是否弹出错误信息弹窗
   const isNeedShowErrorModal = computed(() => Boolean(errorLogging.length > 0));
@@ -82,24 +92,26 @@ export const useAutoUIStore = defineStore("autoui", () => {
     }
 
     // 获取设置配置
-    const [getAutoUISettingConfigErr, getAutoUISettingConfigRes] = await $to<string,string>(
-      ksuApi.getAutoUISettingConfig()
-    );
+    const [getAutoUISettingConfigErr, getAutoUISettingConfigRes] = await $to<
+      string,
+      string
+    >(ksuApi.getAutoUISettingConfig());
     if (getAutoUISettingConfigErr) {
-      errorLogging.push({
-        type: "autoUISettingConfig",
-        title: "[模块]应用布局优化配置文件",
-        msg: getAutoUISettingConfigErr,
-      });
+      autoUISettingConfig.value = {};
+      // errorLogging.push({
+      //   type: "autoUISettingConfig",
+      //   title: "[模块]应用布局优化配置文件",
+      //   msg: getAutoUISettingConfigErr,
+      // });
     }
-    
+
     if (getAutoUISettingConfigRes) {
       autoUISettingConfig.value =
-      xmlFormat.parseXMLToObject<AutoUISettingRuleItem>(
-        getAutoUISettingConfigRes,
-        "setting_config",
-        "setting"
-      );
+        xmlFormat.parseXMLToObject<AutoUISettingRuleItem>(
+          getAutoUISettingConfigRes,
+          "setting_config",
+          "setting"
+        );
     }
 
     // 合并最终配置

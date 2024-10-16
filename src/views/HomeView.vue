@@ -198,6 +198,10 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
           if (hasDisable) {
             delete embeddedStore.customConfigFixedOrientationList[row.name].disable
           }
+          const hasIsScale = embeddedStore.customConfigFixedOrientationList[row.name].hasOwnProperty('isScale')
+          if (hasIsScale) {
+            delete embeddedStore.customConfigFixedOrientationList[row.name].isScale
+          }
           if (updateEmbeddedAppRes.modePayload.ratio !== undefined) {
             embeddedStore.customConfigFixedOrientationList[row.name].ratio = updateEmbeddedAppRes.modePayload.ratio
           } else {
@@ -499,9 +503,9 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
       <n-button class="mb-3 mr-3" type="success" :loading="embeddedStore.loading" @click="() => reloadPage()">
         刷新 Web UI
       </n-button>
-      <n-button class="mb-3 mr-3" type="success" :loading="embeddedStore.loading" @click="() => testBtn()">
+      <!-- <n-button class="mb-3 mr-3" type="success" :loading="embeddedStore.loading" @click="() => testBtn()">
         测试按钮
-      </n-button>
+      </n-button> -->
       <n-input-group>
         <n-input size="large" clearable v-model:value="embeddedStore.searchKeyWord" ref="searchKeyWordInput"
           placeholder="搜索应用包名" autosize style="min-width: 80%" />

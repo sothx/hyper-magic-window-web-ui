@@ -7,6 +7,7 @@ import { omit } from "lodash-es";
 import type AutoUISettingRuleItem from "@/types/AutoUISettingRuleItem";
 import type AutoUIItem from "@/types/AutoUIItem";
 import type AutoUIMergeRuleItem from "@/types/AutoUIMergeRuleItem";
+import * as autoUIFun from '@/utils/autoUIFun';
 
 const transformValues = <T>(obj: Record<string, T>): Record<string, T> => {
   return mapValues(obj, (value) => {
@@ -348,14 +349,17 @@ export const mergeAutoUIRule = (
       ruleMode = 'custom';
     }
 
+
+    const omitSettingConfig = omitName(settingConfig);
     const omitAutoUIConfig = omitName(autoUIConfig)
 
     // Build the result object
     const ruleData: AutoUIMergeRuleItem = {
       name: pkgName,
       ruleMode,
-      enable: settingConfig.enable,
+      settingMode: autoUIFun.getBuiltInSettingMode(autoUIConfig.activityRule || ''),
       autoUIRule: omitAutoUIConfig ? omitAutoUIConfig : undefined, // 排除 name 属性
+      settingRule: omitSettingConfig ? omitSettingConfig : undefined,
     };
 
     result.push(ruleData);
