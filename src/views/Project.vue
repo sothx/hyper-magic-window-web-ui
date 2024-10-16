@@ -12,6 +12,7 @@ const { message } = createDiscreteApi(['message'])
         <h3 class="text-base font-semibold leading-7 text-gray-900">开发路线图</h3>
         <p class="mt-1 max-w-2xl text-sm leading-6 text-gray-500">在这里是一些功能需求和开发进度</p>
         <p class="mt-1 max-w-2xl text-sm leading-6 text-gray-500">若有期待的需求可以通过酷安/Github/模块反馈群上进行反馈</p>
+        <p class="mt-1 max-w-2xl text-sm leading-6 text-gray-500">（写不过来QwQ，可能进展缓慢，请勿催更~）</p>
       </div>
       <div class="mt-6 border-t border-gray-100">
         <dl class="divide-y divide-gray-100 mb-5">
@@ -35,23 +36,29 @@ const { message } = createDiscreteApi(['message'])
             </n-alert>
           </div>
           <div class="px-4 flex sm:grid sm:px-0 mt-5">
-            <n-alert title="[待定] 规则中心"  type="warning">
-             待定，不一定做。展示其他酷友分享的应用自定义规则，可以直接使用和收藏分享的规则，并且提供备份导出和导入功能。
-            </n-alert>
-          </div>
-          <div class="px-4 flex sm:grid sm:px-0 mt-5">
-            <n-alert title="[待定] 可视化配置平行窗口自定义规则"  type="warning">
-             待定，不一定做。通过JSON可视化编辑的方式，提供可视化修改平行窗口自定义规则的功能，包含所有小米提供的反向适配参数。(技术栈暂定vue3-ts-jsoneditor)
-            </n-alert>
-          </div>
-          <div class="px-4 flex sm:grid sm:px-0 mt-5">
             <n-alert title="[待定] 应用横屏配置- Hyper OS 2.0(Android 15+)"  type="warning">
-             待定，不一定做。需求紧急程度较低，且目前Beta版表现出来的功能不稳定，待正式版发布且认为功能稳定性满足需求后，再考虑开发。
+             待定，需求紧急程度较低，且目前Beta版表现出来的功能不稳定，待正式版发布且认为功能稳定性满足需求后，再考虑开发。
             </n-alert>
           </div>
           <div class="px-4 flex sm:grid sm:px-0 mt-5">
             <n-alert title="[待定] 横屏模式配置-Android 11"  type="warning">
-             待定，不一定做。提供可视化修改小米平板Android 11下类华为的横屏模式规则。(缺Android 11的测试志愿者，欢迎自荐)
+             待定，需求紧急程度较低，提供可视化修改小米平板Android 11下类华为的横屏模式规则。(缺Android 11的测试志愿者，欢迎自荐)
+            </n-alert>
+          </div>
+          <div class="px-4 flex sm:grid sm:px-0 mt-5">
+            <n-alert title="[待定] 深色模式"  type="warning">
+             待定，需求紧急程度较低，适配 Web UI 深色模式，优化深色模式下的使用体验
+            </n-alert>
+          </div>
+          <div class="px-4 flex sm:grid sm:px-0 mt-5">
+            <n-alert title="[远期规划] 规则中心"  type="default">
+              远期可能性需求规划，待讨论，不一定做。展示其他酷友分享的应用自定义规则，可以直接使用和收藏分享的规则，并且提供备份导出和导入功能。
+            </n-alert>
+          </div>
+          <div class="px-4 flex sm:grid sm:px-0 mt-5">
+            <n-alert title="[远期规划] 可视化配置平行窗口自定义规则"  type="default">
+              远期可能性需求规划，待讨论，不一定做。通过JSON可视化编辑的方式，提供可视化修改平行窗口自定义规则的功能，包含所有小米提供的反向适配参数。
+              <span class="hidden">(技术栈暂定vue3-ts-jsoneditor)</span>
             </n-alert>
           </div>
         </dl>
