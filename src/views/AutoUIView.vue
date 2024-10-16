@@ -113,6 +113,7 @@ function createColumns(): DataTableColumns<AutoUIMergeRuleItem> {
   return [
     {
       title: '应用包名',
+      minWidth: 200,
       key: 'name'
     },
     {
@@ -131,15 +132,16 @@ function createColumns(): DataTableColumns<AutoUIMergeRuleItem> {
     },
     {
       title: 'WebView优化',
+      minWidth: 110,
       key: 'isOptimizeWebView',
       render(row, index) {
         if (row.autoUIRule?.optimizeWebView) {
           return (
-            <n-tag dashed type="success">已启用</n-tag>
+            <n-tag bordered={false} dashed type="success">已启用</n-tag>
           )
         }
         return (
-          <n-tag dashed type="info">未启用</n-tag>
+          <n-tag bordered={false} dashed type="info">未启用</n-tag>
         )
       }
     },
@@ -154,6 +156,7 @@ function createColumns(): DataTableColumns<AutoUIMergeRuleItem> {
     },
     {
       title: '操作',
+      minWidth: 100,
       key: 'setting',
       render(row, index) {
         const slots = {
@@ -161,7 +164,6 @@ function createColumns(): DataTableColumns<AutoUIMergeRuleItem> {
           unchecked: () => <span>关闭</span>,
         };
         const isOpen = (inputRow: AutoUIMergeRuleItem) => {
-          console.log(inputRow.settingRule?.enable,'inputRow')
           return inputRow.settingRule?.enable || (inputRow.autoUIRule?.enable && inputRow.hasOwnProperty('settingRule'))
         }
         return (
