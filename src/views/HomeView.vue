@@ -143,7 +143,7 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
       if (updateEmbeddedAppRes.settingMode === 'fullScreen') {
           if (embeddedStore.customConfigEmbeddedRulesList[row.name]) {
             embeddedStore.customConfigEmbeddedRulesList[row.name].fullRule = updateEmbeddedAppRes.modePayload.fullRule
-            const hasDefaultSettings = embeddedStore.sourceEmbeddedRulesList[row.name].hasOwnProperty('defaultSettings')
+            const hasDefaultSettings =  embeddedStore.sourceEmbeddedRulesList[row.name]?.hasOwnProperty('defaultSettings')
             if (hasDefaultSettings) {
               embeddedStore.sourceEmbeddedRulesList[row.name].defaultSettings = true
             }
