@@ -160,6 +160,8 @@ const embeddedAppDrawer = ref({
                     } else {
                         currentFixedOrientationRatio.value = fixedOrientationRatioOptions[4]
                     }
+                } else {
+                    currentFixedOrientationRatio.value = fixedOrientationRatioOptions[1]
                 }
             }
 
