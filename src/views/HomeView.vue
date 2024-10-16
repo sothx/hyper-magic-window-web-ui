@@ -4,15 +4,17 @@ import type EmbeddedMergeRuleItem from "@/types/EmbeddedMergeRuleItem";
 import $to from 'await-to-js'
 import ErrorModal from '@/components/ErrorModal.vue';
 import EmbeddedAppDrawer from '@/components/EmbeddedAppDrawer.vue';
-import { NButton, createDiscreteApi, type DataTableColumns } from 'naive-ui'
+import { NButton, createDiscreteApi, type DataTableColumns, type NInput } from 'naive-ui'
 import * as ksuApi from '@/apis/ksuApi'
 import { useDeviceStore } from '@/stores/device';
 import * as xmlFormat from '@/utils/xmlFormat';
 import { useEmbeddedStore } from '@/stores/embedded';
 type EmbeddedAppDrawerInstance = InstanceType<typeof EmbeddedAppDrawer>;
+type SearchKeyWordInputInstance = InstanceType<typeof NInput>;
 
 const deviceStore = useDeviceStore()
 const embeddedStore = useEmbeddedStore()
+const searchKeyWordInput = ref<SearchKeyWordInputInstance | null>(null);
 const addEmbeddedApp = ref<EmbeddedAppDrawerInstance | null>(null);
 const updateEmbeddedApp = ref<EmbeddedAppDrawerInstance | null>(null);
 const { message, modal } = createDiscreteApi(['message', 'modal'])
@@ -32,6 +34,43 @@ watch(
 const reloadPage = () => {
   window.location.reload();
 };
+
+const testBtn = () => {
+  ksuApi.getUserAppList().then((res) => {
+    console.log(res, 'res')
+    if (Array.isArray(res)) {
+      const seen = new Set();  // 用于保存已遇到的 package_name
+      const duplicates: any[] = [];   // 用于保存重复的 package_name 项
+
+      res.map((item) => {
+        // const regex = /[a-zA-Z]/;
+
+        // // 先检查 package_name 是否包含字母
+        // if (!regex.test(item.package_name)) {
+        //   return false;  // 不包含字母的项直接过滤掉
+        // }
+
+        // 判断 package_name 是否重复
+        if (seen.has(item.package_name)) {
+          // 如果重复，将 item 加入到 duplicates 数组中
+          duplicates.push(item);
+        } else {
+          // 如果不重复，将 package_name 保存到 Set 中
+          seen.add(item.package_name);
+        }
+      });
+
+      // 输出重复的 package_name 项
+      console.log("重复的项：", duplicates);
+      console.log("不重复的项：", seen);
+
+      // 如果需要 JSON 格式
+      const duplicatesJson = JSON.stringify(duplicates);
+      console.log("重复项的 JSON：", duplicatesJson);
+      // console.log(test, 'test')
+    }
+  })
+}
 
 const pagination = reactive({
   page: 1,
@@ -101,9 +140,9 @@ const openAddEmbeddedApp = async () => {
         embeddedEnable: ['embedded', 'fullScreen'].includes(addEmbeddedAppRes.settingMode) ? true : false
       }
       const [submitAddEmbeddedAppErr, submitAddEmbeddedAppRes] = await $to(ksuApi.updateEmbeddedApp({
-        customEmbeddedRulesListXML: xmlFormat.objectToXML(embeddedStore.customConfigEmbeddedRulesList,'package',undefined),
-        customFixedOrientationListXML: xmlFormat.objectToXML(embeddedStore.customConfigFixedOrientationList,'package',undefined),
-        settingConfigXML: xmlFormat.objectToXML(embeddedStore.embeddedSettingConfig,'setting','setting_rule'),
+        customEmbeddedRulesListXML: xmlFormat.objectToXML(embeddedStore.customConfigEmbeddedRulesList, 'package', undefined),
+        customFixedOrientationListXML: xmlFormat.objectToXML(embeddedStore.customConfigFixedOrientationList, 'package', undefined),
+        settingConfigXML: xmlFormat.objectToXML(embeddedStore.embeddedSettingConfig, 'setting', 'setting_rule'),
         switchAction: {
           name: addEmbeddedAppRes.name,
           action: ['embedded', 'fullScreen'].includes(addEmbeddedAppRes.settingMode) ? 'enable' : 'disable'
@@ -123,7 +162,7 @@ const openAddEmbeddedApp = async () => {
           type: 'success',
           preset: 'dialog',
           content: () => (
-            <p>好耶w， <span class="font-bold text-gray-600">{addEmbeddedAppRes.name}</span> 的应用配置添加成功了OwO~如果应用添加后的规则不生效，可以尝试重启平板并且在 <span class="font-bold text-gray-600">"平板专区-平行窗口"</span> 内 <span class="font-bold text-gray-600">{['embedded', 'fullScreen'].includes(addEmbeddedAppRes.settingMode) ? '打开' : '关闭'}</span> 该应用的开关再做尝试~</p>
+            <p>好耶w， <span class="font-bold text-gray-600">{addEmbeddedAppRes.name}</span> 的应用配置添加成功了OwO~如果应用添加后的规则不生效，可以尝试重启平板并且在 <span class="font-bold text-gray-600">平板专区-平行窗口</span> 内 <span class="font-bold text-gray-600">{['embedded', 'fullScreen'].includes(addEmbeddedAppRes.settingMode) ? '打开' : '关闭'}</span> 该应用的开关再做尝试~</p>
           )
         })
         embeddedStore.updateMergeRuleList()
@@ -141,36 +180,36 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
       console.log('操作取消:', updateEmbeddedAppCancel);
     } else {
       if (updateEmbeddedAppRes.settingMode === 'fullScreen') {
-          if (embeddedStore.customConfigEmbeddedRulesList[row.name]) {
-            embeddedStore.customConfigEmbeddedRulesList[row.name].fullRule = updateEmbeddedAppRes.modePayload.fullRule
-            const hasDefaultSettings =  embeddedStore.sourceEmbeddedRulesList[row.name]?.hasOwnProperty('defaultSettings')
-            if (hasDefaultSettings) {
-              embeddedStore.sourceEmbeddedRulesList[row.name].defaultSettings = true
-            }
-          } else {
-            embeddedStore.customConfigEmbeddedRulesList[row.name] = {
-              name: row.name,
-              fullRule: updateEmbeddedAppRes.modePayload.fullRule
-            }
+        if (embeddedStore.customConfigEmbeddedRulesList[row.name]) {
+          embeddedStore.customConfigEmbeddedRulesList[row.name].fullRule = updateEmbeddedAppRes.modePayload.fullRule
+          const hasDefaultSettings = embeddedStore.sourceEmbeddedRulesList[row.name]?.hasOwnProperty('defaultSettings')
+          if (hasDefaultSettings) {
+            embeddedStore.sourceEmbeddedRulesList[row.name].defaultSettings = true
           }
-          if (embeddedStore.customConfigFixedOrientationList[row.name]) {
-            if (updateEmbeddedAppRes.modePayload.hasOwnProperty('isShowDivider')) {
-              embeddedStore.customConfigFixedOrientationList[row.name].isShowDivider = updateEmbeddedAppRes.modePayload.isShowDivider
-            }
-            if (updateEmbeddedAppRes.modePayload.hasOwnProperty('skipSelfAdaptive')) {
-              embeddedStore.customConfigFixedOrientationList[row.name].disable = updateEmbeddedAppRes.modePayload.skipSelfAdaptive
-            }
-            if (updateEmbeddedAppRes.modePayload.hasOwnProperty('supportFullSize')) {
-              embeddedStore.customConfigFixedOrientationList[row.name].supportFullSize = updateEmbeddedAppRes.modePayload.supportFullSize
-            }
-          } else {
-            embeddedStore.customConfigFixedOrientationList[row.name] = {
-              name: row.name,
-              ...(updateEmbeddedAppRes.modePayload.isShowDivider) ? { isShowDivider: true } : {},
-              ...(updateEmbeddedAppRes.modePayload.skipSelfAdaptive) ? { disable: true } : {},
-              ...(updateEmbeddedAppRes.modePayload.supportFullSize) ? { supportFullSize: true } : {}
-            }
+        } else {
+          embeddedStore.customConfigEmbeddedRulesList[row.name] = {
+            name: row.name,
+            fullRule: updateEmbeddedAppRes.modePayload.fullRule
           }
+        }
+        if (embeddedStore.customConfigFixedOrientationList[row.name]) {
+          if (updateEmbeddedAppRes.modePayload.hasOwnProperty('isShowDivider')) {
+            embeddedStore.customConfigFixedOrientationList[row.name].isShowDivider = updateEmbeddedAppRes.modePayload.isShowDivider
+          }
+          if (updateEmbeddedAppRes.modePayload.hasOwnProperty('skipSelfAdaptive')) {
+            embeddedStore.customConfigFixedOrientationList[row.name].disable = updateEmbeddedAppRes.modePayload.skipSelfAdaptive
+          }
+          if (updateEmbeddedAppRes.modePayload.hasOwnProperty('supportFullSize')) {
+            embeddedStore.customConfigFixedOrientationList[row.name].supportFullSize = updateEmbeddedAppRes.modePayload.supportFullSize
+          }
+        } else {
+          embeddedStore.customConfigFixedOrientationList[row.name] = {
+            name: row.name,
+            ...(updateEmbeddedAppRes.modePayload.isShowDivider) ? { isShowDivider: true } : {},
+            ...(updateEmbeddedAppRes.modePayload.skipSelfAdaptive) ? { disable: true } : {},
+            ...(updateEmbeddedAppRes.modePayload.supportFullSize) ? { supportFullSize: true } : {}
+          }
+        }
       }
       if (updateEmbeddedAppRes.settingMode === 'fixedOrientation') {
         if (embeddedStore.customConfigFixedOrientationList[row.name]) {
@@ -218,9 +257,9 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
         embeddedEnable: ['embedded', 'fullScreen'].includes(updateEmbeddedAppRes.settingMode) ? true : false
       }
       const [submitUpdateEmbeddedAppErr, submitUpdateEmbeddedAppRes] = await $to(ksuApi.updateEmbeddedApp({
-        customEmbeddedRulesListXML: xmlFormat.objectToXML(embeddedStore.customConfigEmbeddedRulesList,'package',undefined),
-        customFixedOrientationListXML: xmlFormat.objectToXML(embeddedStore.customConfigFixedOrientationList,'package',undefined),
-        settingConfigXML: xmlFormat.objectToXML(embeddedStore.embeddedSettingConfig,'setting','setting_rule'),
+        customEmbeddedRulesListXML: xmlFormat.objectToXML(embeddedStore.customConfigEmbeddedRulesList, 'package', undefined),
+        customFixedOrientationListXML: xmlFormat.objectToXML(embeddedStore.customConfigFixedOrientationList, 'package', undefined),
+        settingConfigXML: xmlFormat.objectToXML(embeddedStore.embeddedSettingConfig, 'setting', 'setting_rule'),
         switchAction: {
           name: row.name,
           action: ['embedded', 'fullScreen'].includes(updateEmbeddedAppRes.settingMode) ? 'enable' : 'disable'
@@ -240,7 +279,7 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
           type: 'success',
           preset: 'dialog',
           content: () => (
-            <p>好耶w， <span class="font-bold text-gray-600">{row.name}</span> 的应用配置更新成功了OwO~如果应用更新后的规则不生效，可以尝试重启平板并且在 <span class="font-bold text-gray-600">"平板专区-平行窗口"</span> 内 <span class="font-bold text-gray-600">{['embedded', 'fullScreen'].includes(updateEmbeddedAppRes.settingMode) ? '打开' : '关闭'}</span> 该应用的开关再做尝试~</p>
+            <p>好耶w， <span class="font-bold text-gray-600">{row.name}</span> 的应用配置更新成功了OwO~如果应用更新后的规则不生效，可以尝试重启平板并且在 <span class="font-bold text-gray-600">平板专区-平行窗口</span> 内 <span class="font-bold text-gray-600">{['embedded', 'fullScreen'].includes(updateEmbeddedAppRes.settingMode) ? '打开' : '关闭'}</span> 该应用的开关再做尝试~</p>
           )
         })
         embeddedStore.updateMergeRuleList()
@@ -297,9 +336,9 @@ const handleRuleMode = (row: EmbeddedMergeRuleItem, index: number, ruleMode: Emb
           delete embeddedStore.customConfigFixedOrientationList[row.name]
         }
         const [submitUpdateEmbeddedAppErr, submitUpdateEmbeddedAppRes] = await $to(ksuApi.updateEmbeddedApp({
-          customEmbeddedRulesListXML: xmlFormat.objectToXML(embeddedStore.customConfigEmbeddedRulesList,'package',undefined),
-          customFixedOrientationListXML: xmlFormat.objectToXML(embeddedStore.customConfigFixedOrientationList,'package',undefined),
-          settingConfigXML: xmlFormat.objectToXML(embeddedStore.embeddedSettingConfig,'setting','setting_rule'),
+          customEmbeddedRulesListXML: xmlFormat.objectToXML(embeddedStore.customConfigEmbeddedRulesList, 'package', undefined),
+          customFixedOrientationListXML: xmlFormat.objectToXML(embeddedStore.customConfigFixedOrientationList, 'package', undefined),
+          settingConfigXML: xmlFormat.objectToXML(embeddedStore.embeddedSettingConfig, 'setting', 'setting_rule'),
           switchAction: {
             name: row.name,
             action: embeddedStore.sourceEmbeddedRulesList[row.name] ? 'enable' : 'disable'
@@ -465,31 +504,37 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 </script>
 
 <template>
-    <main class="mb-10">
-      <div class="mt-5">
-        <div class="px-4 sm:px-0 mb-5">
-          <h3 class="text-base font-semibold leading-7 text-gray-900">应用横屏配置</h3>
-          <p class="mt-1 max-w-2xl text-sm leading-6 text-gray-500">在这里可以快速管理平板在横屏应用下的配置</p>
-        </div>
+  <main class="mb-10">
+    <div class="mt-5">
+      <div class="px-4 sm:px-0 mb-5">
+        <h3 class="text-base font-semibold leading-7 text-gray-900">应用横屏配置</h3>
+        <p class="mt-1 max-w-2xl text-sm leading-6 text-gray-500">在这里可以快速管理平板在横屏应用下的配置</p>
       </div>
-      <n-card title="操作栏" size="small">
-        <n-button class="mb-3 mr-3" type="info" :loading="embeddedStore.loading" @click="openAddEmbeddedApp">
-          添加应用
+    </div>
+    <n-card title="操作栏" size="small">
+      <n-button class="mb-3 mr-3" type="info" :loading="embeddedStore.loading" @click="openAddEmbeddedApp">
+        添加应用
+      </n-button>
+      <n-button class="mb-3 mr-3" type="success" :loading="embeddedStore.loading" @click="() => reloadPage()">
+        刷新 Web UI
+      </n-button>
+      <!-- <n-button class="mb-3 mr-3" type="success" :loading="embeddedStore.loading" @click="() => testBtn()">
+        测试按钮
+      </n-button> -->
+      <n-input-group>
+        <n-input size="large" clearable v-model:value="embeddedStore.searchKeyWord" ref="searchKeyWordInput" placeholder="搜索应用包名" autosize
+          style="min-width: 80%" />
+        <n-button size="large" type="primary" @click="() => {
+          searchKeyWordInput?.blur()
+        }">
+          确定
         </n-button>
-        <n-button class="mb-3 mr-3" type="success" :loading="embeddedStore.loading" @click="() => reloadPage()">
-          刷新 Web UI
-        </n-button>
-        <n-input-group>
-          <n-input size="large" v-model:value="embeddedStore.searchKeyWord" placeholder="搜索应用包名" autosize
-            style="min-width: 80%" />
-          <n-button size="large" type="primary" @click="() => embeddedStore.searchKeyWord = ''">
-            清空
-          </n-button>
-        </n-input-group>
-      </n-card>
-      <n-data-table :loading="embeddedStore.loading" :columns="columns" :data="embeddedStore.filterMergeRuleList" :pagination="pagination" />
-    </main>
-    <ErrorModal v-model="showErrorModal" :errorLogging="embeddedStore.errorLogging" />
-    <EmbeddedAppDrawer ref="addEmbeddedApp" type="add" title="添加应用" />
-    <EmbeddedAppDrawer ref="updateEmbeddedApp" type="update" title="更新应用" />
+      </n-input-group>
+    </n-card>
+    <n-data-table :loading="embeddedStore.loading" :columns="columns" :data="embeddedStore.filterMergeRuleList"
+      :pagination="pagination" />
+  </main>
+  <ErrorModal v-model="showErrorModal" :errorLogging="embeddedStore.errorLogging" />
+  <EmbeddedAppDrawer ref="addEmbeddedApp" type="add" title="添加应用" />
+  <EmbeddedAppDrawer ref="updateEmbeddedApp" type="update" title="更新应用" />
 </template>

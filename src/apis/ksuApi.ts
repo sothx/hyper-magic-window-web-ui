@@ -215,6 +215,19 @@ export const getAutoUISettingConfig = ():Promise<string> => {
     });
 }
 
+export const getUserAppList = ():Promise<string> => {
+    return new Promise(async (resolve, reject) => {
+        if (import.meta.env.MODE === 'development') {
+            const response = await axios.get('/data/test.json');
+            const jsonText = response.data; // 这是 XML 内容
+            resolve(jsonText);
+        } else {
+            const { errno, stdout, stderr }: ExecResult = await exec("cat /data/system/users/0/autoui_setting_config.xml");
+            errno ? reject(stderr) : resolve(stdout);
+        }
+    });
+}
+
 export interface updateEmbeddedAppParams {
     customEmbeddedRulesListXML: string;
     customFixedOrientationListXML: string;

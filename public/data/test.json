@@ -1,0 +1,923 @@
+[
+    {
+      "package_name": "com.chinamworld.main",
+      "app_name": "中国建设银行"
+    },
+    {
+      "package_name": "com.tencent.pao",
+      "app_name": "天天酷跑"
+    },
+    {
+      "package_name": "com.miui.miservice",
+      "app_name": "服务与反馈"
+    },
+    {
+      "package_name": "com.jsmcc",
+      "app_name": "中国移动江苏"
+    },
+    {
+      "package_name": "com.altlab.lbz",
+      "app_name": "飞越13号房"
+    },
+    {
+      "package_name": "com.pointer.wave.easyship",
+      "app_name": "一叶孤舟"
+    },
+    {
+      "package_name": "com.cainiao.wireless",
+      "app_name": "菜鸟"
+    },
+    {
+      "package_name": "com.job.android",
+      "app_name": "前程无忧51Job"
+    },
+    {
+      "package_name": "ru.fieldtest.modemcaps",
+      "app_name": ""
+    },
+    {
+      "package_name": "com.chinamworld.bocmbci",
+      "app_name": "中国银行"
+    },
+    {
+      "package_name": "com.fenbi.android.solar",
+      "app_name": ""
+    },
+    {
+      "package_name": "cn.gov.pbc.dcep",
+      "app_name": "数字人民币"
+    },
+    {
+      "package_name": "com.Qunar",
+      "app_name": "去哪儿旅行"
+    },
+    {
+      "package_name": "com.MobileTicket",
+      "app_name": "铁路12306"
+    },
+    {
+      "package_name": "test.hook.debug",
+      "app_name": ""
+    },
+    {
+      "package_name": "com.alicloud.databox",
+      "app_name": "阿里云盘"
+    },
+    {
+      "package_name": "com.github.android",
+      "app_name": "GitHub"
+    },
+    {
+      "package_name": "com.qqgame.hlddz",
+      "app_name": "欢乐斗地主"
+    },
+    {
+      "package_name": "cn.wps.moffice_eng",
+      "app_name": ""
+    },
+    {
+      "package_name": "com.alibaba.android.rimet",
+      "app_name": ""
+    },
+    {
+      "package_name": "com.shanbay.sentence",
+      "app_name": "扇贝单词英语版"
+    },
+    {
+      "package_name": "org.zwanoo.android.speedtest",
+      "app_name": "Speedtest"
+    },
+    {
+      "package_name": "com.zengame.ttmjdjb.mi",
+      "app_name": "指尖四川麻将"
+    },
+    {
+      "package_name": "com.xiaomi.mibrain.speech",
+      "app_name": "系统语音引擎"
+    },
+    {
+      "package_name": "moe.shizuku.redirectstorage",
+      "app_name": "存储空间隔离"
+    },
+    {
+      "package_name": "com.PigeonGames.Phigros",
+      "app_name": "Phigros"
+    },
+    {
+      "package_name": "com.miui.video",
+      "app_name": "小米视频"
+    },
+    {
+      "package_name": "com.termux",
+      "app_name": "Termux"
+    },
+    {
+      "package_name": "com.east2west.minimetro.TapTap",
+      "app_name": "模拟地铁"
+    },
+    {
+      "package_name": "com.mfashiongallery.emag",
+      "app_name": "小米画报"
+    },
+    {
+      "package_name": "com.netease.cloudmusic",
+      "app_name": "网易云音乐"
+    },
+    {
+      "package_name": "com.lucky.luckyclient",
+      "app_name": ""
+    },
+    {
+      "package_name": "com.sina.weibo",
+      "app_name": "微博"
+    },
+    {
+      "package_name": "com.tencent.jkchess",
+      "app_name": "金铲铲之战"
+    },
+    {
+      "package_name": "com.wuba.zhuanzhuan",
+      "app_name": ""
+    },
+    {
+      "package_name": "me.simpleHook",
+      "app_name": "SimpleHookR"
+    },
+    {
+      "package_name": "com.xayah.databackup.premium",
+      "app_name": "数据备份"
+    },
+    {
+      "package_name": "me.weishu.kernelsu",
+      "app_name": "KernelSU"
+    },
+    {
+      "package_name": "com.shizhuang.duapp",
+      "app_name": "得物"
+    },
+    {
+      "package_name": "com.kiloo.subwaysurf",
+      "app_name": "地铁跑酷"
+    },
+    {
+      "package_name": "com.tooyoung.lanzou",
+      "app_name": ""
+    },
+    {
+      "package_name": "com.tencent.game.rhythmmaster",
+      "app_name": "节奏大师"
+    },
+    {
+      "package_name": "com.jingdong.app.mall",
+      "app_name": ""
+    },
+    {
+      "package_name": "com.xiaomi.scanner",
+      "app_name": "小爱视觉"
+    },
+    {
+      "package_name": "com.xunmeng.pinduoduo",
+      "app_name": ""
+    },
+    {
+      "package_name": "com.miui.weather2",
+      "app_name": "天气"
+    },
+    {
+      "package_name": "com.ruijie.wifim",
+      "app_name": "WiFi魔盒"
+    },
+    {
+      "package_name": "com.hupu.shihuo",
+      "app_name": "识货"
+    },
+    {
+      "package_name": "com.houvven.guise",
+      "app_name": "Guise"
+    },
+    {
+      "package_name": "com.fenbi.android.kyzz",
+      "app_name": "粉笔考研"
+    },
+    {
+      "package_name": "top.yukonga.updater.kmp",
+      "app_name": "Updater"
+    },
+    {
+      "package_name": "org.kustom.widget",
+      "app_name": ""
+    },
+    {
+      "package_name": "bin.mt.plus",
+      "app_name": "MT管理器"
+    },
+    {
+      "package_name": "com.github.metacubex.clash.meta",
+      "app_name": "Clash Meta for Android"
+    },
+    {
+      "package_name": "com.omarea.vaddin",
+      "app_name": ""
+    },
+    {
+      "package_name": "com.xiaomi.smarthome",
+      "app_name": "米家"
+    },
+    {
+      "package_name": "com.android.calendar",
+      "app_name": "日历"
+    },
+    {
+      "package_name": "com.xiaomi.mimobile.noti",
+      "app_name": "全球上网工具插件"
+    },
+    {
+      "package_name": "com.miui.thirdappassistant",
+      "app_name": "三方应用异常分析"
+    },
+    {
+      "package_name": "info.muge.appshare",
+      "app_name": "AppShare"
+    },
+    {
+      "package_name": "com.cnspeedtest.globalspeed",
+      "app_name": "全球网测"
+    },
+    {
+      "package_name": "com.miui.miwallpaper.moon",
+      "app_name": "月球超级壁纸"
+    },
+    {
+      "package_name": "icu.nullptr.applistdetector",
+      "app_name": "Applist Detector"
+    },
+    {
+      "package_name": "com.dv.adm",
+      "app_name": "ADM"
+    },
+    {
+      "package_name": "io.github.qauxv",
+      "app_name": ""
+    },
+    {
+      "package_name": "com.eg.android.AlipayGphone",
+      "app_name": "支付宝"
+    },
+    {
+      "package_name": "com.miui.virtualsim",
+      "app_name": "全球上网"
+    },
+    {
+      "package_name": "com.tencent.tmgp.sgamece",
+      "app_name": "王者荣耀前瞻版"
+    },
+    {
+      "package_name": "com.miui.miwallpaper.snowmountain",
+      "app_name": "雪山超级壁纸"
+    },
+    {
+      "package_name": "com.miui.screenrecorder",
+      "app_name": "屏幕录制"
+    },
+    {
+      "package_name": "com.klcxkj.zqxy",
+      "app_name": "趣智校园"
+    },
+    {
+      "package_name": "com.maxmpz.audioplayer",
+      "app_name": "Poweramp"
+    },
+    {
+      "package_name": "com.hy.mipaycard",
+      "app_name": "MiPay卡面工具"
+    },
+    {
+      "package_name": "com.taobao.idlefish",
+      "app_name": "闲鱼"
+    },
+    {
+      "package_name": "com.sidesand.millet",
+      "app_name": "SMillet Pro"
+    },
+    {
+      "package_name": "com.njmetro.njb",
+      "app_name": "与宁同行"
+    },
+    {
+      "package_name": "com.salt.music",
+      "app_name": "Salt Player"
+    },
+    {
+      "package_name": "com.zmzx.college.search",
+      "app_name": "大学搜题酱"
+    },
+    {
+      "package_name": "com.ct.client",
+      "app_name": "中国电信"
+    },
+    {
+      "package_name": "com.jd.pingou",
+      "app_name": ""
+    },
+    {
+      "package_name": "com.coderstory.toolkit",
+      "app_name": "核心破解"
+    },
+    {
+      "package_name": "com.turbochilli.rollingsky",
+      "app_name": "滚动的天空"
+    },
+    {
+      "package_name": "com.taobao.taobao",
+      "app_name": "淘宝"
+    },
+    {
+      "package_name": "com.jozein.xedgepro",
+      "app_name": ""
+    },
+    {
+      "package_name": "com.fkzhang.wechatxposed",
+      "app_name": "微X模块"
+    },
+    {
+      "package_name": "com.google.ar.core",
+      "app_name": "Google Play Services for AR"
+    },
+    {
+      "package_name": "com.gswxxn.unlockmilink",
+      "app_name": "小米不妙·享"
+    },
+    {
+      "package_name": "hello.litiaotiao.app",
+      "app_name": ""
+    },
+    {
+      "package_name": "com.microsoft.skydrive",
+      "app_name": "OneDrive"
+    },
+    {
+      "package_name": "app.rikka.savecopy",
+      "app_name": "保存副本"
+    },
+    {
+      "package_name": "com.qtrun.QuickTest",
+      "app_name": ""
+    },
+    {
+      "package_name": "com.android.soundrecorder",
+      "app_name": "录音机"
+    },
+    {
+      "package_name": "com.rt.market.fresh",
+      "app_name": ""
+    },
+    {
+      "package_name": "tw.nekomimi.nekogram",
+      "app_name": "Nekogram"
+    },
+    {
+      "package_name": "com.tmri.app.main",
+      "app_name": "交管12123"
+    },
+    {
+      "package_name": "com.coolapk.market",
+      "app_name": "酷安"
+    },
+    {
+      "package_name": "mark.via",
+      "app_name": "Via"
+    },
+    {
+      "package_name": "com.miui.player",
+      "app_name": "音乐"
+    },
+    {
+      "package_name": "com.mxtech.videoplayer.ad",
+      "app_name": "MX Player"
+    },
+    {
+      "package_name": "statusbar.lyric.compose",
+      "app_name": "墨·状态栏歌词"
+    },
+    {
+      "package_name": "com.yoka.newsgs",
+      "app_name": "三国杀OL互通版"
+    },
+    {
+      "package_name": "com.xiaomi.vipaccount",
+      "app_name": "小米社区"
+    },
+    {
+      "package_name": "flar2.devcheck",
+      "app_name": "DevCheck"
+    },
+    {
+      "package_name": "com.virb3.trustmealready",
+      "app_name": ""
+    },
+    {
+      "package_name": "com.weixiao.bz",
+      "app_name": ""
+    },
+    {
+      "package_name": "com.android.deskclock",
+      "app_name": "时钟"
+    },
+    {
+      "package_name": "com.baidu.netdisk",
+      "app_name": ""
+    },
+    {
+      "package_name": "com.miui.miwallpaper.earth",
+      "app_name": "地球超级壁纸"
+    },
+    {
+      "package_name": "com.topjohnwu.magisk",
+      "app_name": "Magisk"
+    },
+    {
+      "package_name": "com.shawn.nfcwriter",
+      "app_name": "NFC Writer"
+    },
+    {
+      "package_name": "com.duokan.phone.remotecontroller",
+      "app_name": "万能遥控"
+    },
+    {
+      "package_name": "com.miui.compass",
+      "app_name": "指南针"
+    },
+    {
+      "package_name": "com.omarea.vtools",
+      "app_name": "Scene"
+    },
+    {
+      "package_name": "com.android.email",
+      "app_name": "电子邮件"
+    },
+    {
+      "package_name": "com.guoshi.httpcanary.premium",
+      "app_name": "HttpCanary"
+    },
+    {
+      "package_name": "com.crgt.ilife",
+      "app_name": ""
+    },
+    {
+      "package_name": "com.x7890.shortcutcreator",
+      "app_name": "创建快捷方式"
+    },
+    {
+      "package_name": "io.github.a13e300.ksuwebui",
+      "app_name": "KsuWebUI"
+    },
+    {
+      "package_name": "com.miui.gallery",
+      "app_name": "相册"
+    },
+    {
+      "package_name": "xzr.hkf",
+      "app_name": "Horizon Kernel Flasher"
+    },
+    {
+      "package_name": "youqu.android.todesk",
+      "app_name": "ToDesk"
+    },
+    {
+      "package_name": "com.sankuai.meituan",
+      "app_name": "美团"
+    },
+    {
+      "package_name": "com.kooritea.fcmfix",
+      "app_name": "fcmfix"
+    },
+    {
+      "package_name": "com.mfcloudcalculate.networkdisk",
+      "app_name": "123云盘"
+    },
+    {
+      "package_name": "com.tencent.docs",
+      "app_name": "腾讯文档"
+    },
+    {
+      "package_name": "com.tsng.hidemyapplist",
+      "app_name": "隐藏应用列表"
+    },
+    {
+      "package_name": "top.yukonga.mediaControlBlur",
+      "app_name": ""
+    },
+    {
+      "package_name": "com.jd.jrapp",
+      "app_name": "京东金融"
+    },
+    {
+      "package_name": "vegabobo.dsusideloader",
+      "app_name": "DSU Sideloader"
+    },
+    {
+      "package_name": "com.One.WoodenLetter",
+      "app_name": "一个木函"
+    },
+    {
+      "package_name": "cn.com.chsi.chsiapp",
+      "app_name": "学信网"
+    },
+    {
+      "package_name": "com.baidu.homework",
+      "app_name": "作业帮"
+    },
+    {
+      "package_name": "com.tencent.mm",
+      "app_name": "微信"
+    },
+    {
+      "package_name": "com.kingosoft.activity_kb_common",
+      "app_name": "喜鹊儿"
+    },
+    {
+      "package_name": "net.imknown.android.forefrontinfo",
+      "app_name": "底层探测器"
+    },
+    {
+      "package_name": "io.github.vvb2060.mahoshojo",
+      "app_name": "Momo"
+    },
+    {
+      "package_name": "com.miui.calculator",
+      "app_name": "计算器"
+    },
+    {
+      "package_name": "cn.lyric.getter",
+      "app_name": "酒域-歌词获取"
+    },
+    {
+      "package_name": "com.yitong.mbank",
+      "app_name": "江苏·农商行"
+    },
+    {
+      "package_name": "com.nasoft.socmark",
+      "app_name": "手机性能排行"
+    },
+    {
+      "package_name": "com.nike.omega",
+      "app_name": "Nike 耐克"
+    },
+    {
+      "package_name": "com.miui.notes",
+      "app_name": "笔记"
+    },
+    {
+      "package_name": "com.midea.vm.washer",
+      "app_name": "U净"
+    },
+    {
+      "package_name": "com.taptap",
+      "app_name": ""
+    },
+    {
+      "package_name": "com.xiaomi.shop",
+      "app_name": "小米商城"
+    },
+    {
+      "package_name": "com.tencent.tmgp.sgame",
+      "app_name": ""
+    },
+    {
+      "package_name": "cn.trinea.android.developertools.pro",
+      "app_name": "开发助手专业版"
+    },
+    {
+      "package_name": "com.phoenix.read",
+      "app_name": ""
+    },
+    {
+      "package_name": "com.autonavi.minimap",
+      "app_name": "高德地图"
+    },
+    {
+      "package_name": "com.android.chrome",
+      "app_name": ""
+    },
+    {
+      "package_name": "com.mi.earphone",
+      "app_name": "小米耳机"
+    },
+    {
+      "package_name": "com.midea.ai.appliances",
+      "app_name": "美的美居"
+    },
+    {
+      "package_name": "com.tencent.wemeet.app",
+      "app_name": ""
+    },
+    {
+      "package_name": "com.miniclip.plagueinc",
+      "app_name": "Plague Inc."
+    },
+    {
+      "package_name": "com.ebt.mydy",
+      "app_name": "我的丹阳"
+    },
+    {
+      "package_name": "com.max.xiaoheihe",
+      "app_name": "小黑盒"
+    },
+    {
+      "package_name": "com.xuexiaoyi.xxy",
+      "app_name": "学小易"
+    },
+    {
+      "package_name": "name.caiyao.sporteditor",
+      "app_name": "运动修改器"
+    },
+    {
+      "package_name": "com.sony.songpal.mdr",
+      "app_name": "Headphones"
+    },
+    {
+      "package_name": "com.android.providers.downloads.ui",
+      "app_name": "下载管理"
+    },
+    {
+      "package_name": "com.absinthe.libchecker",
+      "app_name": "LibChecker"
+    },
+    {
+      "package_name": "com.ss919p.pgrToken",
+      "app_name": "获取Token"
+    },
+    {
+      "package_name": "cn.LoserFox.BuckshotRoulette",
+      "app_name": "Buckshot Roulette"
+    },
+    {
+      "package_name": "cn.myflv.noactive",
+      "app_name": "NoActive"
+    },
+    {
+      "package_name": "com.miui.mediaeditor",
+      "app_name": "小米相册-编辑"
+    },
+    {
+      "package_name": "com.miui.miwallpaper.mars",
+      "app_name": "火星超级壁纸"
+    },
+    {
+      "package_name": "bin.mt.termex",
+      "app_name": "MT终端扩展包"
+    },
+    {
+      "package_name": "xzr.konabess",
+      "app_name": "KonaBess"
+    },
+    {
+      "package_name": "com.miui.cleanmaster",
+      "app_name": "垃圾清理"
+    },
+    {
+      "package_name": "com.miui.miwallpaper.saturn",
+      "app_name": "土星超级壁纸"
+    },
+    {
+      "package_name": "com.futuremark.dmandroid.application",
+      "app_name": ""
+    },
+    {
+      "package_name": "org.kustom.wallpaper",
+      "app_name": "Kustom LWP"
+    },
+    {
+      "package_name": "com.miui.newmidrive",
+      "app_name": "小米云盘"
+    },
+    {
+      "package_name": "com.prpr.musedash.TapTap",
+      "app_name": "Muse Dash 喵斯快跑"
+    },
+    {
+      "package_name": "ss.colytitse.setappfull",
+      "app_name": "设置应用全屏"
+    },
+    {
+      "package_name": "com.baidu.carlife.xiaomi",
+      "app_name": ""
+    },
+    {
+      "package_name": "tv.danmaku.bili",
+      "app_name": "哔哩哔哩"
+    },
+    {
+      "package_name": "me.kyuubiran.qqcleaner",
+      "app_name": "QQ瘦身"
+    },
+    {
+      "package_name": "com.blackshark.flutter_toolbox",
+      "app_name": "黑鲨装备箱"
+    },
+    {
+      "package_name": "org.telegram.messenger",
+      "app_name": ""
+    },
+    {
+      "package_name": "cn.wq.myandroidtools",
+      "app_name": "MyAndroidTools"
+    },
+    {
+      "package_name": "com.ss.android.ugc.aweme",
+      "app_name": ""
+    },
+    {
+      "package_name": "com.alpetra.ruicorreia.sppedometerone",
+      "app_name": "Speedometer One"
+    },
+    {
+      "package_name": "com.wakdev.nfctools.pro",
+      "app_name": ""
+    },
+    {
+      "package_name": "com.xjcheng.musictageditor",
+      "app_name": "音乐标签"
+    },
+    {
+      "package_name": "com.azure.authenticator",
+      "app_name": "Authenticator"
+    },
+    {
+      "package_name": "cn.wps.moffice_eng.xiaomi.lite",
+      "app_name": "小米文档查看器（WPS定制）"
+    },
+    {
+      "package_name": "webapp.erweima",
+      "app_name": "二维码"
+    },
+    {
+      "package_name": "com.dede.android_eggs",
+      "app_name": ""
+    },
+    {
+      "package_name": "com.xiaomi.migameservice",
+      "app_name": "游戏高能时刻"
+    },
+    {
+      "package_name": "com.x1y9.probe",
+      "app_name": "隐秘参数"
+    },
+    {
+      "package_name": "com.yek.android.kfc.activitys",
+      "app_name": "肯德基"
+    },
+    {
+      "package_name": "com.tencent.mobileqq",
+      "app_name": ""
+    },
+    {
+      "package_name": "make.more.r2d2.cellular_pro",
+      "app_name": "Cellular-Pro"
+    },
+    {
+      "package_name": "cn.cyberIdentity.certification",
+      "app_name": "国家网络身份认证"
+    },
+    {
+      "package_name": "net.kaaass.zerotierfix",
+      "app_name": "Zerotier Fix"
+    },
+    {
+      "package_name": "io.iftech.android.box",
+      "app_name": "小组件盒子"
+    },
+    {
+      "package_name": "com.valvesoftware.android.steam.community",
+      "app_name": "Steam"
+    },
+    {
+      "package_name": "com.miui.miwallpaper.geometry",
+      "app_name": "几何超级壁纸"
+    },
+    {
+      "package_name": "com.yizhilu.qh",
+      "app_name": "启航教育"
+    },
+    {
+      "package_name": "com.tongcheng.android",
+      "app_name": "同程旅行"
+    },
+    {
+      "package_name": "com.antutu.benchmark.full",
+      "app_name": "安兔兔评测3D"
+    },
+    {
+      "package_name": "com.tmall.wireless",
+      "app_name": "天猫"
+    },
+    {
+      "package_name": "com.unionpay",
+      "app_name": ""
+    },
+    {
+      "package_name": "com.mi.health",
+      "app_name": "小米运动健康"
+    },
+    {
+      "package_name": "com.jd.jdlite",
+      "app_name": ""
+    },
+    {
+      "package_name": "com.tencent.gamehelper.smoba",
+      "app_name": "王者营地"
+    },
+    {
+      "package_name": "com.cshlolss.vipkill",
+      "app_name": "Vip Kill"
+    },
+    {
+      "package_name": "com.antutu.ABenchMark",
+      "app_name": "安兔兔评测"
+    },
+    {
+      "package_name": "com.miui.huanji",
+      "app_name": "小米换机"
+    },
+    {
+      "package_name": "com.gotokeep.keep",
+      "app_name": "Keep"
+    },
+    {
+      "package_name": "com.maxmpz.equalizer",
+      "app_name": "Poweramp 均衡器"
+    },
+    {
+      "package_name": "com.chaoxing.mobile",
+      "app_name": ""
+    },
+    {
+      "package_name": "com.miui.newhome",
+      "app_name": "内容中心"
+    },
+    {
+      "package_name": "com.xiaomi.gamecenter",
+      "app_name": ""
+    },
+    {
+      "package_name": "com.digibites.accubattery",
+      "app_name": "AccuBattery"
+    },
+    {
+      "package_name": "com.mipay.wallet",
+      "app_name": "钱包"
+    },
+    {
+      "package_name": "dev.miuiicons.pedroz",
+      "app_name": "完美图标计划"
+    },
+    {
+      "package_name": "com.microsoft.windowsintune.companyportal",
+      "app_name": "公司门户"
+    },
+    {
+      "package_name": "moe.shizuku.privileged.api",
+      "app_name": "Shizuku"
+    },
+    {
+      "package_name": "com.ataaw.tianyi",
+      "app_name": "天翼生活"
+    },
+    {
+      "package_name": "com.yiban.app",
+      "app_name": ""
+    },
+    {
+      "package_name": "com.dna.tools",
+      "app_name": ""
+    },
+    {
+      "package_name": "com.baidu.tieba",
+      "app_name": ""
+    },
+    {
+      "package_name": "com.yifeplayte.maxfreeform",
+      "app_name": ""
+    },
+    {
+      "package_name": "gjzs.online",
+      "app_name": "搞机助手·R"
+    },
+    {
+      "package_name": "tool.xfy9326.milink.nfc",
+      "app_name": ""
+    },
+    {
+      "package_name": "com.cmplay.dancingline",
+      "app_name": "跳舞的线"
+    },
+    {
+      "package_name": "com.sevtinge.hyperceiler",
+      "app_name": "HyperCeiler"
+    },
+    {
+      "package_name": "com.microsoft.rdc.androidx",
+      "app_name": "Microsoft 远程桌面"
+    }
+  ]
+  

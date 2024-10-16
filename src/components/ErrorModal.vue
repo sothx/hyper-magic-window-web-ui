@@ -22,7 +22,7 @@ const close = () => {
 </script>
 
 <template>
-    <n-modal @positive-click="close" @close="close" style="width: 600px" title="发生错误" block-scroll="true" positive-text="确认"
+    <n-modal @positive-click="close" @close="close" style="width: 600px" title="发生错误" type="error" block-scroll="true" positive-text="确认"
         preset="dialog" :mask-closable="true" :show="props.modelValue">
         <n-card :bordered="false">
             <n-alert v-for="errItem in props.errorLogging" :title="`[发生错误] ${errItem.type}`" class="mb-5" type="error">

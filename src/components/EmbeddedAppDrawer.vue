@@ -49,12 +49,12 @@ interface fixedOrientationRatioOptions {
 
 const fullScreenRuleOptions: fullScreenRuleOptions[] = [
     {
-        label: '强制应用所有界面横屏',
+        label: '强制应用所有界面横屏[nra:cr:rcr:nr]',
         key: 'fullScreen_nra:cr:rcr:nr',
         rule: 'nra:cr:rcr:nr'
     },
     {
-        label: '继承应用自身设置横屏',
+        label: '继承应用自身设置横屏[*]',
         key: 'fullScreen_*',
         rule: '*'
     },
@@ -66,7 +66,7 @@ const fullScreenRuleOptions: fullScreenRuleOptions[] = [
 
 const fixedOrientationRatioOptions: fixedOrientationRatioOptions[] = [
     {
-        label: '大尺寸(11:10)',
+        label: '大尺寸[11:10]',
         key: 'ratio_11_10',
         ratio: 1.1
     },
@@ -75,12 +75,12 @@ const fixedOrientationRatioOptions: fixedOrientationRatioOptions[] = [
         key: 'ratio_default',
     },
     {
-        label: '小尺寸(15:10)',
+        label: '小尺寸[15:10]',
         key: 'ratio_15_10',
         ratio: 1.5
     },
     {
-        label: '小尺寸(18:10)',
+        label: '小尺寸[18:10]',
         key: 'ratio_18:10',
         ratio: 1.8
     },
