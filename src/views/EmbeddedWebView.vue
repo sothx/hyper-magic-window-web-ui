@@ -9,6 +9,7 @@ const iframeRef = ref<HTMLIFrameElement | null>(null);
 // 加载完成后的处理
 const onLoad = () => {
   console.log('网页加载完成');
+  loading.value = false;
   adjustIframeHeight(); // 加载完成后调整高度
 };
 
@@ -41,47 +42,54 @@ watch(() => route.query.url, (newUrl) => {
   }
 });
 
+const loading = ref<boolean>(true);
+
 onBeforeUnmount(() => {
   window.removeEventListener('resize', onResize);
 });
 </script>
 
 <template>
-  <div class="webview-container">
-    <iframe
-      ref="iframeRef"
-      :src="url"
-      frameborder="0"
-      class="webview"
-      @load="onLoad"
-    ></iframe>
-  </div>
+  <n-spin :show="loading">
+    <div class="webview-container">
+      <iframe ref="iframeRef" :src="url" frameborder="0" class="webview" @load="onLoad"></iframe>
+    </div>
+  </n-spin>
 </template>
 
 <style scoped>
 .webview-container {
   position: relative;
   width: 100%;
-  height: 100%; /* 确保容器占满父元素的高度 */
-  overflow: hidden; /* 确保没有外部的滚动条 */
+  height: 100%;
+  /* 确保容器占满父元素的高度 */
+  overflow: hidden;
+  /* 确保没有外部的滚动条 */
 }
 
 .webview {
   width: 100%;
   border: none;
-  height: auto; /* 允许高度自适应 */
-  min-height: 100vh; /* 设置最小高度，确保 iframe 不会小于视口高度 */
+  height: auto;
+  /* 允许高度自适应 */
+  min-height: 100vh;
+  /* 设置最小高度，确保 iframe 不会小于视口高度 */
 }
 
 /* 隐藏滚动条 */
 .webview::-webkit-scrollbar {
-  display: none; /* 隐藏滚动条 */
+  display: none;
+  /* 隐藏滚动条 */
 }
 
 /* 确保 html 和 body 不会干扰 iframe 的高度 */
-html, body {
-  margin: 0; /* 确保没有默认的边距 */
-  padding: 0; /* 确保没有默认的内边距 */
-  overflow: hidden; /* 确保内容不会溢出 */
+html,
+body {
+  margin: 0;
+  /* 确保没有默认的边距 */
+  padding: 0;
+  /* 确保没有默认的内边距 */
+  overflow: hidden;
+  /* 确保内容不会溢出 */
 }
 </style>

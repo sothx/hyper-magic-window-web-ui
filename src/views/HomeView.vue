@@ -465,10 +465,6 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 </script>
 
 <template>
-  <n-spin :show="false">
-    <template v-if="embeddedStore.isNeedShowErrorModal" #description>
-      发生错误，无法加载
-    </template>
     <main class="mb-10">
       <div class="mt-5">
         <div class="px-4 sm:px-0 mb-5">
@@ -496,5 +492,4 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
     <ErrorModal v-model="showErrorModal" :errorLogging="embeddedStore.errorLogging" />
     <EmbeddedAppDrawer ref="addEmbeddedApp" type="add" title="添加应用" />
     <EmbeddedAppDrawer ref="updateEmbeddedApp" type="update" title="更新应用" />
-  </n-spin>
 </template>
