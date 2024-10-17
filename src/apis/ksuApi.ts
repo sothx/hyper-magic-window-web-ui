@@ -45,7 +45,7 @@ export const getAndroidTargetSdk = (): Promise<number> => {
 export const getMIOSVersion = (): Promise<number> => {
   return new Promise(async (resolve, reject) => {
     if (import.meta.env.MODE === "development") {
-      resolve(1);
+      resolve(2);
     } else {
       const { errno, stdout, stderr }: ExecResults = await exec(
         "getprop ro.mi.os.version.code"

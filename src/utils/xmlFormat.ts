@@ -213,8 +213,11 @@ export const mergeEmbeddedRule = (
     const settingConfig = settingRules[pkgName];
 
     // 初始化模式
+    const getSupportModes = fixedOrientationConfig?.supportModes?.split(',')
     let settingMode: EmbeddedMergeRuleItem["settingMode"] = "disabled";
     let isSupportEmbedded = embeddedConfig ? !embeddedConfig.fullRule : false;
+    let isSupportFixedOrientation = getSupportModes?.includes('fo') || false
+    let isSupportFullScreen = getSupportModes?.includes('full') ||  false
     let ruleMode: EmbeddedMergeRuleItem["ruleMode"] = customEmbeddedRules[pkgName] || customFixedOrientationRules[pkgName] ? "custom" : "module";
 
     if (settingConfig?.hasOwnProperty('embeddedEnable')) {
@@ -311,6 +314,8 @@ export const mergeEmbeddedRule = (
       name: pkgName,
       settingMode,
       isSupportEmbedded,
+      isSupportFixedOrientation,
+      isSupportFullScreen,
       ruleMode,
       embeddedRules: omitEmbeddedConfig ? omitEmbeddedConfig : undefined, // 排除 name 属性
       fixedOrientationRule: omitFixedOrientationConfig

@@ -120,7 +120,7 @@ export const useEmbeddedStore = defineStore("embedded", () => {
       );
     }
 
-    // 获取源固定方向列表
+    // 获取源居中布局列表
     const [getSourceFixedOrientationListErr, getSourceFixedOrientationListRes] =
       await $to<string,string>(ksuApi.getSourceFixedOrientationList());
     if (getSourceFixedOrientationListErr) {
@@ -140,7 +140,7 @@ export const useEmbeddedStore = defineStore("embedded", () => {
       );
     }
 
-    // 获取自定义配置固定方向列表
+    // 获取自定义配置居中布局列表
     const [
       getCustomConfigFixedOrientationListErr,
       getCustomConfigFixedOrientationListRes,

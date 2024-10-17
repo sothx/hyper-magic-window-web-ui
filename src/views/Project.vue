@@ -31,13 +31,13 @@ const { message } = createDiscreteApi(['message'])
             </n-alert>
           </div>
           <div class="px-4 flex sm:grid sm:px-0 mt-5">
-            <n-alert title="[未开始] 模块设置"  type="info">
-             已确定，未开始，提供可视化展示部分设备信息、模块信息并且可视化控制"游戏显示布局"、"智能IO调度"开关的选项。
+            <n-alert title="[开发中] 应用横屏配置- Hyper OS 2.0(Android 15+)"  type="warning">
+              开发中，支持Android 15 配置允许使用的适配选项，支持配置自定义比例
             </n-alert>
           </div>
           <div class="px-4 flex sm:grid sm:px-0 mt-5">
-            <n-alert title="[待定] 应用横屏配置- Hyper OS 2.0(Android 15+)"  type="warning">
-             待定，需求紧急程度较低，且目前Beta版表现出来的功能不稳定，待正式版发布且认为功能稳定性满足需求后，再考虑开发。
+            <n-alert title="[未开始] 模块设置"  type="info">
+             已确定，未开始，提供可视化展示部分设备信息、模块信息并且可视化控制"游戏显示布局"、"智能IO调度"开关的选项。
             </n-alert>
           </div>
           <div class="px-4 flex sm:grid sm:px-0 mt-5">

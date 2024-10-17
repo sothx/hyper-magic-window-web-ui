@@ -19,6 +19,7 @@ import {
   NDataTable,
   NMessageProvider,
   NTag,
+  NTab,
   NTabs,
   NTabPane,
   NInput,
@@ -39,6 +40,10 @@ import {
   NBreadcrumb,
   NBreadcrumbItem,
   NSkeleton,
+  NCheckboxGroup,
+  NCheckbox,
+  NGi,
+  NGrid
 } from "naive-ui";
 
 import App from "./App.vue";
@@ -62,6 +67,7 @@ const naive = create({
     NModal,
     NAlert,
     NCard,
+    NTab,
     NTabs,
     NTabPane,
     NRadioGroup,
@@ -73,7 +79,11 @@ const naive = create({
     NBreadcrumb,
     NBreadcrumbItem,
     NWatermark,
-    NSkeleton
+    NCheckboxGroup,
+    NCheckbox,
+    NSkeleton,
+    NGi,
+    NGrid
   ],
 });
 

@@ -1,6 +1,6 @@
 // 定义 FixedOrientationRuleItem 的类型
 /**
- * 表示固定方向的规则配置项。
+ * 表示居中布局的规则配置项。
  */
 export default interface FixedOrientationRuleItem {
   /** 应用包名（必填） */
