@@ -31,7 +31,7 @@ const { message } = createDiscreteApi(['message'])
             </n-alert>
           </div>
           <div class="px-4 flex sm:grid sm:px-0 mt-5">
-            <n-alert title="[开发中] 应用横屏配置- Hyper OS 2.0(Android 15+)"  type="warning">
+            <n-alert title="[开发中] 应用横屏配置- Hyper OS 2.0(Android 15+)"  type="info">
               开发中，支持Android 15 配置允许使用的适配选项，支持配置自定义比例
             </n-alert>
           </div>
