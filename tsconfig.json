@@ -9,6 +9,7 @@
     }
   ],
   "compilerOptions": {
+    "verbatimModuleSyntax": true,
     "jsx": "preserve",
     "jsxImportSource": "vue"
   }
