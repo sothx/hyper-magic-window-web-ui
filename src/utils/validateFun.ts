@@ -1,6 +1,6 @@
 export const validateAndroidPackageName = (packageName: string): boolean => {
     // 正则表达式校验安卓包名规则
-    const packageNameRegex = /^[a-zA-Z0-9.]+$/;
+    const packageNameRegex = /^[a-zA-Z0-9_.]+$/;
 
     // 允许空字符串
     if (packageName === '') {

@@ -9,6 +9,7 @@ import * as ksuApi from '@/apis/ksuApi'
 import { useDeviceStore } from '@/stores/device';
 import * as xmlFormat from '@/utils/xmlFormat';
 import { useEmbeddedStore } from '@/stores/embedded';
+import * as validateFun from '@/utils/validateFun';
 type EmbeddedAppDrawerInstance = InstanceType<typeof EmbeddedAppDrawer>;
 type SearchKeyWordInputInstance = InstanceType<typeof NInput>;
 
@@ -508,7 +509,7 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
       </n-button> -->
       <n-input-group>
         <n-input size="large" clearable v-model:value="embeddedStore.searchKeyWord" ref="searchKeyWordInput"
-          placeholder="搜索应用包名" autosize style="min-width: 80%" />
+          placeholder="搜索应用包名" autosize style="min-width: 80%" :allow-input="(value: string) => validateFun.validateAndroidPackageName(value)" />
         <n-button size="large" type="primary" @click="() => {
           searchKeyWordInput?.blur()
         }">
