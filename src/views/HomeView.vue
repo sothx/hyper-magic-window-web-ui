@@ -32,21 +32,28 @@ watch(
   { immediate: false }  // 默认是 false，不需要设置，确保不会在初始时执行
 );
 
-const reloadPage = () => {
-  embeddedStore.initDefault()
+const reloadPage = async () => {
+  await embeddedStore.initDefault()
 };
 
 const testBtn = () => {
-  // ksuApi.getInstalledApps().then((res:any) => {
+  const loading = JSON.stringify(deviceStore.loading)
+  modal.create({
+      title: '获取到的内容',
+      type: 'warning',
+      preset: 'dialog',
+      content: () => (<p>{loading}</p>)
+  })
+  // ksuApi.getDeviceCharacteristics().then((res:any) => {
   //   modal.create({
-  //     title: '兼容说明',
+  //     title: '获取到的内容',
   //     type: 'warning',
   //     preset: 'dialog',
-  //     content: () => (<p>{JSON.stringify(res)}</p>)
+  //     content: () => (<p>{res}</p>)
   //   })
   // }).catch((err) => {
   //   modal.create({
-  //     title: '不兼容说明',
+  //     title: '报错的内容',
   //     type: 'warning',
   //     preset: 'dialog',
   //     content: () => (<p>{err}</p>)
@@ -505,7 +512,7 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
         刷新当前数据
       </n-button>
       <!-- <n-button class="mb-3 mr-3" type="success" :loading="embeddedStore.loading" @click="() => testBtn()">
-        测试按钮
+        测试专用按钮
       </n-button> -->
       <n-input-group>
         <n-input size="large" clearable v-model:value="embeddedStore.searchKeyWord" ref="searchKeyWordInput"

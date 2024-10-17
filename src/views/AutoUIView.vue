@@ -24,8 +24,8 @@ const openUpdateAutoUIApp = () => {
   message.warning('还在开发中，别点啦QwQ')
 }
 
-const reloadPage = () => {
-  autoUIStore.initDefault()
+const reloadPage = async () => {
+  await autoUIStore.initDefault()
 };
 const handleRuleMode = (row: AutoUIMergeRuleItem, index: number, ruleMode: AutoUIMergeRuleItem["ruleMode"]) => {
   message.warning('还在开发中，别点啦QwQ')

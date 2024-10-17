@@ -5,10 +5,7 @@ import {
   toast,
   moduleInfo,
   type ExecResults,
-} from "@/utils/kernelsu";
-import type EmbeddedRuleItem from "@/types/EmbeddedRuleItem";
-import type FixedOrientationRuleItem from "@/types/FixedOrientationRuleItem";
-import type EmbeddedSettingRuleItem from "@/types/EmbeddedSettingRuleItem";
+} from "@/utils/kernelsu/index.js";
 import axios from "axios";
 
 export interface SmartFocusIOResult extends ExecResults {
@@ -23,12 +20,12 @@ export const getDeviceCharacteristics = (): Promise<string> => {
   return new Promise(async (resolve, reject) => {
     if (import.meta.env.MODE === "development") {
       resolve("tablet");
-      return;
+    } else {
+      const { errno, stdout, stderr }: ExecResults = await exec(
+        "getprop ro.build.characteristics"
+      );
+      errno ? reject(stderr) : resolve(stdout);
     }
-    const { errno, stdout, stderr }: ExecResults = await exec(
-      "getprop ro.build.characteristics"
-    );
-    errno ? reject(stderr) : resolve(stdout);
   });
 };
 
@@ -36,12 +33,12 @@ export const getAndroidTargetSdk = (): Promise<number> => {
   return new Promise(async (resolve, reject) => {
     if (import.meta.env.MODE === "development") {
       resolve(34);
-      return;
+    } else {
+      const { errno, stdout, stderr }: ExecResults = await exec(
+        "getprop ro.build.version.sdk"
+      );
+      errno ? reject(stderr) : resolve(Number(stdout));
     }
-    const { errno, stdout, stderr }: ExecResults = await exec(
-      "getprop ro.build.version.sdk"
-    );
-    errno ? reject(stderr) : resolve(Number(stdout));
   });
 };
 
@@ -49,12 +46,12 @@ export const getMIOSVersion = (): Promise<number> => {
   return new Promise(async (resolve, reject) => {
     if (import.meta.env.MODE === "development") {
       resolve(1);
-      return;
+    } else {
+      const { errno, stdout, stderr }: ExecResults = await exec(
+        "getprop ro.mi.os.version.code"
+      );
+      errno ? reject(stderr) : resolve(Number(stdout));
     }
-    const { errno, stdout, stderr }: ExecResults = await exec(
-      "getprop ro.mi.os.version.code"
-    );
-    errno ? reject(stderr) : resolve(Number(stdout));
   });
 };
 
@@ -62,12 +59,12 @@ export const getSmartFocusIO = (): Promise<SmartFocusIOResult["stdout"]> => {
   return new Promise(async (resolve, reject) => {
     if (import.meta.env.MODE === "development") {
       resolve("on");
-      return;
+    } else {
+      const { errno, stdout, stderr }: SmartFocusIOResult = (await exec(
+        "getprop persist.sys.stability.smartfocusio"
+      )) as SmartFocusIOResult;
+      errno ? reject(stderr) : resolve(stdout);
     }
-    const { errno, stdout, stderr }: SmartFocusIOResult = (await exec(
-      "getprop persist.sys.stability.smartfocusio"
-    )) as SmartFocusIOResult;
-    errno ? reject(stderr) : resolve(stdout);
   });
 };
 
@@ -75,12 +72,12 @@ export const getDeviceSocName = (): Promise<string> => {
   return new Promise(async (resolve, reject) => {
     if (import.meta.env.MODE === "development") {
       resolve("cape");
-      return;
+    } else {
+      const { errno, stdout, stderr }: ExecResults = await exec(
+        "getprop ro.vendor.qti.soc_name"
+      );
+      errno ? reject(stderr) : resolve(stdout);
     }
-    const { errno, stdout, stderr }: ExecResults = await exec(
-      "getprop ro.vendor.qti.soc_name"
-    );
-    errno ? reject(stderr) : resolve(stdout);
   });
 };
 
@@ -88,12 +85,12 @@ export const getDeviceSocModel = (): Promise<string> => {
   return new Promise(async (resolve, reject) => {
     if (import.meta.env.MODE === "development") {
       resolve("SM8475");
-      return;
+    } else {
+      const { errno, stdout, stderr }: ExecResults = await exec(
+        "getprop ro.vendor.qti.soc_model"
+      );
+      errno ? reject(stderr) : resolve(stdout);
     }
-    const { errno, stdout, stderr }: ExecResults = await exec(
-      "getprop ro.vendor.qti.soc_model"
-    );
-    errno ? reject(stderr) : resolve(stdout);
   });
 };
 
@@ -101,12 +98,12 @@ export const getMiuiCompatEnable = (): Promise<boolean> => {
   return new Promise(async (resolve, reject) => {
     if (import.meta.env.MODE === "development") {
       resolve(true);
-      return;
+    } else {
+      const { errno, stdout, stderr }: MiuiCompatResult = (await exec(
+        "getprop ro.config.miui_compat_enable"
+      )) as unknown as MiuiCompatResult;
+      errno ? reject(stderr) : resolve(stdout);
     }
-    const { errno, stdout, stderr }: MiuiCompatResult = (await exec(
-      "getprop ro.config.miui_compat_enable"
-    )) as unknown as MiuiCompatResult;
-    errno ? reject(stderr) : resolve(stdout);
   });
 };
 
@@ -114,12 +111,12 @@ export const getMiuiAppCompatEnable = (): Promise<boolean> => {
   return new Promise(async (resolve, reject) => {
     if (import.meta.env.MODE === "development") {
       resolve(true);
-      return;
+    } else {
+      const { errno, stdout, stderr }: MiuiCompatResult = (await exec(
+        "getprop ro.config.miui_appcompat_enable"
+      )) as unknown as MiuiCompatResult;
+      errno ? reject(stderr) : resolve(stdout);
     }
-    const { errno, stdout, stderr }: MiuiCompatResult = (await exec(
-      "getprop ro.config.miui_appcompat_enable"
-    )) as unknown as MiuiCompatResult;
-    errno ? reject(stderr) : resolve(stdout);
   });
 };
 

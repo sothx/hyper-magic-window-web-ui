@@ -4,8 +4,8 @@ import HelloWorld from './components/HelloWorld.vue'
 import { Sidebar } from './components/Sidebar'
 import ErrorModal from '@/components/ErrorModal.vue';
 import { ref, onMounted, watch } from 'vue'
-import { useDeviceStore } from './stores/device'
-import { useEmbeddedStore } from './stores/embedded'
+import { useDeviceStore } from '@/stores/device'
+import { useEmbeddedStore } from '@/stores/embedded'
 import { useAutoUIStore } from '@/stores/autoui';
 
 const deviceStore = useDeviceStore()
@@ -23,7 +23,7 @@ watch(
   { immediate: false }  // 默认是 false，不需要设置，确保不会在初始时执行
 );
 
-onMounted(() => {
+onMounted(async () => {
   deviceStore.initDefault()
   embeddedStore.initDefault()
   autoUIStore.initDefault()
