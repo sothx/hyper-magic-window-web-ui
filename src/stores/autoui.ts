@@ -6,12 +6,8 @@ import type AutoUIMergeRuleItem from "@/types/AutoUIMergeRuleItem";
 import $to from "await-to-js";
 import * as ksuApi from "@/apis/ksuApi";
 import * as xmlFormat from "@/utils/xmlFormat";
+import type { ErrorLogging } from "@/types/ErrorLogging";
 
-interface ErrorLogging {
-  type: string;
-  title: string;
-  msg: string;
-}
 
 export const useAutoUIStore = defineStore("autoui", () => {
   // 应用布局优化

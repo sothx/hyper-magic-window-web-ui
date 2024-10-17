@@ -24,7 +24,7 @@ const openUpdateAutoUIApp = () => {
 }
 
 const reloadPage = () => {
-  window.location.reload()
+  autoUIStore.initDefault()
 };
 const handleRuleMode = (row: AutoUIMergeRuleItem, index: number, ruleMode: AutoUIMergeRuleItem["ruleMode"]) => {
   message.warning('还在开发中，别点啦QwQ')
@@ -197,7 +197,7 @@ function createColumns(): DataTableColumns<AutoUIMergeRuleItem> {
         添加应用
       </n-button>
       <n-button class="mb-3 mr-3" type="success" :loading="autoUIStore.loading" @click="() => reloadPage()">
-        刷新 Web UI
+        刷新当前数据
       </n-button>
       <n-input-group>
         <n-input size="large" clearable v-model:value="autoUIStore.searchKeyWord" ref="searchKeyWordInput"

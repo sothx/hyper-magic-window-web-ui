@@ -32,7 +32,7 @@ watch(
 );
 
 const reloadPage = () => {
-  window.location.reload()
+  embeddedStore.initDefault()
 };
 
 const testBtn = () => {
@@ -501,7 +501,7 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
         添加应用
       </n-button>
       <n-button class="mb-3 mr-3" type="success" :loading="embeddedStore.loading" @click="() => reloadPage()">
-        刷新 Web UI
+        刷新当前数据
       </n-button>
       <!-- <n-button class="mb-3 mr-3" type="success" :loading="embeddedStore.loading" @click="() => testBtn()">
         测试按钮

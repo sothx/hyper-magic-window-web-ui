@@ -2,11 +2,7 @@ import { ref, reactive, computed } from "vue";
 import { defineStore } from "pinia";
 import $to from "await-to-js";
 import * as ksuApi from "@/apis/ksuApi";
-
-interface ErrorLogging {
-  type: string;
-  msg: string;
-}
+import type { ErrorLogging } from "@/types/ErrorLogging";
 
 export interface ModuleInfo {
   moduleDir: string;
@@ -60,10 +56,20 @@ export const useDeviceStore = defineStore("device", () => {
   const loading = ref<boolean>(true);
   const errorLogging = reactive<ErrorLogging[]>([]);
 
+  const isNeedShowErrorModal = computed(() => Boolean(errorLogging.length > 0));
+
   async function initDefault() {
     // 模块信息 *弱校验
-    const [,getModuleInfoRes] = await $to(ksuApi.getModuleInfo());
-    if (getModuleInfoRes) {
+    const [,getModuleInfoRes] = await $to<string,string>(ksuApi.getModuleInfo());
+    if (!getModuleInfoRes?.length) {
+      errorLogging.push({
+        type: "moduleInfo",
+        title: "模块信息",
+        msg: '获取模块信息失败',
+      });
+      console.log(isNeedShowErrorModal.value,'进来了2')
+    } 
+    if (getModuleInfoRes?.length) {
       const moduleInfoObj: ModuleInfo = JSON.parse(getModuleInfoRes)
       moduleDir.value = moduleInfoObj.moduleDir
       moduleID.value = moduleInfoObj.id
@@ -75,6 +81,7 @@ export const useDeviceStore = defineStore("device", () => {
     if (getDeviceCharacteristicsErr) {
       errorLogging.push({
         type: "deviceCharacteristics",
+        title: "设备类型",
         msg: getDeviceCharacteristicsErr,
       });
     } else {
@@ -87,6 +94,7 @@ export const useDeviceStore = defineStore("device", () => {
     if (getAndroidTargetSdkErr) {
       errorLogging.push({
         type: "androidTargetSdk",
+        title: "Android SDK版本",
         msg: getAndroidTargetSdkErr,
       });
     } else {
@@ -99,6 +107,7 @@ export const useDeviceStore = defineStore("device", () => {
     if (getDeviceSocModelErr) {
       errorLogging.push({
         type: "deviceSocModel",
+        title: "设备Soc类型",
         msg: getDeviceSocModelErr,
       });
     } else {
@@ -111,6 +120,7 @@ export const useDeviceStore = defineStore("device", () => {
     if (getDeviceSocNameErr) {
       errorLogging.push({
         type: "deviceSocName",
+        title: "设备Soc名称",
         msg: getDeviceSocNameErr,
       });
     } else {
@@ -137,6 +147,7 @@ export const useDeviceStore = defineStore("device", () => {
 
   return {
     deviceCharacteristics,
+    isNeedShowErrorModal,
     androidTargetSdk,
     MIOSVersion,
     deviceCode,
@@ -147,6 +158,7 @@ export const useDeviceStore = defineStore("device", () => {
     smartFocusIO,
     miuiCompatEnable,
     miuiAppCompatEnable,
+    errorLogging,
     loading,
     initDefault,
   };
