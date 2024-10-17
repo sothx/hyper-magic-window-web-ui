@@ -2,7 +2,7 @@
 import { RouterLink, RouterView } from 'vue-router'
 import HelloWorld from './components/HelloWorld.vue'
 import { Sidebar } from './components/Sidebar'
-import { ref, onMounted } from 'vue'
+import { ref, onMounted,onBeforeMount } from 'vue'
 import { useDeviceStore } from './stores/device'
 import { useEmbeddedStore } from './stores/embedded'
 import { useAutoUIStore } from '@/stores/autoui';
@@ -11,13 +11,12 @@ const deviceStore = useDeviceStore()
 const embeddedStore = useEmbeddedStore()
 const autoUIStore = useAutoUIStore()
 
-onMounted(() => {
+onBeforeMount(() => {
   deviceStore.initDefault()
   embeddedStore.initDefault()
   autoUIStore.initDefault()
   
 })
-
 </script>
 
 <template>

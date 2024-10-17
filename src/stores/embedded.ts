@@ -83,6 +83,7 @@ export const useEmbeddedStore = defineStore("embedded", () => {
   }
 
   async function initDefault() {
+    loading.value = true;
     // 获取源嵌入规则列表
     const [getSourceEmbeddedRulesListErr, getSourceEmbeddedRulesListRes] =
       await $to<string,string>(ksuApi.getSourceEmbeddedRulesList());

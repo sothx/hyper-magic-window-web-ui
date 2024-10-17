@@ -58,6 +58,7 @@ export const useAutoUIStore = defineStore("autoui", () => {
   });
 
   async function initDefault() {
+    loading.value = true;
     // 获取源应用布局优化列表
     const [getSourceAutoUIListErr, getSourceAutoUIListRes] = await $to<
       string,

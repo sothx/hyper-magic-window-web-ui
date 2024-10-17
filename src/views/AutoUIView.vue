@@ -6,23 +6,28 @@ import { useDeviceStore } from '@/stores/device';
 import * as autoUIFun from '@/utils/autoUIFun';
 import { NButton, createDiscreteApi, type DataTableColumns, type NInput } from 'naive-ui'
 import type AutoUIMergeRuleItem from '@/types/AutoUIMergeRuleItem';
+import { useRouter, useRoute } from 'vue-router';
 type SearchKeyWordInputInstance = InstanceType<typeof NInput>;
 const searchKeyWordInput = ref<SearchKeyWordInputInstance | null>(null);
 const { message, modal } = createDiscreteApi(['message', 'modal'])
 const columns = createColumns()
 const deviceStore = useDeviceStore()
 const autoUIStore = useAutoUIStore()
-const openAddAutoUIApp = () => {
+const router = useRouter();
+const route = useRoute();
 
+const openAddAutoUIApp = () => {
+  message.warning('还在开发中，别点啦QwQ')
 }
 const openUpdateAutoUIApp = () => {
-
+  message.warning('还在开发中，别点啦QwQ')
 }
+
 const reloadPage = () => {
-  window.location.reload();
+  window.location.reload()
 };
 const handleRuleMode = (row: AutoUIMergeRuleItem, index: number, ruleMode: AutoUIMergeRuleItem["ruleMode"]) => {
-
+  message.warning('还在开发中，别点啦QwQ')
 }
 
 const modeMap = reactive({
@@ -150,7 +155,7 @@ function createColumns(): DataTableColumns<AutoUIMergeRuleItem> {
       key: 'settingMode',
       render(row, index) {
         return (
-          <n-button size="small" strong dashed type={modeMap[row.settingMode].type} color={modeMap[row.settingMode].color} onClick={() => { }}>{modeMap[row.settingMode].name}</n-button>
+          <n-button size="small" strong dashed type={modeMap[row.settingMode].type} color={modeMap[row.settingMode].color} onClick={() => {   message.warning('还在开发中，别点啦QwQ') }}>{modeMap[row.settingMode].name}</n-button>
         )
       }
     },
@@ -167,13 +172,10 @@ function createColumns(): DataTableColumns<AutoUIMergeRuleItem> {
           return inputRow.settingRule?.enable || (inputRow.autoUIRule?.enable && inputRow.hasOwnProperty('settingRule'))
         }
         return (
-          isOpen && isOpen(row) ? (
-            <n-switch railStyle={railStyle} size="medium" value={true} v-slots={slots}>
+          <n-switch railStyle={railStyle} onClick={() => { message.warning('还在开发中，别点啦QwQ') }} size="medium" value={
+            isOpen && isOpen(row)
+          } v-slots={slots}>
           </n-switch>
-          ) : (
-            <n-switch railStyle={railStyle} size="medium" value={false} v-slots={slots}>
-          </n-switch>
-          )
         )
       }
     }
@@ -181,9 +183,9 @@ function createColumns(): DataTableColumns<AutoUIMergeRuleItem> {
 }
 </script>
 <template>
-  <n-watermark v-if="true" content="开发中，功能不可用" cross fullscreen :font-size="16" :line-height="16" :width="384"
+  <main class="autoui-view mb-10">
+    <n-watermark v-if="true" content="开发中，功能不可用" cross fullscreen :font-size="16" :line-height="16" :width="384"
     :height="384" :x-offset="12" :y-offset="60" :rotate="-15" :z-index="9999" />
-  <main class="autoui-view">
     <div class="mt-5">
       <div class="px-4 sm:px-0 mb-5">
         <h3 class="text-base font-semibold leading-7 text-gray-900">应用布局优化</h3>

@@ -32,7 +32,7 @@ watch(
 );
 
 const reloadPage = () => {
-  window.location.reload();
+  window.location.reload()
 };
 
 const testBtn = () => {
