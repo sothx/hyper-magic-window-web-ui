@@ -509,7 +509,7 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
       </n-button> -->
       <n-input-group>
         <n-input size="large" clearable v-model:value="embeddedStore.searchKeyWord" ref="searchKeyWordInput"
-          placeholder="搜索应用包名" autosize style="min-width: 80%" :allow-input="(value: string) => validateFun.validateAndroidPackageName(value)" />
+          placeholder="搜索应用包名" autosize style="min-width: 80%" />
         <n-button size="large" type="primary" @click="() => {
           searchKeyWordInput?.blur()
         }">

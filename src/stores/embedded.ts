@@ -34,9 +34,9 @@ export const useEmbeddedStore = defineStore("embedded", () => {
   const mergeRuleList = ref<EmbeddedMergeRuleItem[]>([]);
   // 搜索后的配置列表
   const filterMergeRuleList = computed(() => {
-    const searchValue = searchKeyWord.value.toLowerCase(); // 缓存并提前处理 searchKeyWord
+    const searchValue = searchKeyWord.value.trim().toLowerCase(); // 缓存并提前处理 searchKeyWord
     return mergeRuleList.value
-      .filter((item) => item.name.toLowerCase().includes(searchValue))
+      .filter((item) => item.name.trim().toLowerCase().includes(searchValue))
       .sort((a, b) => {
         // 将 ruleType 为 'custom' 的项排在前面
         if (a.ruleMode === "custom" && b.ruleMode !== "custom") {
