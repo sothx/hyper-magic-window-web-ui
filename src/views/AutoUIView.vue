@@ -7,6 +7,7 @@ import * as autoUIFun from '@/utils/autoUIFun';
 import { NButton, createDiscreteApi, type DataTableColumns, type NInput } from 'naive-ui'
 import type AutoUIMergeRuleItem from '@/types/AutoUIMergeRuleItem';
 import { useRouter, useRoute } from 'vue-router';
+import * as validateFun from '@/utils/validateFun';
 type SearchKeyWordInputInstance = InstanceType<typeof NInput>;
 const searchKeyWordInput = ref<SearchKeyWordInputInstance | null>(null);
 const { message, modal } = createDiscreteApi(['message', 'modal'])
@@ -201,7 +202,7 @@ function createColumns(): DataTableColumns<AutoUIMergeRuleItem> {
       </n-button>
       <n-input-group>
         <n-input size="large" clearable v-model:value="autoUIStore.searchKeyWord" ref="searchKeyWordInput"
-          placeholder="搜索应用包名" autosize style="min-width: 80%" />
+          placeholder="搜索应用包名" autosize style="min-width: 80%" :allow-input="(value: string) => validateFun.validateAndroidPackageName(value)" />
         <n-button size="large" type="primary" @click="() => {
           searchKeyWordInput?.blur()
         }">
