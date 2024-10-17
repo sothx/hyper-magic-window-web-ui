@@ -67,7 +67,6 @@ export const useDeviceStore = defineStore("device", () => {
         title: "模块信息",
         msg: '获取模块信息失败',
       });
-      console.log(isNeedShowErrorModal.value,'进来了2')
     } 
     if (getModuleInfoRes?.length) {
       const moduleInfoObj: ModuleInfo = JSON.parse(getModuleInfoRes)
@@ -127,18 +126,25 @@ export const useDeviceStore = defineStore("device", () => {
       deviceSocName.value = getDeviceSocNameRes;
     }
     // 游戏显示布局 *弱校验
-    const [, getMiuiCompatEnableRes] = await $to(ksuApi.getMiuiCompatEnable());
-    miuiCompatEnable.value = getMiuiCompatEnableRes;
-    const [, getMiuiAppCompatEnableRes] = await $to(ksuApi.getMiuiAppCompatEnable());
-    miuiAppCompatEnable.value = getMiuiAppCompatEnableRes;
+    const [, getMiuiCompatEnableRes] = await $to<boolean,string>(ksuApi.getMiuiCompatEnable());
+    if (getMiuiCompatEnableRes) {
+      miuiCompatEnable.value = getMiuiCompatEnableRes;
+    }
+    const [, getMiuiAppCompatEnableRes] = await $to<boolean,string>(ksuApi.getMiuiAppCompatEnable());
+    if (getMiuiAppCompatEnableRes) {
+      miuiAppCompatEnable.value = getMiuiAppCompatEnableRes;
+    }
     // Xiaomi Hyper OS 版本号 *弱校验
-    const [getMIOSVersionErr, getMIOSVersionRes] = await $to(ksuApi.getMIOSVersion());
-    console.log(getMIOSVersionErr,'getMIOSVersionErr')
-    MIOSVersion.value = getMIOSVersionRes;
+    const [, getMIOSVersionRes] = await $to<number,string>(ksuApi.getMIOSVersion());
+    if (getMIOSVersionRes) {
+      MIOSVersion.value = getMIOSVersionRes;
+    }
 
     // 智能IO调度 *弱校验
-    const [, getSmartFocusIO] = await $to(ksuApi.getSmartFocusIO());
-    smartFocusIO.value = getSmartFocusIO;
+    const [, getSmartFocusIO] = await $to<ksuApi.SmartFocusIOResult["stdout"],string>(ksuApi.getSmartFocusIO());
+    if (getSmartFocusIO) {
+      smartFocusIO.value = getSmartFocusIO;
+    }
 
     if (!errorLogging.length) {
       loading.value = false;
