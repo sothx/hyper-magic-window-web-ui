@@ -249,7 +249,7 @@ export const getCustomConfigAutoUIList = (): Promise<string> => {
 
 
 export const getAutoUISettingConfig = (): Promise<string> => {
-  const shellCommon = `/data/origin/autoui_setting_config.xml`
+  const shellCommon = `cat /data/system/users/0/autoui_setting_config.xml`
   return handlePromiseWithLogging(new Promise(async (resolve, reject) => {
     if (import.meta.env.MODE === "development") {
       const response = await axios.get(
