@@ -266,16 +266,30 @@ export const getAutoUISettingConfig = (): Promise<string> => {
   }), shellCommon);
 };
 
-export const getModuleInfo = (): Promise<string> => {
+export const openGameModeManager = (): Promise<string> => {
+  const shellCommon = `am start -n com.miui.securitycenter/com.miui.gamebooster.gamemode.GameModeSettingsActivity`
   return handlePromiseWithLogging(new Promise(async (resolve, reject) => {
     if (import.meta.env.MODE === "development") {
-      const response = {
-        moduleDir: "/data/adb/modules/MIUI_MagicWindow+",
-        id: "MIUI_MagicWindow+",
-      };
-      resolve(JSON.stringify(response));
+      resolve(`Starting: Intent { cmp=com.miui.securitycenter/com.miui.gamebooster.gamemode.GameModeSettingsActivity }`);
     } else {
-      resolve(moduleInfo());
+      const { errno, stdout, stderr }: ExecResults = await exec(
+        shellCommon
+      );
+      errno ? reject(stderr) : resolve(stdout);
+    }
+  }), shellCommon);
+};
+
+export const getModuleInfo = (): Promise<string> => {
+  return handlePromiseWithLogging(new Promise(async (resolve, reject) => {
+    const response = JSON.stringify({
+      moduleDir: "/data/adb/modules/MIUI_MagicWindow+",
+      id: "MIUI_MagicWindow+",
+    });
+    if (import.meta.env.MODE === "development") {
+      resolve(response);
+    } else {
+      resolve(response);
     }
   }), 'getModuleInfo');
 };
@@ -299,6 +313,7 @@ export const getUserAppList = (): Promise<string> => {
     }
   }), 'getUserAppList');
 };
+
 
 export interface updateEmbeddedAppParams {
   customEmbeddedRulesListXML: string;

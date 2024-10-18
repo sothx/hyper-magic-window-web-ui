@@ -2,8 +2,10 @@
 import { useDeviceStore } from '@/stores/device';
 import type { CSSProperties } from 'vue'
 import { createDiscreteApi } from 'naive-ui'
+import { useGameMode } from '@/hooks/useGameMode';
 const deviceStore = useDeviceStore()
 const { message } = createDiscreteApi(['message'])
+const gameMode = useGameMode();
 const handleSmartFocusIOChange = (value: boolean) => {
   message.info('功能尚未上线，无任何实际效果，请等待后续更新！')
 }
@@ -41,14 +43,18 @@ const railStyle = ({
       </div>
       <div class="mt-6 border-t border-gray-100">
         <dl class="divide-y divide-gray-100">
-          <!-- <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+          <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
             <dt class="text-sm font-medium leading-6 text-gray-900">模块ID</dt>
             <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ deviceStore.moduleID || '获取失败' }}</dd>
           </div>
           <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
             <dt class="text-sm font-medium leading-6 text-gray-900">模块路径</dt>
             <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ deviceStore.moduleDir || '获取失败' }}</dd>
-          </div> -->
+          </div>
+          <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+            <dt class="text-sm font-medium leading-6 text-gray-900">游戏显示布局</dt>
+            <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ gameMode.isSupportGameMode ? '已开启' : '未开启/不支持' }}</dd>
+          </div>
           <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
             <dt class="text-sm font-medium leading-6 text-gray-900">Xiaomi Hyper OS 版本号</dt>
             <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ deviceStore.MIOSVersion ? `Xiaomi

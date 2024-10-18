@@ -60,19 +60,19 @@ export const useDeviceStore = defineStore("device", () => {
 
   async function initDefault() {
     // 模块信息 *弱校验
-    // const [,getModuleInfoRes] = await $to<string,string>(ksuApi.getModuleInfo());
-    // if (!getModuleInfoRes?.length) {
-    //   errorLogging.push({
-    //     type: "moduleInfo",
-    //     title: "模块信息",
-    //     msg: '获取模块信息失败',
-    //   });
-    // } 
-    // if (getModuleInfoRes?.length) {
-    //   const moduleInfoObj: ModuleInfo = JSON.parse(getModuleInfoRes)
-    //   moduleDir.value = moduleInfoObj.moduleDir
-    //   moduleID.value = moduleInfoObj.id
-    // }
+    const [,getModuleInfoRes] = await $to<string,string>(ksuApi.getModuleInfo());
+    if (!getModuleInfoRes?.length) {
+      errorLogging.push({
+        type: "moduleInfo",
+        title: "模块信息",
+        msg: '获取模块信息失败',
+      });
+    } 
+    if (getModuleInfoRes?.length) {
+      const moduleInfoObj: ModuleInfo = JSON.parse(getModuleInfoRes)
+      moduleDir.value = moduleInfoObj.moduleDir
+      moduleID.value = moduleInfoObj.id
+    }
     // 模块参数 *强校验
     // 设备类型 *强校验
     const [getDeviceCharacteristicsErr, getDeviceCharacteristicsRes] =

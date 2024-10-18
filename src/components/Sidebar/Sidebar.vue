@@ -1,50 +1,99 @@
-<script setup lang="ts">
-import { ref } from 'vue'
-import { RouterLink } from 'vue-router'
-import {
-  Dialog,
-  DialogPanel,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuItems,
-  TransitionChild,
-  TransitionRoot,
-} from '@headlessui/vue'
-import {
-  Bars3Icon,
-  BellIcon,
-  CalendarIcon,
-  ChartPieIcon,
-  Cog6ToothIcon,
-  DocumentDuplicateIcon,
-  FolderIcon,
-  HomeIcon,
-  UsersIcon,
-  XMarkIcon,
-} from '@heroicons/vue/24/outline'
-import { useRoute } from 'vue-router';
-import { ChevronDownIcon, MagnifyingGlassIcon } from '@heroicons/vue/20/solid'
-const route = useRoute();
-const navigation = [
-  { name: '应用横屏配置', routeName: 'home', href: '/', icon: HomeIcon },
-  { name: '应用布局优化', routeName: 'autoui', href: '/autoui', icon: CalendarIcon },
-  { name: '日志记录', routeName: 'logs', href: '/logs', icon: DocumentDuplicateIcon },
-  { name: '开发路线图', routeName: 'project', href: '/project', icon: ChartPieIcon },
-]
-const teams = [
-  { id: 1, name: '模块首页', href: '/embedded-webview?url=https://hyper-magic-window.sothx.com', initial: 'H', current: false },
-  { id: 2, name: '打赏', href: '/embedded-webview?url=https://hyper-magic-window.sothx.com/donation.html', initial: 'D', current: false },
-  { id: 3, name: '感谢', href: '/embedded-webview?url=https://hyper-magic-window.sothx.com/thanks.html', initial: 'W', current: false },
-  { id: 4, name: '许可协议', href: '/embedded-webview?url=https://hyper-magic-window.sothx.com/license-agreement.html', initial: 'L', current: false },
-  { id: 5, name: '问题合集', href: '/embedded-webview?url=https://hyper-magic-window.sothx.com/FAQ.html', initial: 'F', current: false },
-]
-const userNavigation = [
-  { name: '个人资料', href: '#' },
-  { name: '退出', href: '#' },
-]
+<script setup lang="tsx">
+  import { ref } from 'vue'
+  import { RouterLink } from 'vue-router'
+  import {
+    Dialog,
+    DialogPanel,
+    Menu,
+    MenuButton,
+    MenuItem,
+    MenuItems,
+    TransitionChild,
+    TransitionRoot,
+  } from '@headlessui/vue'
+  import {
+    Bars3Icon,
+    BellIcon,
+    CalendarIcon,
+    ChartPieIcon,
+    Cog6ToothIcon,
+    DocumentDuplicateIcon,
+    FolderIcon,
+    HomeIcon,
+    PlayIcon,
+    UsersIcon,
+    XMarkIcon,
+  } from '@heroicons/vue/24/outline'
+  import { useRoute } from 'vue-router';
+  import { ChevronDownIcon, MagnifyingGlassIcon } from '@heroicons/vue/20/solid'
+  import { createDiscreteApi } from 'naive-ui';
+  import { useGameMode } from '@/hooks/useGameMode';
+  import { useDeviceStore } from '@/stores/device';
+  import handlePromiseWithLogging from "@/utils/handlePromiseWithLogging";
+  import * as ksuApi from "@/apis/ksuApi";
+  const route = useRoute();
+  const gameMode = useGameMode();
+  const deviceStore = useDeviceStore();
+  const { message, modal } = createDiscreteApi(['message', 'modal'])
+  const navigation = [
+    { name: '应用横屏配置', routeName: 'home', href: '/', icon: HomeIcon },
+    { name: '应用布局优化', routeName: 'autoui', href: '/autoui', icon: CalendarIcon },
+    {
+      name: '游戏显示布局',
+      click() {
+        if (gameMode.isSupportGameMode) {
+          modal.create({
+            title: '确认打开游戏显示布局吗？',
+            type: 'info',
+            preset: 'dialog',
+            content: () => (deviceStore.deviceCharacteristics === 'tablet' && deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 ? (<p>即将打开 <span class="font-bold text-gray-600">游戏显示布局</span> 管理界面，确定要继续吗？请注意，从Hyper OS 2.0开始，小米平板需要搭配配套的 <span class="font-bold text-gray-600">修改版平板/手机管家</span> 才能使用游戏显示布局，详情请前往模块首页了解~</p>) : (<p>即将打开 <span class="font-bold text-gray-600">游戏显示布局</span> 管理界面，确定要继续吗？</p>)),
+            positiveText: '确定打开',
+            negativeText: '我再想想',
+            onPositiveClick: async () => {
+              ksuApi.openGameModeManager().then((res) => {
+                modal.create({
+                  title: '打开游戏显示布局成功',
+                  type: 'success',
+                  preset: 'dialog',
+                  content: () => (<p>好耶OwO~已经打开游戏显示布局管理界面了~</p>)
+                })
+              }, (err) => {
+                modal.create({
+                  title: '无法打开游戏显示布局',
+                  type: 'error',
+                  preset: 'dialog',
+                  content: () => (<p>您可能未启用或者设备不支持 <span class="font-bold text-gray-600">游戏显示布局</span> ，详情请阅读模块首页说明文档~</p>)
+                })
+              })
+            }
+          })
+        } else {
+          modal.create({
+            title: '无法打开游戏显示布局',
+            type: 'error',
+            preset: 'dialog',
+            content: () => (<p>您可能未启用或者设备不支持 <span class="font-bold text-gray-600">游戏显示布局</span> ，详情请阅读模块首页说明文档~</p>)
+          })
+        }
+      },
+      icon: PlayIcon
+    },
+    { name: '日志记录', routeName: 'logs', href: '/logs', icon: DocumentDuplicateIcon },
+    { name: '开发路线图', routeName: 'project', href: '/project', icon: ChartPieIcon },
+  ]
+  const teams = [
+    { id: 1, name: '模块首页', href: '/embedded-webview?url=https://hyper-magic-window.sothx.com', initial: 'H', current: false },
+    { id: 2, name: '打赏', href: '/embedded-webview?url=https://hyper-magic-window.sothx.com/donation.html', initial: 'D', current: false },
+    { id: 3, name: '感谢', href: '/embedded-webview?url=https://hyper-magic-window.sothx.com/thanks.html', initial: 'W', current: false },
+    { id: 4, name: '许可协议', href: '/embedded-webview?url=https://hyper-magic-window.sothx.com/license-agreement.html', initial: 'L', current: false },
+    { id: 5, name: '问题合集', href: '/embedded-webview?url=https://hyper-magic-window.sothx.com/FAQ.html', initial: 'F', current: false },
+  ]
+  const userNavigation = [
+    { name: '个人资料', href: '#' },
+    { name: '退出', href: '#' },
+  ]
 
-const sidebarOpen = ref(false)
+  const sidebarOpen = ref(false)
 </script>
 
 <!--
@@ -104,13 +153,15 @@ const sidebarOpen = ref(false)
                     <li>
                       <ul role="list" class="-mx-2 space-y-1">
                         <li v-for="item in navigation" :key="item.name">
-                          <RouterLink :to="item.href"
+                          <component :is="item.href && item.routeName ? 'RouterLink' : 'a'"
+                            v-bind="item.href && item.routeName ? { to: item.href } : { href: 'javascript:void(0)' }"
+                            @click="item.click && item.click()"
                             :class="[item.routeName === route.name ? 'bg-gray-50 text-teal-600' : 'text-gray-700 hover:text-teal-600 hover:bg-gray-50', 'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold']">
                             <component :is="item.icon"
                               :class="[item.routeName === route.name ? 'text-teal-600' : 'text-gray-400 group-hover:text-teal-600', 'h-6 w-6 shrink-0']"
                               aria-hidden="true" />
                             {{ item.name }}
-                          </RouterLink>
+                          </component>
                         </li>
                       </ul>
                     </li>
@@ -131,9 +182,9 @@ const sidebarOpen = ref(false)
                     <li class="mt-auto">
                       <router-link to="/settings"
                         :class="[route.name === 'settings' ? 'bg-gray-50 text-teal-600' : 'hover:bg-gray-50 hover:text-teal-600', 'group-mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-700']">
-                      <Cog6ToothIcon class="h-6 w-6 shrink-0 text-gray-400 group-hover:text-teal-600"
-                        aria-hidden="true" />
-                      模块设置
+                        <Cog6ToothIcon class="h-6 w-6 shrink-0 text-gray-400 group-hover:text-teal-600"
+                          aria-hidden="true" />
+                        模块设置
                       </router-link>
                     </li>
                   </ul>
@@ -157,13 +208,15 @@ const sidebarOpen = ref(false)
             <li>
               <ul role="list" class="-mx-2 space-y-1">
                 <li v-for="item in navigation" :key="item.name">
-                  <RouterLink :to="item.href"
+                  <component :is="item.href && item.routeName ? 'RouterLink' : 'a'"
+                    v-bind="item.href && item.routeName ? { to: item.href } : { href: 'javascript:void(0)' }"
+                    @click="item.click && item.click()"
                     :class="[item.routeName === route.name ? 'bg-gray-50 text-teal-600' : 'text-gray-700 hover:text-teal-600 hover:bg-gray-50', 'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold']">
                     <component :is="item.icon"
                       :class="[item.routeName === route.name ? 'text-teal-600' : 'text-gray-400 group-hover:text-teal-600', 'h-6 w-6 shrink-0']"
                       aria-hidden="true" />
                     {{ item.name }}
-                  </RouterLink>
+                  </component>
                 </li>
               </ul>
             </li>
@@ -206,7 +259,7 @@ const sidebarOpen = ref(false)
           <!-- <div class="h-6 w-px bg-gray-200 lg:hidden" aria-hidden="true" /> -->
 
           <div class="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
-            <div class="flex justify-center content-center items-center w-full h-full" >
+            <div class="flex justify-center content-center items-center w-full h-full">
               <h1 class="font-bold text-gray-600 text-lg">完美横屏应用计划 For Web UI</h1>
             </div>
             <!-- <form class="relative flex flex-1" action="#" method="GET">
