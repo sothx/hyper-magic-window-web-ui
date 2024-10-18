@@ -280,6 +280,34 @@ export const openGameModeManager = (): Promise<string> => {
   }), shellCommon);
 };
 
+export const getHasInstalledMIUIContentExtension = (): Promise<string> => {
+  const shellCommon = `test -f /system/product/priv-app/MIUIContentExtension/MIUIContentExtension.apk && echo "exists" || echo "not exists"`
+  return handlePromiseWithLogging(new Promise(async (resolve, reject) => {
+    if (import.meta.env.MODE === "development") {
+      resolve(`exists`);
+    } else {
+      const { errno, stdout, stderr }: ExecResults = await exec(
+        shellCommon
+      );
+      errno ? reject(stderr) : stdout === 'exists' ? resolve(stdout) : reject(stdout);
+    }
+  }), shellCommon);
+}
+
+export const openMIUIContentExtension = (): Promise<string> => {
+  const shellCommon = `am start -n com.miui.contentextension/.setting.activity.MainSettingsActivity`
+  return handlePromiseWithLogging(new Promise(async (resolve, reject) => {
+    if (import.meta.env.MODE === "development") {
+      resolve(`Starting: Intent { cmp=com.miui.contentextension/.setting.activity.MainSettingsActivity }`);
+    } else {
+      const { errno, stdout, stderr }: ExecResults = await exec(
+        shellCommon
+      );
+      errno ? reject(stderr) : resolve(stdout);
+    }
+  }), shellCommon);
+};
+
 export const getModuleInfo = (): Promise<string> => {
   return handlePromiseWithLogging(new Promise(async (resolve, reject) => {
     const response = JSON.stringify({

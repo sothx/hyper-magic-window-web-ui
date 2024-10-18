@@ -14,9 +14,13 @@
   import {
     Bars3Icon,
     BellIcon,
+    CakeIcon,
     CalendarIcon,
     ChartPieIcon,
+    ChevronDoubleDownIcon,
     Cog6ToothIcon,
+    CubeIcon,
+    CubeTransparentIcon,
     DocumentDuplicateIcon,
     FolderIcon,
     HomeIcon,
@@ -31,9 +35,11 @@
   import { useDeviceStore } from '@/stores/device';
   import handlePromiseWithLogging from "@/utils/handlePromiseWithLogging";
   import * as ksuApi from "@/apis/ksuApi";
+import { useMIUIContentExtension } from '@/hooks/useMIUIContentExtension';
   const route = useRoute();
   const gameMode = useGameMode();
   const deviceStore = useDeviceStore();
+  const MIUIContentExtension = useMIUIContentExtension()
   const { message, modal } = createDiscreteApi(['message', 'modal'])
   const navigation = [
     { name: '应用横屏配置', routeName: 'home', href: '/', icon: HomeIcon },
@@ -72,11 +78,45 @@
             title: '无法打开游戏显示布局',
             type: 'error',
             preset: 'dialog',
-            content: () => (<p>您可能未启用或者设备不支持 <span class="font-bold text-gray-600">游戏显示布局</span> ，详情请阅读模块首页说明文档~</p>)
+            content: () => (<p>您可能未启用或者设备不支持 <span class="font-bold text-gray-600">游戏显示布局</span> QwQ，详情请阅读模块首页说明文档~</p>)
           })
         }
       },
-      icon: PlayIcon
+      icon: CubeIcon
+    },
+    {
+      name: '传送门',
+      isShow() {
+        return MIUIContentExtension.isInstallMIUIContentExtension.value
+      },
+      click() {
+        modal.create({
+          title: '确认打开传送门吗？',
+            type: 'info',
+            preset: 'dialog',
+            content: () => (<p>即将打开 <span class="font-bold text-gray-600">传送门</span> 管理界面，确定要继续吗？</p>),
+            positiveText: '确定打开',
+            negativeText: '我再想想',
+            onPositiveClick: async () => {
+              ksuApi.openMIUIContentExtension().then((res) => {
+                modal.create({
+                  title: '打开传送门成功',
+                  type: 'success',
+                  preset: 'dialog',
+                  content: () => (<p>好耶OwO~已经打开传送门管理界面了~</p>)
+                })
+              }, (err) => {
+                modal.create({
+                  title: '无法打开传送门',
+                  type: 'error',
+                  preset: 'dialog',
+                  content: () => (<p>出现异常，无法正常打开传送门QwQ，详细问题可浏览日志记录~</p>)
+                })
+              })
+            }
+        })
+      },
+      icon: CubeTransparentIcon
     },
     { name: '日志记录', routeName: 'logs', href: '/logs', icon: DocumentDuplicateIcon },
     { name: '开发路线图', routeName: 'project', href: '/project', icon: ChartPieIcon },
@@ -84,9 +124,9 @@
   const teams = [
     { id: 1, name: '模块首页', href: '/embedded-webview?url=https://hyper-magic-window.sothx.com', initial: 'H', current: false },
     { id: 2, name: '打赏', href: '/embedded-webview?url=https://hyper-magic-window.sothx.com/donation.html', initial: 'D', current: false },
-    { id: 3, name: '感谢', href: '/embedded-webview?url=https://hyper-magic-window.sothx.com/thanks.html', initial: 'W', current: false },
-    { id: 4, name: '许可协议', href: '/embedded-webview?url=https://hyper-magic-window.sothx.com/license-agreement.html', initial: 'L', current: false },
-    { id: 5, name: '问题合集', href: '/embedded-webview?url=https://hyper-magic-window.sothx.com/FAQ.html', initial: 'F', current: false },
+    // { id: 3, name: '感谢', href: '/embedded-webview?url=https://hyper-magic-window.sothx.com/thanks.html', initial: 'W', current: false },
+    { id: 3, name: '许可协议', href: '/embedded-webview?url=https://hyper-magic-window.sothx.com/license-agreement.html', initial: 'L', current: false },
+    { id: 4, name: '问题合集', href: '/embedded-webview?url=https://hyper-magic-window.sothx.com/FAQ.html', initial: 'F', current: false },
   ]
   const userNavigation = [
     { name: '个人资料', href: '#' },
@@ -153,7 +193,7 @@
                     <li>
                       <ul role="list" class="-mx-2 space-y-1">
                         <li v-for="item in navigation" :key="item.name">
-                          <component :is="item.href && item.routeName ? 'RouterLink' : 'a'"
+                          <component v-if="item.isShow ? item.isShow() : true" :is="item.href && item.routeName ? 'RouterLink' : 'a'"
                             v-bind="item.href && item.routeName ? { to: item.href } : { href: 'javascript:void(0)' }"
                             @click="item.click && item.click()"
                             :class="[item.routeName === route.name ? 'bg-gray-50 text-teal-600' : 'text-gray-700 hover:text-teal-600 hover:bg-gray-50', 'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold']">
@@ -209,6 +249,7 @@
               <ul role="list" class="-mx-2 space-y-1">
                 <li v-for="item in navigation" :key="item.name">
                   <component :is="item.href && item.routeName ? 'RouterLink' : 'a'"
+                    v-if="item.isShow ? item.isShow() : true"
                     v-bind="item.href && item.routeName ? { to: item.href } : { href: 'javascript:void(0)' }"
                     @click="item.click && item.click()"
                     :class="[item.routeName === route.name ? 'bg-gray-50 text-teal-600' : 'text-gray-700 hover:text-teal-600 hover:bg-gray-50', 'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold']">
