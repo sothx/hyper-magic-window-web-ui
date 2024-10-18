@@ -10,11 +10,13 @@
   import * as xmlFormat from '@/utils/xmlFormat';
   import { useEmbeddedStore } from '@/stores/embedded';
   import * as validateFun from '@/utils/validateFun';
+  import { useLogsStore } from '@/stores/logs';
   type EmbeddedAppDrawerInstance = InstanceType<typeof EmbeddedAppDrawer>;
   type SearchKeyWordInputInstance = InstanceType<typeof NInput>;
 
   const deviceStore = useDeviceStore()
   const embeddedStore = useEmbeddedStore()
+  const logsStore = useLogsStore()
   const searchKeyWordInput = ref<SearchKeyWordInputInstance | null>(null);
   const addEmbeddedApp = ref<EmbeddedAppDrawerInstance | null>(null);
   const updateEmbeddedApp = ref<EmbeddedAppDrawerInstance | null>(null);
@@ -35,31 +37,6 @@
   const reloadPage = async () => {
     await embeddedStore.initDefault()
   };
-
-  const testBtn = () => {
-    const loading = JSON.stringify(deviceStore.loading)
-    modal.create({
-      title: '获取到的内容',
-      type: 'warning',
-      preset: 'dialog',
-      content: () => (<p>{loading}</p>)
-    })
-    // ksuApi.getDeviceCharacteristics().then((res:any) => {
-    //   modal.create({
-    //     title: '获取到的内容',
-    //     type: 'warning',
-    //     preset: 'dialog',
-    //     content: () => (<p>{res}</p>)
-    //   })
-    // }).catch((err) => {
-    //   modal.create({
-    //     title: '报错的内容',
-    //     type: 'warning',
-    //     preset: 'dialog',
-    //     content: () => (<p>{err}</p>)
-    //   })
-    // })
-  }
 
   const pagination = reactive({
     page: 1,
@@ -82,6 +59,7 @@
         preset: 'dialog',
         content: () => (<p>该功能仅兼容平板设备，暂时不兼容折叠屏设备，请等待后续更新情况！</p>)
       })
+      logsStore.info('应用横屏配置-添加应用','该功能仅兼容平板设备，暂时不兼容折叠屏设备，请等待后续更新情况！')
       return;
     }
     if (deviceStore.androidTargetSdk && ![32, 33, 34].includes(deviceStore.androidTargetSdk)) {
@@ -544,9 +522,6 @@
       <n-button class="mb-3 mr-3" type="success" :loading="embeddedStore.loading" @click="() => reloadPage()">
         刷新当前数据
       </n-button>
-      <!-- <n-button class="mb-3 mr-3" type="success" :loading="embeddedStore.loading" @click="() => testBtn()">
-        测试专用按钮
-      </n-button> -->
       <n-input-group>
         <n-input size="large" clearable v-model:value="embeddedStore.searchKeyWord" ref="searchKeyWordInput"
           placeholder="搜索应用包名" autosize style="min-width: 80%" />

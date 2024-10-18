@@ -28,7 +28,8 @@ import { ChevronDownIcon, MagnifyingGlassIcon } from '@heroicons/vue/20/solid'
 const route = useRoute();
 const navigation = [
   { name: '应用横屏配置', routeName: 'home', href: '/', icon: HomeIcon },
-  { name: '应用布局优化', routeName: 'autoui', href: '/autoui', icon: DocumentDuplicateIcon },
+  { name: '应用布局优化', routeName: 'autoui', href: '/autoui', icon: CalendarIcon },
+  { name: '日志记录', routeName: 'logs', href: '/logs', icon: DocumentDuplicateIcon },
   { name: '开发路线图', routeName: 'project', href: '/project', icon: ChartPieIcon },
 ]
 const teams = [

@@ -41,6 +41,11 @@ const router = createRouter({
        path: '/project',
        name: 'project',
        component: () => import('../views/Project.vue')
+    },
+    {
+      path: '/logs',
+      name: 'logs',
+      component: () => import('../views/LogView.vue')
     }
   ],
   scrollBehavior (to,from,next) {

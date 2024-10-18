@@ -43,7 +43,9 @@ import {
   NCheckboxGroup,
   NCheckbox,
   NGi,
-  NGrid
+  NGrid,
+  NConfigProvider,
+  NLog
 } from "naive-ui";
 
 import App from "./App.vue";
@@ -78,8 +80,10 @@ const naive = create({
     NAvatar,
     NBreadcrumb,
     NBreadcrumbItem,
+    NConfigProvider,
     NWatermark,
     NCheckboxGroup,
+    NLog,
     NCheckbox,
     NSkeleton,
     NGi,

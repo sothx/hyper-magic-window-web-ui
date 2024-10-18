@@ -1,34 +1,34 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
-import { Sidebar } from './components/Sidebar'
-import ErrorModal from '@/components/ErrorModal.vue';
-import { ref, onMounted, watch } from 'vue'
-import { useDeviceStore } from '@/stores/device'
-import { useEmbeddedStore } from '@/stores/embedded'
-import { useAutoUIStore } from '@/stores/autoui';
+  import { RouterLink, RouterView } from 'vue-router'
+  import HelloWorld from './components/HelloWorld.vue'
+  import { Sidebar } from './components/Sidebar'
+  import ErrorModal from '@/components/ErrorModal.vue';
+  import { ref, onMounted, watch } from 'vue'
+  import { useDeviceStore } from '@/stores/device'
+  import { useEmbeddedStore } from '@/stores/embedded'
+  import { useAutoUIStore } from '@/stores/autoui';
 
-const deviceStore = useDeviceStore()
-const embeddedStore = useEmbeddedStore()
-const autoUIStore = useAutoUIStore()
-const showErrorModal = ref(false)
+  const deviceStore = useDeviceStore()
+  const embeddedStore = useEmbeddedStore()
+  const autoUIStore = useAutoUIStore()
+  const showErrorModal = ref(false)
 
-watch(
-  () => deviceStore.isNeedShowErrorModal,   // 监听的值
-  (newValue, oldValue) => { // 回调函数，值变化时执行
-    if (newValue) {
-      showErrorModal.value = true
-    }
-  },
-  { immediate: false }  // 默认是 false，不需要设置，确保不会在初始时执行
-);
+  watch(
+    () => deviceStore.isNeedShowErrorModal,   // 监听的值
+    (newValue, oldValue) => { // 回调函数，值变化时执行
+      if (newValue) {
+        showErrorModal.value = true
+      }
+    },
+    { immediate: false }  // 默认是 false，不需要设置，确保不会在初始时执行
+  );
 
-onMounted(async () => {
-  deviceStore.initDefault()
-  embeddedStore.initDefault()
-  autoUIStore.initDefault()
-  
-})
+  onMounted(async () => {
+    deviceStore.initDefault()
+    embeddedStore.initDefault()
+    autoUIStore.initDefault()
+
+  })
 </script>
 
 <template>
@@ -44,14 +44,14 @@ onMounted(async () => {
       </nav>
     </div>
   </header> -->
-  <Sidebar>
-    <RouterView />
-  </Sidebar>
-  <ErrorModal v-model="showErrorModal" :errorLogging="deviceStore.errorLogging" />
+    <Sidebar>
+      <RouterView />
+    </Sidebar>
+    <ErrorModal v-model="showErrorModal" :errorLogging="deviceStore.errorLogging" />
 </template>
 
 <style scoped>
-/* header {
+  /* header {
   line-height: 1.5;
   max-height: 100vh;
 }

@@ -7,6 +7,7 @@ import {
   type ExecResults,
 } from "@/utils/kernelsu/index.js";
 import axios from "axios";
+import handlePromiseWithLogging from "@/utils/handlePromiseWithLogging";
 
 export interface SmartFocusIOResult extends ExecResults {
   stdout: "on" | "off";
@@ -17,126 +18,136 @@ export interface MiuiCompatResult extends Omit<ExecResults, "stdout"> {
 }
 
 export const getDeviceCharacteristics = (): Promise<string> => {
-  return new Promise(async (resolve, reject) => {
+  const shellCommon = `getprop ro.build.characteristics`
+  return handlePromiseWithLogging(new Promise(async (resolve, reject) => {
     if (import.meta.env.MODE === "development") {
       resolve("tablet");
     } else {
       const { errno, stdout, stderr }: ExecResults = await exec(
-        "getprop ro.build.characteristics"
+        shellCommon
       );
       errno ? reject(stderr) : resolve(stdout);
     }
-  });
+  }), shellCommon);
 };
 
 export const getAndroidTargetSdk = (): Promise<number> => {
-  return new Promise(async (resolve, reject) => {
+  const shellCommon = `getprop ro.build.version.sdk`
+  return handlePromiseWithLogging(new Promise(async (resolve, reject) => {
     if (import.meta.env.MODE === "development") {
       resolve(34);
     } else {
       const { errno, stdout, stderr }: ExecResults = await exec(
-        "getprop ro.build.version.sdk"
+        shellCommon
       );
       errno ? reject(stderr) : resolve(Number(stdout));
     }
-  });
+  }), shellCommon);
 };
 
 export const getMIOSVersion = (): Promise<number> => {
-  return new Promise(async (resolve, reject) => {
+  const shellCommon = `getprop ro.mi.os.version.code`
+  return handlePromiseWithLogging(new Promise(async (resolve, reject) => {
     if (import.meta.env.MODE === "development") {
       resolve(2);
     } else {
       const { errno, stdout, stderr }: ExecResults = await exec(
-        "getprop ro.mi.os.version.code"
+        shellCommon
       );
       errno ? reject(stderr) : resolve(Number(stdout));
     }
-  });
+  }), shellCommon);
 };
 
 export const getSmartFocusIO = (): Promise<SmartFocusIOResult["stdout"]> => {
-  return new Promise(async (resolve, reject) => {
+  const shellCommon = `getprop persist.sys.stability.smartfocusio`
+  return handlePromiseWithLogging(new Promise(async (resolve, reject) => {
     if (import.meta.env.MODE === "development") {
       resolve("on");
     } else {
       const { errno, stdout, stderr }: SmartFocusIOResult = (await exec(
-        "getprop persist.sys.stability.smartfocusio"
+        shellCommon
       )) as SmartFocusIOResult;
       errno ? reject(stderr) : resolve(stdout);
     }
-  });
+  }), shellCommon);
 };
 
 export const getDeviceSocName = (): Promise<string> => {
-  return new Promise(async (resolve, reject) => {
+  const shellCommon = `getprop ro.vendor.qti.soc_name`
+  return handlePromiseWithLogging(new Promise(async (resolve, reject) => {
     if (import.meta.env.MODE === "development") {
       resolve("cape");
     } else {
       const { errno, stdout, stderr }: ExecResults = await exec(
-        "getprop ro.vendor.qti.soc_name"
+        shellCommon
       );
       errno ? reject(stderr) : resolve(stdout);
     }
-  });
+  }), shellCommon);
 };
 
 export const getDeviceSocModel = (): Promise<string> => {
-  return new Promise(async (resolve, reject) => {
+  const shellCommon = `getprop ro.vendor.qti.soc_model`
+  return handlePromiseWithLogging(new Promise(async (resolve, reject) => {
     if (import.meta.env.MODE === "development") {
       resolve("SM8475");
     } else {
       const { errno, stdout, stderr }: ExecResults = await exec(
-        "getprop ro.vendor.qti.soc_model"
+        shellCommon
       );
       errno ? reject(stderr) : resolve(stdout);
     }
-  });
+  }), shellCommon);
 };
 
 export const getMiuiCompatEnable = (): Promise<boolean> => {
-  return new Promise(async (resolve, reject) => {
+  const shellCommon = `getprop ro.config.miui_compat_enable`
+  return handlePromiseWithLogging(new Promise(async (resolve, reject) => {
     if (import.meta.env.MODE === "development") {
       resolve(true);
     } else {
       const { errno, stdout, stderr }: MiuiCompatResult = (await exec(
-        "getprop ro.config.miui_compat_enable"
+        shellCommon
       )) as unknown as MiuiCompatResult;
       errno ? reject(stderr) : resolve(stdout);
     }
-  });
+  }), shellCommon);
 };
 
 export const getMiuiAppCompatEnable = (): Promise<boolean> => {
-  return new Promise(async (resolve, reject) => {
+  const shellCommon = `getprop ro.config.miui_appcompat_enable`
+  return handlePromiseWithLogging(new Promise(async (resolve, reject) => {
     if (import.meta.env.MODE === "development") {
       resolve(true);
     } else {
       const { errno, stdout, stderr }: MiuiCompatResult = (await exec(
-        "getprop ro.config.miui_appcompat_enable"
+        shellCommon
       )) as unknown as MiuiCompatResult;
       errno ? reject(stderr) : resolve(stdout);
     }
-  });
+  }), shellCommon);
 };
 
 export const getSourceEmbeddedRulesList = (): Promise<string> => {
-  return new Promise(async (resolve, reject) => {
+  const shellCommon = `cat /data/adb/modules/MIUI_MagicWindow+/common/source/embedded_rules_list.xml`
+  return handlePromiseWithLogging(new Promise(async (resolve, reject) => {
     if (import.meta.env.MODE === "development") {
       const response = await axios.get("/data/origin/embedded_rules_list.xml");
       const xmlText = response.data; // 这是 XML 内容
       resolve(xmlText);
     } else {
       const { errno, stdout, stderr }: ExecResults = await exec(
-        "cat /data/adb/modules/MIUI_MagicWindow+/common/source/embedded_rules_list.xml"
+        shellCommon
       );
       errno ? reject(stderr) : resolve(stdout);
     }
-  });
+  }), shellCommon);
 };
 
 export const getSourceFixedOrientationList = (): Promise<string> => {
-  return new Promise(async (resolve, reject) => {
+  const shellCommon = `cat /data/adb/modules/MIUI_MagicWindow+/common/source/fixed_orientation_list.xml`
+  return handlePromiseWithLogging(new Promise(async (resolve, reject) => {
     if (import.meta.env.MODE === "development") {
       const response = await axios.get(
         "/data/origin/fixed_orientation_list.xml"
@@ -145,30 +156,32 @@ export const getSourceFixedOrientationList = (): Promise<string> => {
       resolve(xmlText);
     } else {
       const { errno, stdout, stderr }: ExecResults = await exec(
-        "cat /data/adb/modules/MIUI_MagicWindow+/common/source/fixed_orientation_list.xml"
+        shellCommon
       );
       errno ? reject(stderr) : resolve(stdout);
     }
-  });
+  }), shellCommon);
 };
 
 export const getCustomConfigEmbeddedRulesList = (): Promise<string> => {
-  return new Promise(async (resolve, reject) => {
+  const shellCommon = `cat /data/adb/MIUI_MagicWindow+/config/embedded_rules_list.xml`
+  return handlePromiseWithLogging(new Promise(async (resolve, reject) => {
     if (import.meta.env.MODE === "development") {
       const response = await axios.get("/data/custom/embedded_rules_list.xml");
       const xmlText = response.data; // 这是 XML 内容
       resolve(xmlText);
     } else {
       const { errno, stdout, stderr }: ExecResults = await exec(
-        "cat /data/adb/MIUI_MagicWindow+/config/embedded_rules_list.xml"
+        shellCommon
       );
       errno ? reject(stderr) : resolve(stdout);
     }
-  });
+  }), shellCommon);
 };
 
 export const getCustomConfigFixedOrientationList = (): Promise<string> => {
-  return new Promise(async (resolve, reject) => {
+  const shellCommon = `cat /data/adb/MIUI_MagicWindow+/config/fixed_orientation_list.xml`
+  return handlePromiseWithLogging(new Promise(async (resolve, reject) => {
     if (import.meta.env.MODE === "development") {
       const response = await axios.get(
         "/data/custom/fixed_orientation_list.xml"
@@ -177,15 +190,16 @@ export const getCustomConfigFixedOrientationList = (): Promise<string> => {
       resolve(xmlText);
     } else {
       const { errno, stdout, stderr }: ExecResults = await exec(
-        "cat /data/adb/MIUI_MagicWindow+/config/fixed_orientation_list.xml"
+        shellCommon
       );
       errno ? reject(stderr) : resolve(stdout);
     }
-  });
+  }), shellCommon);
 };
 
 export const getEmbeddedSettingConfig = (): Promise<string> => {
-  return new Promise(async (resolve, reject) => {
+  const shellCommon = `cat /data/system/users/0/embedded_setting_config.xml`
+  return handlePromiseWithLogging(new Promise(async (resolve, reject) => {
     if (import.meta.env.MODE === "development") {
       const response = await axios.get(
         "/data/origin/embedded_setting_config.xml"
@@ -198,42 +212,45 @@ export const getEmbeddedSettingConfig = (): Promise<string> => {
       );
       errno ? reject(stderr) : resolve(stdout);
     }
-  });
+  }), shellCommon);
 };
 
 export const getSourceAutoUIList = (): Promise<string> => {
-  return new Promise(async (resolve, reject) => {
+  const shellCommon = `cat /data/adb/modules/MIUI_MagicWindow+/common/source/autoui_list.xml`
+  return handlePromiseWithLogging(new Promise(async (resolve, reject) => {
     if (import.meta.env.MODE === "development") {
       const response = await axios.get("/data/origin/autoui_list.xml");
       const xmlText = response.data; // 这是 XML 内容
       resolve(xmlText);
     } else {
       const { errno, stdout, stderr }: ExecResults = await exec(
-        "cat /data/adb/modules/MIUI_MagicWindow+/common/source/autoui_list.xml"
+        shellCommon
       );
       errno ? reject(stderr) : resolve(stdout);
     }
-  });
+  }), shellCommon);
 };
 
 export const getCustomConfigAutoUIList = (): Promise<string> => {
-  return new Promise(async (resolve, reject) => {
+  const shellCommon = `cat /data/adb/MIUI_MagicWindow+/config/autoui_list.xml`
+  return handlePromiseWithLogging(new Promise(async (resolve, reject) => {
     if (import.meta.env.MODE === "development") {
       const response = await axios.get("/data/custom/autoui_list.xml");
       const xmlText = response.data; // 这是 XML 内容
       resolve(xmlText);
     } else {
       const { errno, stdout, stderr }: ExecResults = await exec(
-        "cat /data/adb/MIUI_MagicWindow+/config/autoui_list.xml"
+        shellCommon
       );
       errno ? reject(stderr) : resolve(stdout);
     }
-  });
+  }), shellCommon);
 };
 
 
 export const getAutoUISettingConfig = (): Promise<string> => {
-  return new Promise(async (resolve, reject) => {
+  const shellCommon = `/data/origin/autoui_setting_config.xml`
+  return handlePromiseWithLogging(new Promise(async (resolve, reject) => {
     if (import.meta.env.MODE === "development") {
       const response = await axios.get(
         "/data/origin/autoui_setting_config.xml"
@@ -242,15 +259,15 @@ export const getAutoUISettingConfig = (): Promise<string> => {
       resolve(xmlText);
     } else {
       const { errno, stdout, stderr }: ExecResults = await exec(
-        "cat /data/system/users/0/autoui_setting_config.xml"
+        shellCommon
       );
       errno ? reject(stderr) : resolve(stdout);
     }
-  });
+  }), shellCommon);
 };
 
 export const getModuleInfo = (): Promise<string> => {
-  return new Promise(async (resolve, reject) => {
+  return handlePromiseWithLogging(new Promise(async (resolve, reject) => {
     if (import.meta.env.MODE === "development") {
       const response = {
         moduleDir: "/data/adb/modules/MIUI_MagicWindow+",
@@ -260,7 +277,7 @@ export const getModuleInfo = (): Promise<string> => {
     } else {
       resolve(moduleInfo());
     }
-  });
+  }), 'getModuleInfo');
 };
 
 interface AppInfo {
@@ -269,7 +286,7 @@ interface AppInfo {
 }
 
 export const getUserAppList = (): Promise<string> => {
-  return new Promise(async (resolve, reject) => {
+  return handlePromiseWithLogging(new Promise(async (resolve, reject) => {
     if (import.meta.env.MODE === "development") {
       const response = await axios.get("/data/test.json");
       const jsonText = response.data; // 这是 XML 内容
@@ -280,7 +297,7 @@ export const getUserAppList = (): Promise<string> => {
       );
       errno ? reject(stderr) : resolve(stdout);
     }
-  });
+  }), 'getUserAppList');
 };
 
 export interface updateEmbeddedAppParams {
@@ -316,7 +333,7 @@ export const updateEmbeddedApp = (
   errorLogging?: updateEmbeddedAppErrorLoggingItem[]; // 错误日志记录
   successLogging?: updateEmbeddedAppSuccessLoggingItem[]; // 成功日志记录
 }> => {
-  return new Promise(async (resolve, reject) => {
+  return handlePromiseWithLogging(new Promise(async (resolve, reject) => {
     if (import.meta.env.MODE === "development") {
       resolve({
         type: "success",
@@ -451,5 +468,5 @@ export const updateEmbeddedApp = (
         });
       }
     }
-  });
+  }));
 };
