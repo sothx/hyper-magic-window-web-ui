@@ -194,10 +194,10 @@ function createColumns(): DataTableColumns<AutoUIMergeRuleItem> {
       </div>
     </div>
     <n-card title="操作栏" size="small">
-      <n-button class="mb-3 mr-3" type="info" :loading="autoUIStore.loading" @click="openAddAutoUIApp">
+      <n-button class="mb-3 mr-3" type="info" :loading="deviceStore.loading || autoUIStore.loading" @click="openAddAutoUIApp">
         添加应用
       </n-button>
-      <n-button class="mb-3 mr-3" type="success" :loading="autoUIStore.loading" @click="() => reloadPage()">
+      <n-button class="mb-3 mr-3" type="success" :loading="deviceStore.loading || autoUIStore.loading" @click="() => reloadPage()">
         刷新当前数据
       </n-button>
       <n-input-group>
@@ -210,7 +210,7 @@ function createColumns(): DataTableColumns<AutoUIMergeRuleItem> {
         </n-button>
       </n-input-group>
     </n-card>
-    <n-data-table :loading="autoUIStore.loading" :columns="columns" :data="autoUIStore.filterMergeRuleList"
+    <n-data-table :loading="deviceStore.loading || autoUIStore.loading" :columns="columns" :data="autoUIStore.filterMergeRuleList"
       :pagination="pagination" />
   </main>
 </template>

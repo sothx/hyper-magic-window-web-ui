@@ -516,10 +516,10 @@
       </div>
     </div>
     <n-card title="操作栏" size="small">
-      <n-button class="mb-3 mr-3" type="info" :loading="embeddedStore.loading" @click="openAddEmbeddedApp">
+      <n-button class="mb-3 mr-3" type="info" :loading="deviceStore.loading || embeddedStore.loading" @click="openAddEmbeddedApp">
         添加应用
       </n-button>
-      <n-button class="mb-3 mr-3" type="success" :loading="embeddedStore.loading" @click="() => reloadPage()">
+      <n-button class="mb-3 mr-3" type="success" :loading="deviceStore.loading || embeddedStore.loading" @click="() => reloadPage()">
         刷新当前数据
       </n-button>
       <n-input-group>
@@ -532,7 +532,7 @@
         </n-button>
       </n-input-group>
     </n-card>
-    <n-data-table :loading="embeddedStore.loading" :columns="columns" :data="embeddedStore.filterMergeRuleList"
+    <n-data-table :loading="deviceStore.loading || embeddedStore.loading" :columns="columns" :data="embeddedStore.filterMergeRuleList"
       :pagination="pagination" />
   </main>
   <ErrorModal v-model="showErrorModal" :errorLogging="embeddedStore.errorLogging" />

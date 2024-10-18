@@ -58,10 +58,14 @@ import { useMIUIContentExtension } from '@/hooks/useMIUIContentExtension';
             onPositiveClick: async () => {
               ksuApi.openGameModeManager().then((res) => {
                 modal.create({
-                  title: '打开游戏显示布局成功',
+                  title: '已开启',
                   type: 'success',
                   preset: 'dialog',
-                  content: () => (<p>好耶OwO~已经打开游戏显示布局管理界面了~</p>)
+                  content: () => (<div>
+                    <p>好耶OwO~</p>
+                    <p>已经成功开启 <span class="font-bold text-gray-600">游戏显示布局</span> 的管理界面了~</p>
+                  </div>),
+                  positiveText: '确定'
                 })
               }, (err) => {
                 modal.create({
@@ -100,10 +104,14 @@ import { useMIUIContentExtension } from '@/hooks/useMIUIContentExtension';
             onPositiveClick: async () => {
               ksuApi.openMIUIContentExtension().then((res) => {
                 modal.create({
-                  title: '打开传送门成功',
+                  title: '已开启',
                   type: 'success',
                   preset: 'dialog',
-                  content: () => (<p>好耶OwO~已经打开传送门管理界面了~</p>)
+                  content: () => (<div>
+                    <p>好耶OwO~</p>
+                    <p>已经成功开启 <span class="font-bold text-gray-600">传送门</span> 的管理界面了~</p>
+                  </div>),
+                  positiveText: '确定'
                 })
               }, (err) => {
                 modal.create({

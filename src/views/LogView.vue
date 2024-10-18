@@ -37,12 +37,17 @@
 
   const scrollToBottom = () => {
     logInstRef.value?.scrollTo({ position: 'bottom', silent: true })
-    message.info('已到达日志底部OwO')
+    message.info('已到达日志底部~')
   }
 
   const scrollToTop = () => {
     logInstRef.value?.scrollTo({ position: 'top', silent: true })
-    message.info('已到达日志顶部OwO')
+    message.info('已到达日志顶部~')
+  }
+
+  const cleanLogs = () => {
+    logsStore.content = '';
+    message.success('清空日志成功~')
   }
 
   onMounted(() => {
@@ -65,20 +70,25 @@
         <p class="mt-1 max-w-2xl text-sm leading-6 text-gray-500">在这里可以查看本次 Web UI 运行中产生的日志</p>
         <p class="mt-1 max-w-2xl text-sm leading-6 text-gray-500">若有影响使用的问题可以通过酷安/Github/模块反馈群上进行反馈</p>
       </div>
-      <n-card :bordered="false" class="mt-3" size="small">
-        <n-button class="mr-3" type="info" @click="() => { scrollToTop() }">
-          回到顶部
-        </n-button>
-        <n-button class="mr-3" type="error" @click="() => { scrollToBottom() }">
-          回到底部
-        </n-button>
+      <n-card :bordered="true" title="操作栏" class="mt-3" size="small">
+        <div class="flex">
+          <n-button class="mr-3" type="info" @click="() => { scrollToTop() }">
+            回到顶部
+          </n-button>
+          <n-button class="mr-3" type="error" @click="() => { scrollToBottom() }">
+            回到底部
+          </n-button>
+          <n-button class="mr-3" type="success" @click="() => { cleanLogs() }">
+            清空日志
+          </n-button>
+        </div>
+        <div class="mt-6 border-t border-gray-100">
+          <n-space vertical>
+            <n-log :hljs="hljs" ref="logInstRef" :row="20" line-height="2" font-size="12" :log="logsStore.content"
+              language="webui-log" trim />
+          </n-space>
+        </div>
       </n-card>
-      <div class="mt-6 border-t border-gray-100">
-        <n-space vertical>
-          <n-log :hljs="hljs" ref="logInstRef" :row="20" line-height="2" font-size="12" :log="logsStore.content"
-            language="webui-log" trim />
-        </n-space>
-      </div>
     </div>
   </div>
 </template>
