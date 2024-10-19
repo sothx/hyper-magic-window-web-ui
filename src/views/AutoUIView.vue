@@ -149,7 +149,6 @@
   }
 
   const openAddDrawer = async () => {
-    logsStore.info('测试')
     if (deviceStore.androidTargetSdk && deviceStore.androidTargetSdk < 33) {
       modal.create({
         title: '不兼容说明',
@@ -280,7 +279,7 @@
             type: 'success',
             preset: 'dialog',
             content: () => (
-              <p>好耶w， <span class="font-bold text-gray-600">{row.name}</span> 的应用配置更新成功了OwO~应用布局优化仅在应用全屏场景下生效，如果应用更新后的规则不生效，可以尝试重启平再做尝试~</p>
+              <p>好耶w， <span class="font-bold text-gray-600">{row.name}</span> 的应用配置更新成功了OwO~，如果应用更新后的规则不生效，可以尝试重启平再做尝试~</p>
             )
           })
           autoUIStore.updateMergeRuleList()

@@ -270,8 +270,28 @@
             loadingCallback,
             closeCallback
         };
-        resolvePromise(result)
+
+        modal.create({
+        title: '确认应用布局优化规则吗？',
+        type: 'warning',
+        preset: 'dialog',
+        content: () => {
+                return (
+                    <p>应用布局优化的规则仅在应用横屏全屏场景下才会生效，如果需要测试应用布局优化的效果，建议将应用的横屏配置修改为 <span class="font-bold text-gray-600">全屏</span >，规则实际是否生效以应用个体差异而异，建议多多尝试。确定要继续吗？</p>
+                )
+            },
+        positiveText: '确定应用',
+        negativeText: '我再想想',
+        onPositiveClick: async () => {
+            resolvePromise(result)
+        },
+        onNegativeClick() {
+            loadingCallback()
+        },
+        
+      })
     }
+
 
     const drawerSubmitLoading = ref<boolean>(false);
 
