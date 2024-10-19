@@ -26,8 +26,8 @@ const { message } = createDiscreteApi(['message'])
             </n-alert>
           </div>
           <div class="px-4 flex sm:grid sm:px-0 mt-5">
-            <n-alert title="[开发中] 应用布局优化"  type="info">
-             开发中，提供可视化简易适配应用的布局规则，暂定规则有全局强制缩放、全局强制拉伸及自定义。
+            <n-alert title="[已完成] 应用布局优化"  type="success">
+             供可视化简易适配应用的布局规则，支持模块预设规则及自定义规则，可以随意开关应用的布局优化规则
             </n-alert>
           </div>
           <div class="px-4 flex sm:grid sm:px-0 mt-5">
@@ -36,8 +36,8 @@ const { message } = createDiscreteApi(['message'])
             </n-alert>
           </div>
           <div class="px-4 flex sm:grid sm:px-0 mt-5">
-            <n-alert title="[未开始] 模块设置"  type="info">
-             已确定，未开始，提供可视化展示部分设备信息、模块信息并且可视化控制"游戏显示布局"、"智能IO调度"开关的选项。
+            <n-alert title="[开发中] 模块设置"  type="info">
+              开发中，提供可视化展示部分设备信息、模块信息并且可视化控制"游戏显示布局"、"智能IO调度"开关的选项。
             </n-alert>
           </div>
           <div class="px-4 flex sm:grid sm:px-0 mt-5">
