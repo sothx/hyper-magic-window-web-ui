@@ -41,13 +41,13 @@ const { message } = createDiscreteApi(['message'])
             </n-alert>
           </div>
           <div class="px-4 flex sm:grid sm:px-0 mt-5">
-            <n-alert title="[待定] 横屏模式配置-Android 11"  type="warning">
-             待定，需求紧急程度较低，提供可视化修改小米平板Android 11下类华为的横屏模式规则。(缺Android 11的测试志愿者，欢迎自荐)
+            <n-alert title="[待定] 深色模式"  type="warning">
+             待定，需求紧急程度较低，适配 Web UI 深色模式，优化深色模式下的使用体验
             </n-alert>
           </div>
           <div class="px-4 flex sm:grid sm:px-0 mt-5">
-            <n-alert title="[待定] 深色模式"  type="warning">
-             待定，需求紧急程度较低，适配 Web UI 深色模式，优化深色模式下的使用体验
+            <n-alert title="[远期规划] 横屏模式配置-Android 11"  type="default">
+              远期规划，需求紧急程度较低，Android 11模块用户量过少，提供可视化修改小米平板Android 11下类华为的横屏模式规则。(缺Android 11的测试志愿者，欢迎自荐)
             </n-alert>
           </div>
           <div class="px-4 flex sm:grid sm:px-0 mt-5">
