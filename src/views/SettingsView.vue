@@ -1,36 +1,98 @@
-<script setup lang="ts">
-import { useDeviceStore } from '@/stores/device';
-import type { CSSProperties } from 'vue'
-import { createDiscreteApi } from 'naive-ui'
-import { useGameMode } from '@/hooks/useGameMode';
-const deviceStore = useDeviceStore()
-const { message } = createDiscreteApi(['message'])
-const gameMode = useGameMode();
-const handleSmartFocusIOChange = (value: boolean) => {
-  message.info('功能尚未上线，无任何实际效果，请等待后续更新！')
-}
-const railStyle = ({
-  focused,
-  checked
-}: {
-  focused: boolean
-  checked: boolean
-}) => {
-  const style: CSSProperties = {}
-  if (checked) {
-    style.background = '#d03050'
-    if (focused) {
-      style.boxShadow = '0 0 0 2px #d0305040'
-    }
+<script setup lang="tsx">
+  import { useDeviceStore } from '@/stores/device';
+  import type { CSSProperties } from 'vue'
+  import { createDiscreteApi } from 'naive-ui'
+  import { useGameMode } from '@/hooks/useGameMode';
+  import * as ksuApi from "@/apis/ksuApi";
+  import $to from 'await-to-js'
+  const deviceStore = useDeviceStore()
+  const { message, modal } = createDiscreteApi(['message', 'modal'])
+  const gameMode = useGameMode();
+  const handleSmartFocusIOChange = (value: boolean) => {
+    message.info('功能尚未上线，无任何实际效果，请等待后续更新！')
   }
-  else {
-    style.background = '#2080f0'
-    if (focused) {
-      style.boxShadow = '0 0 0 2px #2080f040'
+  const changeGameMode = async (value: boolean) => {
+    const [, positiveRes] = await $to(new Promise((resolve, reject) => {
+      modal.create({
+        title: value ? '想开启游戏显示布局吗？' : '想关闭游戏显示布局吗？',
+        type: 'info',
+        preset: 'dialog',
+        content: () => (<div>
+          <p>{value ? '开启' : '关闭'} <span class="font-bold text-gray-600">游戏显示布局</span> 后需要设备重启才会生效~</p>
+          <p>是否立即重启？</p>
+        </div>),
+        positiveText: '立即重启',
+        negativeText: '稍后重启',
+        onPositiveClick: () => {
+          resolve('positiveClick')
+        },
+        onNegativeClick: () => {
+          reject('negativeClick')
+        }
+      })
+    }))
+
+    const [deleteGameModeErr] = await $to(ksuApi.deleteGameMode())
+    if (deleteGameModeErr) {
+      modal.create({
+        title: '操作失败',
+        type: 'error',
+        preset: 'dialog',
+        content: () => (<p>无法修改模块配置文件，详情请查看日志记录~</p>),
+        negativeText: '确定'
+      })
+      return;
     }
+    if (value) {
+      const [addGameModeErr] = await $to(ksuApi.addGameMode())
+      if (addGameModeErr) {
+        modal.create({
+          title: '操作失败',
+          type: 'error',
+          preset: 'dialog',
+          content: () => (<p>无法修改模块配置文件，详情请查看日志记录~</p>),
+          negativeText: '确定'
+        })
+        return;
+      }
+    }
+    if (positiveRes) {
+      const [rebootDeviceErr] = await $to(ksuApi.rebootDevice())
+      if (rebootDeviceErr) {
+        modal.create({
+          title: '操作失败',
+          type: 'error',
+          preset: 'dialog',
+          content: () => (<p>无法重启设备，详情请查看日志记录~</p>),
+          negativeText: '确定'
+        })
+        return;
+      }
+    }
+
   }
-  return style
-}
+  const railStyle = ({
+    focused,
+    checked
+  }: {
+    focused: boolean
+    checked: boolean
+  }) => {
+    const style: CSSProperties = {}
+    if (checked) {
+      style.background = '#d03050'
+      if (focused) {
+        style.boxShadow = '0 0 0 2px #d0305040'
+      }
+    }
+    else {
+      style.background = '#2080f0'
+      if (focused) {
+        style.boxShadow = '0 0 0 2px #2080f040'
+      }
+    }
+    return style
+  }
 </script>
 <template>
   <div class="setting">
@@ -43,15 +105,26 @@ const railStyle = ({
         <dl class="divide-y divide-gray-100">
           <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
             <dt class="text-sm font-medium leading-6 text-gray-900">模块ID</dt>
-            <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ deviceStore.moduleID || '获取失败' }}</dd>
+            <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ deviceStore.moduleID || '获取失败' }}
+            </dd>
           </div>
           <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
             <dt class="text-sm font-medium leading-6 text-gray-900">模块路径</dt>
-            <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ deviceStore.moduleDir || '获取失败' }}</dd>
+            <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ deviceStore.moduleDir || '获取失败' }}
+            </dd>
           </div>
           <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
             <dt class="text-sm font-medium leading-6 text-gray-900">游戏显示布局</dt>
-            <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ gameMode.isSupportGameMode ? '已开启' : '未开启/不支持' }}</dd>
+            <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0"> <n-switch
+                @update:value="(value: boolean) => changeGameMode(value)" :value="gameMode.isSupportGameMode"
+                :disabled="deviceStore.deviceCharacteristics !== 'tablet' || deviceStore.androidTargetSdk && deviceStore.androidTargetSdk < 32">
+                <template #checked>
+                  已开启游戏显示布局
+                </template>
+                <template #unchecked>
+                  {{ deviceStore.androidTargetSdk && deviceStore.androidTargetSdk < 32 ? '不支持游戏显示布局' : '未开启游戏显示布局' }}
+                    </template>
+              </n-switch></dd>
           </div>
           <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
             <dt class="text-sm font-medium leading-6 text-gray-900">Xiaomi Hyper OS 版本号</dt>

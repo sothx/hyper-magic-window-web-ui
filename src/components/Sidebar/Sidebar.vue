@@ -21,11 +21,15 @@
     Cog6ToothIcon,
     CubeIcon,
     CubeTransparentIcon,
+    DeviceTabletIcon,
     DocumentDuplicateIcon,
     FolderIcon,
     HomeIcon,
     PlayIcon,
+    Squares2X2Icon,
     UsersIcon,
+    ViewColumnsIcon,
+    WindowIcon,
     XMarkIcon,
   } from '@heroicons/vue/24/outline'
   import { useRoute } from 'vue-router';
@@ -42,17 +46,24 @@ import { useMIUIContentExtension } from '@/hooks/useMIUIContentExtension';
   const MIUIContentExtension = useMIUIContentExtension()
   const { message, modal } = createDiscreteApi(['message', 'modal'])
   const navigation = [
-    { name: '应用横屏配置', routeName: 'home', href: '/', icon: HomeIcon },
-    { name: '应用布局优化', routeName: 'autoui', href: '/autoui', icon: CalendarIcon },
+    { name: '应用横屏配置', routeName: 'home', href: '/', icon: WindowIcon },
+    { name: '应用布局优化', routeName: 'autoui', href: '/autoui', icon: Squares2X2Icon },
     {
       name: '游戏显示布局',
       click() {
-        if (gameMode.isSupportGameMode) {
+        if (gameMode.isSupportGameMode.value) {
           modal.create({
             title: '确认打开游戏显示布局吗？',
             type: 'info',
             preset: 'dialog',
-            content: () => (deviceStore.deviceCharacteristics === 'tablet' && deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 ? (<p>即将打开 <span class="font-bold text-gray-600">游戏显示布局</span> 管理界面，确定要继续吗？请注意，从Hyper OS 2.0开始，小米平板需要搭配配套的 <span class="font-bold text-gray-600">修改版平板/手机管家</span> 才能使用游戏显示布局，详情请前往模块首页了解~</p>) : (<p>即将打开 <span class="font-bold text-gray-600">游戏显示布局</span> 管理界面，确定要继续吗？</p>)),
+            content: () => (<div>
+              <p>即将打开 <span class="font-bold text-gray-600">游戏显示布局</span> 管理界面，确定要继续吗？</p>
+              <p>您可以将希望调整 <span class="font-bold text-gray-600">游戏显示布局</span> 的应用加到 <span class="font-bold text-gray-600">游戏工具箱</span> 中，即可进行管理~</p>
+              {
+                deviceStore.deviceCharacteristics === 'tablet' && deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && (<p>从Hyper OS 2.0开始，小米平板需要搭配配套的 <span class="font-bold text-gray-600">修改版平板/手机管家</span> 才能使用游戏显示布局，详情请前往模块首页了解~</p>)
+              }
+            </div>
+            ),
             positiveText: '确定打开',
             negativeText: '我再想想',
             onPositiveClick: async () => {
@@ -72,7 +83,8 @@ import { useMIUIContentExtension } from '@/hooks/useMIUIContentExtension';
                   title: '无法打开游戏显示布局',
                   type: 'error',
                   preset: 'dialog',
-                  content: () => (<p>您可能未启用或者设备不支持 <span class="font-bold text-gray-600">游戏显示布局</span> ，详情请阅读模块首页说明文档~</p>)
+                  content: () => (<p>您可能未启用或者设备不支持 <span class="font-bold text-gray-600">游戏显示布局</span> ，详情请阅读模块首页说明文档~</p>),
+                  negativeText: '确定'
                 })
               })
             }
@@ -82,11 +94,12 @@ import { useMIUIContentExtension } from '@/hooks/useMIUIContentExtension';
             title: '无法打开游戏显示布局',
             type: 'error',
             preset: 'dialog',
-            content: () => (<p>您可能未启用或者设备不支持 <span class="font-bold text-gray-600">游戏显示布局</span> QwQ，详情请阅读模块首页说明文档~</p>)
+            content: () => (<p>您未开启 <span class="font-bold text-gray-600">游戏显示布局</span> ，详情请阅读模块首页说明文档~</p>),
+            negativeText: '确定'
           })
         }
       },
-      icon: CubeIcon
+      icon: PlayIcon
     },
     {
       name: '传送门',
@@ -98,7 +111,9 @@ import { useMIUIContentExtension } from '@/hooks/useMIUIContentExtension';
           title: '确认打开传送门吗？',
             type: 'info',
             preset: 'dialog',
-            content: () => (<p>即将打开 <span class="font-bold text-gray-600">传送门</span> 管理界面，确定要继续吗？</p>),
+            content: () => (<div>
+              <p>即将打开 <span class="font-bold text-gray-600">传送门</span> 管理界面，确定要继续吗？</p>
+            </div>),
             positiveText: '确定打开',
             negativeText: '我再想想',
             onPositiveClick: async () => {
@@ -118,13 +133,14 @@ import { useMIUIContentExtension } from '@/hooks/useMIUIContentExtension';
                   title: '无法打开传送门',
                   type: 'error',
                   preset: 'dialog',
-                  content: () => (<p>出现异常，无法正常打开传送门QwQ，详细问题可浏览日志记录~</p>)
+                  content: () => (<p>出现异常，无法正常打开传送门QwQ，详细问题可浏览日志记录~</p>),
+                  negativeText: '确定'
                 })
               })
             }
         })
       },
-      icon: CubeTransparentIcon
+      icon: DeviceTabletIcon
     },
     { name: '日志记录', routeName: 'logs', href: '/logs', icon: DocumentDuplicateIcon },
     { name: '开发路线图', routeName: 'project', href: '/project', icon: ChartPieIcon },

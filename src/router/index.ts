@@ -46,6 +46,11 @@ const router = createRouter({
       path: '/logs',
       name: 'logs',
       component: () => import('../views/LogView.vue')
+    },
+    {
+      path: '/game-turbo-config',
+      name: 'game-turbo-config',
+      component: () => import('../views/GameTurboConfig.vue')
     }
   ],
   scrollBehavior (to,from,next) {

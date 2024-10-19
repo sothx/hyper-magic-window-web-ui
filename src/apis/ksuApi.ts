@@ -13,9 +13,6 @@ export interface SmartFocusIOResult extends ExecResults {
   stdout: "on" | "off";
 }
 
-export interface MiuiCompatResult extends Omit<ExecResults, "stdout"> {
-  stdout: boolean;
-}
 
 export const getDeviceCharacteristics = (): Promise<string> => {
   const shellCommon = `getprop ro.build.characteristics`
@@ -101,29 +98,29 @@ export const getDeviceSocModel = (): Promise<string> => {
   }), shellCommon);
 };
 
-export const getMiuiCompatEnable = (): Promise<boolean> => {
+export const getMiuiCompatEnable = (): Promise<string> => {
   const shellCommon = `getprop ro.config.miui_compat_enable`
   return handlePromiseWithLogging(new Promise(async (resolve, reject) => {
     if (import.meta.env.MODE === "development") {
-      resolve(true);
+      resolve('true');
     } else {
-      const { errno, stdout, stderr }: MiuiCompatResult = (await exec(
+      const { errno, stdout, stderr }: ExecResults = (await exec(
         shellCommon
-      )) as unknown as MiuiCompatResult;
-      errno ? reject(stderr) : resolve(stdout);
+      )) as unknown as ExecResults;
+      errno ? reject(stderr) :  resolve(stdout);
     }
   }), shellCommon);
 };
 
-export const getMiuiAppCompatEnable = (): Promise<boolean> => {
+export const getMiuiAppCompatEnable = (): Promise<string> => {
   const shellCommon = `getprop ro.config.miui_appcompat_enable`
   return handlePromiseWithLogging(new Promise(async (resolve, reject) => {
     if (import.meta.env.MODE === "development") {
-      resolve(true);
+      resolve('true');
     } else {
-      const { errno, stdout, stderr }: MiuiCompatResult = (await exec(
+      const { errno, stdout, stderr }: ExecResults = (await exec(
         shellCommon
-      )) as unknown as MiuiCompatResult;
+      )) as unknown as ExecResults;
       errno ? reject(stderr) : resolve(stdout);
     }
   }), shellCommon);
@@ -308,6 +305,48 @@ export const openMIUIContentExtension = (): Promise<string> => {
   }), shellCommon);
 };
 
+export const rebootDevice = (): Promise<string> => {
+  const shellCommon = `reboot && echo "Reboot command executed successfully." || echo "Reboot command failed."`
+  return handlePromiseWithLogging(new Promise(async (resolve, reject) => {
+    if (import.meta.env.MODE === "development") {
+      resolve(`Reboot command executed successfully.`);
+    } else {
+      const { errno, stdout, stderr }: ExecResults = await exec(
+        shellCommon
+      );
+      errno ? reject(stderr) : stdout === 'Reboot command executed successfully.' ? resolve(stdout) : reject(stdout);
+    }
+  }), shellCommon);
+}
+
+export const deleteGameMode = (): Promise<string> => {
+  const shellCommon = `sed -i '/^# 开启游戏显示布局/d; /^ro.config.miui_compat_enable=/d; /^ro.config.miui_appcompat_enable=/d' /data/adb/modules/MIUI_MagicWindow+/system.prop  && echo "Command executed successfully." || echo "Command failed."`
+  return handlePromiseWithLogging(new Promise(async (resolve, reject) => {
+    if (import.meta.env.MODE === "development") {
+      resolve(`Command executed successfully.`);
+    } else {
+      const { errno, stdout, stderr }: ExecResults = await exec(
+        shellCommon
+      );
+      errno ? reject(stderr) :  stdout === 'Command executed successfully.' ? resolve(stdout) : reject(stdout);
+    }
+  }), shellCommon);
+}
+
+export const addGameMode = (): Promise<string> => {
+  const shellCommon = `grep -qxF "# 开启游戏显示布局" system.prop || echo -e "# 开启游戏显示布局\nro.config.miui_compat_enable=true\nro.config.miui_appcompat_enable=true" >> /data/adb/modules/MIUI_MagicWindow+/system.prop  && echo "Command executed successfully." || echo "Command failed."`
+  return handlePromiseWithLogging(new Promise(async (resolve, reject) => {
+    if (import.meta.env.MODE === "development") {
+      resolve(`Command executed successfully.`);
+    } else {
+      const { errno, stdout, stderr }: ExecResults = await exec(
+        shellCommon
+      );
+      errno ? reject(stderr) :  stdout === 'Command executed successfully.' ? resolve(stdout) : reject(stdout);
+    }
+  }), shellCommon);
+}
+
 export const getModuleInfo = (): Promise<string> => {
   return handlePromiseWithLogging(new Promise(async (resolve, reject) => {
     const response = JSON.stringify({
@@ -328,6 +367,21 @@ interface AppInfo {
 }
 
 export const getUserAppList = (): Promise<string> => {
+  return handlePromiseWithLogging(new Promise(async (resolve, reject) => {
+    if (import.meta.env.MODE === "development") {
+      const response = await axios.get("/data/test.json");
+      const jsonText = response.data; // 这是 XML 内容
+      resolve(jsonText);
+    } else {
+      const { errno, stdout, stderr }: ExecResults = await exec(
+        "cat /data/system/users/0/autoui_setting_config.xml"
+      );
+      errno ? reject(stderr) : resolve(stdout);
+    }
+  }), 'getUserAppList');
+};
+
+export const reboot = (): Promise<string> => {
   return handlePromiseWithLogging(new Promise(async (resolve, reject) => {
     if (import.meta.env.MODE === "development") {
       const response = await axios.get("/data/test.json");
