@@ -616,7 +616,7 @@ export const updateAutoUIApp = (
         stdout: EmStdout,
         stderr: EmStderr,
       }: ExecResults = await exec(
-        `echo '${params.customAutoUIListXML}' > /data/adb/MIUI_MagicWindow+/config/embedded_rules_list.xml`
+        `echo '${params.customAutoUIListXML}' > /data/adb/MIUI_MagicWindow+/config/autoui_list.xml`
       );
       if (EmErrno) {
         errorLogging.push({
@@ -637,7 +637,7 @@ export const updateAutoUIApp = (
         stdout: SettingsStdout,
         stderr: SettingsStderr,
       }: ExecResults = await exec(
-        `echo '${params.settingConfigXML}' > /data/system/users/0/embedded_setting_config.xml`
+        `echo '${params.settingConfigXML}' > /data/system/users/0/autoui_setting_config.xml`
       );
       if (SettingsErrno) {
         errorLogging.push({
@@ -680,7 +680,7 @@ export const updateAutoUIApp = (
           stdout: SwitchActionStdout,
           stderr: ReloadActionStderr,
         }: ExecResults = await exec(
-          `cmd miui_auto_ui ${params.reloadRuleAction.name} ${params.reloadRuleAction.action}`
+          `cmd miui_auto_ui ${params.reloadRuleAction.action} ${params.reloadRuleAction.name}`
         );
   
         if (ReloadActionErrno) {

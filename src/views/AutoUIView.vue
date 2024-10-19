@@ -61,9 +61,6 @@
           if (autoUIStore.customConfigAutoUIList[row.name]) {
             delete autoUIStore.customConfigAutoUIList[row.name]
           }
-          if (autoUIStore.autoUISettingConfig[row.name]) {
-            delete autoUIStore.autoUISettingConfig[row.name]
-          }
           const [submitUpdateAutoUIAppErr, submitUpdateAutoUIAppRes] = await $to(ksuApi.updateAutoUIApp({
             customAutoUIListXML: xmlFormat.objectToXML(autoUIStore.customConfigAutoUIList, 'package', undefined),
             settingConfigXML: xmlFormat.objectToXML(autoUIStore.autoUISettingConfig, 'setting', 'setting_config'),
@@ -171,6 +168,10 @@
           ...(addAutoUiAppRes?.modePayload.hasOwnProperty('activityRule')) ? { activityRule: addAutoUiAppRes?.modePayload.activityRule } : {},
           ...(addAutoUiAppRes?.modePayload.hasOwnProperty('skippedActivityRule')) ? { skippedActivityRule: addAutoUiAppRes?.modePayload.skippedActivityRule } : {},
         }
+        autoUIStore.autoUISettingConfig[addAutoUiAppRes.name] = {
+            name: addAutoUiAppRes.name,
+            enable: true
+        }
         const [submitAddAutoUIAppErr, submitAddAutoUIAppRes] = await $to(ksuApi.updateAutoUIApp({
           customAutoUIListXML: xmlFormat.objectToXML(autoUIStore.customConfigAutoUIList, 'package', undefined),
           settingConfigXML: xmlFormat.objectToXML(autoUIStore.autoUISettingConfig, 'setting', 'setting_config'),
@@ -242,6 +243,14 @@
             ...(updateAutoUiAppRes?.modePayload.optimizeWebView) ? { optimizeWebView: true } : {},
             ...(updateAutoUiAppRes?.modePayload.hasOwnProperty('activityRule')) ? { activityRule: updateAutoUiAppRes?.modePayload.activityRule } : {},
             ...(updateAutoUiAppRes?.modePayload.hasOwnProperty('skippedActivityRule')) ? { skippedActivityRule: updateAutoUiAppRes?.modePayload.skippedActivityRule } : {},
+          }
+        }
+        if (autoUIStore.autoUISettingConfig[row.name]) {
+          autoUIStore.autoUISettingConfig[row.name].enable = true
+        } else {
+          autoUIStore.autoUISettingConfig[row.name] = {
+            name: row.name,
+            enable: true
           }
         }
         console.log('loadingCallback:', updateAutoUiAppRes.loadingCallback);
@@ -417,7 +426,13 @@
             unchecked: () => <span>关闭</span>,
           };
           const isOpen = (inputRow: AutoUIMergeRuleItem) => {
-            return inputRow.settingRule?.enable || (inputRow.autoUIRule?.enable && inputRow.hasOwnProperty('settingRule'))
+            if (inputRow.settingRule && inputRow.settingRule.hasOwnProperty('enable')) {
+              return inputRow.settingRule.enable
+            } else if (inputRow.autoUIRule && inputRow.autoUIRule.hasOwnProperty('enable')) {
+              return inputRow.autoUIRule.enable
+            } else {
+              return true
+            }
           }
           return (
             <n-switch railStyle={railStyle} onUpdateValue={(value:boolean) => handleSwitchAction(row,index,value)} size="medium" value={
@@ -432,8 +447,6 @@
 </script>
 <template>
   <main class="autoui-view mb-10">
-    <n-watermark v-if="true" content="开发中，功能不可用" cross fullscreen :font-size="16" :line-height="16" :width="384"
-      :height="384" :x-offset="12" :y-offset="60" :rotate="-15" :z-index="9999" />
     <div class="mt-5">
       <div class="px-4 sm:px-0 mb-5">
         <h3 class="text-base font-semibold leading-7 text-gray-900">应用布局优化</h3>
