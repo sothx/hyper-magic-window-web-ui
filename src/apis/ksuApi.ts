@@ -13,6 +13,10 @@ export interface SmartFocusIOResult extends ExecResults {
   stdout: "on" | "off";
 }
 
+export interface AndroidAppPackageJobsResult extends Omit<ExecResults, 'stdout'> {
+  stdout: number;
+}
+
 
 export const getDeviceCharacteristics = (): Promise<string> => {
   const shellCommon = `getprop ro.build.characteristics`
@@ -567,6 +571,59 @@ export const updateEmbeddedApp = (
     }
   }));
 };
+
+
+export const getAndroidAppPackageList = (): Promise<string> => {
+  const shellCommon = `cat /data/adb/modules/MIUI_MagicWindow+/common/temp/package_info.json`
+  return handlePromiseWithLogging(new Promise(async (resolve, reject) => {
+    if (import.meta.env.MODE === "development") {
+      const response = await axios.get(
+        "/data/origin/package_info.json"
+      );
+      const jsonText = response.data; // 这是 XML 内容
+      resolve(jsonText);
+    } else {
+      const { errno, stdout, stderr }: ExecResults = await exec(
+        shellCommon
+      );
+      errno ? reject(stderr) : resolve(stdout);
+    }
+  }), shellCommon);
+};
+
+export const reloadAndroidAppPackageList = (): Promise<string> => {
+  const shellCommon = `(sh /data/adb/modules/MIUI_MagicWindow+/service.sh > /dev/null 2>&1 & echo $!)`
+  return handlePromiseWithLogging(new Promise(async (resolve, reject) => {
+    if (import.meta.env.MODE === "development") {
+      resolve('27455');
+    } else {
+      const { errno, stdout, stderr }: ExecResults = await exec(
+        shellCommon
+      );
+      errno ? reject(stderr) : !isNaN(Number(stdout)) ? resolve(String(stdout)) : reject(stdout);
+    }
+  }), shellCommon);
+};
+
+export const readAndroidPackageShellJobs = (id: number): Promise<string> => {
+  const shellCommon = `ps | grep ${id}`
+  return handlePromiseWithLogging(new Promise(async (resolve, reject) => {
+    if (import.meta.env.MODE === "development") {
+      const response = await axios.get(
+        "/data/origin/package_info.json"
+      );
+      const jsonText = response.data; // 这是 XML 内容
+      resolve(jsonText);
+    } else {
+      const { errno, stdout, stderr }: ExecResults = await exec(
+        shellCommon
+      );
+      errno ? reject(stderr) : resolve(stdout);
+    }
+  }), shellCommon);
+}
+
+
 
 export interface updateAutoUIAppErrorLoggingItem {
   type: string;
