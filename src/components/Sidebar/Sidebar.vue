@@ -50,6 +50,9 @@ import { useMIUIContentExtension } from '@/hooks/useMIUIContentExtension';
     { name: '应用布局优化', routeName: 'autoui', href: '/autoui', icon: Squares2X2Icon },
     {
       name: '游戏显示布局',
+      isShow() {
+        return deviceStore.androidTargetSdk && deviceStore.androidTargetSdk >= 32
+      },
       click() {
         if (gameMode.isSupportGameMode.value) {
           modal.create({
@@ -83,7 +86,10 @@ import { useMIUIContentExtension } from '@/hooks/useMIUIContentExtension';
                   title: '无法打开游戏显示布局',
                   type: 'error',
                   preset: 'dialog',
-                  content: () => (<p>您可能未启用或者设备不支持 <span class="font-bold text-gray-600">游戏显示布局</span> ，详情请阅读模块首页说明文档~</p>),
+                  content: () => (<div>
+                    <p>您未开启 <span class="font-bold text-gray-600">游戏显示布局</span>，请前往模块设置中开启~</p>
+                    <p>如果仍然无法正常打开，请更新手机/平板管家~</p>
+                  </div>),
                   negativeText: '确定'
                 })
               })
@@ -94,7 +100,10 @@ import { useMIUIContentExtension } from '@/hooks/useMIUIContentExtension';
             title: '无法打开游戏显示布局',
             type: 'error',
             preset: 'dialog',
-            content: () => (<p>您未开启 <span class="font-bold text-gray-600">游戏显示布局</span> ，详情请阅读模块首页说明文档~</p>),
+            content: () => (<div>
+              <p>您未开启 <span class="font-bold text-gray-600">游戏显示布局</span>，请前往模块设置中开启~</p>
+              <p>如果仍然无法正常打开，请更新手机/平板管家~</p>
+            </div>),
             negativeText: '确定'
           })
         }

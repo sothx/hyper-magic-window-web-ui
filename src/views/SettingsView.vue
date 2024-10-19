@@ -12,13 +12,14 @@
     message.info('功能尚未上线，无任何实际效果，请等待后续更新！')
   }
   const changeGameMode = async (value: boolean) => {
-    const [, positiveRes] = await $to(new Promise((resolve, reject) => {
+    const [negativeRes, positiveRes] = await $to(new Promise((resolve, reject) => {
       modal.create({
         title: value ? '想开启游戏显示布局吗？' : '想关闭游戏显示布局吗？',
         type: 'info',
         preset: 'dialog',
         content: () => (<div>
           <p>{value ? '开启' : '关闭'} <span class="font-bold text-gray-600">游戏显示布局</span> 后需要设备重启才会生效~</p>
+          { value && deviceStore.deviceCharacteristics === 'tablet' && deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && (<p>从Hyper OS 2.0开始，小米平板需要搭配配套的 <span class="font-bold text-gray-600">修改版平板/手机管家</span> 才能使用游戏显示布局，详情请前往模块首页了解~</p>) }
           <p>是否立即重启？</p>
         </div>),
         positiveText: '立即重启',
@@ -68,6 +69,16 @@
         })
         return;
       }
+    }
+    if (negativeRes) {
+      modal.create({
+        title: '操作成功',
+        type: 'success',
+        preset: 'dialog',
+        content: () => (<p>修改模块配置成功，请手动重启设备~</p>),
+        negativeText: '确定'
+      })
+      return;
     }
 
   }
