@@ -544,7 +544,7 @@ export const updateEmbeddedApp = (
           successLogging.push({
             type: "updateMiuiEmbeddingWindowSwitchAction",
             name: `[模块]更新${params.switchAction.action}的设置`,
-            message: `更新成功`,
+            message:SwitchActionStdout,
           });
         }
       }
@@ -693,7 +693,7 @@ export const updateAutoUIApp = (
           successLogging.push({
             type: "updateMiuiAutoUIReloadAction",
             name: `[模块]更新${params.reloadRuleAction.name}的设置`,
-            message: `更新成功`,
+            message: SwitchActionStdout,
           });
         }
       }

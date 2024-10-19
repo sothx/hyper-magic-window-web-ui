@@ -6,6 +6,10 @@
     import type AutoUIMergeRuleItem from '@/types/AutoUIMergeRuleItem';
     import type AutoUIItem from '@/types/AutoUIItem';
     import { useAutoUIStore } from '@/stores/autoui';
+    import { useLogsStore } from '@/stores/logs';
+    type NInputInstance = InstanceType<typeof NInput>
+    const currentSkippedActivityRuleRef = ref<NInputInstance | null>(null);
+    const currentActivityRuleRef = ref<NInputInstance | null>(null);
     const props = defineProps<{
         type: 'add' | 'update',
         title: string
@@ -15,7 +19,8 @@
     // Refs and stores
     const activeDrawer = ref(false); // 控制drawer显示
     const deviceStore = useDeviceStore();
-    const autoUIStore = useAutoUIStore()
+    const autoUIStore = useAutoUIStore();
+    const logsStore = useLogsStore();
     const { message, modal } = createDiscreteApi(['message', 'modal'])
     export interface AutoUIDrawerSubmitResult {
         name: string;
@@ -186,6 +191,36 @@
         return style
     }
 
+    const resizeDrawerContentFun = (isResize: boolean) => {
+        const autoUIDrawerContentEl = document.querySelector('.n-drawer-content')
+        if (autoUIDrawerContentEl instanceof HTMLElement) {
+            logsStore.info(`resizeDrawerContent`,isResize)
+            autoUIDrawerContentEl.style.height = isResize ?  `calc(100% + 200px)` : `100%`
+        }
+    }
+
+    const handleTextAreaFocus = (ref: string) => {
+        if (ref === 'currentActivityRuleRef') {
+            resizeDrawerContentFun(true)
+            currentActivityRuleRef.value?.$el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        }
+        if (ref === 'currentSkippedActivityRuleRef') {
+            resizeDrawerContentFun(true)
+            currentSkippedActivityRuleRef.value?.$el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        }
+    }
+
+    const handleTextAreaBlur = (ref: string) => {
+        if (ref === 'currentActivityRuleRef') {
+            resizeDrawerContentFun(false)
+            currentActivityRuleRef.value?.$el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        }
+        if (ref === 'currentSkippedActivityRuleRef') {
+            resizeDrawerContentFun(false)
+            currentSkippedActivityRuleRef.value?.$el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        }
+    }
+
     const currentAppName = ref<string>('');
     const currentAppNameInputStatus = ref<string>('')
 
@@ -240,12 +275,10 @@
 
     const drawerSubmitLoading = ref<boolean>(false);
 
+    const keyboardHeight = ref<number>(0);
+
     defineExpose({
         openDrawer: AutoUIAppDrawer.value.openDrawer // 传递 openDrawer 方法
-    })
-
-    onMounted(() => {
-        // console.log(import.meta.env, 'import.meta.env')
     })
 
 
@@ -257,7 +290,9 @@
 
     <!-- Drawer -->
     <n-drawer v-model:show="activeDrawer" :default-width="500" placement="right">
-        <n-drawer-content :title="props.title" closable>
+        <n-drawer-content body-content-class="auto-ui-drawer-content" :scrollbar-props="{
+            trigger: 'none'
+        }" :title="props.title" closable>
             <n-input-group :class="(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2) ? '' : 'mb-5'">
                 <n-input-group-label size="large">应用包名</n-input-group-label>
                 <n-input size="large" :status="currentAppNameInputStatus" v-model:value="currentAppName"
@@ -274,16 +309,21 @@
             <n-card v-if="currentAutoUIRuleOptions.key === 'CUSTOM_VIEW_POLICY'" :bordered="false" title="自定义应用布局优化规则"
                 size="small">
                 <n-input-group>
-                    <n-input :allow-input="(value: string) => validateFun.validateAutoUIRule(value)" type="textarea"
-                        :autosize="{ minRows: 1, maxRows: 3 }" v-model:value="currentActivityRule"
+                    <n-input display-directive="show" ref="currentActivityRuleRef"
+                        @focus="() => handleTextAreaFocus('currentActivityRuleRef')"
+                        @blur="() => handleTextAreaBlur('currentActivityRuleRef')"
+                        :allow-input="(value: string) => validateFun.validateAutoUIRule(value)" type="textarea"
+                        :autosize="{ minRows: 3, maxRows: 3 }" v-model:value="currentActivityRule"
                         placeholder="请输入自定义应用布局优化规则" />
                 </n-input-group>
             </n-card>
-            <n-card v-if="currentAutoUIRuleOptions.key === 'CUSTOM_VIEW_POLICY' && currentActivityRule" :bordered="false"
-                title="跳过应用布局优化的Activity规则" size="small">
+            <n-card :bordered="false" title="跳过应用布局优化的Activity规则" size="small">
                 <n-input-group>
-                    <n-input :allow-input="(value: string) => validateFun.validateAutoUISkipActivityRule(value)"
-                        type="textarea" :autosize="{ minRows: 1, maxRows: 3 }"
+                    <n-input display-directive="show" ref="currentSkippedActivityRuleRef"
+                        @focus="() => handleTextAreaFocus('currentSkippedActivityRuleRef')"
+                        @blur="() => handleTextAreaBlur('currentSkippedActivityRuleRef')"
+                        :allow-input="(value: string) => validateFun.validateAutoUISkipActivityRule(value)"
+                        type="textarea" :autosize="{ minRows: 3, maxRows: 3 }"
                         v-model:value="currentSkippedActivityRule" placeholder="请输入跳过应用布局优化的Activity规则" />
                 </n-input-group>
             </n-card>

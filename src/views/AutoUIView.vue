@@ -9,6 +9,7 @@
   import { NButton, createDiscreteApi, type DataTableColumns, type NInput } from 'naive-ui'
   import type AutoUIMergeRuleItem from '@/types/AutoUIMergeRuleItem';
   import { useRouter, useRoute } from 'vue-router';
+  import { useLogsStore } from '@/stores/logs';
   import { useAutoUI } from '@/hooks/useAutoUI';
   import * as validateFun from '@/utils/validateFun';
   import AutoUIAppDrawer from '@/components/AutoUIAppDrawer.vue';
@@ -23,7 +24,9 @@
   const addAutoUIApp = ref<AutoUIAppDrawerInstance | null>(null);
   const updateAutoUIApp = ref<AutoUIAppDrawerInstance | null>(null);
   const router = useRouter();
+  const logsStore = useLogsStore();
   const route = useRoute();
+  
 
   const reloadPage = async () => {
     await autoUIStore.initDefault()
@@ -146,6 +149,7 @@
   }
 
   const openAddDrawer = async () => {
+    logsStore.info('测试')
     if (deviceStore.androidTargetSdk && deviceStore.androidTargetSdk < 33) {
       modal.create({
         title: '不兼容说明',
@@ -194,7 +198,7 @@
             type: 'success',
             preset: 'dialog',
             content: () => (
-              <p>好耶w， <span class="font-bold text-gray-600">{addAutoUiAppRes.name}</span> 的应用配置添加成功了OwO~如果应用添加后的规则不生效，可以尝试重启平再做尝试~</p>
+              <p>好耶w， <span class="font-bold text-gray-600">{addAutoUiAppRes.name}</span> 的应用配置添加成功了OwO~应用布局优化仅在应用全屏场景下生效，如果应用添加后的规则不生效，可以尝试重启平再做尝试~</p>
             )
           })
           autoUIStore.updateMergeRuleList()
@@ -276,7 +280,7 @@
             type: 'success',
             preset: 'dialog',
             content: () => (
-              <p>好耶w， <span class="font-bold text-gray-600">{row.name}</span> 的应用配置更新成功了OwO~如果应用更新后的规则不生效，可以尝试重启平再做尝试~</p>
+              <p>好耶w， <span class="font-bold text-gray-600">{row.name}</span> 的应用配置更新成功了OwO~应用布局优化仅在应用全屏场景下生效，如果应用更新后的规则不生效，可以尝试重启平再做尝试~</p>
             )
           })
           autoUIStore.updateMergeRuleList()

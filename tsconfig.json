@@ -9,6 +9,10 @@
     }
   ],
   "compilerOptions": {
+    "lib": ["DOM","ESNext"],
+    "target": "ESNext",
+    "module": "ESNext",
+    "strict": true,
     "verbatimModuleSyntax": true,
     "jsx": "preserve",
     "jsxImportSource": "vue"
