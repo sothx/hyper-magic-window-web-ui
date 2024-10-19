@@ -120,7 +120,7 @@
             title: '应用添加失败',
             type: 'error',
             preset: 'dialog',
-            content: () => (<p>发生异常错误，添加失败了QwQ，该功能尚在测试阶段，尚不稳定，出现异常请及时反馈~</p>)
+            content: () => (<p>发生异常错误，更新失败了QwQ，该功能尚在测试阶段，尚不稳定，出现异常请及时反馈~</p>)
           })
           addEmbeddedAppRes.loadingCallback && addEmbeddedAppRes.loadingCallback()
         } else {
@@ -513,6 +513,7 @@
       <div class="px-4 sm:px-0 mb-5">
         <h3 class="text-base font-semibold leading-7 text-gray-900">应用横屏配置</h3>
         <p class="mt-1 max-w-2xl text-sm leading-6 text-gray-500">在这里可以快速管理平板在横屏应用下的配置</p>
+        <p class="mt-1 max-w-2xl text-sm leading-6 text-gray-500">应用包名可以通过"应用详情"中查找</p>
       </div>
     </div>
     <n-card title="操作栏" size="small">

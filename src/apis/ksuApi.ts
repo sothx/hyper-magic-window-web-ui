@@ -567,3 +567,153 @@ export const updateEmbeddedApp = (
     }
   }));
 };
+
+export interface updateAutoUIAppErrorLoggingItem {
+  type: string;
+  name: string;
+  message: string | string[];
+}
+
+export interface updateAutoUIAppSuccessLoggingItem {
+  type: string;
+  name: string;
+  message: string | string[];
+}
+
+export interface updateAutoUIAppParams {
+  customAutoUIListXML: string;
+  settingConfigXML: string;
+  reloadRuleAction?: {
+    name: string;
+    action: "enable" | "disable";
+  };
+}
+
+
+
+export const updateAutoUIApp = (
+  params: updateAutoUIAppParams
+): Promise<{
+  type: "success" | "error"; // 操作的类型，成功或错误
+  message: string; // 操作的消息
+  errorLogging?: updateAutoUIAppErrorLoggingItem[]; // 错误日志记录
+  successLogging?: updateAutoUIAppSuccessLoggingItem[]; // 成功日志记录
+}> => {
+  return handlePromiseWithLogging(new Promise(async (resolve, reject) => {
+    if (import.meta.env.MODE === "development") {
+      resolve({
+        type: "success",
+        message: "更新成功",
+        errorLogging: [],
+        successLogging: [], // 返回一个空的成功日志
+      });
+    } else {
+      const errorLogging: updateAutoUIAppErrorLoggingItem[] = [];
+      const successLogging: updateAutoUIAppSuccessLoggingItem[] = [];
+
+      const {
+        errno: EmErrno,
+        stdout: EmStdout,
+        stderr: EmStderr,
+      }: ExecResults = await exec(
+        `echo '${params.customAutoUIListXML}' > /data/adb/MIUI_MagicWindow+/config/embedded_rules_list.xml`
+      );
+      if (EmErrno) {
+        errorLogging.push({
+          type: "customAutoUIListXML",
+          name: "[自定义规则]应用布局优化配置文件",
+          message: EmStderr,
+        });
+      } else {
+        successLogging.push({
+          type: "customAutoUIListXML",
+          name: "[自定义规则]应用布局优化配置文件",
+          message: "更新成功",
+        });
+      }
+
+      const {
+        errno: SettingsErrno,
+        stdout: SettingsStdout,
+        stderr: SettingsStderr,
+      }: ExecResults = await exec(
+        `echo '${params.settingConfigXML}' > /data/system/users/0/embedded_setting_config.xml`
+      );
+      if (SettingsErrno) {
+        errorLogging.push({
+          type: "settingConfigXML",
+          name: "[模块]应用布局优化配置文件",
+          message: SettingsStderr,
+        });
+      } else {
+        successLogging.push({
+          type: "settingConfigXML",
+          name: "[模块]应用布局优化配置文件",
+          message: "更新成功",
+        });
+      }
+
+      const {
+        errno: UpdateRuleErrno,
+        stdout: UpdateRuleStdout,
+        stderr: UpdateRuleStderr,
+      }: ExecResults = await exec(
+        `sh /data/adb/modules/MIUI_MagicWindow+/common/source/update_rule/update_rule.sh`
+      );
+      if (UpdateRuleErrno) {
+        errorLogging.push({
+          type: "updateMiuiEmbeddingWindowRule",
+          name: "[模块]重新载入模块应用布局优化规则",
+          message: UpdateRuleStderr,
+        });
+      } else {
+        successLogging.push({
+          type: "updateMiuiEmbeddingWindowRule",
+          name: "[模块]重新载入模块应用布局优化规则",
+          message: UpdateRuleStdout.split("\n"),
+        });
+      }
+
+      if (params.reloadRuleAction) {
+        const {
+          errno: ReloadActionErrno,
+          stdout: SwitchActionStdout,
+          stderr: ReloadActionStderr,
+        }: ExecResults = await exec(
+          `cmd miui_auto_ui ${params.reloadRuleAction.name} ${params.reloadRuleAction.action}`
+        );
+  
+        if (ReloadActionErrno) {
+          errorLogging.push({
+            type: "updateMiuiAutoUIReloadAction",
+            name: `[模块]更新${params.reloadRuleAction.name}的设置`,
+            message: ReloadActionStderr,
+          });
+        } else {
+          successLogging.push({
+            type: "updateMiuiAutoUIReloadAction",
+            name: `[模块]更新${params.reloadRuleAction.name}的设置`,
+            message: `更新成功`,
+          });
+        }
+      }
+
+
+      if (errorLogging.length) {
+        reject({
+          type: "error",
+          message: "发生错误,提交失败",
+          errorLogging, // 返回错误日志
+          successLogging,
+        });
+      } else {
+        resolve({
+          type: "success",
+          message: "更新成功",
+          errorLogging,
+          successLogging, // 返回成功日志
+        });
+      }
+    }
+  }));
+};

@@ -47,11 +47,19 @@ export const useAutoUIStore = defineStore("autoui", () => {
   //
   const allPackageName = computed(() => {
     const allPackages = new Set([
-      ...Object.keys(sourceAutoUIList),
-      ...Object.keys(customConfigAutoUIList),
+      ...Object.keys(sourceAutoUIList.value),
+      ...Object.keys(customConfigAutoUIList.value),
     ]);
     return allPackages;
   });
+
+  function updateMergeRuleList() {
+    mergeRuleList.value = xmlFormat.mergeAutoUIRule(
+      sourceAutoUIList.value,
+      customConfigAutoUIList.value,
+      autoUISettingConfig.value
+    );
+  }
 
   async function initDefault() {
     loading.value = true;
@@ -144,6 +152,7 @@ export const useAutoUIStore = defineStore("autoui", () => {
     searchKeyWord,
     errorLogging,
     isNeedShowErrorModal,
+    updateMergeRuleList,
     loading,
     ruleCount,
     allPackageName,

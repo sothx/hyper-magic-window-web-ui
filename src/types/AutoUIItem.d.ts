@@ -18,6 +18,6 @@ export default interface AutoUIItem {
   skippedAppConfigChange?: boolean;
 
   /** 搭配activityRule使用，如果activityRule的规则配置了通配符，这里可以用于声明排除哪些Activity不应该用于"应用布局优化"（可选） */
-  skippedActivityRule?: number;
+  skippedActivityRule?: string;
 
 }
