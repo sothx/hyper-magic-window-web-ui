@@ -175,7 +175,7 @@
                     currentRuleMode.value = initialParams.ruleMode
                     currentAppName.value = initialParams.name
                     isSupportEmbedded.value = initialParams.isSupportEmbedded
-                    if (currentRuleMode.value === 'custom' && initialParams.embeddedRules && initialParams.embeddedRules.hasOwnProperty('splitRatio')) {
+                    if (initialParams.embeddedRules && initialParams.embeddedRules.hasOwnProperty('splitRatio')) {
                         currentSplitRatio.value = initialParams.embeddedRules.splitRatio ?? 0.5
                     }
                     const initialSupportModes: EmbeddedMergeRuleItem["settingMode"][] = ['disabled']

@@ -142,6 +142,7 @@
 
   const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) => {
     if (updateEmbeddedApp.value) {
+      console.log(row,'row')
       const [updateEmbeddedAppCancel, updateEmbeddedAppRes] = await $to(updateEmbeddedApp.value.openDrawer(row))
       if (updateEmbeddedAppCancel) {
         console.log('操作取消:', updateEmbeddedAppCancel);
