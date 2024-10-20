@@ -5,6 +5,9 @@
     import type EmbeddedMergeRuleItem from "@/types/EmbeddedMergeRuleItem";
     import { createDiscreteApi, type NInput } from 'naive-ui';
     import * as validateFun from '@/utils/validateFun';
+    type NInputInstance = InstanceType<typeof NInput>
+    const currentFullRuleRef = ref<NInputInstance | null>(null);
+    import { useLogsStore } from '@/stores/logs';
     import $to from 'await-to-js'
     const props = defineProps<{
         type: 'add' | 'update',
@@ -16,6 +19,7 @@
     const activeDrawer = ref(false); // 控制drawer显示
     const deviceStore = useDeviceStore();
     const embeddedStore = useEmbeddedStore();
+    const logsStore = useLogsStore();
     const { message, modal } = createDiscreteApi(['message', 'modal'])
     export interface EmbeddedAppDrawerSubmitResult {
         name: string;
@@ -26,6 +30,7 @@
             isShowDivider?: boolean;
             supportFullSize?: boolean;
             ratio?: number;
+            splitRatio?: number;
         };
         loadingCallback: () => void;
         closeCallback: () => void;
@@ -105,7 +110,33 @@
 
     const currentRatio = ref<number>();
 
+    const currentSplitRatio = ref<number>(0.5);
+
+    const currentIsSwitchEmbeddedCustom = ref<boolean>(false);
+
     const currentSupportModes = ref<EmbeddedMergeRuleItem["settingMode"][]>([]);
+
+    const resizeDrawerContentFun = (isResize: boolean) => {
+        const autoUIDrawerContentEl = document.querySelector('.n-drawer-content')
+        if (autoUIDrawerContentEl instanceof HTMLElement) {
+            logsStore.info(`resizeDrawerContent`, isResize)
+            autoUIDrawerContentEl.style.height = isResize ? `calc(100% + 200px)` : `100%`
+        }
+    }
+
+    const handleTextAreaFocus = (ref: string) => {
+        if (ref === 'currentFullRuleRef') {
+            resizeDrawerContentFun(true)
+            currentFullRuleRef.value?.$el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        }
+    }
+
+    const handleTextAreaBlur = (ref: string) => {
+        if (ref === 'currentFullRuleRef') {
+            resizeDrawerContentFun(false)
+            currentFullRuleRef.value?.$el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        }
+    }
 
     const embeddedAppDrawer = ref({
         openDrawer: (initialParams?: EmbeddedMergeRuleItem): Promise<EmbeddedAppDrawerSubmitResult> => {
@@ -126,10 +157,12 @@
                 resolvePromise = resolve;
                 rejectPromise = reject;
 
+
                 // add模式，初始化参数
                 if (props.type === 'add') {
                     currentType.value = 'add';
                     currentFullScreenRuleOptions.value = fullScreenRuleOptions[0]
+                    currentAppName.value = ''
                     currentFullRule.value = 'nra:cr:rcr:nr'
                     currentSupportModes.value = ['fullScreen', 'fixedOrientation', 'disabled']
                 }
@@ -137,9 +170,14 @@
                 // 如果是update模式，初始化参数
                 if (props.type === 'update' && initialParams) {
                     currentType.value = 'update';
+                    currentIsSwitchEmbeddedCustom.value = false
+                    currentSplitRatio.value = 0.5
                     currentRuleMode.value = initialParams.ruleMode
                     currentAppName.value = initialParams.name
                     isSupportEmbedded.value = initialParams.isSupportEmbedded
+                    if (currentRuleMode.value === 'custom' && initialParams.embeddedRules && initialParams.embeddedRules.hasOwnProperty('splitRatio')) {
+                        currentSplitRatio.value = initialParams.embeddedRules.splitRatio ?? 0.5
+                    }
                     const initialSupportModes: EmbeddedMergeRuleItem["settingMode"][] = ['disabled']
                     if (initialParams.fixedOrientationRule?.supportModes?.includes('fo')) {
                         initialSupportModes.unshift('fixedOrientation')
@@ -317,7 +355,8 @@
                 ...(currentSettingMode.value === 'fullScreen' && { skipSelfAdaptive: currentSkipSelfAdaptive.value }),
                 ...(currentSettingMode.value === 'fullScreen' && { isShowDivider: currentIsShowDivider.value }),
                 ...(currentSettingMode.value === 'fullScreen' && { supportFullSize: currentSupportFullSize.value }),
-                ...(currentSettingMode.value === 'fixedOrientation' && { ratio: currentRatio.value })
+                ...(currentSettingMode.value === 'fixedOrientation' && { ratio: currentRatio.value }),
+                ...(currentSettingMode.value === 'embedded' && (currentRuleMode.value === 'custom' || (currentRuleMode.value === 'module' && currentIsSwitchEmbeddedCustom.value)) && { splitRatio: currentSplitRatio.value })
             },
             loadingCallback,
             closeCallback
@@ -373,7 +412,15 @@
                     :allow-input="(value: string) => validateFun.validateAndroidPackageName(value)"
                     :readonly="props.type === 'update'" placeholder="请输入应用包名" />
             </n-input-group>
-            <n-card :bordered="false" title="支持的规则" size="small" v-if="deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2">
+            <n-alert v-if="currentRuleMode === 'custom'" type="info" class="mb-5">
+                当前应用已被 <n-tag :bordered="false" type="info">
+                    自定义规则
+                </n-tag> 覆盖，该应用规则不再随模块版本更新，如需恢复模块规则，请先清除 <n-tag :bordered="false" type="info">
+                    自定义规则
+                </n-tag> 。
+            </n-alert>
+            <n-card :bordered="false" title="支持的规则" size="small"
+                v-if="deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2">
                 <n-checkbox-group size="large" v-model:value="currentSupportModes"
                     @update:value="handleCurrentSupportModes">
                     <n-grid :y-gap="8" :cols="2">
@@ -397,6 +444,27 @@
                     <n-alert :show-icon="false" :bordered="false" title="应用分屏显示" type="success">
                         开启后，未适配横屏应用界面将通过平行窗口显示
                     </n-alert>
+                    <n-card v-if="currentRuleMode === 'module'" :bordered="false" title="切换自定义规则" size="small">
+                        <div class="mb-4">
+                            <n-tag :bordered="false" type="info">
+                                切换为自定义规则后该应用不再随模块更新
+                            </n-tag>
+                        </div>
+                        <n-switch :rail-style="railStyle" v-model:value="currentIsSwitchEmbeddedCustom" size="large">
+                            <template #checked>
+                                使用自定义规则
+                            </template>
+                            <template #unchecked>
+                                不使用自定义规则
+                            </template>
+                        </n-switch>
+                    </n-card>
+                    <n-card v-if="currentRuleMode === 'custom' || currentIsSwitchEmbeddedCustom" :bordered="false" title="平行窗口滑动条比例"
+                        size="small">
+                        <n-slider v-model:value="currentSplitRatio" size="small" :min="0.01" :max="0.99" :step="0.01" />
+                        <n-input-number :show-button="false" class="pt-3" readonly placeholder="请输入平行窗口滑动条比例"
+                            v-model:value="currentSplitRatio" :min="0.01" :max="0.99" :step="0.01" />
+                    </n-card>
                 </n-tab-pane>
                 <n-tab-pane name="fullScreen" tab="全屏"
                     v-if="(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 ? currentSupportModes.includes('fullScreen') : true)">
@@ -413,7 +481,9 @@
                     <n-card v-if="currentFullScreenRuleOptions.key === 'fullScreen_custom'" :bordered="false"
                         title="自定义横屏规则" size="small">
                         <n-input-group>
-                            <n-input v-model:value="currentFullRule" placeholder="请输入横屏规则" />
+                            <n-input ref="currentFullRuleRef" @focus="() => handleTextAreaFocus('currentFullRuleRef')"
+                                @blur="() => handleTextAreaBlur('currentFullRuleRef')" v-model:value="currentFullRule"
+                                placeholder="请输入横屏规则" />
                         </n-input-group>
                     </n-card>
                     <n-card class="" :bordered="false" title="跳过应用自适配声明" size="small">

@@ -82,6 +82,8 @@
 
     const currentSkippedActivityRule = ref<AutoUIRuleOptions['rule']>('');
 
+    const currentRuleMode = ref<AutoUIMergeRuleItem["ruleMode"]>();
+
     const currentOptimizeWebView = ref<boolean>(false);
 
     const currentSkippedAppConfigChange = ref<boolean>(false);
@@ -121,6 +123,7 @@
                 if (props.type === 'update' && initialParams) {
                     currentType.value = 'update';
                     currentAppName.value = initialParams.name
+                    currentRuleMode.value = initialParams.ruleMode
                     currentActivityRule.value = initialParams.autoUIRule?.activityRule || ''
                     switch (currentActivityRule.value) {
                         case '': {
@@ -319,6 +322,13 @@
                     :allow-input="(value: string) => validateFun.validateAndroidPackageName(value)"
                     :readonly="props.type === 'update'" placeholder="请输入应用包名" />
             </n-input-group>
+            <n-alert v-if="currentRuleMode === 'custom'" type="info" class="mb-2">
+                当前应用已被 <n-tag :bordered="false" type="info">
+                    自定义规则
+                </n-tag> 覆盖，该应用规则不再随模块版本更新，如需恢复模块规则，请先清除 <n-tag :bordered="false" type="info">
+                    自定义规则
+                </n-tag> 。
+            </n-alert>
             <n-card :bordered="false" title="应用布局优化规则" size="small">
                 <n-dropdown v-model:value="currentAutoUIRuleOptions" size="large" trigger="click"
                     :options="autoUIRuleOptions" @select="handleAutoUIRuleSelect">

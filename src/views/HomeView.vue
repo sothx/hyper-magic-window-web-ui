@@ -59,7 +59,7 @@
         preset: 'dialog',
         content: () => (<p>该功能仅兼容平板设备，暂时不兼容折叠屏设备，请等待后续更新情况！</p>)
       })
-      logsStore.info('应用横屏配置-添加应用','该功能仅兼容平板设备，暂时不兼容折叠屏设备，请等待后续更新情况！')
+      logsStore.info('应用横屏配置-添加应用', '该功能仅兼容平板设备，暂时不兼容折叠屏设备，请等待后续更新情况！')
       return;
     }
     if (deviceStore.androidTargetSdk && ![32, 33, 34].includes(deviceStore.androidTargetSdk)) {
@@ -213,14 +213,31 @@
           }
         }
         if (updateEmbeddedAppRes.settingMode === 'embedded') {
+          // 如果 `row.settingMode` 不同且规则是自定义且模块规则支持平行窗口，则删除自定义规则
           if (row.settingMode !== updateEmbeddedAppRes.settingMode) {
             if (row.ruleMode === 'custom' && row.isSupportEmbedded) {
               delete embeddedStore.customConfigEmbeddedRulesList[row.name]
             }
           }
-          const hasDefaultSettings = embeddedStore.sourceEmbeddedRulesList[row.name].hasOwnProperty('defaultSettings')
-          if (hasDefaultSettings) {
-            embeddedStore.sourceEmbeddedRulesList[row.name].defaultSettings = true
+           // 如果自定义规则存在，更新 `splitRatio`
+          if (embeddedStore.customConfigEmbeddedRulesList[row.name]) {
+            if (updateEmbeddedAppRes.modePayload.hasOwnProperty('splitRatio')) {
+              embeddedStore.customConfigEmbeddedRulesList[row.name].splitRatio = updateEmbeddedAppRes.modePayload.splitRatio
+            }
+          } else {
+            // 如果不存在自定义规则，但有 `splitRatio` 需要补充
+            let isNeedPatchSource = false
+            if (updateEmbeddedAppRes.modePayload.hasOwnProperty('splitRatio')) {
+              isNeedPatchSource = true
+            }
+            if (isNeedPatchSource) {
+              embeddedStore.customConfigEmbeddedRulesList[row.name] = {
+                ...embeddedStore.sourceEmbeddedRulesList[row.name],
+                ...(updateEmbeddedAppRes.modePayload.hasOwnProperty('splitRatio')) && {
+                  splitRatio: updateEmbeddedAppRes.modePayload.splitRatio
+                }
+              }
+            }
           }
         }
         embeddedStore.embeddedSettingConfig[row.name] = {
@@ -517,10 +534,12 @@
       </div>
     </div>
     <n-card title="操作栏" size="small">
-      <n-button class="mb-3 mr-3" type="info" :loading="deviceStore.loading || embeddedStore.loading" @click="openAddEmbeddedApp">
+      <n-button class="mb-3 mr-3" type="info" :loading="deviceStore.loading || embeddedStore.loading"
+        @click="openAddEmbeddedApp">
         添加应用
       </n-button>
-      <n-button class="mb-3 mr-3" type="success" :loading="deviceStore.loading || embeddedStore.loading" @click="() => reloadPage()">
+      <n-button class="mb-3 mr-3" type="success" :loading="deviceStore.loading || embeddedStore.loading"
+        @click="() => reloadPage()">
         刷新当前数据
       </n-button>
       <n-input-group>
@@ -533,8 +552,8 @@
         </n-button>
       </n-input-group>
     </n-card>
-    <n-data-table :loading="deviceStore.loading || embeddedStore.loading" :columns="columns" :data="embeddedStore.filterMergeRuleList"
-      :pagination="pagination" />
+    <n-data-table :loading="deviceStore.loading || embeddedStore.loading" :columns="columns"
+      :data="embeddedStore.filterMergeRuleList" :pagination="pagination" />
   </main>
   <ErrorModal v-model="showErrorModal" :errorLogging="embeddedStore.errorLogging" />
   <EmbeddedAppDrawer ref="addEmbeddedApp" type="add" title="添加应用" />
