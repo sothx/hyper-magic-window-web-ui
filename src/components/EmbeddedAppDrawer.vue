@@ -483,9 +483,9 @@
                         </n-switch>
                     </n-card>
                     <n-card v-if="currentRuleMode === 'custom' || currentIsSwitchEmbeddedCustom" :bordered="false"
-                        title="平行窗口滑动条比例" size="small">
+                        title="平行窗口默认分屏比例" size="small">
                         <n-slider v-model:value="currentSplitRatio" size="small" :min="0.01" :max="0.99" :step="0.01" />
-                        <n-input-number :show-button="false" class="pt-3" readonly placeholder="请输入平行窗口滑动条比例"
+                        <n-input-number :show-button="false" class="pt-3" readonly placeholder="请输入平行窗口默认分屏比例"
                             v-model:value="currentSplitRatio" :min="0.01" :max="0.99" :step="0.01" />
                     </n-card>
                 </n-tab-pane>
