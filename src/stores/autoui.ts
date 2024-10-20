@@ -126,17 +126,6 @@ export const useAutoUIStore = defineStore("autoui", () => {
       autoUISettingConfig.value
     );
 
-    // errorLogging.push({
-    //   type: "sourceEmbeddedRulesList",
-    //   title: '[模块]平行窗口配置文件',
-    //   msg: new Error('发生错误啦'),
-    // });
-
-    // errorLogging.push({
-    //   type: "embeddedSettingConfig",
-    //   title: '[模块]应用横屏布局配置文件',
-    //   msg: new Error('发生错误啦'),
-    // });
 
     if (!errorLogging.length) {
       loading.value = false;

@@ -150,10 +150,10 @@
         if (updateEmbeddedAppRes.settingMode === 'fullScreen') {
           if (embeddedStore.customConfigEmbeddedRulesList[row.name]) {
             embeddedStore.customConfigEmbeddedRulesList[row.name].fullRule = updateEmbeddedAppRes.modePayload.fullRule
-            const hasDefaultSettings = embeddedStore.sourceEmbeddedRulesList[row.name]?.hasOwnProperty('defaultSettings')
-            if (hasDefaultSettings) {
-              embeddedStore.sourceEmbeddedRulesList[row.name].defaultSettings = true
-            }
+            // const hasDefaultSettings = embeddedStore.sourceEmbeddedRulesList[row.name]?.hasOwnProperty('defaultSettings')
+            // if (hasDefaultSettings) {
+            //   embeddedStore.sourceEmbeddedRulesList[row.name].defaultSettings = true
+            // }
           } else {
             embeddedStore.customConfigEmbeddedRulesList[row.name] = {
               name: row.name,
@@ -227,13 +227,13 @@
             }
           } else {
             // 如果不存在自定义规则，但有 `splitRatio` 需要补充
-            let isNeedPatchSource = false
+            let isNeedPatchOrigin = false
             if (updateEmbeddedAppRes.modePayload.hasOwnProperty('splitRatio')) {
-              isNeedPatchSource = true
+              isNeedPatchOrigin = true
             }
-            if (isNeedPatchSource) {
+            if (isNeedPatchOrigin) {
               embeddedStore.customConfigEmbeddedRulesList[row.name] = {
-                ...embeddedStore.sourceEmbeddedRulesList[row.name],
+                ...embeddedStore.isPatchMode ? embeddedStore.patchEmbeddedRulesList[row.name] : embeddedStore.sourceEmbeddedRulesList[row.name],
                 ...(updateEmbeddedAppRes.modePayload.hasOwnProperty('splitRatio')) && {
                   splitRatio: updateEmbeddedAppRes.modePayload.splitRatio
                 }
@@ -330,7 +330,7 @@
             settingConfigXML: xmlFormat.objectToXML(embeddedStore.embeddedSettingConfig, 'setting', 'setting_rule'),
             switchAction: {
               name: row.name,
-              action: embeddedStore.sourceEmbeddedRulesList[row.name] ? 'enable' : 'disable'
+              action: (embeddedStore.isPatchMode ? embeddedStore.patchEmbeddedRulesList[row.name] : embeddedStore.sourceEmbeddedRulesList[row.name]) ? 'enable' : 'disable'
             }
           }))
           if (submitUpdateEmbeddedAppErr) {

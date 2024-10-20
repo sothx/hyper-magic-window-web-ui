@@ -19,9 +19,6 @@ export const useEmbeddedStore = defineStore("embedded", () => {
   const sourceEmbeddedRulesList = ref<
     Record<EmbeddedRuleItem["name"], EmbeddedRuleItem>
   >({});
-  const patchEmbeddedRulesList = ref<
-    Record<EmbeddedRuleItem["name"], EmbeddedRuleItem>
-  >({});
   const systemEmbeddedRulesList = ref<
     Record<EmbeddedRuleItem["name"], EmbeddedRuleItem>
   >({});
@@ -31,9 +28,6 @@ export const useEmbeddedStore = defineStore("embedded", () => {
   // 固定应用方向
   const sourceFixedOrientationList = ref<
     Record<string, FixedOrientationRuleItem>
-  >({});
-  const patchFixedOrientationList = ref<
-    Record<EmbeddedRuleItem["name"], FixedOrientationRuleItem>
   >({});
   const systemFixedOrientationList = ref<
     Record<EmbeddedRuleItem["name"], FixedOrientationRuleItem>
@@ -45,6 +39,49 @@ export const useEmbeddedStore = defineStore("embedded", () => {
   const embeddedSettingConfig = ref<Record<string, EmbeddedSettingRuleItem>>(
     {}
   );
+  // diff后的平行窗口配置
+  const patchEmbeddedRulesList = computed(() => {
+    // 使用 Object.entries 将对象转换为键值对数组
+    const entries = Object.entries(sourceEmbeddedRulesList.value);
+  
+    // 将 systemEmbeddedRulesList 和 installedAndroidApplicationPackageNameList 转换为 Set 以优化查找速度
+    const systemKeysSet = new Set(Object.keys(systemEmbeddedRulesList.value));
+    const installedKeysSet = new Set(installedAndroidApplicationPackageNameList.value);
+  
+    // 使用 filter 对数组进行过滤
+    const filteredEntries = entries.filter(([key]) => {
+      // 使用 Set 进行查找优化
+      return systemKeysSet.has(key) || installedKeysSet.has(key);
+    });
+  
+    // 将过滤后的键值对数组重新转换为对象
+    return Object.fromEntries(filteredEntries) as Record<
+      EmbeddedRuleItem["name"],
+      EmbeddedRuleItem
+    >;
+  });
+
+  // diff后的信箱模式配置
+  const patchFixedOrientationList = computed(() => {
+    // 使用 Object.entries 将对象转换为键值对数组
+    const entries = Object.entries(sourceFixedOrientationList.value);
+  
+    // 将 systemFixedOrientationList 和 installedAndroidApplicationPackageNameList 转换为 Set 以优化查找速度
+    const systemKeysSet = new Set(Object.keys(systemFixedOrientationList.value));
+    const installedKeysSet = new Set(installedAndroidApplicationPackageNameList.value);
+  
+    // 使用 filter 对数组进行过滤
+    const filteredEntries = entries.filter(([key]) => {
+      // 使用 Set 进行查找优化
+      return systemKeysSet.has(key) || installedKeysSet.has(key);
+    });
+  
+    // 将过滤后的键值对数组重新转换为对象
+    return Object.fromEntries(filteredEntries) as Record<
+      FixedOrientationRuleItem["name"],
+      FixedOrientationRuleItem
+    >;
+  });
   // 合并后的配置
   const mergeRuleList = ref<EmbeddedMergeRuleItem[]>([]);
   // 搜索后的配置列表
@@ -86,14 +123,11 @@ export const useEmbeddedStore = defineStore("embedded", () => {
 
   function updateMergeRuleList() {
     mergeRuleList.value = xmlFormat.mergeEmbeddedRule(
-      isPatchMode.value,
-      sourceEmbeddedRulesList.value,
-      sourceFixedOrientationList.value,
+      isPatchMode.value ? patchEmbeddedRulesList.value : sourceEmbeddedRulesList.value,
+      isPatchMode.value? patchFixedOrientationList.value :sourceFixedOrientationList.value,
       embeddedSettingConfig.value,
       customConfigEmbeddedRulesList.value,
       customConfigFixedOrientationList.value,
-      systemEmbeddedRulesList.value,
-      systemFixedOrientationList.value
     );
   }
 
@@ -213,23 +247,23 @@ export const useEmbeddedStore = defineStore("embedded", () => {
     // 获取系统内置平行窗口列表
 
     const [getSystemFixedOrientationListErr, getSystemFixedOrientationListRes] =
-    await $to<string, string>(ksuApi.getSystemFixedOrientationList());
-  if (getSystemFixedOrientationListErr) {
-    errorLogging.push({
-      type: "SystemEmbeddedRulesList",
-      title: "[系统]信箱模式配置文件",
-      msg: getSystemFixedOrientationListErr,
-    });
-  }
+      await $to<string, string>(ksuApi.getSystemFixedOrientationList());
+    if (getSystemFixedOrientationListErr) {
+      errorLogging.push({
+        type: "SystemEmbeddedRulesList",
+        title: "[系统]信箱模式配置文件",
+        msg: getSystemFixedOrientationListErr,
+      });
+    }
 
-  if (getSystemFixedOrientationListRes) {
-    systemFixedOrientationList.value =
-      xmlFormat.parseXMLToObject<FixedOrientationRuleItem>(
-        getSystemFixedOrientationListRes,
-        "package_config",
-        "package"
-      );
-  }
+    if (getSystemFixedOrientationListRes) {
+      systemFixedOrientationList.value =
+        xmlFormat.parseXMLToObject<FixedOrientationRuleItem>(
+          getSystemFixedOrientationListRes,
+          "package_config",
+          "package"
+        );
+    }
 
     // 获取自定义配置居中布局列表
     const [
@@ -267,14 +301,11 @@ export const useEmbeddedStore = defineStore("embedded", () => {
 
     // 合并最终配置
     mergeRuleList.value = xmlFormat.mergeEmbeddedRule(
-      isPatchMode.value,
-      sourceEmbeddedRulesList.value,
-      sourceFixedOrientationList.value,
+      isPatchMode.value ? patchEmbeddedRulesList.value : sourceEmbeddedRulesList.value,
+      isPatchMode.value? patchFixedOrientationList.value :sourceFixedOrientationList.value,
       embeddedSettingConfig.value,
       customConfigEmbeddedRulesList.value,
       customConfigFixedOrientationList.value,
-      systemEmbeddedRulesList.value,
-      systemFixedOrientationList.value
     );
 
     // errorLogging.push({
@@ -297,6 +328,8 @@ export const useEmbeddedStore = defineStore("embedded", () => {
   return {
     sourceEmbeddedRulesList,
     sourceFixedOrientationList,
+    patchEmbeddedRulesList,
+    patchFixedOrientationList,
     customConfigEmbeddedRulesList,
     customConfigFixedOrientationList,
     embeddedSettingConfig,
