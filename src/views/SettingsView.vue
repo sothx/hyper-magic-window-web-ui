@@ -135,12 +135,12 @@
             </dd>
           </div>
           <div v-if="deviceStore.currentRootManager === 'APatch'" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-            <dt class="text-sm font-medium leading-6 text-gray-900">APATCH_VER 版本名</dt>
+            <dt class="text-sm font-medium leading-6 text-gray-900">APatch 版本名</dt>
             <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ deviceStore.rootManagerInfo.APATCH_VER || '获取失败' }}
             </dd>
           </div>
           <div v-if="deviceStore.currentRootManager === 'APatch'" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-            <dt class="text-sm font-medium leading-6 text-gray-900">APATCH_VER 版本号</dt>
+            <dt class="text-sm font-medium leading-6 text-gray-900">APatch 版本号</dt>
             <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ deviceStore.rootManagerInfo.APATCH_VER_CODE || '获取失败' }}
             </dd>
           </div>
