@@ -280,7 +280,7 @@
         preset: 'dialog',
         content: () => {
                 return (
-                    <p>应用布局优化的规则仅在应用横屏全屏场景下才会生效，如果需要测试应用布局优化的效果，建议将应用的横屏配置修改为 <span class="font-bold text-gray-600">全屏</span >，规则实际是否生效以应用个体差异而异，建议多多尝试。确定要继续吗？</p>
+                    <p>应用布局优化的规则仅在应用横屏全屏场景下才会生效，建议将应用的横屏配置修改为 <span class="font-bold text-gray-600">全屏</span >，规则效果以应用个体差异而异，建议多多尝试。继续更新将会被更替为 <span class="font-bold text-gray-600">自定义规则</span> ，且该应用规则不再随模块版本更新，如后续需要改回 <span class="font-bold text-gray-600">模块规则</span> 则需要先清除自定义规则，确定要继续吗？</p>
                 )
             },
         positiveText: '确定应用',
