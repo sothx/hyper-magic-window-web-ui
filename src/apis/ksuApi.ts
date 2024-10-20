@@ -375,7 +375,7 @@ export const getIsPatchMode = (): Promise<string> => {
   const shellCommon = `grep 'is_patch_mode=' /data/adb/modules/MIUI_MagicWindow+/system.prop`
   return handlePromiseWithLogging(new Promise(async (resolve, reject) => {
     if (import.meta.env.MODE === "development") {
-      resolve(`true`);
+      resolve(`false`);
     } else {
       const { errno, stdout, stderr }: ExecResults = await exec(
         shellCommon
@@ -492,15 +492,15 @@ export const reboot = (): Promise<string> => {
 
 
 export interface updateEmbeddedAppParams {
+  isPatchMode: boolean;
+  patchEmbeddedRulesListXML: string;
+  patchFixedOrientationListXML: string;
   customEmbeddedRulesListXML: string;
   customFixedOrientationListXML: string;
   settingConfigXML: string;
   switchAction?: {
     name: string;
     action: "enable" | "disable";
-  };
-  reloadRuleAction?: {
-    name: string;
   };
 }
 
@@ -535,6 +535,8 @@ export const updateEmbeddedApp = (
     } else {
       const errorLogging: updateEmbeddedAppErrorLoggingItem[] = [];
       const successLogging: updateEmbeddedAppSuccessLoggingItem[] = [];
+
+
 
       const {
         errno: EmErrno,

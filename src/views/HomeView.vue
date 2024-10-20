@@ -51,6 +51,38 @@
     }
   })
 
+  const reloadPatchModeConfigList = async () => {
+    const [submitUpdateEmbeddedAppErr, submitUpdateEmbeddedAppRes] = await $to(ksuApi.updateEmbeddedApp({
+        isPatchMode: embeddedStore.isPatchMode,
+        patchEmbeddedRulesListXML: xmlFormat.objectToXML(embeddedStore.customConfigEmbeddedRulesList, 'package', 'package_config'),
+        patchFixedOrientationListXML: xmlFormat.objectToXML(embeddedStore.customConfigFixedOrientationList, 'package', 'package_config'),
+        customEmbeddedRulesListXML: xmlFormat.objectToXML(embeddedStore.customConfigEmbeddedRulesList, 'package', undefined),
+        customFixedOrientationListXML: xmlFormat.objectToXML(embeddedStore.customConfigFixedOrientationList, 'package', undefined),
+        settingConfigXML: xmlFormat.objectToXML(embeddedStore.embeddedSettingConfig, 'setting', 'setting_rule'),
+      }))
+      if (submitUpdateEmbeddedAppErr) {
+        modal.create({
+          title: '操作失败',
+          type: 'error',
+          preset: 'dialog',
+          content: () => (<p>发生异常错误，更新失败了QwQ，该功能尚在测试阶段，尚不稳定，出现异常请及时反馈~</p>)
+        })
+      } else {
+        modal.create({
+          title: '操作成功',
+          type: 'success',
+          preset: 'dialog',
+          content: () => (
+            <div>
+              <p>好耶w，已根据您设备当前的整体应用情况重新 <span class="font-bold text-gray-600">修剪模块应用适配列表</span> ，后续每次更新模块或者安装新的应用后，需要再重新操作 <span class="font-bold text-gray-600">生成定制应用数据</span> 。</p>
+            </div>
+          ),
+          negativeText: '确定'
+        })
+        embeddedStore.updateMergeRuleList()
+      }
+  }
+
   const openAddEmbeddedApp = async () => {
     if (deviceStore.deviceCharacteristics !== 'tablet') {
       modal.create({
@@ -107,6 +139,9 @@
           embeddedEnable: ['embedded', 'fullScreen'].includes(addEmbeddedAppRes.settingMode) ? true : false
         }
         const [submitAddEmbeddedAppErr, submitAddEmbeddedAppRes] = await $to(ksuApi.updateEmbeddedApp({
+          isPatchMode: embeddedStore.isPatchMode,
+          patchEmbeddedRulesListXML: xmlFormat.objectToXML(embeddedStore.customConfigEmbeddedRulesList, 'package', 'package_config'),
+          patchFixedOrientationListXML: xmlFormat.objectToXML(embeddedStore.customConfigFixedOrientationList, 'package', 'package_config'),
           customEmbeddedRulesListXML: xmlFormat.objectToXML(embeddedStore.customConfigEmbeddedRulesList, 'package', undefined),
           customFixedOrientationListXML: xmlFormat.objectToXML(embeddedStore.customConfigFixedOrientationList, 'package', undefined),
           settingConfigXML: xmlFormat.objectToXML(embeddedStore.embeddedSettingConfig, 'setting', 'setting_rule'),
@@ -246,6 +281,9 @@
           embeddedEnable: ['embedded', 'fullScreen'].includes(updateEmbeddedAppRes.settingMode) ? true : false
         }
         const [submitUpdateEmbeddedAppErr, submitUpdateEmbeddedAppRes] = await $to(ksuApi.updateEmbeddedApp({
+          isPatchMode: embeddedStore.isPatchMode,
+          patchEmbeddedRulesListXML: xmlFormat.objectToXML(embeddedStore.customConfigEmbeddedRulesList, 'package', 'package_config'),
+          patchFixedOrientationListXML: xmlFormat.objectToXML(embeddedStore.customConfigFixedOrientationList, 'package', 'package_config'),
           customEmbeddedRulesListXML: xmlFormat.objectToXML(embeddedStore.customConfigEmbeddedRulesList, 'package', undefined),
           customFixedOrientationListXML: xmlFormat.objectToXML(embeddedStore.customConfigFixedOrientationList, 'package', undefined),
           settingConfigXML: xmlFormat.objectToXML(embeddedStore.embeddedSettingConfig, 'setting', 'setting_rule'),
@@ -325,6 +363,9 @@
             delete embeddedStore.customConfigFixedOrientationList[row.name]
           }
           const [submitUpdateEmbeddedAppErr, submitUpdateEmbeddedAppRes] = await $to(ksuApi.updateEmbeddedApp({
+            isPatchMode: embeddedStore.isPatchMode,
+            patchEmbeddedRulesListXML: xmlFormat.objectToXML(embeddedStore.customConfigEmbeddedRulesList, 'package', 'package_config'),
+            patchFixedOrientationListXML: xmlFormat.objectToXML(embeddedStore.customConfigFixedOrientationList, 'package', 'package_config'),
             customEmbeddedRulesListXML: xmlFormat.objectToXML(embeddedStore.customConfigEmbeddedRulesList, 'package', undefined),
             customFixedOrientationListXML: xmlFormat.objectToXML(embeddedStore.customConfigFixedOrientationList, 'package', undefined),
             settingConfigXML: xmlFormat.objectToXML(embeddedStore.embeddedSettingConfig, 'setting', 'setting_rule'),
@@ -539,8 +580,8 @@
         添加应用
       </n-button>
       <n-button class="mb-3 mr-3" v-if="embeddedStore.isPatchMode" type="error" :loading="deviceStore.loading || embeddedStore.loading"
-        @click="() => reloadPage()">
-        生成已安装应用数据
+        @click="() => reloadPatchModeConfigList()">
+        生成定制应用数据
       </n-button>
       <n-button class="mb-3 mr-3" type="success" :loading="deviceStore.loading || embeddedStore.loading"
         @click="() => reloadPage()">

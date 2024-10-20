@@ -1,15 +1,106 @@
 <script setup lang="tsx">
   import { useDeviceStore } from '@/stores/device';
   import type { CSSProperties } from 'vue'
+  import * as xmlFormat from '@/utils/xmlFormat';
   import { createDiscreteApi } from 'naive-ui'
   import { useGameMode } from '@/hooks/useGameMode';
   import * as ksuApi from "@/apis/ksuApi";
   import $to from 'await-to-js'
+  import { useEmbeddedStore } from '@/stores/embedded';
   const deviceStore = useDeviceStore()
+  const embeddedStore = useEmbeddedStore()
   const { message, modal } = createDiscreteApi(['message', 'modal'])
   const gameMode = useGameMode();
   const handleSmartFocusIOChange = (value: boolean) => {
     message.info('功能尚未上线，无任何实际效果，请等待后续更新！')
+  }
+  const changePatchMode = async (value: boolean) => {
+    const [negativeRes, positiveRes] = await $to(new Promise((resolve, reject) => {
+      modal.create({
+        title: value ? '想切换为定制模式吗？' : '想切换为完整模式吗？',
+        type: 'info',
+        preset: 'dialog',
+        content: () => (<div>
+          {
+            value && (<p>切换为 <span class="font-bold text-gray-600">定制模式</span> 后，模块会以您设备的整体应用情况 <span class="font-bold text-gray-600">修剪模块应用适配列表</span> ，以解决老机型由于系统优化不佳而导致的卡顿、掉帧等问题，同时会导致每次更新模块或者安装新的应用后，均需要在前往 <span class="font-bold text-gray-600">应用横屏配置</span> 界面操作 <span class="font-bold text-gray-600">生成定制应用数据</span> 确定要继续吗？</p>)
+          }
+          {
+            !value && (<p>切换为 <span class="font-bold text-gray-600">完整模式</span> 后，可以获得模块提供的大量应用适配，同时可能会导致部分老机型由于系统优化不佳而导致的卡顿、掉帧等问题，确定要继续吗？</p>)
+          }
+        </div>),
+        positiveText: '确定继续',
+        negativeText: '我再想想',
+        onPositiveClick: () => {
+          resolve('positiveClick')
+        },
+        onNegativeClick: () => {
+          reject('negativeClick')
+        }
+      })
+    }))
+    if (positiveRes) {
+      if (value) {
+        const [addIsPatchModeErr] = await $to(ksuApi.addIsPatchMode())
+        if (addIsPatchModeErr) {
+          modal.create({
+            title: '操作失败',
+            type: 'error',
+            preset: 'dialog',
+            content: () => (<p>无法切换为定制模式，详情请查看日志记录~</p>),
+            negativeText: '确定'
+          })
+          return;
+        }
+        embeddedStore.isPatchMode = true;
+      } else {
+        const [addIsPatchModeErr] = await $to(ksuApi.addIsPatchMode())
+        if (addIsPatchModeErr) {
+          modal.create({
+            title: '操作失败',
+            type: 'error',
+            preset: 'dialog',
+            content: () => (<p>无法切换为完整模式，详情请查看日志记录~</p>),
+            negativeText: '确定'
+          })
+          return;
+        }
+        embeddedStore.isPatchMode = false;
+      }
+      const [submitUpdateEmbeddedAppErr, submitUpdateEmbeddedAppRes] = await $to(ksuApi.updateEmbeddedApp({
+        isPatchMode: embeddedStore.isPatchMode,
+        patchEmbeddedRulesListXML: xmlFormat.objectToXML(embeddedStore.customConfigEmbeddedRulesList, 'package', 'package_config'),
+        patchFixedOrientationListXML: xmlFormat.objectToXML(embeddedStore.customConfigFixedOrientationList, 'package', 'package_config'),
+        customEmbeddedRulesListXML: xmlFormat.objectToXML(embeddedStore.customConfigEmbeddedRulesList, 'package', undefined),
+        customFixedOrientationListXML: xmlFormat.objectToXML(embeddedStore.customConfigFixedOrientationList, 'package', undefined),
+        settingConfigXML: xmlFormat.objectToXML(embeddedStore.embeddedSettingConfig, 'setting', 'setting_rule'),
+      }))
+      if (submitUpdateEmbeddedAppErr) {
+        modal.create({
+          title: '操作失败',
+          type: 'error',
+          preset: 'dialog',
+          content: () => (<p>发生异常错误，更新失败了QwQ，该功能尚在测试阶段，尚不稳定，出现异常请及时反馈~</p>)
+        })
+      } else {
+        modal.create({
+          title: '操作成功',
+          type: 'success',
+          preset: 'dialog',
+          content: () => (
+            <div>
+              {
+                value && (<p>好耶w，已成功切换为 <span class="font-bold text-gray-600">定制模式</span> ，模块已根据您设备当前的整体应用情况 <span class="font-bold text-gray-600">修剪模块应用适配列表</span> ，以解决老机型由于系统优化不佳而导致的卡顿、掉帧等问题，但每次更新模块或者安装新的应用后，均需要在前往 <span class="font-bold text-gray-600">应用横屏配置</span> 界面操作 <span class="font-bold text-gray-600">生成定制应用数据</span> 。</p>)
+              }
+              {
+                !value && (<p>好耶w，已成功切换为 <span class="font-bold text-gray-600">完整模式</span> ，可以获得模块提供的大量应用适配，同时可能会导致部分老机型由于系统优化不佳而导致的卡顿、掉帧等问题。</p>)
+              }
+            </div>
+          ),
+          negativeText: '确定'
+        })
+        embeddedStore.updateMergeRuleList()
+      }
+    }
   }
   const changeGameMode = async (value: boolean) => {
     const [negativeRes, positiveRes] = await $to(new Promise((resolve, reject) => {
@@ -19,7 +110,7 @@
         preset: 'dialog',
         content: () => (<div>
           <p>{value ? '开启' : '关闭'} <span class="font-bold text-gray-600">游戏显示布局</span> 后需要设备重启才会生效~</p>
-          { value && deviceStore.deviceCharacteristics === 'tablet' && deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && (<p>从Hyper OS 2.0开始，小米平板需要搭配配套的 <span class="font-bold text-gray-600">修改版平板/手机管家</span> 才能使用游戏显示布局，详情请前往模块首页了解~</p>) }
+          {value && deviceStore.deviceCharacteristics === 'tablet' && deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && (<p>从Hyper OS 2.0开始，小米平板需要搭配配套的 <span class="font-bold text-gray-600">修改版平板/手机管家</span> 才能使用游戏显示布局，详情请前往模块首页了解~</p>)}
           <p>是否立即重启？</p>
         </div>),
         positiveText: '立即重启',
@@ -116,42 +207,57 @@
         <dl class="divide-y divide-gray-100">
           <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
             <dt class="text-sm font-medium leading-6 text-gray-900">ROOT管理器</dt>
-            <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ deviceStore.currentRootManager || '获取失败' }}
+            <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ deviceStore.currentRootManager ||
+              '获取失败' }}
             </dd>
           </div>
-          <div v-if="deviceStore.currentRootManager === 'KernelSU'" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+          <div v-if="deviceStore.currentRootManager === 'KernelSU'"
+            class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
             <dt class="text-sm font-medium leading-6 text-gray-900">KernelSU 版本</dt>
-            <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ deviceStore.rootManagerInfo.KSU_VER || '获取失败' }}
+            <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{
+              deviceStore.rootManagerInfo.KSU_VER || '获取失败' }}
             </dd>
           </div>
-          <div v-if="deviceStore.currentRootManager === 'KernelSU'" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+          <div v-if="deviceStore.currentRootManager === 'KernelSU'"
+            class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
             <dt class="text-sm font-medium leading-6 text-gray-900">KernelSU 用户空间版本号 </dt>
-            <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ deviceStore.rootManagerInfo.KSU_VER_CODE || '获取失败' }}
+            <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{
+              deviceStore.rootManagerInfo.KSU_VER_CODE || '获取失败' }}
             </dd>
           </div>
-          <div v-if="deviceStore.currentRootManager === 'KernelSU'" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+          <div v-if="deviceStore.currentRootManager === 'KernelSU'"
+            class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
             <dt class="text-sm font-medium leading-6 text-gray-900">KernelSU 内核空间版本号 </dt>
-            <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ deviceStore.rootManagerInfo.KSU_KERNEL_VER_CODE || '获取失败' }}
+            <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{
+              deviceStore.rootManagerInfo.KSU_KERNEL_VER_CODE || '获取失败' }}
             </dd>
           </div>
-          <div v-if="deviceStore.currentRootManager === 'APatch'" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+          <div v-if="deviceStore.currentRootManager === 'APatch'"
+            class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
             <dt class="text-sm font-medium leading-6 text-gray-900">APatch 版本名</dt>
-            <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ deviceStore.rootManagerInfo.APATCH_VER || '获取失败' }}
+            <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{
+              deviceStore.rootManagerInfo.APATCH_VER || '获取失败' }}
             </dd>
           </div>
-          <div v-if="deviceStore.currentRootManager === 'APatch'" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+          <div v-if="deviceStore.currentRootManager === 'APatch'"
+            class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
             <dt class="text-sm font-medium leading-6 text-gray-900">APatch 版本号</dt>
-            <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ deviceStore.rootManagerInfo.APATCH_VER_CODE || '获取失败' }}
+            <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{
+              deviceStore.rootManagerInfo.APATCH_VER_CODE || '获取失败' }}
             </dd>
           </div>
-          <div v-if="deviceStore.currentRootManager === 'Magisk'" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+          <div v-if="deviceStore.currentRootManager === 'Magisk'"
+            class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
             <dt class="text-sm font-medium leading-6 text-gray-900">Magisk 版本</dt>
-            <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ deviceStore.rootManagerInfo.MAGISK_VER || '获取失败' }}
+            <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{
+              deviceStore.rootManagerInfo.MAGISK_VER || '获取失败' }}
             </dd>
           </div>
-          <div v-if="deviceStore.currentRootManager === 'Magisk'" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+          <div v-if="deviceStore.currentRootManager === 'Magisk'"
+            class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
             <dt class="text-sm font-medium leading-6 text-gray-900">Magisk 版本号</dt>
-            <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ deviceStore.rootManagerInfo.MAGISK_VER_CODE || '获取失败' }}
+            <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{
+              deviceStore.rootManagerInfo.MAGISK_VER_CODE || '获取失败' }}
             </dd>
           </div>
           <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
@@ -167,13 +273,14 @@
           <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
             <dt class="text-sm font-medium leading-6 text-gray-900">模块模式</dt>
             <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0"> <n-switch
-                @update:value="(value: boolean) => changeGameMode(value)" :value="gameMode.isSupportGameMode"
-                :disabled="deviceStore.deviceCharacteristics !== 'tablet' || deviceStore.androidTargetSdk && deviceStore.androidTargetSdk < 32">
+                @update:value="(value: boolean) => changePatchMode(value)" :rail-style="railStyle"
+                :value="embeddedStore.isPatchMode"
+                :disabled="deviceStore.androidTargetSdk && deviceStore.androidTargetSdk < 32">
                 <template #checked>
-                  完整模式
+                  定制模式
                 </template>
                 <template #unchecked>
-                  补丁模式
+                  完整模式
                 </template>
               </n-switch></dd>
           </div>
