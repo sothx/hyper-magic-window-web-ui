@@ -335,6 +335,29 @@
                 return;
             }
         }
+        if (props.type === 'update' && currentRuleMode.value === 'module' && currentIsSwitchEmbeddedCustom.value) {
+            const [embeddedSwitchCustomRuleModalNegative] = await $to(new Promise<string>((resolve, reject) => {
+                modal.create({
+                    title: '确认使用平行窗口自定义规则吗？',
+                    type: 'warning',
+                    preset: 'dialog',
+                    content: () => {
+                        return <p>当前应用已存在 <span class="font-bold text-gray-600">平行窗口的模块规则</span> ，继续更新将会被更替为 <span class="font-bold text-gray-600">平行窗口的自定义规则</span> ，且该应用规则不再随模块版本更新，如后续需要改回 <span class="font-bold text-gray-600">平行窗口的模块规则</span> 则需要先清除自定义规则，确定要继续吗？</p>
+                    },
+                    positiveText: '确定继续',
+                    negativeText: '我再想想',
+                    onPositiveClick: () => {
+                        resolve('positiveClick')
+                    },
+                    onNegativeClick: () => {
+                        reject('negativeClick')
+                    }
+                })
+            }))
+            if (embeddedSwitchCustomRuleModalNegative) {
+                return;
+            }
+        }
         // 开启loading
         drawerSubmitLoading.value = true;
 
@@ -459,8 +482,8 @@
                             </template>
                         </n-switch>
                     </n-card>
-                    <n-card v-if="currentRuleMode === 'custom' || currentIsSwitchEmbeddedCustom" :bordered="false" title="平行窗口滑动条比例"
-                        size="small">
+                    <n-card v-if="currentRuleMode === 'custom' || currentIsSwitchEmbeddedCustom" :bordered="false"
+                        title="平行窗口滑动条比例" size="small">
                         <n-slider v-model:value="currentSplitRatio" size="small" :min="0.01" :max="0.99" :step="0.01" />
                         <n-input-number :show-button="false" class="pt-3" readonly placeholder="请输入平行窗口滑动条比例"
                             v-model:value="currentSplitRatio" :min="0.01" :max="0.99" :step="0.01" />

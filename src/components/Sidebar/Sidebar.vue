@@ -39,7 +39,7 @@
   import { useDeviceStore } from '@/stores/device';
   import handlePromiseWithLogging from "@/utils/handlePromiseWithLogging";
   import * as ksuApi from "@/apis/ksuApi";
-import { useMIUIContentExtension } from '@/hooks/useMIUIContentExtension';
+  import { useMIUIContentExtension } from '@/hooks/useMIUIContentExtension';
   const route = useRoute();
   const gameMode = useGameMode();
   const deviceStore = useDeviceStore();
@@ -113,40 +113,50 @@ import { useMIUIContentExtension } from '@/hooks/useMIUIContentExtension';
     {
       name: '传送门',
       isShow() {
-        return MIUIContentExtension.isInstallMIUIContentExtension.value
+        return deviceStore.deviceCharacteristics === 'tablet'
       },
       click() {
+        if (!MIUIContentExtension.isInstallMIUIContentExtension.value) {
+          modal.create({
+            title: '无法打开传送门',
+            type: 'error',
+            preset: 'dialog',
+            content: () => (<p>未检测到系统存在传送门，请先通过其他模块修补传送门再进入~</p>),
+            negativeText: '确定'
+          })
+          return;
+        }
         modal.create({
           title: '确认打开传送门吗？',
-            type: 'info',
-            preset: 'dialog',
-            content: () => (<div>
-              <p>即将打开 <span class="font-bold text-gray-600">传送门</span> 管理界面，确定要继续吗？</p>
-            </div>),
-            positiveText: '确定打开',
-            negativeText: '我再想想',
-            onPositiveClick: async () => {
-              ksuApi.openMIUIContentExtension().then((res) => {
-                modal.create({
-                  title: '已开启',
-                  type: 'success',
-                  preset: 'dialog',
-                  content: () => (<div>
-                    <p>好耶OwO~</p>
-                    <p>已经成功开启 <span class="font-bold text-gray-600">传送门</span> 的管理界面了~</p>
-                  </div>),
-                  positiveText: '确定'
-                })
-              }, (err) => {
-                modal.create({
-                  title: '无法打开传送门',
-                  type: 'error',
-                  preset: 'dialog',
-                  content: () => (<p>出现异常，无法正常打开传送门QwQ，详细问题可浏览日志记录~</p>),
-                  negativeText: '确定'
-                })
+          type: 'info',
+          preset: 'dialog',
+          content: () => (<div>
+            <p>即将打开 <span class="font-bold text-gray-600">传送门</span> 管理界面，确定要继续吗？</p>
+          </div>),
+          positiveText: '确定打开',
+          negativeText: '我再想想',
+          onPositiveClick: async () => {
+            ksuApi.openMIUIContentExtension().then((res) => {
+              modal.create({
+                title: '已开启',
+                type: 'success',
+                preset: 'dialog',
+                content: () => (<div>
+                  <p>好耶OwO~</p>
+                  <p>已经成功开启 <span class="font-bold text-gray-600">传送门</span> 的管理界面了~</p>
+                </div>),
+                positiveText: '确定'
               })
-            }
+            }, (err) => {
+              modal.create({
+                title: '无法打开传送门',
+                type: 'error',
+                preset: 'dialog',
+                content: () => (<p>出现异常，无法正常打开传送门QwQ，详细问题可浏览日志记录~</p>),
+                negativeText: '确定'
+              })
+            })
+          }
         })
       },
       icon: DeviceTabletIcon
@@ -226,7 +236,8 @@ import { useMIUIContentExtension } from '@/hooks/useMIUIContentExtension';
                     <li>
                       <ul role="list" class="-mx-2 space-y-1">
                         <li v-for="item in navigation" :key="item.name">
-                          <component v-if="item.isShow ? item.isShow() : true" :is="item.href && item.routeName ? 'RouterLink' : 'a'"
+                          <component v-if="item.isShow ? item.isShow() : true"
+                            :is="item.href && item.routeName ? 'RouterLink' : 'a'"
                             v-bind="item.href && item.routeName ? { to: item.href } : { href: 'javascript:void(0)' }"
                             @click="item.click && item.click()"
                             :class="[item.routeName === route.name ? 'bg-gray-50 text-teal-600' : 'text-gray-700 hover:text-teal-600 hover:bg-gray-50', 'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold']">
