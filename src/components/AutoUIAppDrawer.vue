@@ -291,6 +291,12 @@
         onNegativeClick() {
             loadingCallback()
         },
+        onMaskClick () {
+            loadingCallback()
+        },
+        onClose () {
+            loadingCallback()
+        }
         
       })
     }

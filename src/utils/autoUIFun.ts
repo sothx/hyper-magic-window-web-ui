@@ -12,7 +12,7 @@ export const getBuiltInSettingMode = (activityRule: string) => {
     if (activityRule === '*:2') {
         return 'VIEW_POLICY_AUTO_COLUMNS'
     }
-    if (activityRule === '*:3') {
+    if (activityRule === '*:6') {
         return 'VIEW_POLICY_FLOAT'
     }
 
