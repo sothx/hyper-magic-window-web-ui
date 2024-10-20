@@ -12,8 +12,17 @@ import type { ErrorLogging } from "@/types/ErrorLogging";
 
 
 export const useEmbeddedStore = defineStore("embedded", () => {
+  // 是否补丁模式
+  const isPatchMode = ref<boolean>(false);
+  const installedAndroidApplicationPackageNameList = ref<string[]>([]);
   // 平行窗口
   const sourceEmbeddedRulesList = ref<
+    Record<EmbeddedRuleItem["name"], EmbeddedRuleItem>
+  >({});
+  const patchEmbeddedRulesList = ref<
+    Record<EmbeddedRuleItem["name"], EmbeddedRuleItem>
+  >({});
+  const systemEmbeddedRulesList = ref<
     Record<EmbeddedRuleItem["name"], EmbeddedRuleItem>
   >({});
   const customConfigEmbeddedRulesList = ref<Record<string, EmbeddedRuleItem>>(
@@ -22,6 +31,12 @@ export const useEmbeddedStore = defineStore("embedded", () => {
   // 固定应用方向
   const sourceFixedOrientationList = ref<
     Record<string, FixedOrientationRuleItem>
+  >({});
+  const patchFixedOrientationList = ref<
+    Record<EmbeddedRuleItem["name"], FixedOrientationRuleItem>
+  >({});
+  const systemFixedOrientationList = ref<
+    Record<EmbeddedRuleItem["name"], FixedOrientationRuleItem>
   >({});
   const customConfigFixedOrientationList = ref<
     Record<string, FixedOrientationRuleItem>
@@ -71,19 +86,53 @@ export const useEmbeddedStore = defineStore("embedded", () => {
 
   function updateMergeRuleList() {
     mergeRuleList.value = xmlFormat.mergeEmbeddedRule(
+      isPatchMode.value,
       sourceEmbeddedRulesList.value,
       sourceFixedOrientationList.value,
       embeddedSettingConfig.value,
       customConfigEmbeddedRulesList.value,
-      customConfigFixedOrientationList.value
+      customConfigFixedOrientationList.value,
+      systemEmbeddedRulesList.value,
+      systemFixedOrientationList.value
     );
   }
 
   async function initDefault() {
     loading.value = true;
-    // 获取源嵌入规则列表
+    // 获取补丁模式
+    const [getIsPatchModeErr, getIsPatchModeRes] =
+      await $to<string, string>(ksuApi.getIsPatchMode());
+    if (getIsPatchModeErr) {
+      errorLogging.push({
+        type: "getIsPatchModeErr",
+        title: "补丁模式",
+        msg: getIsPatchModeErr,
+      });
+    } else {
+      if (getIsPatchModeRes === 'true') {
+        isPatchMode.value = true
+      } else {
+        isPatchMode.value = false
+      }
+    }
+    // 获取用户已安装的应用包名
+    const [getAndroidApplicationPackageNameListErr, getAndroidApplicationPackageNameListRes] =
+      await $to<string, string>(ksuApi.getAndroidApplicationPackageNameList());
+    if (getAndroidApplicationPackageNameListErr) {
+      errorLogging.push({
+        type: "getAndroidApplicationPackageNameListErr",
+        title: "获取用户已安装的应用包名",
+        msg: getAndroidApplicationPackageNameListErr,
+      });
+    } else {
+      if (getAndroidApplicationPackageNameListRes) {
+        installedAndroidApplicationPackageNameList.value = getAndroidApplicationPackageNameListRes?.split(',')
+        console.log(installedAndroidApplicationPackageNameList.value, 'ttt')
+      }
+    }
+    // 获取源平行窗口列表
     const [getSourceEmbeddedRulesListErr, getSourceEmbeddedRulesListRes] =
-      await $to<string,string>(ksuApi.getSourceEmbeddedRulesList());
+      await $to<string, string>(ksuApi.getSourceEmbeddedRulesList());
     if (getSourceEmbeddedRulesListErr) {
       errorLogging.push({
         type: "sourceEmbeddedRulesList",
@@ -94,14 +143,35 @@ export const useEmbeddedStore = defineStore("embedded", () => {
 
     if (getSourceEmbeddedRulesListRes) {
       sourceEmbeddedRulesList.value =
-      xmlFormat.parseXMLToObject<EmbeddedRuleItem>(
-        getSourceEmbeddedRulesListRes,
-        "package_config",
-        "package"
-      );
+        xmlFormat.parseXMLToObject<EmbeddedRuleItem>(
+          getSourceEmbeddedRulesListRes,
+          "package_config",
+          "package"
+        );
     }
 
-    // 获取自定义配置嵌入规则列表
+    // 获取系统内置平行窗口列表
+
+    const [getSystemEmbeddedRulesListErr, getSystemEmbeddedRulesListRes] =
+      await $to<string, string>(ksuApi.getSystemEmbeddedRulesList());
+    if (getSystemEmbeddedRulesListErr) {
+      errorLogging.push({
+        type: "SystemEmbeddedRulesList",
+        title: "[系统]平行窗口配置文件",
+        msg: getSystemEmbeddedRulesListErr,
+      });
+    }
+
+    if (getSystemEmbeddedRulesListRes) {
+      systemEmbeddedRulesList.value =
+        xmlFormat.parseXMLToObject<EmbeddedRuleItem>(
+          getSystemEmbeddedRulesListRes,
+          "package_config",
+          "package"
+        );
+    }
+
+    // 获取自定义配置平行窗口列表
     const [
       getCustomConfigEmbeddedRulesListErr,
       getCustomConfigEmbeddedRulesListRes,
@@ -122,7 +192,7 @@ export const useEmbeddedStore = defineStore("embedded", () => {
 
     // 获取源居中布局列表
     const [getSourceFixedOrientationListErr, getSourceFixedOrientationListRes] =
-      await $to<string,string>(ksuApi.getSourceFixedOrientationList());
+      await $to<string, string>(ksuApi.getSourceFixedOrientationList());
     if (getSourceFixedOrientationListErr) {
       errorLogging.push({
         type: "sourceFixedOrientationList",
@@ -133,12 +203,33 @@ export const useEmbeddedStore = defineStore("embedded", () => {
 
     if (getSourceFixedOrientationListRes) {
       sourceFixedOrientationList.value =
+        xmlFormat.parseXMLToObject<FixedOrientationRuleItem>(
+          getSourceFixedOrientationListRes,
+          "package_config",
+          "package"
+        );
+    }
+
+    // 获取系统内置平行窗口列表
+
+    const [getSystemFixedOrientationListErr, getSystemFixedOrientationListRes] =
+    await $to<string, string>(ksuApi.getSystemFixedOrientationList());
+  if (getSystemFixedOrientationListErr) {
+    errorLogging.push({
+      type: "SystemEmbeddedRulesList",
+      title: "[系统]信箱模式配置文件",
+      msg: getSystemFixedOrientationListErr,
+    });
+  }
+
+  if (getSystemFixedOrientationListRes) {
+    systemFixedOrientationList.value =
       xmlFormat.parseXMLToObject<FixedOrientationRuleItem>(
-        getSourceFixedOrientationListRes,
+        getSystemFixedOrientationListRes,
         "package_config",
         "package"
       );
-    }
+  }
 
     // 获取自定义配置居中布局列表
     const [
@@ -176,11 +267,14 @@ export const useEmbeddedStore = defineStore("embedded", () => {
 
     // 合并最终配置
     mergeRuleList.value = xmlFormat.mergeEmbeddedRule(
+      isPatchMode.value,
       sourceEmbeddedRulesList.value,
       sourceFixedOrientationList.value,
       embeddedSettingConfig.value,
       customConfigEmbeddedRulesList.value,
-      customConfigFixedOrientationList.value
+      customConfigFixedOrientationList.value,
+      systemEmbeddedRulesList.value,
+      systemFixedOrientationList.value
     );
 
     // errorLogging.push({
@@ -214,6 +308,7 @@ export const useEmbeddedStore = defineStore("embedded", () => {
     loading,
     ruleCount,
     allPackageName,
+    isPatchMode,
     initDefault,
     updateMergeRuleList,
   };

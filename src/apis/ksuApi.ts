@@ -146,12 +146,46 @@ export const getSourceEmbeddedRulesList = (): Promise<string> => {
   }), shellCommon);
 };
 
+export const getSystemEmbeddedRulesList = (): Promise<string> => {
+  const shellCommon = `cat /product/etc/embedded_rules_list.xml`
+  return handlePromiseWithLogging(new Promise(async (resolve, reject) => {
+    if (import.meta.env.MODE === "development") {
+      const response = await axios.get("/data/system/embedded_rules_list.xml");
+      const xmlText = response.data; // 这是 XML 内容
+      resolve(xmlText);
+    } else {
+      const { errno, stdout, stderr }: ExecResults = await exec(
+        shellCommon
+      );
+      errno ? reject(stderr) : resolve(stdout);
+    }
+  }), shellCommon);
+};
+
 export const getSourceFixedOrientationList = (): Promise<string> => {
   const shellCommon = `cat /data/adb/modules/MIUI_MagicWindow+/common/source/fixed_orientation_list.xml`
   return handlePromiseWithLogging(new Promise(async (resolve, reject) => {
     if (import.meta.env.MODE === "development") {
       const response = await axios.get(
         "/data/origin/fixed_orientation_list.xml"
+      );
+      const xmlText = response.data; // 这是 XML 内容
+      resolve(xmlText);
+    } else {
+      const { errno, stdout, stderr }: ExecResults = await exec(
+        shellCommon
+      );
+      errno ? reject(stderr) : resolve(stdout);
+    }
+  }), shellCommon);
+};
+
+export const getSystemFixedOrientationList = (): Promise<string> => {
+  const shellCommon = `cat /product/etc/fixed_orientation_list.xml`
+  return handlePromiseWithLogging(new Promise(async (resolve, reject) => {
+    if (import.meta.env.MODE === "development") {
+      const response = await axios.get(
+        "/data/system/fixed_orientation_list.xml"
       );
       const xmlText = response.data; // 这是 XML 内容
       resolve(xmlText);
@@ -319,6 +353,62 @@ export const rebootDevice = (): Promise<string> => {
         shellCommon
       );
       errno ? reject(stderr) : stdout === 'Reboot command executed successfully.' ? resolve(stdout) : reject(stdout);
+    }
+  }), shellCommon);
+}
+
+export const getAndroidApplicationPackageNameList = (): Promise<string> => {
+  const shellCommon = `pm list packages -a | awk -F':' '{print $2}' | tr '\n' ',' | sed 's/,$/\n/'`
+  return handlePromiseWithLogging(new Promise(async (resolve, reject) => {
+    if (import.meta.env.MODE === "development") {
+      resolve(`com.tencent.mobileqq,com.tencent.mm`);
+    } else {
+      const { errno, stdout, stderr }: ExecResults = await exec(
+        shellCommon
+      );
+      errno ? reject(stderr) :  resolve(stdout)
+    }
+  }), shellCommon);
+}
+
+export const getIsPatchMode = (): Promise<string> => {
+  const shellCommon = `grep 'is_patch_mode=' /data/adb/modules/MIUI_MagicWindow+/system.prop`
+  return handlePromiseWithLogging(new Promise(async (resolve, reject) => {
+    if (import.meta.env.MODE === "development") {
+      resolve(`true`);
+    } else {
+      const { errno, stdout, stderr }: ExecResults = await exec(
+        shellCommon
+      );
+      errno ? reject(stderr) :  resolve(stdout)
+    }
+  }), shellCommon);
+}
+
+export const addIsPatchMode = (): Promise<string> => {
+  const shellCommon = `(grep -q '^is_patch_mode=' /data/adb/modules/MIUI_MagicWindow+/system.prop && sed -i '/^is_patch_mode=false/d' /data/adb/modules/MIUI_MagicWindow+/system.prop) || echo "is_patch_mode=true" >> /data/adb/modules/MIUI_MagicWindow+/system.prop; [ $? -eq 0 ] && echo "Command executed successfully." || echo "Command failed."`
+  return handlePromiseWithLogging(new Promise(async (resolve, reject) => {
+    if (import.meta.env.MODE === "development") {
+      resolve(`true`);
+    } else {
+      const { errno, stdout, stderr }: ExecResults = await exec(
+        shellCommon
+      );
+      errno ? reject(stderr) :  resolve(stdout)
+    }
+  }), shellCommon);
+}
+
+export const removeIsPatchMode = (): Promise<string> => {
+  const shellCommon = `sed -i '/^is_patch_mode=/d' /data/adb/modules/MIUI_MagicWindow+/system.prop && echo "Remove is_patch_mode successfully." || echo "Remove is_patch_mode failed."`
+  return handlePromiseWithLogging(new Promise(async (resolve, reject) => {
+    if (import.meta.env.MODE === "development") {
+      resolve(`Remove is_patch_mode successfully.`);
+    } else {
+      const { errno, stdout, stderr }: ExecResults = await exec(
+        shellCommon
+      );
+      errno ? reject(stderr) :  resolve(stdout)
     }
   }), shellCommon);
 }
@@ -657,6 +747,7 @@ export interface updateAutoUIAppParams {
     action: "enable" | "disable";
   };
 }
+
 
 
 

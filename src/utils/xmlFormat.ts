@@ -193,11 +193,14 @@ const omitName = <T extends { name: string }>(obj: T): Omit<T, "name"> => {
 
 
 export const mergeEmbeddedRule = (
+  isPatchMode: boolean,
   embeddedRules: Record<string, EmbeddedRuleItem>,
   fixedOrientationRules: Record<string, FixedOrientationRuleItem>,
   settingRules: Record<string, EmbeddedSettingRuleItem>,
   customEmbeddedRules: Record<string, EmbeddedRuleItem> = {}, // 默认值为 {}
-  customFixedOrientationRules: Record<string, FixedOrientationRuleItem> = {} // 默认值为 {}
+  customFixedOrientationRules: Record<string, FixedOrientationRuleItem> = {}, // 默认值为 {}
+  systemEmbeddedRules: Record<string, EmbeddedRuleItem> = {}, // 默认值为 {}
+  systemFixedOrientationRules: Record<string, FixedOrientationRuleItem> = {} // 默认值为 {}
 ): EmbeddedMergeRuleItem[] => {
   const result: EmbeddedMergeRuleItem[] = [];
   const allPackages = new Set([

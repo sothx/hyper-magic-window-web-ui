@@ -531,13 +531,16 @@
       <div class="px-4 sm:px-0 mb-5">
         <h3 class="text-base font-semibold leading-7 text-gray-900">应用横屏配置</h3>
         <p class="mt-1 max-w-2xl text-sm leading-6 text-gray-500">在这里可以快速管理平板在横屏应用下的配置</p>
-        <p class="mt-1 max-w-2xl text-sm leading-6 text-gray-500">应用包名可以通过"应用详情"中查找</p>
       </div>
     </div>
     <n-card title="操作栏" size="small">
       <n-button class="mb-3 mr-3" type="info" :loading="deviceStore.loading || embeddedStore.loading"
         @click="openAddEmbeddedApp">
         添加应用
+      </n-button>
+      <n-button class="mb-3 mr-3" v-if="embeddedStore.isPatchMode" type="error" :loading="deviceStore.loading || embeddedStore.loading"
+        @click="() => reloadPage()">
+        生成已安装应用数据
       </n-button>
       <n-button class="mb-3 mr-3" type="success" :loading="deviceStore.loading || embeddedStore.loading"
         @click="() => reloadPage()">

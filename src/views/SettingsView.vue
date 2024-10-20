@@ -165,6 +165,19 @@
             </dd>
           </div>
           <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+            <dt class="text-sm font-medium leading-6 text-gray-900">模块模式</dt>
+            <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0"> <n-switch
+                @update:value="(value: boolean) => changeGameMode(value)" :value="gameMode.isSupportGameMode"
+                :disabled="deviceStore.deviceCharacteristics !== 'tablet' || deviceStore.androidTargetSdk && deviceStore.androidTargetSdk < 32">
+                <template #checked>
+                  完整模式
+                </template>
+                <template #unchecked>
+                  补丁模式
+                </template>
+              </n-switch></dd>
+          </div>
+          <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
             <dt class="text-sm font-medium leading-6 text-gray-900">游戏显示布局</dt>
             <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0"> <n-switch
                 @update:value="(value: boolean) => changeGameMode(value)" :value="gameMode.isSupportGameMode"
