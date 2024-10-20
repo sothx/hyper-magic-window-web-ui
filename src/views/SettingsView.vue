@@ -1,6 +1,6 @@
 <script setup lang="tsx">
   import { useDeviceStore } from '@/stores/device';
-  import type { CSSProperties } from 'vue'
+  import { ref, type CSSProperties } from 'vue'
   import * as xmlFormat from '@/utils/xmlFormat';
   import { createDiscreteApi } from 'naive-ui'
   import { useGameMode } from '@/hooks/useGameMode';
@@ -14,7 +14,9 @@
   const handleSmartFocusIOChange = (value: boolean) => {
     message.info('功能尚未上线，无任何实际效果，请等待后续更新！')
   }
+  const switchPatchModeLoading = ref<boolean>(false);
   const changePatchMode = async (value: boolean) => {
+    switchPatchModeLoading.value = false;
     const [negativeRes, positiveRes] = await $to(new Promise((resolve, reject) => {
       modal.create({
         title: value ? '想切换为定制模式吗？' : '想切换为完整模式吗？',
@@ -35,10 +37,29 @@
         },
         onNegativeClick: () => {
           reject('negativeClick')
+          switchPatchModeLoading.value = false
+        },
+        onClose: () => {
+          switchPatchModeLoading.value = false
+        },
+        onMaskClick: () => {
+          switchPatchModeLoading.value = false
         }
       })
     }))
     if (positiveRes) {
+      const [removeIsPatchModeErr] = await $to(ksuApi.removeIsPatchMode())
+        if (removeIsPatchModeErr) {
+          modal.create({
+            title: '操作失败',
+            type: 'error',
+            preset: 'dialog',
+            content: () => (<p>无法移除定制模式的配置项，详情请查看日志记录~</p>),
+            negativeText: '确定'
+          })
+          switchPatchModeLoading.value = false;
+          return;
+        }
       if (value) {
         const [addIsPatchModeErr] = await $to(ksuApi.addIsPatchMode())
         if (addIsPatchModeErr) {
@@ -49,27 +70,18 @@
             content: () => (<p>无法切换为定制模式，详情请查看日志记录~</p>),
             negativeText: '确定'
           })
+          switchPatchModeLoading.value = false;
           return;
         }
         embeddedStore.isPatchMode = true;
       } else {
-        const [addIsPatchModeErr] = await $to(ksuApi.addIsPatchMode())
-        if (addIsPatchModeErr) {
-          modal.create({
-            title: '操作失败',
-            type: 'error',
-            preset: 'dialog',
-            content: () => (<p>无法切换为完整模式，详情请查看日志记录~</p>),
-            negativeText: '确定'
-          })
-          return;
-        }
+        switchPatchModeLoading.value = false;
         embeddedStore.isPatchMode = false;
       }
       const [submitUpdateEmbeddedAppErr, submitUpdateEmbeddedAppRes] = await $to(ksuApi.updateEmbeddedApp({
         isPatchMode: embeddedStore.isPatchMode,
-        patchEmbeddedRulesListXML: xmlFormat.objectToXML(embeddedStore.customConfigEmbeddedRulesList, 'package', 'package_config'),
-        patchFixedOrientationListXML: xmlFormat.objectToXML(embeddedStore.customConfigFixedOrientationList, 'package', 'package_config'),
+        patchEmbeddedRulesListXML: xmlFormat.objectToXML(embeddedStore.patchEmbeddedRulesList, 'package', 'package_config'),
+        patchFixedOrientationListXML: xmlFormat.objectToXML(embeddedStore.patchFixedOrientationList, 'package', 'package_config'),
         customEmbeddedRulesListXML: xmlFormat.objectToXML(embeddedStore.customConfigEmbeddedRulesList, 'package', undefined),
         customFixedOrientationListXML: xmlFormat.objectToXML(embeddedStore.customConfigFixedOrientationList, 'package', undefined),
         settingConfigXML: xmlFormat.objectToXML(embeddedStore.embeddedSettingConfig, 'setting', 'setting_rule'),
@@ -81,6 +93,8 @@
           preset: 'dialog',
           content: () => (<p>发生异常错误，更新失败了QwQ，该功能尚在测试阶段，尚不稳定，出现异常请及时反馈~</p>)
         })
+        embeddedStore.isPatchMode = !embeddedStore.isPatchMode;
+        switchPatchModeLoading.value = false;
       } else {
         modal.create({
           title: '操作成功',
@@ -98,6 +112,7 @@
           ),
           negativeText: '确定'
         })
+        switchPatchModeLoading.value = false;
         embeddedStore.updateMergeRuleList()
       }
     }
@@ -275,6 +290,7 @@
             <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0"> <n-switch
                 @update:value="(value: boolean) => changePatchMode(value)" :rail-style="railStyle"
                 :value="embeddedStore.isPatchMode"
+                :loading="switchPatchModeLoading"
                 :disabled="deviceStore.androidTargetSdk && deviceStore.androidTargetSdk < 32">
                 <template #checked>
                   定制模式

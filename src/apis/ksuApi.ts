@@ -111,7 +111,7 @@ export const getMiuiCompatEnable = (): Promise<string> => {
       const { errno, stdout, stderr }: ExecResults = (await exec(
         shellCommon
       )) as unknown as ExecResults;
-      errno ? reject(stderr) :  resolve(stdout);
+      errno ? reject(stderr) : resolve(stdout);
     }
   }), shellCommon);
 };
@@ -366,13 +366,13 @@ export const getAndroidApplicationPackageNameList = (): Promise<string> => {
       const { errno, stdout, stderr }: ExecResults = await exec(
         shellCommon
       );
-      errno ? reject(stderr) :  resolve(stdout)
+      errno ? reject(stderr) : resolve(stdout)
     }
   }), shellCommon);
 }
 
 export const getIsPatchMode = (): Promise<string> => {
-  const shellCommon = `grep 'is_patch_mode=' /data/adb/modules/MIUI_MagicWindow+/system.prop`
+  const shellCommon = `grep 'is_patch_mode=' /data/adb/MIUI_MagicWindow+/config.prop | awk -F'=' '{print $2}'`
   return handlePromiseWithLogging(new Promise(async (resolve, reject) => {
     if (import.meta.env.MODE === "development") {
       resolve(`false`);
@@ -380,27 +380,27 @@ export const getIsPatchMode = (): Promise<string> => {
       const { errno, stdout, stderr }: ExecResults = await exec(
         shellCommon
       );
-      errno ? reject(stderr) :  resolve(stdout)
+      errno ? reject(stderr) : resolve(stdout)
     }
   }), shellCommon);
 }
 
 export const addIsPatchMode = (): Promise<string> => {
-  const shellCommon = `(grep -q '^is_patch_mode=' /data/adb/modules/MIUI_MagicWindow+/system.prop && sed -i '/^is_patch_mode=false/d' /data/adb/modules/MIUI_MagicWindow+/system.prop) || echo "is_patch_mode=true" >> /data/adb/modules/MIUI_MagicWindow+/system.prop; [ $? -eq 0 ] && echo "Command executed successfully." || echo "Command failed."`
+  const shellCommon = `grep -q '^is_patch_mode=' /data/adb/MIUI_MagicWindow+/config.prop || (echo "is_patch_mode=true" | tee -a /data/adb/MIUI_MagicWindow+/config.prop > /dev/null && echo "Command executed successfully." || echo "Command failed.")`
   return handlePromiseWithLogging(new Promise(async (resolve, reject) => {
     if (import.meta.env.MODE === "development") {
-      resolve(`true`);
+      resolve(`Command executed successfully.`);
     } else {
       const { errno, stdout, stderr }: ExecResults = await exec(
         shellCommon
       );
-      errno ? reject(stderr) :  resolve(stdout)
+      errno ? reject(stderr) : stdout === 'Command executed successfully.' ? resolve(stdout) : reject(stdout)
     }
   }), shellCommon);
 }
 
 export const removeIsPatchMode = (): Promise<string> => {
-  const shellCommon = `sed -i '/^is_patch_mode=/d' /data/adb/modules/MIUI_MagicWindow+/system.prop && echo "Remove is_patch_mode successfully." || echo "Remove is_patch_mode failed."`
+  const shellCommon = `sed -i '/^is_patch_mode=/d' //data/adb/MIUI_MagicWindow+/config.prop && echo "Remove is_patch_mode successfully." || echo "Remove is_patch_mode failed."`
   return handlePromiseWithLogging(new Promise(async (resolve, reject) => {
     if (import.meta.env.MODE === "development") {
       resolve(`Remove is_patch_mode successfully.`);
@@ -408,7 +408,7 @@ export const removeIsPatchMode = (): Promise<string> => {
       const { errno, stdout, stderr }: ExecResults = await exec(
         shellCommon
       );
-      errno ? reject(stderr) :  resolve(stdout)
+      errno ? reject(stderr) : resolve(stdout)
     }
   }), shellCommon);
 }
@@ -422,7 +422,7 @@ export const deleteGameMode = (): Promise<string> => {
       const { errno, stdout, stderr }: ExecResults = await exec(
         shellCommon
       );
-      errno ? reject(stderr) :  stdout === 'Command executed successfully.' ? resolve(stdout) : reject(stdout);
+      errno ? reject(stderr) : stdout === 'Command executed successfully.' ? resolve(stdout) : reject(stdout);
     }
   }), shellCommon);
 }
@@ -436,7 +436,7 @@ export const addGameMode = (): Promise<string> => {
       const { errno, stdout, stderr }: ExecResults = await exec(
         shellCommon
       );
-      errno ? reject(stderr) :  stdout === 'Command executed successfully.' ? resolve(stdout) : reject(stdout);
+      errno ? reject(stderr) : stdout === 'Command executed successfully.' ? resolve(stdout) : reject(stdout);
     }
   }), shellCommon);
 }
@@ -535,6 +535,50 @@ export const updateEmbeddedApp = (
     } else {
       const errorLogging: updateEmbeddedAppErrorLoggingItem[] = [];
       const successLogging: updateEmbeddedAppSuccessLoggingItem[] = [];
+
+      if (params.isPatchMode) {
+        const {
+          errno: PatchEmErrno,
+          stdout: PatchEmStdout,
+          stderr: PatchEmStderr,
+        }: ExecResults = await exec(
+          `echo '${params.patchEmbeddedRulesListXML}' > /data/adb/MIUI_MagicWindow+/patch_rule/embedded_rules_list.xml`
+        );
+        if (PatchEmErrno) {
+          errorLogging.push({
+            type: "patchEmbeddedRulesListXML",
+            name: "[定制模式]平行窗口配置文件",
+            message: PatchEmStderr,
+          });
+        } else {
+          successLogging.push({
+            type: "patchEmbeddedRulesListXML",
+            name: "[定制模式]平行窗口配置文件",
+            message: "更新成功",
+          });
+        }
+
+        const {
+          errno: PatchFixErrno,
+          stdout: PatchFixStdout,
+          stderr: PatchFixStderr,
+        }: ExecResults = await exec(
+          `echo '${params.patchFixedOrientationListXML}' > /data/adb/MIUI_MagicWindow+/patch_rule/fixed_orientation_list.xml`
+        );
+        if (PatchFixErrno) {
+          errorLogging.push({
+            type: "patchFixedOrientationListXML",
+            name: "[定制模式]信箱模式配置文件",
+            message: PatchFixStderr,
+          });
+        } else {
+          successLogging.push({
+            type: "patchixedOrientationListXML",
+            name: "[定制模式]信箱模式配置文件",
+            message: "更新成功",
+          });
+        }
+      }
 
 
 
@@ -640,7 +684,7 @@ export const updateEmbeddedApp = (
           successLogging.push({
             type: "updateMiuiEmbeddingWindowSwitchAction",
             name: `[模块]更新${params.switchAction.action}的设置`,
-            message:SwitchActionStdout,
+            message: SwitchActionStdout,
           });
         }
       }
@@ -715,7 +759,7 @@ export const readAndroidPackageShellJobs = (id: number): Promise<string> => {
   }), shellCommon);
 }
 
-export const getRootManagerInfo = () : Promise<string> => {
+export const getRootManagerInfo = (): Promise<string> => {
   const shellCommon = `cat /data/adb/modules/MIUI_MagicWindow+/common/temp/root_manager_info.txt`
   return handlePromiseWithLogging(new Promise(async (resolve, reject) => {
     if (import.meta.env.MODE === "development") {
@@ -844,7 +888,7 @@ export const updateAutoUIApp = (
         }: ExecResults = await exec(
           `cmd miui_auto_ui ${params.reloadRuleAction.action} ${params.reloadRuleAction.name}`
         );
-  
+
         if (ReloadActionErrno) {
           errorLogging.push({
             type: "updateMiuiAutoUIReloadAction",

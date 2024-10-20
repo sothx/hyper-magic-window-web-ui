@@ -115,14 +115,18 @@
       isShow() {
         return deviceStore.deviceCharacteristics === 'tablet'
       },
-      click() {
+      async click() {
         if (!MIUIContentExtension.isInstallMIUIContentExtension.value) {
+          await navigator.clipboard.writeText(`https://caiyun.139.com/m/i?135CdxVMTx4nf`)
           modal.create({
             title: '无法打开传送门',
             type: 'error',
             preset: 'dialog',
-            content: () => (<p>未检测到系统存在传送门，请先通过其他模块修补传送门再进入~</p>),
-            negativeText: '确定'
+            content: () => (<div>
+              <p>未检测到系统存在传送门，请先通过模块修补传送门再进入~</p>
+              <p>已经复制模块下载链接到剪切板了，请务必选择固化并修复传送门~</p>
+            </div>),
+            negativeText: '确定',
           })
           return;
         }
