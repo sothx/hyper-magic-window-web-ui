@@ -26,8 +26,6 @@ export interface UpdateInfo {
   changelog: string;
 }
 
-  const shellCommon = `echo "$KSU,$KSU_VER,$KSU_VER_CODE,$KSU_KERNEL_VER_CODE,$APATCH,$APATCH_VER_CODE,$APATCH_VER,$MAGISK_VER,$MAGISK_VER_CODE"`
-
 
 export interface ROOTManagerInfo {
   KSU: boolean;
