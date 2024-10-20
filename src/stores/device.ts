@@ -26,6 +26,23 @@ export interface UpdateInfo {
   changelog: string;
 }
 
+  const shellCommon = `echo "$KSU,$KSU_VER,$KSU_VER_CODE,$KSU_KERNEL_VER_CODE,$APATCH,$APATCH_VER_CODE,$APATCH_VER,$MAGISK_VER,$MAGISK_VER_CODE"`
+
+
+export interface ROOTManagerInfo {
+  KSU: boolean;
+  KSU_VER: string;
+  KSU_VER_CODE: number;
+  KSU_KERNEL_VER_CODE: number;
+  APATCH: boolean;
+  APATCH_VER_CODE: number;
+  APATCH_VER: number;
+  MAGISK_VER: string;
+  MAGISK_VER_CODE: string;
+}
+
+export type ROOT_MANAGER_TYPE = 'Magisk' | 'APatch' | 'KernelSU'
+
 export const useDeviceStore = defineStore("device", () => {
   const deviceCharacteristics = ref<string>();
   const androidTargetSdk = ref<number>();
@@ -35,6 +52,7 @@ export const useDeviceStore = defineStore("device", () => {
   const deviceSocModel = ref<string>();
   const moduleDir = ref<string>();
   const moduleID = ref<string>();
+  const currentRootManager = ref<ROOT_MANAGER_TYPE>('Magisk');
   const moduleProp = reactive<ModuleProp>({
     id: "",
     name: "",
@@ -49,6 +67,17 @@ export const useDeviceStore = defineStore("device", () => {
     versionCode: 0,
     zipUrl: "",
     changelog: ""
+  })
+  const rootManagerInfo =  reactive<ROOTManagerInfo>({
+    KSU: false,
+    KSU_VER: "",
+    KSU_VER_CODE: 0,
+    KSU_KERNEL_VER_CODE: 0,
+    APATCH: false,
+    APATCH_VER_CODE: 0,
+    APATCH_VER: 0,
+    MAGISK_VER: "",
+    MAGISK_VER_CODE: ""
   })
   const smartFocusIO = ref<ksuApi.SmartFocusIOResult["stdout"]>();
   const miuiCompatEnable = ref<boolean>(false);
@@ -77,7 +106,35 @@ export const useDeviceStore = defineStore("device", () => {
       moduleDir.value = moduleInfoObj.moduleDir
       moduleID.value = moduleInfoObj.id
     }
-    // 模块参数 *强校验
+    // ROOT管理器信息 *弱校验
+    const [,getRootManagerInfo] = await $to<string,string>(ksuApi.getRootManagerInfo());
+    if (!getRootManagerInfo?.length) {
+      errorLogging.push({
+        type: "moduleInfo",
+        title: "ROOT管理器信息",
+        msg: '获取ROOT管理器信息失败',
+      });
+    } 
+    if (getRootManagerInfo?.length) {
+        const shellCommon = `echo "$KSU,$KSU_VER,$KSU_VER_CODE,$KSU_KERNEL_VER_CODE,$APATCH,$APATCH_VER_CODE,$APATCH_VER,$MAGISK_VER,$MAGISK_VER_CODE"`
+      const rootManagerStrArr: string[] = getRootManagerInfo.split(',');
+      rootManagerInfo.KSU = rootManagerStrArr[0] === 'true';
+      rootManagerInfo.KSU_VER = rootManagerStrArr[1];
+      rootManagerInfo.KSU_VER_CODE = parseInt(rootManagerStrArr[2], 10);
+      rootManagerInfo.KSU_KERNEL_VER_CODE = parseInt(rootManagerStrArr[3], 10);
+      rootManagerInfo.APATCH = rootManagerStrArr[4] === 'true';
+      rootManagerInfo.APATCH_VER_CODE = parseInt(rootManagerStrArr[5], 10);
+      rootManagerInfo.APATCH_VER = parseInt(rootManagerStrArr[6], 10);
+      rootManagerInfo.MAGISK_VER = rootManagerStrArr[7];
+      rootManagerInfo.MAGISK_VER_CODE = rootManagerStrArr[8];
+      if (rootManagerInfo.KSU) {
+        currentRootManager.value = 'KernelSU'
+      } else if (rootManagerInfo.APATCH) {
+        currentRootManager.value = 'APatch'
+      } else {
+        currentRootManager.value = 'Magisk'
+      }
+    }
     // 设备类型 *强校验
     const [getDeviceCharacteristicsErr, getDeviceCharacteristicsRes] =
       await $to<string,string>(ksuApi.getDeviceCharacteristics());
@@ -169,6 +226,8 @@ export const useDeviceStore = defineStore("device", () => {
     miuiCompatEnable,
     miuiAppCompatEnable,
     skipConfirm,
+    currentRootManager,
+    rootManagerInfo,
     errorLogging,
     loading,
     initDefault,

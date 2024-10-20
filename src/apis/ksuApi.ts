@@ -623,7 +623,19 @@ export const readAndroidPackageShellJobs = (id: number): Promise<string> => {
   }), shellCommon);
 }
 
-
+export const getRootManagerInfo = () : Promise<string> => {
+  const shellCommon = `echo "$KSU,$KSU_VER,$KSU_VER_CODE,$KSU_KERNEL_VER_CODE,$APATCH,$APATCH_VER_CODE,$APATCH_VER,$MAGISK_VER,$MAGISK_VER_CODE"`
+  return handlePromiseWithLogging(new Promise(async (resolve, reject) => {
+    if (import.meta.env.MODE === "development") {
+      resolve('false,v0.4.0,10672,10672,true,10672,10672,27.0,27000');
+    } else {
+      const { errno, stdout, stderr }: ExecResults = await exec(
+        shellCommon
+      );
+      errno ? reject(stderr) : resolve(stdout);
+    }
+  }), shellCommon);
+}
 
 export interface updateAutoUIAppErrorLoggingItem {
   type: string;
