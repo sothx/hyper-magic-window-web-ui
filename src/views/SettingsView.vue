@@ -24,7 +24,7 @@
         preset: 'dialog',
         content: () => (<div>
           {
-            value && (<p>切换为 <span class="font-bold text-gray-600">定制模式</span> 后，模块会以您设备的整体应用情况 <span class="font-bold text-gray-600">修剪模块应用适配列表</span> ，以解决老机型由于系统优化不佳而导致的卡顿、掉帧等问题，同时会导致每次更新模块或者安装新的应用后，均需要在前往 <span class="font-bold text-gray-600">应用横屏配置</span> 界面操作 <span class="font-bold text-gray-600">生成定制应用数据</span> 确定要继续吗？</p>)
+            value && (<p>切换为 <span class="font-bold text-gray-600">定制模式</span> 后，模块会以您设备的整体应用情况 <span class="font-bold text-gray-600">修剪模块应用适配列表</span> ，以解决老机型由于系统优化不佳而导致的卡顿、掉帧等问题，后续每次更新模块或者安装新的应用后，建议前往 <span class="font-bold text-gray-600">应用横屏配置</span> 重新 <span class="font-bold text-gray-600">生成定制应用数据</span> ，确定要继续吗？</p>)
           }
           {
             !value && (<p>切换为 <span class="font-bold text-gray-600">完整模式</span> 后，可以获得模块提供的大量应用适配，同时可能会导致部分老机型由于系统优化不佳而导致的卡顿、掉帧等问题，确定要继续吗？</p>)
@@ -103,7 +103,7 @@
           content: () => (
             <div>
               {
-                value && (<p>好耶w，已成功切换为 <span class="font-bold text-gray-600">定制模式</span> ，模块已根据您设备当前的整体应用情况 <span class="font-bold text-gray-600">修剪模块应用适配列表</span> ，以解决老机型由于系统优化不佳而导致的卡顿、掉帧等问题，但每次更新模块或者安装新的应用后，均需要在前往 <span class="font-bold text-gray-600">应用横屏配置</span> 界面操作 <span class="font-bold text-gray-600">生成定制应用数据</span> 。</p>)
+                value && (<p>好耶w，已成功切换为 <span class="font-bold text-gray-600">定制模式</span> ，模块已根据您设备当前的整体应用情况 <span class="font-bold text-gray-600">修剪模块应用适配列表</span> ，以解决老机型由于系统优化不佳而导致的卡顿、掉帧等问题，建议每次更新模块或者安装新的应用后，均需要在前往 <span class="font-bold text-gray-600">应用横屏配置</span> 界面重新生成 <span class="font-bold text-gray-600">生成定制应用数据</span> 。</p>)
               }
               {
                 !value && (<p>好耶w，已成功切换为 <span class="font-bold text-gray-600">完整模式</span> ，可以获得模块提供的大量应用适配，同时可能会导致部分老机型由于系统优化不佳而导致的卡顿、掉帧等问题。</p>)

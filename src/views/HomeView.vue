@@ -78,7 +78,7 @@
           preset: 'dialog',
           content: () => (
             <div>
-              <p>好耶w，已根据您设备当前的整体应用情况重新 <span class="font-bold text-gray-600">修剪模块应用适配列表</span> ，后续每次更新模块或者安装新的应用后，需要再重新操作 <span class="font-bold text-gray-600">生成定制应用数据</span> 。</p>
+              <p>好耶w，已根据您设备当前的整体应用情况重新 <span class="font-bold text-gray-600">修剪模块应用适配列表</span> ，后续每次更新模块或者安装新的应用后，建议重新操作 <span class="font-bold text-gray-600">生成定制应用数据</span> 。</p>
             </div>
           ),
           negativeText: '确定'
