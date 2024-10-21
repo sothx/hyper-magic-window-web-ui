@@ -11,6 +11,7 @@
   import { useEmbeddedStore } from '@/stores/embedded';
   import * as validateFun from '@/utils/validateFun';
   import { useLogsStore } from '@/stores/logs';
+  import { exec } from '@/utils/kernelsu';
   type EmbeddedAppDrawerInstance = InstanceType<typeof EmbeddedAppDrawer>;
   type SearchKeyWordInputInstance = InstanceType<typeof NInput>;
 
@@ -57,44 +58,54 @@
   const reloadPatchModeConfigList = async () => {
     reloadPatchModeConfigLoading.value = true;
     const [submitUpdateEmbeddedAppErr, submitUpdateEmbeddedAppRes] = await $to(ksuApi.updateEmbeddedApp({
-        isPatchMode: embeddedStore.isPatchMode,
-        patchEmbeddedRulesListXML: xmlFormat.objectToXML(embeddedStore.patchEmbeddedRulesList, 'package', 'package_config'),
-        patchFixedOrientationListXML: xmlFormat.objectToXML(embeddedStore.patchFixedOrientationList, 'package', 'package_config'),
-        customEmbeddedRulesListXML: xmlFormat.objectToXML(embeddedStore.customConfigEmbeddedRulesList, 'package', undefined),
-        customFixedOrientationListXML: xmlFormat.objectToXML(embeddedStore.customConfigFixedOrientationList, 'package', undefined),
-        settingConfigXML: xmlFormat.objectToXML(embeddedStore.embeddedSettingConfig, 'setting', 'setting_rule'),
-      }))
-      if (submitUpdateEmbeddedAppErr) {
-        modal.create({
-          title: '操作失败',
-          type: 'error',
-          preset: 'dialog',
-          content: () => (<p>发生异常错误，更新失败了QwQ，该功能尚在测试阶段，尚不稳定，出现异常请及时反馈~</p>)
-        })
-        reloadPatchModeConfigLoading.value = false;
-      } else {
-        modal.create({
-          title: '操作成功',
-          type: 'success',
-          preset: 'dialog',
-          content: () => (
-            <div>
-              <p>好耶w，已根据您设备当前的整体应用情况重新 <span class="font-bold text-gray-600">修剪模块应用适配列表</span> ，后续每次更新模块或者安装新的应用后，建议重新操作 <span class="font-bold text-gray-600">生成定制应用数据</span> 。</p>
-            </div>
-          ),
-          negativeText: '确定'
-        })
-        logsStore.info('获取到已安装的应用数量',embeddedStore.installedAndroidApplicationPackageNameList.length)
-        logsStore.info('获取到模块规则的平行窗口的应用数量',Object.keys(embeddedStore.sourceEmbeddedRulesList).length)
-        logsStore.info('获取到模块规则的信箱模式的应用数量',Object.keys(embeddedStore.sourceFixedOrientationList).length)
-        logsStore.info('获取到系统规则的平行窗口的应用数量',Object.keys(embeddedStore.systemEmbeddedRulesList).length)
-        logsStore.info('获取到系统规则的信箱模式的应用数量',Object.keys(embeddedStore.systemFixedOrientationList).length)
-        logsStore.info('获取到patch规则的平行窗口的应用数量',Object.keys(embeddedStore.patchEmbeddedRulesList).length)
-        logsStore.info('获取到patch规则的信箱模式的应用数量',Object.keys(embeddedStore.patchFixedOrientationList).length)
-        logsStore.info('是否存在DNA Android',new Set(Object.keys(embeddedStore.patchEmbeddedRulesList)).has('com.dna.tools'))
-        reloadPatchModeConfigLoading.value = false;
-        embeddedStore.updateMergeRuleList()
-      }
+      isPatchMode: embeddedStore.isPatchMode,
+      patchEmbeddedRulesListXML: xmlFormat.objectToXML(embeddedStore.patchEmbeddedRulesList, 'package', 'package_config'),
+      patchFixedOrientationListXML: xmlFormat.objectToXML(embeddedStore.patchFixedOrientationList, 'package', 'package_config'),
+      customEmbeddedRulesListXML: xmlFormat.objectToXML(embeddedStore.customConfigEmbeddedRulesList, 'package', undefined),
+      customFixedOrientationListXML: xmlFormat.objectToXML(embeddedStore.customConfigFixedOrientationList, 'package', undefined),
+      settingConfigXML: xmlFormat.objectToXML(embeddedStore.embeddedSettingConfig, 'setting', 'setting_rule'),
+    }))
+    if (submitUpdateEmbeddedAppErr) {
+      modal.create({
+        title: '操作失败',
+        type: 'error',
+        preset: 'dialog',
+        content: () => (<p>发生异常错误，更新失败了QwQ，该功能尚在测试阶段，尚不稳定，出现异常请及时反馈~</p>)
+      })
+      reloadPatchModeConfigLoading.value = false;
+    } else {
+      modal.create({
+        title: '操作成功',
+        type: 'success',
+        preset: 'dialog',
+        content: () => (
+          <div>
+            <p>好耶w，已根据您设备当前的整体应用情况重新 <span class="font-bold text-gray-600">修剪模块应用适配列表</span> ，后续每次更新模块或者安装新的应用后，建议重新操作 <span class="font-bold text-gray-600">生成定制应用数据</span> 。</p>
+          </div>
+        ),
+        negativeText: '确定'
+      })
+      logsStore.info('获取到已安装的应用数量', embeddedStore.installedAndroidApplicationPackageNameList.length)
+      logsStore.info('获取到模块规则的平行窗口的应用数量', Object.keys(embeddedStore.sourceEmbeddedRulesList).length)
+      logsStore.info('获取到模块规则的信箱模式的应用数量', Object.keys(embeddedStore.sourceFixedOrientationList).length)
+      logsStore.info('获取到系统规则的平行窗口的应用数量', Object.keys(embeddedStore.systemEmbeddedRulesList).length)
+      logsStore.info('获取到系统规则的信箱模式的应用数量', Object.keys(embeddedStore.systemFixedOrientationList).length)
+      logsStore.info('获取到patch规则的平行窗口的应用数量', Object.keys(embeddedStore.patchEmbeddedRulesList).length)
+      logsStore.info('获取到patch规则的信箱模式的应用数量', Object.keys(embeddedStore.patchFixedOrientationList).length)
+      // logsStore.info('是否存在DNA Android', new Set(Object.keys(embeddedStore.patchEmbeddedRulesList)).has('com.dna.tools'))
+      // reloadPatchModeConfigLoading.value = false;
+      // const {
+      //   errno: EmErrno,
+      //   stdout: EmStdout,
+      //   stderr: EmStderr,
+      // }: any = await exec(
+      //   `echo '${xmlFormat.objectToXML(embeddedStore.sourceEmbeddedRulesList, 'package', 'package_config')}' > /data/adb/MIUI_MagicWindow+/echo_embedded_rule_list.xml`
+      // );
+      // if (EmStdout) {
+      //   logsStore.info('输出/data/adb/MIUI_MagicWindow+/echo_embedded_rule_list.xml 成功')
+      // }
+      embeddedStore.updateMergeRuleList()
+    }
   }
 
   const openAddEmbeddedApp = async () => {
@@ -191,7 +202,6 @@
 
   const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) => {
     if (updateEmbeddedApp.value) {
-      console.log(row,'row')
       const [updateEmbeddedAppCancel, updateEmbeddedAppRes] = await $to(updateEmbeddedApp.value.openDrawer(row))
       if (updateEmbeddedAppCancel) {
         console.log('操作取消:', updateEmbeddedAppCancel);
@@ -269,7 +279,7 @@
               delete embeddedStore.customConfigEmbeddedRulesList[row.name]
             }
           }
-           // 如果自定义规则存在，更新 `splitRatio`
+          // 如果自定义规则存在，更新 `splitRatio`
           if (embeddedStore.customConfigEmbeddedRulesList[row.name]) {
             if (updateEmbeddedAppRes.modePayload.hasOwnProperty('splitRatio')) {
               embeddedStore.customConfigEmbeddedRulesList[row.name].splitRatio = updateEmbeddedAppRes.modePayload.splitRatio
@@ -593,7 +603,8 @@
         @click="openAddEmbeddedApp">
         添加应用
       </n-button>
-      <n-button class="mb-3 mr-3" v-if="embeddedStore.isPatchMode" type="error" :loading="deviceStore.loading || embeddedStore.loading || reloadPatchModeConfigLoading"
+      <n-button class="mb-3 mr-3" v-if="embeddedStore.isPatchMode" type="error"
+        :loading="deviceStore.loading || embeddedStore.loading || reloadPatchModeConfigLoading"
         @click="() => reloadPatchModeConfigList()">
         生成定制应用数据
       </n-button>
