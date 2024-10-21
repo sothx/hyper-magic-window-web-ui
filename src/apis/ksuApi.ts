@@ -319,10 +319,7 @@ export const getHasInstalledMIUIContentExtension = (): Promise<string> => {
   const shellCommon = `test -f /system/product/priv-app/MIUIContentExtension/MIUIContentExtension.apk && echo "exists" || echo "not exists"`
   return handlePromiseWithLogging(new Promise(async (resolve, reject) => {
     if (import.meta.env.MODE === "development") {
-      const response = await axios.get(
-        "/data/system/app.txt"
-      );
-      resolve(response.data);
+      resolve(`exists`);
     } else {
       const { errno, stdout, stderr }: ExecResults = await exec(
         shellCommon
@@ -364,7 +361,10 @@ export const getAndroidApplicationPackageNameList = (): Promise<string> => {
   const shellCommon = `pm list packages -a | awk -F':' '{print $2}' | tr '\n' ',' | sed 's/,$/\n/'`
   return handlePromiseWithLogging(new Promise(async (resolve, reject) => {
     if (import.meta.env.MODE === "development") {
-      resolve(`com.tencent.mobileqq,com.tencent.mm,com.dna.tools`);
+      const response = await axios.get(
+        "/data/system/app.txt"
+      );
+      resolve(response.data)
     } else {
       const { errno, stdout, stderr }: ExecResults = await exec(
         shellCommon

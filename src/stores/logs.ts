@@ -9,7 +9,9 @@ export const useLogsStore = defineStore('logs', () => {
   }
 
   function info(title:string,msg?:string | number | boolean | undefined) {
-    content.value += `[info] ${title}${msg !== undefined ? ':' + msg : ''}\n`
+    const mergeMsg = `[info] ${title}${msg !== undefined ? ':' + msg : ''}\n`
+    content.value += mergeMsg
+    console.log(mergeMsg)
   }
 
   function success(title:string,msg?:string | number | boolean | undefined) {

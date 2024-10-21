@@ -84,6 +84,14 @@
           ),
           negativeText: '确定'
         })
+        logsStore.info('获取到已安装的应用数量',embeddedStore.installedAndroidApplicationPackageNameList.length)
+        logsStore.info('获取到模块规则的平行窗口的应用数量',Object.keys(embeddedStore.sourceEmbeddedRulesList).length)
+        logsStore.info('获取到模块规则的信箱模式的应用数量',Object.keys(embeddedStore.sourceFixedOrientationList).length)
+        logsStore.info('获取到系统规则的平行窗口的应用数量',Object.keys(embeddedStore.systemEmbeddedRulesList).length)
+        logsStore.info('获取到系统规则的信箱模式的应用数量',Object.keys(embeddedStore.systemFixedOrientationList).length)
+        logsStore.info('获取到patch规则的平行窗口的应用数量',Object.keys(embeddedStore.patchEmbeddedRulesList).length)
+        logsStore.info('获取到patch规则的信箱模式的应用数量',Object.keys(embeddedStore.patchFixedOrientationList).length)
+        logsStore.info('是否存在DNA Android',new Set(Object.keys(embeddedStore.patchEmbeddedRulesList)).has('com.dna.tools'))
         reloadPatchModeConfigLoading.value = false;
         embeddedStore.updateMergeRuleList()
       }
