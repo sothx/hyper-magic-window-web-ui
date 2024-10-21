@@ -319,7 +319,10 @@ export const getHasInstalledMIUIContentExtension = (): Promise<string> => {
   const shellCommon = `test -f /system/product/priv-app/MIUIContentExtension/MIUIContentExtension.apk && echo "exists" || echo "not exists"`
   return handlePromiseWithLogging(new Promise(async (resolve, reject) => {
     if (import.meta.env.MODE === "development") {
-      resolve(`exists`);
+      const response = await axios.get(
+        "/data/system/app.txt"
+      );
+      resolve(response.data);
     } else {
       const { errno, stdout, stderr }: ExecResults = await exec(
         shellCommon
@@ -361,7 +364,7 @@ export const getAndroidApplicationPackageNameList = (): Promise<string> => {
   const shellCommon = `pm list packages -a | awk -F':' '{print $2}' | tr '\n' ',' | sed 's/,$/\n/'`
   return handlePromiseWithLogging(new Promise(async (resolve, reject) => {
     if (import.meta.env.MODE === "development") {
-      resolve(`com.tencent.mobileqq,com.tencent.mm`);
+      resolve(`com.tencent.mobileqq,com.tencent.mm,com.dna.tools`);
     } else {
       const { errno, stdout, stderr }: ExecResults = await exec(
         shellCommon
@@ -709,55 +712,55 @@ export const updateEmbeddedApp = (
 };
 
 
-export const getAndroidAppPackageList = (): Promise<string> => {
-  const shellCommon = `cat /data/adb/modules/MIUI_MagicWindow+/common/temp/package_info.json`
-  return handlePromiseWithLogging(new Promise(async (resolve, reject) => {
-    if (import.meta.env.MODE === "development") {
-      const response = await axios.get(
-        "/data/origin/package_info.json"
-      );
-      const jsonText = response.data; // 这是 XML 内容
-      resolve(jsonText);
-    } else {
-      const { errno, stdout, stderr }: ExecResults = await exec(
-        shellCommon
-      );
-      errno ? reject(stderr) : resolve(stdout);
-    }
-  }), shellCommon);
-};
+// export const getAndroidAppPackageList = (): Promise<string> => {
+//   const shellCommon = `cat /data/adb/modules/MIUI_MagicWindow+/common/temp/package_info.json`
+//   return handlePromiseWithLogging(new Promise(async (resolve, reject) => {
+//     if (import.meta.env.MODE === "development") {
+//       const response = await axios.get(
+//         "/data/origin/package_info.json"
+//       );
+//       const jsonText = response.data; // 这是 XML 内容
+//       resolve(jsonText);
+//     } else {
+//       const { errno, stdout, stderr }: ExecResults = await exec(
+//         shellCommon
+//       );
+//       errno ? reject(stderr) : resolve(stdout);
+//     }
+//   }), shellCommon);
+// };
 
-export const reloadAndroidAppPackageList = (): Promise<string> => {
-  const shellCommon = `(sh /data/adb/modules/MIUI_MagicWindow+/service.sh > /dev/null 2>&1 & echo $!)`
-  return handlePromiseWithLogging(new Promise(async (resolve, reject) => {
-    if (import.meta.env.MODE === "development") {
-      resolve('27455');
-    } else {
-      const { errno, stdout, stderr }: ExecResults = await exec(
-        shellCommon
-      );
-      errno ? reject(stderr) : !isNaN(Number(stdout)) ? resolve(String(stdout)) : reject(stdout);
-    }
-  }), shellCommon);
-};
+// export const reloadAndroidAppPackageList = (): Promise<string> => {
+//   const shellCommon = `(sh /data/adb/modules/MIUI_MagicWindow+/service.sh > /dev/null 2>&1 & echo $!)`
+//   return handlePromiseWithLogging(new Promise(async (resolve, reject) => {
+//     if (import.meta.env.MODE === "development") {
+//       resolve('27455');
+//     } else {
+//       const { errno, stdout, stderr }: ExecResults = await exec(
+//         shellCommon
+//       );
+//       errno ? reject(stderr) : !isNaN(Number(stdout)) ? resolve(String(stdout)) : reject(stdout);
+//     }
+//   }), shellCommon);
+// };
 
-export const readAndroidPackageShellJobs = (id: number): Promise<string> => {
-  const shellCommon = `ps | grep ${id}`
-  return handlePromiseWithLogging(new Promise(async (resolve, reject) => {
-    if (import.meta.env.MODE === "development") {
-      const response = await axios.get(
-        "/data/origin/package_info.json"
-      );
-      const jsonText = response.data; // 这是 XML 内容
-      resolve(jsonText);
-    } else {
-      const { errno, stdout, stderr }: ExecResults = await exec(
-        shellCommon
-      );
-      errno ? reject(stderr) : resolve(stdout);
-    }
-  }), shellCommon);
-}
+// export const readAndroidPackageShellJobs = (id: number): Promise<string> => {
+//   const shellCommon = `ps | grep ${id}`
+//   return handlePromiseWithLogging(new Promise(async (resolve, reject) => {
+//     if (import.meta.env.MODE === "development") {
+//       const response = await axios.get(
+//         "/data/origin/package_info.json"
+//       );
+//       const jsonText = response.data; // 这是 XML 内容
+//       resolve(jsonText);
+//     } else {
+//       const { errno, stdout, stderr }: ExecResults = await exec(
+//         shellCommon
+//       );
+//       errno ? reject(stderr) : resolve(stdout);
+//     }
+//   }), shellCommon);
+// }
 
 export const getRootManagerInfo = (): Promise<string> => {
   const shellCommon = `cat /data/adb/modules/MIUI_MagicWindow+/common/temp/root_manager_info.txt`

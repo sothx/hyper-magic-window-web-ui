@@ -114,8 +114,8 @@ export const useEmbeddedStore = defineStore("embedded", () => {
   //
   const allPackageName = computed(() => {
     return new Set([
-      ...Object.keys(sourceEmbeddedRulesList.value),
-      ...Object.keys(sourceFixedOrientationList.value),
+      ... isPatchMode.value ? Object.keys(patchEmbeddedRulesList.value) : Object.keys(sourceEmbeddedRulesList.value),
+      ...isPatchMode.value ? Object.keys(patchFixedOrientationList.value)  : Object.keys(sourceFixedOrientationList.value),
       ...Object.keys(customConfigEmbeddedRulesList.value),
       ...Object.keys(customConfigFixedOrientationList.value),
     ]);
@@ -161,7 +161,6 @@ export const useEmbeddedStore = defineStore("embedded", () => {
     } else {
       if (getAndroidApplicationPackageNameListRes) {
         installedAndroidApplicationPackageNameList.value = getAndroidApplicationPackageNameListRes?.split(',')
-        console.log(installedAndroidApplicationPackageNameList.value, 'ttt')
       }
     }
     // 获取源平行窗口列表

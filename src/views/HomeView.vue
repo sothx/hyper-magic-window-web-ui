@@ -35,6 +35,7 @@
   );
 
   const reloadPage = async () => {
+    console.log(Array.from(embeddedStore.allPackageName))
     await embeddedStore.initDefault()
   };
 

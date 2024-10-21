@@ -286,7 +286,7 @@
             </dd>
           </div>
           <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-            <dt class="text-sm font-medium leading-6 text-gray-900">模块模式</dt>
+            <dt class="text-sm font-medium leading-6 text-gray-900">模块工作模式</dt>
             <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0"> <n-switch
                 @update:value="(value: boolean) => changePatchMode(value)" :rail-style="railStyle"
                 :value="embeddedStore.isPatchMode"
