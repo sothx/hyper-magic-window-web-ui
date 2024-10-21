@@ -1,18 +1,22 @@
 <script setup lang="tsx">
-  import { ref, reactive, watch, type CSSProperties } from 'vue'
+  import { ref, reactive, watch, type CSSProperties, h, type Component } from 'vue'
   import { useAutoUIStore } from '@/stores/autoui';
   import * as ksuApi from '@/apis/ksuApi'
   import * as xmlFormat from '@/utils/xmlFormat';
   import { useDeviceStore } from '@/stores/device';
   import $to from 'await-to-js'
   import * as autoUIFun from '@/utils/autoUIFun';
-  import { NButton, createDiscreteApi, type DataTableColumns, type NInput } from 'naive-ui'
+  import { NButton, NIcon, NInput, createDiscreteApi, type DataTableColumns, type DropdownOption } from 'naive-ui'
   import type AutoUIMergeRuleItem from '@/types/AutoUIMergeRuleItem';
   import { useRouter, useRoute } from 'vue-router';
   import { useLogsStore } from '@/stores/logs';
   import { useAutoUI } from '@/hooks/useAutoUI';
   import * as validateFun from '@/utils/validateFun';
   import AutoUIAppDrawer from '@/components/AutoUIAppDrawer.vue';
+import { findBase64InString } from '@/utils/common';
+import { arrayBufferToBase64, base64ToArrayBuffer } from '@/utils/format';
+import pako from 'pako';
+import { ShareIcon, TrashIcon } from '@heroicons/vue/24/outline';
   type SearchKeyWordInputInstance = InstanceType<typeof NInput>;
   type AutoUIAppDrawerInstance = InstanceType<typeof AutoUIAppDrawer>;
   const searchKeyWordInput = ref<SearchKeyWordInputInstance | null>(null);
@@ -20,38 +24,136 @@
   const columns = createColumns()
   const deviceStore = useDeviceStore()
   const autoUIStore = useAutoUIStore()
+  const importShareRuleLoading = ref(false);
   const autoUI = useAutoUI()
   const addAutoUIApp = ref<AutoUIAppDrawerInstance | null>(null);
   const updateAutoUIApp = ref<AutoUIAppDrawerInstance | null>(null);
   const router = useRouter();
   const logsStore = useLogsStore();
   const route = useRoute();
+  const shareRuleTextarea = ref('');
+
+  function renderIcon(icon: Component) {
+    return () => {
+      return h(NIcon, null, {
+        default: () => h(icon)
+      })
+    }
+  }
   
 
   const reloadPage = async () => {
     await autoUIStore.initDefault()
   };
-  const handleRuleMode = (row: AutoUIMergeRuleItem, index: number, ruleMode: AutoUIMergeRuleItem["ruleMode"]) => {
-    if (deviceStore.androidTargetSdk && deviceStore.androidTargetSdk < 33) {
-      modal.create({
-        title: '不兼容说明',
-        type: 'warning',
-        preset: 'dialog',
-        content: () => (<p>应用布局优化不支持低于 Android 13 的设备！</p>)
-      })
-      return;
-    }
 
-    if (ruleMode === 'module') {
+  const importShareRule = async () => {
+    shareRuleTextarea.value = '';
+    const [,showShareRuleTextareaModalRes] = await $to(new Promise((resolve, reject) => {
       modal.create({
-        title: '模块规则说明',
-        type: 'warning',
+        title: '请粘贴分享规则口令',
         preset: 'dialog',
-        content: () => (<p>模块已对 <span class="font-bold text-gray-600">{row.name}</span> 配置了合适的适配规则，且不可被移除，仅有自定义规则可以被移除哦~</p>)
+        style:"min-width:500px; width:50%;",
+        content: () => h(NInput, {
+          type:"textarea",
+          value:shareRuleTextarea.value,
+          'onUpdate:value': (newValue) => {
+            shareRuleTextarea.value = newValue;
+          },
+          autosize: {minRows: 8, maxRows: 8},
+          placeholder: '在此处粘贴分享规则口令'
+        }),
+        positiveText: '确定提交',
+        negativeText: '取消导入',
+        onPositiveClick() {
+          resolve('positiveClick')
+        }
       })
+    }))
+    if (showShareRuleTextareaModalRes) {
+      importShareRuleLoading.value = true;
+      const base64StringFromClipboard:string = shareRuleTextarea.value;
+      const getBase64String = findBase64InString(base64StringFromClipboard);
+      if (!getBase64String?.length) {
+        modal.create({
+          title: '导入分享规则失败',
+          type: 'error',
+          preset: 'dialog',
+          content: () => (<p>导入分享规则失败了QwQ，解析 <span class="font-bold text-gray-600">自定义规则</span> 口令发生错误，无法正常解析。</p>),
+          negativeText: '确定'
+        })
+        importShareRuleLoading.value = false;
+        return;
+      }
+      console.log(getBase64String,'getBase64String')
+      try {
+        const uint8Array: Uint8Array = base64ToArrayBuffer(getBase64String);
+        const inflate = pako.inflate(uint8Array, {
+          to: 'string'
+        })
+        const importRuleContent = JSON.parse(inflate);
+        if (importRuleContent.type !== 'autoui') {
+          modal.create({
+            title: '导入分享规则失败',
+            type: 'error',
+            preset: 'dialog',
+            content: () => (<p>导入分享规则失败了QwQ，该 <span class="font-bold text-gray-600">自定义规则</span> 不适用于应用布局优化。</p>),
+            negativeText: '确定'
+          })
+          importShareRuleLoading.value = false;
+          return;
+        }
+        autoUIStore.customConfigAutoUIList[importRuleContent.name] = importRuleContent.rules;
+        autoUIStore.autoUISettingConfig[importRuleContent.name] = {
+          name: importRuleContent.name,
+          enable: true
+        }
+        const [submitUpdateAutoUIAppErr, submitUpdateAutoUIAppRes] = await $to(ksuApi.updateAutoUIApp({
+          customAutoUIListXML: xmlFormat.objectToXML(autoUIStore.customConfigAutoUIList, 'package', undefined),
+          settingConfigXML: xmlFormat.objectToXML(autoUIStore.autoUISettingConfig, 'setting', 'setting_config'),
+          reloadRuleAction: {
+            name: importRuleContent.name,
+            action: 'enable'
+          }
+        }))
+        if (submitUpdateAutoUIAppErr) {
+          modal.create({
+            title: '导入分享规则失败',
+            type: 'error',
+            preset: 'dialog',
+            content: () => (<p>发生异常错误，导入失败了QwQ，该功能尚在测试阶段，尚不稳定，出现异常请及时反馈~</p>)
+          })
+          importShareRuleLoading.value = false;
+        } else {
+          modal.create({
+            title: '导入分享规则成功',
+            type: 'success',
+            preset: 'dialog',
+            content: () => (
+              <p>好耶w， <span class="font-bold text-gray-600">{importRuleContent.name}</span> 的应用配置成功了OwO~如果应用更新后的规则不生效，可以尝试重启平板再做尝试~</p>
+            ),
+            positiveText: '确定'
+          })
+          importShareRuleLoading.value = false;
+          autoUIStore.updateMergeRuleList()
+        }
+        // 解析成功，可以使用 data
+      } catch (error) {
+        console.log(error,'error')
+        // 解析失败，处理错误
+        modal.create({
+          title: '导入分享规则失败',
+          type: 'error',
+          preset: 'dialog',
+          content: () => (<p>解析分享规则失败了QwQ，请检查导入口令是否有误</p>),
+          negativeText: '确定'
+        })
+        importShareRuleLoading.value = false;
+      }
     }
+  }
 
-    if (ruleMode === 'custom') {
+  const handleCustomRuleDropdown = async (key: string | number, option: DropdownOption, row: AutoUIMergeRuleItem, index: number) => {
+    if (key === 'cleanCustomRule') {
       const cleanCustomModal = modal.create({
         title: '想清除自定义规则吗？',
         type: 'warning',
@@ -87,6 +189,73 @@
             autoUIStore.updateMergeRuleList()
           }
         }
+      })
+    }
+    if (key === 'shareCustomRule') {
+      const shareContent = {
+        name: row.name,
+        cmpt: 1,
+        rules: {
+          name: row.name,
+          ...row.autoUIRule
+        },
+        type: 'autoui',
+        mode: row.settingMode
+      }
+      console.log(shareContent,'shareContent')
+      const jsonString = JSON.stringify(shareContent)
+      const deflate = pako.deflate(jsonString, {
+        level: 9,
+        memLevel: 9,
+        windowBits: 15
+      })
+      const compressedData = new Uint8Array(deflate)
+      const base64String: string = arrayBufferToBase64(compressedData);
+      const [writeClipboardErr] = await $to(navigator.clipboard.writeText(`我分享了一个[应用布局优化]的自定义规则，可以前往[完美横屏应用计划 For Web UI]导入：\n${base64String}`))
+      if (writeClipboardErr) {
+        modal.create({
+          title: '复制分享口令失败',
+          type: 'error',
+          preset: 'dialog',
+          content: () => (<p>复制 <span class="font-bold text-gray-600">{row.name}</span> 的分享口令失败了QwQ，可能由于没有读取/写入剪切板的权限或 <span class="font-bold text-gray-600">自定义规则</span> 长度过大。</p>),
+          negativeText: '确定'
+        })
+        return;
+      } else {
+        modal.create({
+          title: '复制分享口令成功',
+          type: 'success',
+          preset: 'dialog',
+          content: () => (<div>
+            <p>好耶w，复制 <span class="font-bold text-gray-600">{row.name}</span> 分享口令成功了~</p>
+            <p>如果没有复制成功，请确认是否给予了读取/写入剪切板的权限或 <span class="font-bold text-gray-600">自定义规则</span> 长度过大。</p>
+            <p>分享口令导入入口位于 <span class="font-bold text-gray-600">应用布局优化- 导入分享规则</span> 。</p>
+          </div>),
+          positiveText: '确定'
+        })
+      }
+    }
+  }
+
+
+
+  const handleModuleRuleMode = (row: AutoUIMergeRuleItem, index: number) => {
+    if (deviceStore.androidTargetSdk && deviceStore.androidTargetSdk < 33) {
+      modal.create({
+        title: '不兼容说明',
+        type: 'warning',
+        preset: 'dialog',
+        content: () => (<p>应用布局优化不支持低于 Android 13 的设备！</p>)
+      })
+      return;
+    }
+
+    if (row.ruleMode === 'module') {
+      modal.create({
+        title: '模块规则说明',
+        type: 'warning',
+        preset: 'dialog',
+        content: () => (<p>模块已对 <span class="font-bold text-gray-600">{row.name}</span> 配置了合适的适配规则，且不可被移除，仅有自定义规则可以被移除哦~</p>)
       })
     }
   }
@@ -386,12 +555,26 @@
         key: 'ruleMode',
         render(row, index) {
           if (row.ruleMode === 'custom') {
+            const rule = [
+              {
+                label: '分享自定义规则',
+                key: 'shareCustomRule',
+                icon: renderIcon(ShareIcon)
+              },
+              {
+                label: '清除自定义规则',
+                key: 'cleanCustomRule',
+                icon: renderIcon(TrashIcon)
+              }
+            ]
             return (
-              <n-button size="small" dashed type="info" onClick={() => handleRuleMode(row, index, 'custom')}>自定义规则</n-button>
+              <n-dropdown onSelect={(key: string | number, option: DropdownOption) => handleCustomRuleDropdown(key, option, row, index)} size="large" trigger="click" options={rule}>
+                <n-button size="small" dashed type="info">自定义规则</n-button>
+              </n-dropdown>
             )
           }
           return (
-            <n-button size="small" dashed type="error" onClick={() => handleRuleMode(row, index, "module")}>模块规则</n-button>
+            <n-button size="small" dashed type="error" onClick={() => handleModuleRuleMode(row, index)}>模块规则</n-button>
           )
         }
       },
@@ -460,6 +643,10 @@
       <n-button class="mb-3 mr-3" type="info" :loading="deviceStore.loading || autoUIStore.loading"
         @click="openAddDrawer">
         添加应用
+      </n-button>
+      <n-button class="mb-3 mr-3" type="warning" :loading="deviceStore.loading || autoUIStore.loading || importShareRuleLoading"
+        @click="importShareRule()">
+        导入分享规则
       </n-button>
       <n-button class="mb-3 mr-3" type="success" :loading="deviceStore.loading || autoUIStore.loading"
         @click="() => reloadPage()">
