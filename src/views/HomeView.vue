@@ -53,7 +53,6 @@
   );
 
   const reloadPage = async () => {
-    console.log(Array.from(embeddedStore.allPackageName))
     await embeddedStore.initDefault()
   };
 
@@ -107,6 +106,17 @@
             type: 'error',
             preset: 'dialog',
             content: () => (<p>导入分享规则失败了QwQ，该 <span class="font-bold text-gray-600">自定义规则</span> 不适用于应用横屏布局。</p>),
+            negativeText: '确定'
+          })
+          importShareRuleLoading.value = false;
+          return;
+        }
+        if ((importRuleContent.device === 'pad' && deviceStore.deviceCharacteristics !== 'tablet') || (importRuleContent.device === 'fold' && deviceStore.deviceCharacteristics === 'tablet')) {
+          modal.create({
+            title: '导入分享规则失败',
+            type: 'error',
+            preset: 'dialog',
+            content: () => (<p>导入分享规则失败了QwQ，平板和折叠屏的适配规则不能混用哦~</p>),
             negativeText: '确定'
           })
           importShareRuleLoading.value = false;
@@ -235,15 +245,16 @@
         ),
         negativeText: '确定'
       })
-      logsStore.info('获取到已安装的应用数量', embeddedStore.installedAndroidApplicationPackageNameList.length)
-      logsStore.info('获取到模块规则的平行窗口的应用数量', Object.keys(embeddedStore.sourceEmbeddedRulesList).length)
-      logsStore.info('获取到模块规则的信箱模式的应用数量', Object.keys(embeddedStore.sourceFixedOrientationList).length)
-      logsStore.info('获取到系统规则的平行窗口的应用数量', Object.keys(embeddedStore.systemEmbeddedRulesList).length)
-      logsStore.info('获取到系统规则的信箱模式的应用数量', Object.keys(embeddedStore.systemFixedOrientationList).length)
-      logsStore.info('获取到patch规则的平行窗口的应用数量', Object.keys(embeddedStore.patchEmbeddedRulesList).length)
-      logsStore.info('获取到patch规则的信箱模式的应用数量', Object.keys(embeddedStore.patchFixedOrientationList).length)
+      reloadPatchModeConfigLoading.value = false
+      embeddedStore.updateMergeRuleList()
+      // logsStore.info('获取到已安装的应用数量', embeddedStore.installedAndroidApplicationPackageNameList.length)
+      // logsStore.info('获取到模块规则的平行窗口的应用数量', Object.keys(embeddedStore.sourceEmbeddedRulesList).length)
+      // logsStore.info('获取到模块规则的信箱模式的应用数量', Object.keys(embeddedStore.sourceFixedOrientationList).length)
+      // logsStore.info('获取到系统规则的平行窗口的应用数量', Object.keys(embeddedStore.systemEmbeddedRulesList).length)
+      // logsStore.info('获取到系统规则的信箱模式的应用数量', Object.keys(embeddedStore.systemFixedOrientationList).length)
+      // logsStore.info('获取到patch规则的平行窗口的应用数量', Object.keys(embeddedStore.patchEmbeddedRulesList).length)
+      // logsStore.info('获取到patch规则的信箱模式的应用数量', Object.keys(embeddedStore.patchFixedOrientationList).length)
       // logsStore.info('是否存在DNA Android', new Set(Object.keys(embeddedStore.patchEmbeddedRulesList)).has('com.dna.tools'))
-      // reloadPatchModeConfigLoading.value = false;
       // const {
       //   errno: EmErrno,
       //   stdout: EmStdout,
@@ -254,7 +265,6 @@
       // if (EmStdout) {
       //   logsStore.info('输出/data/adb/MIUI_MagicWindow+/echo_embedded_rule_list.xml 成功')
       // }
-      embeddedStore.updateMergeRuleList()
     }
   }
 
@@ -558,6 +568,7 @@
           ...row.fixedOrientationRule
         },
         type: 'embedded',
+        device: deviceStore.deviceCharacteristics === 'tablet' ? 'pad' : 'fold',
         mode: row.settingMode
       }
       const jsonString = JSON.stringify(shareContent)
@@ -586,7 +597,7 @@
           content: () => (<div>
             <p>好耶w，复制 <span class="font-bold text-gray-600">{row.name}</span> 分享口令成功了~</p>
             <p>如果没有复制成功，请确认是否给予了读取/写入剪切板的权限或 <span class="font-bold text-gray-600">自定义规则</span> 长度过大。</p>
-            <p>分享口令导入入口位于 <span class="font-bold text-gray-600">应用横屏配置- 导入分享规则</span> 。</p>
+            <p>分享口令导入入口位于 <span class="font-bold text-gray-600">应用横屏配置- 从分享口令导入</span> 。</p>
           </div>),
           positiveText: '确定'
         })
@@ -824,7 +835,7 @@
       </n-button>
       <n-button class="mb-3 mr-3" type="warning" :loading="deviceStore.loading || embeddedStore.loading || importShareRuleLoading"
         @click="importShareRule()">
-        导入分享规则
+        从分享口令导入
       </n-button>
       <n-button class="mb-3 mr-3" type="success" :loading="deviceStore.loading || embeddedStore.loading"
         @click="() => reloadPage()">

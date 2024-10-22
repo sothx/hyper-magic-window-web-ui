@@ -50,7 +50,7 @@ import { ShareIcon, TrashIcon } from '@heroicons/vue/24/outline';
     shareRuleTextarea.value = '';
     const [,showShareRuleTextareaModalRes] = await $to(new Promise((resolve, reject) => {
       modal.create({
-        title: '请粘贴分享规则口令',
+        title: '请粘贴分享口令',
         preset: 'dialog',
         style:"min-width:500px; width:50%;",
         content: () => h(NInput, {
@@ -97,6 +97,17 @@ import { ShareIcon, TrashIcon } from '@heroicons/vue/24/outline';
             type: 'error',
             preset: 'dialog',
             content: () => (<p>导入分享规则失败了QwQ，该 <span class="font-bold text-gray-600">自定义规则</span> 不适用于应用布局优化。</p>),
+            negativeText: '确定'
+          })
+          importShareRuleLoading.value = false;
+          return;
+        }
+        if ((importRuleContent.device === 'pad' && deviceStore.deviceCharacteristics !== 'tablet') || (importRuleContent.device === 'fold' && deviceStore.deviceCharacteristics === 'tablet')) {
+          modal.create({
+            title: '导入分享规则失败',
+            type: 'error',
+            preset: 'dialog',
+            content: () => (<p>导入分享规则失败了QwQ，平板和折叠屏的适配规则不能混用哦~</p>),
             negativeText: '确定'
           })
           importShareRuleLoading.value = false;
@@ -200,6 +211,7 @@ import { ShareIcon, TrashIcon } from '@heroicons/vue/24/outline';
           ...row.autoUIRule
         },
         type: 'autoui',
+        device: deviceStore.deviceCharacteristics === 'tablet' ? 'pad' : 'fold',
         mode: row.settingMode
       }
       console.log(shareContent,'shareContent')
@@ -229,7 +241,7 @@ import { ShareIcon, TrashIcon } from '@heroicons/vue/24/outline';
           content: () => (<div>
             <p>好耶w，复制 <span class="font-bold text-gray-600">{row.name}</span> 分享口令成功了~</p>
             <p>如果没有复制成功，请确认是否给予了读取/写入剪切板的权限或 <span class="font-bold text-gray-600">自定义规则</span> 长度过大。</p>
-            <p>分享口令导入入口位于 <span class="font-bold text-gray-600">应用布局优化- 导入分享规则</span> 。</p>
+            <p>分享口令导入入口位于 <span class="font-bold text-gray-600">应用布局优化- 从分享口令导入</span> 。</p>
           </div>),
           positiveText: '确定'
         })
@@ -646,7 +658,7 @@ import { ShareIcon, TrashIcon } from '@heroicons/vue/24/outline';
       </n-button>
       <n-button class="mb-3 mr-3" type="warning" :loading="deviceStore.loading || autoUIStore.loading || importShareRuleLoading"
         @click="importShareRule()">
-        导入分享规则
+        从分享口令导入
       </n-button>
       <n-button class="mb-3 mr-3" type="success" :loading="deviceStore.loading || autoUIStore.loading"
         @click="() => reloadPage()">
