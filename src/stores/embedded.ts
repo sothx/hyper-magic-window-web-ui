@@ -47,14 +47,15 @@ export const useEmbeddedStore = defineStore("embedded", () => {
     const entries = Object.entries(sourceEmbeddedRulesList.value);
 
     // 将 systemEmbeddedRulesList 和 installedAndroidApplicationPackageNameList 转换为 Set 以优化查找速度
-    const systemKeysSet = new Set(Object.keys(systemEmbeddedRulesList.value));
+    const systemEmbeddedRulesListKeysSet = new Set(Object.keys(systemEmbeddedRulesList.value));
+    const systemFixedOrientationListKeysSet = new Set(Object.keys(systemFixedOrientationList.value));
     const installedKeysSet = new Set(installedAndroidApplicationPackageNameList.value);
     const whitelistKeysSet = new Set(whitelistApplications);
 
     // 使用 filter 对数组进行过滤
     const filteredEntries = entries.filter(([key]) => {
       // 使用 Set 进行查找优化
-      return systemKeysSet.has(key) || installedKeysSet.has(key) || whitelistKeysSet.has(key);
+      return systemEmbeddedRulesListKeysSet.has(key) || systemFixedOrientationListKeysSet.has(key) || installedKeysSet.has(key) || whitelistKeysSet.has(key);
     });
 
     // 将过滤后的键值对数组重新转换为对象
@@ -70,14 +71,15 @@ export const useEmbeddedStore = defineStore("embedded", () => {
     const entries = Object.entries(sourceFixedOrientationList.value);
 
     // 将 systemFixedOrientationList 和 installedAndroidApplicationPackageNameList 转换为 Set 以优化查找速度
-    const systemKeysSet = new Set(Object.keys(systemFixedOrientationList.value));
+    const systemEmbeddedRulesListKeysSet = new Set(Object.keys(systemEmbeddedRulesList.value));
+    const systemFixedOrientationListKeysSet = new Set(Object.keys(systemFixedOrientationList.value));
     const installedKeysSet = new Set(installedAndroidApplicationPackageNameList.value);
     const whitelistKeysSet = new Set(whitelistApplications);
 
     // 使用 filter 对数组进行过滤
     const filteredEntries = entries.filter(([key]) => {
       // 使用 Set 进行查找优化
-      return systemKeysSet.has(key) || installedKeysSet.has(key) || whitelistKeysSet.has(key);
+      return systemEmbeddedRulesListKeysSet.has(key) || systemFixedOrientationListKeysSet.has(key) || installedKeysSet.has(key) || whitelistKeysSet.has(key);
     });
 
     // 将过滤后的键值对数组重新转换为对象
