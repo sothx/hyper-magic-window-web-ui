@@ -2,6 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
-html, body {
-    scroll-padding-bottom: 300px; /* 可根据输入法的高度进行调整 */
+@font-face {
+    font-family: 'MiSans';
+    src: url('@/assets/fonts/MiSans-Regular.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+    font-family: 'MiSans', sans-serif;
 }

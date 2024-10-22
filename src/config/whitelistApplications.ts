@@ -169,7 +169,7 @@ const topApplicationList = [
 ]
 
 
-export default {
+export default [
     ...systemApplicationList,
     ...topApplicationList,
-} as string[]
+]
