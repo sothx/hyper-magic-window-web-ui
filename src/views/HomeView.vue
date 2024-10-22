@@ -262,6 +262,8 @@
         ),
         negativeText: '确定'
       })
+      embeddedStore.lastInstalledAndroidApplicationPackageNameList = [];
+      embeddedStore.lastCheckPatchModeTime = '';
       reloadPatchModeConfigLoading.value = false
       embeddedStore.updateMergeRuleList()
       // logsStore.info('获取到已安装的应用数量', embeddedStore.installedAndroidApplicationPackageNameList.length)
