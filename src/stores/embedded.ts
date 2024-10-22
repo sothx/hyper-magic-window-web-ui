@@ -9,6 +9,7 @@ import * as ksuApi from "@/apis/ksuApi";
 import * as xmlFormat from "@/utils/xmlFormat";
 import type { ErrorLogging } from "@/types/ErrorLogging";
 import applicationName from '@/config/applicationName';
+import whitelistApplications from "@/config/whitelistApplications";
 
 
 
@@ -48,11 +49,12 @@ export const useEmbeddedStore = defineStore("embedded", () => {
     // 将 systemEmbeddedRulesList 和 installedAndroidApplicationPackageNameList 转换为 Set 以优化查找速度
     const systemKeysSet = new Set(Object.keys(systemEmbeddedRulesList.value));
     const installedKeysSet = new Set(installedAndroidApplicationPackageNameList.value);
+    const whitelistKeysSet = new Set(whitelistApplications);
 
     // 使用 filter 对数组进行过滤
     const filteredEntries = entries.filter(([key]) => {
       // 使用 Set 进行查找优化
-      return systemKeysSet.has(key) || installedKeysSet.has(key);
+      return systemKeysSet.has(key) || installedKeysSet.has(key) || whitelistKeysSet.has(key);
     });
 
     // 将过滤后的键值对数组重新转换为对象
@@ -70,11 +72,12 @@ export const useEmbeddedStore = defineStore("embedded", () => {
     // 将 systemFixedOrientationList 和 installedAndroidApplicationPackageNameList 转换为 Set 以优化查找速度
     const systemKeysSet = new Set(Object.keys(systemFixedOrientationList.value));
     const installedKeysSet = new Set(installedAndroidApplicationPackageNameList.value);
+    const whitelistKeysSet = new Set(whitelistApplications);
 
     // 使用 filter 对数组进行过滤
     const filteredEntries = entries.filter(([key]) => {
       // 使用 Set 进行查找优化
-      return systemKeysSet.has(key) || installedKeysSet.has(key);
+      return systemKeysSet.has(key) || installedKeysSet.has(key) || whitelistKeysSet.has(key);
     });
 
     // 将过滤后的键值对数组重新转换为对象
