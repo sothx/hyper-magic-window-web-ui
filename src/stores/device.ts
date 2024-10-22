@@ -9,7 +9,7 @@ export interface ModuleInfo {
   id: string;
 }
 
-export interface ModuleProp  {
+export interface ModuleProp {
   id: string;
   name: string;
   version: string;
@@ -66,7 +66,7 @@ export const useDeviceStore = defineStore("device", () => {
     zipUrl: "",
     changelog: ""
   })
-  const rootManagerInfo =  reactive<ROOTManagerInfo>({
+  const rootManagerInfo = reactive<ROOTManagerInfo>({
     KSU: false,
     KSU_VER: "",
     KSU_VER_CODE: 0,
@@ -80,6 +80,7 @@ export const useDeviceStore = defineStore("device", () => {
   const smartFocusIO = ref<ksuApi.SmartFocusIOResult["stdout"]>();
   const miuiCompatEnable = ref<boolean>(false);
   const miuiAppCompatEnable = ref<boolean>(false);
+  const showRotationSuggestions = ref<boolean>(false);
   const loading = ref<boolean>(true);
   const errorLogging = reactive<ErrorLogging[]>([]);
   const skipConfirm = reactive({
@@ -91,30 +92,30 @@ export const useDeviceStore = defineStore("device", () => {
 
   async function initDefault() {
     // 模块信息 *弱校验
-    const [,getModuleInfoRes] = await $to<string,string>(ksuApi.getModuleInfo());
+    const [, getModuleInfoRes] = await $to<string, string>(ksuApi.getModuleInfo());
     if (!getModuleInfoRes?.length) {
       errorLogging.push({
         type: "moduleInfo",
         title: "模块信息",
         msg: '获取模块信息失败',
       });
-    } 
+    }
     if (getModuleInfoRes?.length) {
       const moduleInfoObj: ModuleInfo = JSON.parse(getModuleInfoRes)
       moduleDir.value = moduleInfoObj.moduleDir
       moduleID.value = moduleInfoObj.id
     }
     // ROOT管理器信息 *弱校验
-    const [,getRootManagerInfo] = await $to<string,string>(ksuApi.getRootManagerInfo());
+    const [, getRootManagerInfo] = await $to<string, string>(ksuApi.getRootManagerInfo());
     if (!getRootManagerInfo?.length) {
       errorLogging.push({
         type: "moduleInfo",
         title: "ROOT管理器信息",
         msg: '获取ROOT管理器信息失败',
       });
-    } 
+    }
     if (getRootManagerInfo?.length) {
-        const shellCommon = `echo "$KSU,$KSU_VER,$KSU_VER_CODE,$KSU_KERNEL_VER_CODE,$APATCH,$APATCH_VER_CODE,$APATCH_VER,$MAGISK_VER,$MAGISK_VER_CODE"`
+      const shellCommon = `echo "$KSU,$KSU_VER,$KSU_VER_CODE,$KSU_KERNEL_VER_CODE,$APATCH,$APATCH_VER_CODE,$APATCH_VER,$MAGISK_VER,$MAGISK_VER_CODE"`
       const rootManagerStrArr: string[] = getRootManagerInfo.split(',');
       rootManagerInfo.KSU = rootManagerStrArr[0] === 'true';
       rootManagerInfo.KSU_VER = rootManagerStrArr[1];
@@ -135,7 +136,7 @@ export const useDeviceStore = defineStore("device", () => {
     }
     // 设备类型 *强校验
     const [getDeviceCharacteristicsErr, getDeviceCharacteristicsRes] =
-      await $to<string,string>(ksuApi.getDeviceCharacteristics());
+      await $to<string, string>(ksuApi.getDeviceCharacteristics());
     if (getDeviceCharacteristicsErr) {
       errorLogging.push({
         type: "deviceCharacteristics",
@@ -145,8 +146,20 @@ export const useDeviceStore = defineStore("device", () => {
     } else {
       deviceCharacteristics.value = getDeviceCharacteristicsRes;
     }
+    // 旋转建议提示按钮 *强校验
+    const [getRotationSuggestionsErr, getRotationSuggestionsRes] =
+      await $to<string, string>(ksuApi.getRotationSuggestions());
+    if (getRotationSuggestionsErr) {
+      errorLogging.push({
+        type: "rotationSuggestions",
+        title: "旋转建议提示按钮",
+        msg: getRotationSuggestionsErr,
+      });
+    } else {
+      showRotationSuggestions.value = Number(getRotationSuggestionsRes) === 1 ? true : false;
+    }
     // Android Target SDK Version *强校验
-    const [getAndroidTargetSdkErr, getAndroidTargetSdkRes] = await $to<number,string>(
+    const [getAndroidTargetSdkErr, getAndroidTargetSdkRes] = await $to<number, string>(
       ksuApi.getAndroidTargetSdk()
     );
     if (getAndroidTargetSdkErr) {
@@ -159,7 +172,7 @@ export const useDeviceStore = defineStore("device", () => {
       androidTargetSdk.value = getAndroidTargetSdkRes;
     }
     // 设备Soc类型 *强校验
-    const [getDeviceSocModelErr, getDeviceSocModelRes] = await $to<string,string>(
+    const [getDeviceSocModelErr, getDeviceSocModelRes] = await $to<string, string>(
       ksuApi.getDeviceSocModel()
     );
     if (getDeviceSocModelErr) {
@@ -172,7 +185,7 @@ export const useDeviceStore = defineStore("device", () => {
       deviceSocModel.value = getDeviceSocModelRes;
     }
     // 设备Soc名称 *强校验
-    const [getDeviceSocNameErr, getDeviceSocNameRes] = await $to<string,string>(
+    const [getDeviceSocNameErr, getDeviceSocNameRes] = await $to<string, string>(
       ksuApi.getDeviceSocName()
     );
     if (getDeviceSocNameErr) {
@@ -194,13 +207,13 @@ export const useDeviceStore = defineStore("device", () => {
       miuiAppCompatEnable.value = true;
     }
     // Xiaomi Hyper OS 版本号 *弱校验
-    const [, getMIOSVersionRes] = await $to<number,string>(ksuApi.getMIOSVersion());
+    const [, getMIOSVersionRes] = await $to<number, string>(ksuApi.getMIOSVersion());
     if (getMIOSVersionRes) {
       MIOSVersion.value = getMIOSVersionRes;
     }
 
     // 智能IO调度 *弱校验
-    const [, getSmartFocusIO] = await $to<ksuApi.SmartFocusIOResult["stdout"],string>(ksuApi.getSmartFocusIO());
+    const [, getSmartFocusIO] = await $to<ksuApi.SmartFocusIOResult["stdout"], string>(ksuApi.getSmartFocusIO());
     if (getSmartFocusIO) {
       smartFocusIO.value = getSmartFocusIO;
     }
@@ -221,6 +234,7 @@ export const useDeviceStore = defineStore("device", () => {
     deviceSocName,
     deviceSocModel,
     smartFocusIO,
+    showRotationSuggestions,
     miuiCompatEnable,
     miuiAppCompatEnable,
     skipConfirm,
@@ -230,7 +244,7 @@ export const useDeviceStore = defineStore("device", () => {
     loading,
     initDefault,
   };
-},{
+}, {
   persist: {
     pick: ['skipConfirm'],
   }

@@ -15,6 +15,20 @@
     message.info('功能尚未上线，无任何实际效果，请等待后续更新！')
   }
   const switchPatchModeLoading = ref<boolean>(false);
+ const changeShowRotationSuggestions = async (value: boolean) => {
+    const [setRotationSuggestionsErr] = await $to(ksuApi.setRotationSuggestions(value ? 1 : 0))
+    if (setRotationSuggestionsErr) {
+      modal.create({
+        title: '操作失败',
+        type: 'error',
+        preset: 'dialog',
+        content: () => (<p>无法 { value ? '开启' : '关闭' } 旋转建议提示按钮，详情请查看日志记录~</p>),
+        negativeText: '确定'
+      })
+      return;
+    }
+    deviceStore.showRotationSuggestions = value;
+  }
   const changePatchMode = async (value: boolean) => {
     switchPatchModeLoading.value = false;
     const [negativeRes, positiveRes] = await $to(new Promise((resolve, reject) => {
@@ -49,17 +63,17 @@
     }))
     if (positiveRes) {
       const [removeIsPatchModeErr] = await $to(ksuApi.removeIsPatchMode())
-        if (removeIsPatchModeErr) {
-          modal.create({
-            title: '操作失败',
-            type: 'error',
-            preset: 'dialog',
-            content: () => (<p>无法移除定制模式的配置项，详情请查看日志记录~</p>),
-            negativeText: '确定'
-          })
-          switchPatchModeLoading.value = false;
-          return;
-        }
+      if (removeIsPatchModeErr) {
+        modal.create({
+          title: '操作失败',
+          type: 'error',
+          preset: 'dialog',
+          content: () => (<p>无法移除定制模式的配置项，详情请查看日志记录~</p>),
+          negativeText: '确定'
+        })
+        switchPatchModeLoading.value = false;
+        return;
+      }
       if (value) {
         const [addIsPatchModeErr] = await $to(ksuApi.addIsPatchMode())
         if (addIsPatchModeErr) {
@@ -289,8 +303,7 @@
             <dt class="text-sm font-medium leading-6 text-gray-900">模块工作模式</dt>
             <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0"> <n-switch
                 @update:value="(value: boolean) => changePatchMode(value)" :rail-style="railStyle"
-                :value="embeddedStore.isPatchMode"
-                :loading="switchPatchModeLoading"
+                :value="embeddedStore.isPatchMode" :loading="switchPatchModeLoading"
                 :disabled="deviceStore.androidTargetSdk && deviceStore.androidTargetSdk < 32">
                 <template #checked>
                   定制模式
@@ -314,6 +327,19 @@
               </n-switch></dd>
           </div>
           <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+            <dt class="text-sm font-medium leading-6 text-gray-900">旋转建议提示按钮</dt>
+            <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0"> <n-switch
+                @update:value="(value: boolean) => changeShowRotationSuggestions(value)" :rail-style="railStyle"
+                :value="deviceStore.showRotationSuggestions">
+                <template #checked>
+                  开启旋转建议提示按钮
+                </template>
+                <template #unchecked>
+                  关闭旋转建议提示按钮
+                </template>
+              </n-switch></dd>
+          </div>
+          <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
             <dt class="text-sm font-medium leading-6 text-gray-900">Xiaomi Hyper OS 版本号</dt>
             <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ deviceStore.MIOSVersion ? `Xiaomi
               Hyper OS ${deviceStore.MIOSVersion}` : '当前为MIUI' }}</dd>
@@ -332,12 +358,12 @@
           <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
             <dt class="text-sm font-medium leading-6 text-gray-900">设备Soc类型</dt>
             <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ deviceStore.deviceSocModel ||
-              '非Android设备环境' }}</dd>
+              '获取失败' }}</dd>
           </div>
           <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
             <dt class="text-sm font-medium leading-6 text-gray-900">设备Soc名称</dt>
             <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ deviceStore.deviceSocName ||
-              '非Android设备环境' }}</dd>
+              '获取失败' }}</dd>
           </div>
           <!-- <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
             <dt class="text-sm font-medium leading-6 text-gray-900">游戏显示布局</dt>
