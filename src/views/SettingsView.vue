@@ -126,6 +126,8 @@
           ),
           negativeText: '确定'
         })
+        embeddedStore.lastCheckPatchModeTime = '';
+        embeddedStore.lastInstalledAndroidApplicationPackageNameList = [];
         switchPatchModeLoading.value = false;
         embeddedStore.updateMergeRuleList()
       }

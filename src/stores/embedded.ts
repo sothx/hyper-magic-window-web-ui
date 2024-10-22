@@ -10,6 +10,7 @@ import * as xmlFormat from "@/utils/xmlFormat";
 import type { ErrorLogging } from "@/types/ErrorLogging";
 import applicationName from '@/config/applicationName';
 import whitelistApplications from "@/config/whitelistApplications";
+import eventBus from "@/utils/eventBus";
 
 
 
@@ -17,6 +18,8 @@ export const useEmbeddedStore = defineStore("embedded", () => {
   // 是否补丁模式
   const isPatchMode = ref<boolean>(false);
   const installedAndroidApplicationPackageNameList = ref<string[]>([]);
+  const lastInstalledAndroidApplicationPackageNameList = ref<string[]>([]);
+  const lastCheckPatchModeTime = ref<string>();
   // 平行窗口
   const sourceEmbeddedRulesList = ref<
     Record<EmbeddedRuleItem["name"], EmbeddedRuleItem>
@@ -125,6 +128,23 @@ export const useEmbeddedStore = defineStore("embedded", () => {
       });
   });
 
+  // 自动检查定制模式规则是否需要更新
+  const checkPatchModeIsNeedReload = () => {
+    const now = Date.now();
+    const threeDaysInMilliseconds = 3 * 24 * 60 * 60 * 1000;
+    if (!lastCheckPatchModeTime.value || now - parseInt(lastCheckPatchModeTime.value) > threeDaysInMilliseconds) {
+      lastCheckPatchModeTime.value = now.toString();
+      if (isPatchMode && (lastInstalledAndroidApplicationPackageNameList.value.length !== installedAndroidApplicationPackageNameList.value.length)) {
+        const isNeedReloadPathRule = lastInstalledAndroidApplicationPackageNameList.value.some((item) => {
+          return !allPackageName.value.has(item)
+        })
+        if (isNeedReloadPathRule) {
+          eventBus.emit('isNeedReloadPatchRule')
+        }
+      }
+    }
+  }
+
   // 是否弹出错误信息弹窗
   const isNeedShowErrorModal = computed(() => Boolean(errorLogging.length > 0));
   // 应用总数
@@ -184,6 +204,9 @@ export const useEmbeddedStore = defineStore("embedded", () => {
       });
     } else {
       if (getAndroidApplicationPackageNameListRes) {
+        if (installedAndroidApplicationPackageNameList.value.length) {
+          lastInstalledAndroidApplicationPackageNameList.value = installedAndroidApplicationPackageNameList.value
+        }
         installedAndroidApplicationPackageNameList.value = getAndroidApplicationPackageNameListRes?.split(',')
       }
     }
@@ -346,6 +369,8 @@ export const useEmbeddedStore = defineStore("embedded", () => {
     if (!errorLogging.length) {
       loading.value = false;
     }
+
+    checkPatchModeIsNeedReload()
   }
 
   return {
@@ -356,6 +381,7 @@ export const useEmbeddedStore = defineStore("embedded", () => {
     customConfigEmbeddedRulesList,
     customConfigFixedOrientationList,
     embeddedSettingConfig,
+    lastInstalledAndroidApplicationPackageNameList,
     installedAndroidApplicationPackageNameList,
     systemEmbeddedRulesList,
     systemFixedOrientationList,
@@ -369,6 +395,11 @@ export const useEmbeddedStore = defineStore("embedded", () => {
     allPackageName,
     isPatchMode,
     initDefault,
+    lastCheckPatchModeTime,
     updateMergeRuleList,
   };
+}, {
+  persist: {
+    pick: ['installedAndroidApplicationPackageNameList','lastCheckPatchModeTime'],
+  }
 });

@@ -2,7 +2,7 @@
   import { ref, reactive, watch, type Component, h, onMounted } from 'vue'
   import type EmbeddedMergeRuleItem from "@/types/EmbeddedMergeRuleItem";
   import $to from 'await-to-js'
-  import pako, { type Data } from 'pako';
+  import pako from 'pako';
   import ErrorModal from '@/components/ErrorModal.vue';
   import EmbeddedAppDrawer from '@/components/EmbeddedAppDrawer.vue';
   import { NButton, NIcon, NInput, createDiscreteApi, type DataTableColumns, type DropdownOption } from 'naive-ui'
@@ -10,18 +10,16 @@
   import { useDeviceStore } from '@/stores/device';
   import * as xmlFormat from '@/utils/xmlFormat';
   import { useEmbeddedStore } from '@/stores/embedded';
-  import * as validateFun from '@/utils/validateFun';
   import { useLogsStore } from '@/stores/logs';
+  import eventBus from '@/utils/eventBus';
   import {
     ShareIcon,
     TrashIcon
   } from '@heroicons/vue/24/outline'
-  import { exec } from '@/utils/kernelsu';
   import { arrayBufferToBase64, base64ToArrayBuffer } from '@/utils/format';
   import { findBase64InString } from '@/utils/common';
   type EmbeddedAppDrawerInstance = InstanceType<typeof EmbeddedAppDrawer>;
   type SearchKeyWordInputInstance = InstanceType<typeof NInput>;
-  const showInputShareRuleModal = ref(false);
   const shareRuleTextarea = ref('');
   const deviceStore = useDeviceStore()
   const embeddedStore = useEmbeddedStore()
@@ -41,6 +39,25 @@
       })
     }
   }
+
+  onMounted(() => {
+    eventBus.once('isNeedReloadPatchRule',() => {
+      modal.create({
+          title: '是否需要重新生成定制应用数据？',
+          type: 'info',
+          preset: 'dialog',
+          content: () => (<div>
+            <p>模块检测到您的设备距上一次运行Web UI，应用环境已经发生了一些变化。需要为您重新生成定制模式下的应用数据吗？OwO</p>
+          </div>),
+          positiveText: '确定',
+          negativeText: '取消',
+          onPositiveClick: () => {
+            reloadPatchModeConfigList()
+          }
+        })
+    })
+  })
+
 
   watch(
     () => embeddedStore.isNeedShowErrorModal,   // 监听的值
@@ -269,6 +286,10 @@
   }
 
   const openAddEmbeddedApp = async () => {
+    const a = Object.entries(embeddedStore.mergeRuleList)
+    .filter(([, value]) => !value.applicationName)
+    .map(([key,value]) => value.name);
+    console.log(a,'a')
     if (deviceStore.deviceCharacteristics !== 'tablet') {
       modal.create({
         title: '不兼容说明',

@@ -78,6 +78,9 @@ importers:
       lz-string:
         specifier: ^1.5.0
         version: 1.5.0
+      mitt:
+        specifier: ^3.0.1
+        version: 3.0.1
       naive-ui:
         specifier: ^2.40.1
         version: 2.40.1(vue@3.5.11(typescript@5.4.5))
