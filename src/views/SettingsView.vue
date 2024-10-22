@@ -232,8 +232,13 @@
         <h3 class="text-base font-semibold leading-7 text-gray-900">模块设置</h3>
         <p class="mt-1 max-w-2xl text-sm leading-6 text-gray-500">在这里可以快速了解模块当前的运行数据</p>
       </div>
+      
       <div class="mt-6 border-t border-gray-100">
         <dl class="divide-y divide-gray-100">
+          <div v-if="deviceStore.deviceName" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+            <dt class="text-sm font-medium leading-6 text-gray-900">设备名称</dt>
+            <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ deviceStore.deviceName || '' }}</dd>
+          </div>
           <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
             <dt class="text-sm font-medium leading-6 text-gray-900">ROOT管理器</dt>
             <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ deviceStore.currentRootManager ||
@@ -339,10 +344,18 @@
                 </template>
               </n-switch></dd>
           </div>
-          <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+          <div v-if="deviceStore.MIOSVersion" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
             <dt class="text-sm font-medium leading-6 text-gray-900">Xiaomi Hyper OS 版本号</dt>
             <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ deviceStore.MIOSVersion ? `Xiaomi
               Hyper OS ${deviceStore.MIOSVersion}` : '当前为MIUI' }}</dd>
+          </div>
+          <div v-if="deviceStore.systemVersion" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+            <dt class="text-sm font-medium leading-6 text-gray-900">系统版本</dt>
+            <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ deviceStore.systemVersion || '' }}</dd>
+          </div>
+          <div v-if="deviceStore.systemPreVersion" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+            <dt class="text-sm font-medium leading-6 text-gray-900">上次更新的系统版本</dt>
+            <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ deviceStore.systemPreVersion || '' }}</dd>
           </div>
           <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
             <dt class="text-sm font-medium leading-6 text-gray-900">Android Target Version</dt>
@@ -355,12 +368,12 @@
             <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ deviceStore.deviceCharacteristics
               === 'tablet' ? '平板(Pad)' : '折叠屏(Fold)' }}</dd>
           </div>
-          <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+          <div v-if="deviceStore.deviceSocModel" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
             <dt class="text-sm font-medium leading-6 text-gray-900">设备Soc类型</dt>
             <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ deviceStore.deviceSocModel ||
               '获取失败' }}</dd>
           </div>
-          <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+          <div v-if="deviceStore.deviceSocName" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
             <dt class="text-sm font-medium leading-6 text-gray-900">设备Soc名称</dt>
             <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ deviceStore.deviceSocName ||
               '获取失败' }}</dd>

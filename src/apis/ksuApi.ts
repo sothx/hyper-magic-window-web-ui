@@ -402,6 +402,48 @@ export const getRotationSuggestions = (): Promise<string> => {
   }), shellCommon);
 }
 
+export const getDeviceName = (): Promise<string> => {
+  const shellCommon = `settings get global device_name`
+  return handlePromiseWithLogging(new Promise(async (resolve, reject) => {
+    if (import.meta.env.MODE === "development") {
+      resolve(`Xiaomi Pad 6 Pro`);
+    } else {
+      const { errno, stdout, stderr }: ExecResults = await exec(
+        shellCommon
+      );
+      errno ? reject(stderr) : resolve(stdout)
+    }
+  }), shellCommon);
+}
+
+export const getSystemVersion = (): Promise<string> => {
+  const shellCommon = `settings get global miui_version_name`
+  return handlePromiseWithLogging(new Promise(async (resolve, reject) => {
+    if (import.meta.env.MODE === "development") {
+      resolve(`OS1.0.10.0.UMYCNXM`);
+    } else {
+      const { errno, stdout, stderr }: ExecResults = await exec(
+        shellCommon
+      );
+      errno ? reject(stderr) : resolve(stdout)
+    }
+  }), shellCommon);
+}
+
+export const getPreSystemVersion = (): Promise<string> => {
+  const shellCommon = `settings get global miui_pre_version`
+  return handlePromiseWithLogging(new Promise(async (resolve, reject) => {
+    if (import.meta.env.MODE === "development") {
+      resolve(`OS1.0.10.0.UMYCNXM`);
+    } else {
+      const { errno, stdout, stderr }: ExecResults = await exec(
+        shellCommon
+      );
+      errno ? reject(stderr) : resolve(stdout)
+    }
+  }), shellCommon);
+}
+
 export const setRotationSuggestions = (mode: 1 | 0): Promise<string> => {
   const shellCommon = `settings put secure show_rotation_suggestions ${mode}`
   return handlePromiseWithLogging(new Promise(async (resolve, reject) => {

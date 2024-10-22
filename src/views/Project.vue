@@ -36,18 +36,18 @@ const { message } = createDiscreteApi(['message'])
             </n-alert>
           </div>
           <div class="px-4 flex sm:grid sm:px-0 mt-5">
-            <n-alert title="[开发中] 分享/导入规则"  type="info">
-              自定义规则允许分享和导入，提供快捷的"分享规则"导入入口~
+            <n-alert title="[已完成] 自定义规则分享口令"  type="success">
+              自定义规则允许分享和导入，提供快捷的"分享口令"导入入口~
+            </n-alert>
+          </div>
+          <div class="px-4 flex sm:grid sm:px-0 mt-5">
+            <n-alert title="[已完成] 模块设置"  type="success">
+              开发中，提供可视化展示部分设备信息、模块信息并且可视化控制"游戏显示布局"、"旋转建议提示按钮"开关的选项。
             </n-alert>
           </div>
           <div class="px-4 flex sm:grid sm:px-0 mt-5">
             <n-alert title="[开发中] 应用横屏配置- Hyper OS 2.0(Android 15+)"  type="info">
               开发中，支持Android 15 配置允许使用的适配选项，支持配置自定义比例
-            </n-alert>
-          </div>
-          <div class="px-4 flex sm:grid sm:px-0 mt-5">
-            <n-alert title="[开发中] 模块设置"  type="info">
-              开发中，提供可视化展示部分设备信息、模块信息并且可视化控制"游戏显示布局"、"智能IO调度"开关的选项。
             </n-alert>
           </div>
           <div class="px-4 flex sm:grid sm:px-0 mt-5">

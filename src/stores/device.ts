@@ -50,6 +50,9 @@ export const useDeviceStore = defineStore("device", () => {
   const deviceSocModel = ref<string>();
   const moduleDir = ref<string>();
   const moduleID = ref<string>();
+  const deviceName = ref<string>('');
+  const systemVersion = ref<string>('');
+  const systemPreVersion = ref<string>('');
   const currentRootManager = ref<ROOT_MANAGER_TYPE>('Magisk');
   const moduleProp = reactive<ModuleProp>({
     id: "",
@@ -105,6 +108,14 @@ export const useDeviceStore = defineStore("device", () => {
       moduleDir.value = moduleInfoObj.moduleDir
       moduleID.value = moduleInfoObj.id
     }
+    // 设备名称
+    const [, getDeviceNameRes] = await $to<string, string>(ksuApi.getDeviceName());
+    deviceName.value = getDeviceNameRes || '';
+    // 系统版本
+    const [, getSystemVersionRes] = await $to<string, string>(ksuApi.getSystemVersion());
+    systemVersion.value = getSystemVersionRes || '';
+    const [, getPreSystemVersionRes] = await $to<string, string>(ksuApi.getPreSystemVersion());
+    systemPreVersion.value = getPreSystemVersionRes || '';
     // ROOT管理器信息 *弱校验
     const [, getRootManagerInfo] = await $to<string, string>(ksuApi.getRootManagerInfo());
     if (!getRootManagerInfo?.length) {
@@ -231,6 +242,9 @@ export const useDeviceStore = defineStore("device", () => {
     deviceCode,
     moduleDir,
     moduleID,
+    systemVersion,
+    systemPreVersion,
+    deviceName,
     deviceSocName,
     deviceSocModel,
     smartFocusIO,
