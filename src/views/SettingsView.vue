@@ -337,10 +337,10 @@
                 @update:value="(value: boolean) => changeShowRotationSuggestions(value)" :rail-style="railStyle"
                 :value="deviceStore.showRotationSuggestions">
                 <template #checked>
-                  开启旋转建议提示按钮
+                  已启用旋转建议提示按钮
                 </template>
                 <template #unchecked>
-                  关闭旋转建议提示按钮
+                  已关闭旋转建议提示按钮
                 </template>
               </n-switch></dd>
           </div>
