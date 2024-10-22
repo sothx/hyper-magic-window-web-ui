@@ -24,7 +24,7 @@ const topApplicationList = [
 ]
 
 
-module.exports = {
+export default {
     ...systemApplicationList,
     ...topApplicationList,
-  }
+} as string[]

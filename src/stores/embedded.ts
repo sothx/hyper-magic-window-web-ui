@@ -8,6 +8,7 @@ import $to from "await-to-js";
 import * as ksuApi from "@/apis/ksuApi";
 import * as xmlFormat from "@/utils/xmlFormat";
 import type { ErrorLogging } from "@/types/ErrorLogging";
+import applicationName from '@/config/applicationName';
 
 
 
@@ -43,17 +44,17 @@ export const useEmbeddedStore = defineStore("embedded", () => {
   const patchEmbeddedRulesList = computed(() => {
     // 使用 Object.entries 将对象转换为键值对数组
     const entries = Object.entries(sourceEmbeddedRulesList.value);
-  
+
     // 将 systemEmbeddedRulesList 和 installedAndroidApplicationPackageNameList 转换为 Set 以优化查找速度
     const systemKeysSet = new Set(Object.keys(systemEmbeddedRulesList.value));
     const installedKeysSet = new Set(installedAndroidApplicationPackageNameList.value);
-  
+
     // 使用 filter 对数组进行过滤
     const filteredEntries = entries.filter(([key]) => {
       // 使用 Set 进行查找优化
       return systemKeysSet.has(key) || installedKeysSet.has(key);
     });
-  
+
     // 将过滤后的键值对数组重新转换为对象
     return Object.fromEntries(filteredEntries) as Record<
       EmbeddedRuleItem["name"],
@@ -65,17 +66,17 @@ export const useEmbeddedStore = defineStore("embedded", () => {
   const patchFixedOrientationList = computed(() => {
     // 使用 Object.entries 将对象转换为键值对数组
     const entries = Object.entries(sourceFixedOrientationList.value);
-  
+
     // 将 systemFixedOrientationList 和 installedAndroidApplicationPackageNameList 转换为 Set 以优化查找速度
     const systemKeysSet = new Set(Object.keys(systemFixedOrientationList.value));
     const installedKeysSet = new Set(installedAndroidApplicationPackageNameList.value);
-  
+
     // 使用 filter 对数组进行过滤
     const filteredEntries = entries.filter(([key]) => {
       // 使用 Set 进行查找优化
       return systemKeysSet.has(key) || installedKeysSet.has(key);
     });
-  
+
     // 将过滤后的键值对数组重新转换为对象
     return Object.fromEntries(filteredEntries) as Record<
       FixedOrientationRuleItem["name"],
@@ -86,21 +87,39 @@ export const useEmbeddedStore = defineStore("embedded", () => {
   const mergeRuleList = ref<EmbeddedMergeRuleItem[]>([]);
   // 搜索后的配置列表
   const filterMergeRuleList = computed(() => {
-    const searchValue = searchKeyWord.value.trim().toLowerCase(); // 缓存并提前处理 searchKeyWord
-    return mergeRuleList.value
-      .filter((item) => item.name.trim().toLowerCase().includes(searchValue))
+    const searchValue = searchKeyWord.value.trim().toLowerCase();
+    const cachedMergeRuleList = mergeRuleList.value;
+
+    return cachedMergeRuleList
+      .reduce((result: EmbeddedMergeRuleItem[], item) => {
+        const itemName = item.name.trim().toLowerCase();
+
+        // 先更新 applicationName
+        if (applicationName[item.name]) {
+          item.applicationName = applicationName[item.name];
+        }
+
+        // 过滤条件，检查 name 和 applicationName
+        const applicationNameLower = item.applicationName ? item.applicationName.toLowerCase() : '';
+        if (!itemName.includes(searchValue) && !applicationNameLower.includes(searchValue)) {
+          return result;
+        }
+
+        result.push(item);
+        return result;
+      }, [])
       .sort((a, b) => {
-        // 将 ruleType 为 'custom' 的项排在前面
+        // 将 ruleMode 为 'custom' 的项排在前面
         if (a.ruleMode === "custom" && b.ruleMode !== "custom") {
-          return -1; // a 在前
+          return -1;
         }
         if (a.ruleMode !== "custom" && b.ruleMode === "custom") {
-          return 1; // b 在前
+          return 1;
         }
-        // 如果两者都是 'custom' 或都不是，按名称排序
         return a.name.localeCompare(b.name);
       });
   });
+
   // 是否弹出错误信息弹窗
   const isNeedShowErrorModal = computed(() => Boolean(errorLogging.length > 0));
   // 应用总数
@@ -114,8 +133,8 @@ export const useEmbeddedStore = defineStore("embedded", () => {
   //
   const allPackageName = computed(() => {
     return new Set([
-      ... isPatchMode.value ? Object.keys(patchEmbeddedRulesList.value) : Object.keys(sourceEmbeddedRulesList.value),
-      ...isPatchMode.value ? Object.keys(patchFixedOrientationList.value)  : Object.keys(sourceFixedOrientationList.value),
+      ...isPatchMode.value ? Object.keys(patchEmbeddedRulesList.value) : Object.keys(sourceEmbeddedRulesList.value),
+      ...isPatchMode.value ? Object.keys(patchFixedOrientationList.value) : Object.keys(sourceFixedOrientationList.value),
       ...Object.keys(customConfigEmbeddedRulesList.value),
       ...Object.keys(customConfigFixedOrientationList.value),
     ]);
@@ -124,7 +143,7 @@ export const useEmbeddedStore = defineStore("embedded", () => {
   function updateMergeRuleList() {
     mergeRuleList.value = xmlFormat.mergeEmbeddedRule(
       isPatchMode.value ? patchEmbeddedRulesList.value : sourceEmbeddedRulesList.value,
-      isPatchMode.value? patchFixedOrientationList.value :sourceFixedOrientationList.value,
+      isPatchMode.value ? patchFixedOrientationList.value : sourceFixedOrientationList.value,
       embeddedSettingConfig.value,
       customConfigEmbeddedRulesList.value,
       customConfigFixedOrientationList.value,
@@ -301,7 +320,7 @@ export const useEmbeddedStore = defineStore("embedded", () => {
     // 合并最终配置
     mergeRuleList.value = xmlFormat.mergeEmbeddedRule(
       isPatchMode.value ? patchEmbeddedRulesList.value : sourceEmbeddedRulesList.value,
-      isPatchMode.value? patchFixedOrientationList.value :sourceFixedOrientationList.value,
+      isPatchMode.value ? patchFixedOrientationList.value : sourceFixedOrientationList.value,
       embeddedSettingConfig.value,
       customConfigEmbeddedRulesList.value,
       customConfigFixedOrientationList.value,

@@ -13,10 +13,10 @@
   import { useAutoUI } from '@/hooks/useAutoUI';
   import * as validateFun from '@/utils/validateFun';
   import AutoUIAppDrawer from '@/components/AutoUIAppDrawer.vue';
-import { findBase64InString } from '@/utils/common';
-import { arrayBufferToBase64, base64ToArrayBuffer } from '@/utils/format';
-import pako from 'pako';
-import { ShareIcon, TrashIcon } from '@heroicons/vue/24/outline';
+  import { findBase64InString } from '@/utils/common';
+  import { arrayBufferToBase64, base64ToArrayBuffer } from '@/utils/format';
+  import pako from 'pako';
+  import { ShareIcon, TrashIcon } from '@heroicons/vue/24/outline';
   type SearchKeyWordInputInstance = InstanceType<typeof NInput>;
   type AutoUIAppDrawerInstance = InstanceType<typeof AutoUIAppDrawer>;
   const searchKeyWordInput = ref<SearchKeyWordInputInstance | null>(null);
@@ -40,7 +40,7 @@ import { ShareIcon, TrashIcon } from '@heroicons/vue/24/outline';
       })
     }
   }
-  
+
 
   const reloadPage = async () => {
     await autoUIStore.initDefault()
@@ -48,18 +48,18 @@ import { ShareIcon, TrashIcon } from '@heroicons/vue/24/outline';
 
   const importShareRule = async () => {
     shareRuleTextarea.value = '';
-    const [,showShareRuleTextareaModalRes] = await $to(new Promise((resolve, reject) => {
+    const [, showShareRuleTextareaModalRes] = await $to(new Promise((resolve, reject) => {
       modal.create({
         title: '请粘贴分享口令',
         preset: 'dialog',
-        style:"min-width:500px; width:50%;",
+        style: "min-width:500px; width:50%;",
         content: () => h(NInput, {
-          type:"textarea",
-          value:shareRuleTextarea.value,
+          type: "textarea",
+          value: shareRuleTextarea.value,
           'onUpdate:value': (newValue) => {
             shareRuleTextarea.value = newValue;
           },
-          autosize: {minRows: 8, maxRows: 8},
+          autosize: { minRows: 8, maxRows: 8 },
           placeholder: '在此处粘贴分享规则口令'
         }),
         positiveText: '确定提交',
@@ -71,7 +71,7 @@ import { ShareIcon, TrashIcon } from '@heroicons/vue/24/outline';
     }))
     if (showShareRuleTextareaModalRes) {
       importShareRuleLoading.value = true;
-      const base64StringFromClipboard:string = shareRuleTextarea.value;
+      const base64StringFromClipboard: string = shareRuleTextarea.value;
       const getBase64String = findBase64InString(base64StringFromClipboard);
       if (!getBase64String?.length) {
         modal.create({
@@ -84,7 +84,7 @@ import { ShareIcon, TrashIcon } from '@heroicons/vue/24/outline';
         importShareRuleLoading.value = false;
         return;
       }
-      console.log(getBase64String,'getBase64String')
+      console.log(getBase64String, 'getBase64String')
       try {
         const uint8Array: Uint8Array = base64ToArrayBuffer(getBase64String);
         const inflate = pako.inflate(uint8Array, {
@@ -149,7 +149,7 @@ import { ShareIcon, TrashIcon } from '@heroicons/vue/24/outline';
         }
         // 解析成功，可以使用 data
       } catch (error) {
-        console.log(error,'error')
+        console.log(error, 'error')
         // 解析失败，处理错误
         modal.create({
           title: '导入分享规则失败',
@@ -214,7 +214,7 @@ import { ShareIcon, TrashIcon } from '@heroicons/vue/24/outline';
         device: deviceStore.deviceCharacteristics === 'tablet' ? 'pad' : 'fold',
         mode: row.settingMode
       }
-      console.log(shareContent,'shareContent')
+      console.log(shareContent, 'shareContent')
       const jsonString = JSON.stringify(shareContent)
       const deflate = pako.deflate(jsonString, {
         level: 9,
@@ -283,50 +283,50 @@ import { ShareIcon, TrashIcon } from '@heroicons/vue/24/outline';
       return;
     }
     const switchCustomModal = modal.create({
-        title: `想${value ? '开启': '关闭'}该应用的应用布局优化吗？`,
-        type: 'warning',
-        preset: 'dialog',
-        content: () => (<p>即将{value ? '开启': '关闭'}<span class="font-bold text-gray-600">{row.name}</span> 的应用布局优化适配规则。确定要继续吗？</p>),
-        positiveText: '确定',
-        negativeText: '我再想想',
-        onPositiveClick: async () => {
-          switchCustomModal.loading = true
-          if (autoUIStore.autoUISettingConfig[row.name]) {
-            autoUIStore.autoUISettingConfig[row.name].enable = value
-          } else {
-            autoUIStore.autoUISettingConfig[row.name] = {
-              name: row.name,
-              enable: value
-            }
-          }
-          const [submitUpdateAutoUIAppErr, submitUpdateAutoUIAppRes] = await $to(ksuApi.updateAutoUIApp({
-            customAutoUIListXML: xmlFormat.objectToXML(autoUIStore.customConfigAutoUIList, 'package', undefined),
-            settingConfigXML: xmlFormat.objectToXML(autoUIStore.autoUISettingConfig, 'setting', 'setting_config'),
-            reloadRuleAction: {
-              name: row.name,
-              action: value ? 'enable' : 'disable'
-            }
-          }))
-          if (submitUpdateAutoUIAppErr) {
-            modal.create({
-              title: '操作失败',
-              type: 'error',
-              preset: 'dialog',
-              content: () => (<p>发生异常错误，更新失败了QwQ，该功能尚在测试阶段，尚不稳定，出现异常请及时反馈~</p>)
-            })
-            switchCustomModal.loading = false
-          } else {
-            modal.create({
-              title: '操作成功',
-              type: 'success',
-              preset: 'dialog',
-              content: () => (<p>好耶w，操作成功了OwO~如果应用更新后的规则不生效，可以尝试重启平板再试试~</p>)
-            })
-            switchCustomModal.loading = false
-            autoUIStore.updateMergeRuleList()
+      title: `想${value ? '开启' : '关闭'}该应用的应用布局优化吗？`,
+      type: 'warning',
+      preset: 'dialog',
+      content: () => (<p>即将{value ? '开启' : '关闭'}<span class="font-bold text-gray-600">{row.name}</span> 的应用布局优化适配规则。确定要继续吗？</p>),
+      positiveText: '确定',
+      negativeText: '我再想想',
+      onPositiveClick: async () => {
+        switchCustomModal.loading = true
+        if (autoUIStore.autoUISettingConfig[row.name]) {
+          autoUIStore.autoUISettingConfig[row.name].enable = value
+        } else {
+          autoUIStore.autoUISettingConfig[row.name] = {
+            name: row.name,
+            enable: value
           }
         }
-      })
+        const [submitUpdateAutoUIAppErr, submitUpdateAutoUIAppRes] = await $to(ksuApi.updateAutoUIApp({
+          customAutoUIListXML: xmlFormat.objectToXML(autoUIStore.customConfigAutoUIList, 'package', undefined),
+          settingConfigXML: xmlFormat.objectToXML(autoUIStore.autoUISettingConfig, 'setting', 'setting_config'),
+          reloadRuleAction: {
+            name: row.name,
+            action: value ? 'enable' : 'disable'
+          }
+        }))
+        if (submitUpdateAutoUIAppErr) {
+          modal.create({
+            title: '操作失败',
+            type: 'error',
+            preset: 'dialog',
+            content: () => (<p>发生异常错误，更新失败了QwQ，该功能尚在测试阶段，尚不稳定，出现异常请及时反馈~</p>)
+          })
+          switchCustomModal.loading = false
+        } else {
+          modal.create({
+            title: '操作成功',
+            type: 'success',
+            preset: 'dialog',
+            content: () => (<p>好耶w，操作成功了OwO~如果应用更新后的规则不生效，可以尝试重启平板再试试~</p>)
+          })
+          switchCustomModal.loading = false
+          autoUIStore.updateMergeRuleList()
+        }
+      }
+    })
   }
 
   const openAddDrawer = async () => {
@@ -353,8 +353,8 @@ import { ShareIcon, TrashIcon } from '@heroicons/vue/24/outline';
           ...(addAutoUiAppRes?.modePayload.hasOwnProperty('skippedActivityRule')) ? { skippedActivityRule: addAutoUiAppRes?.modePayload.skippedActivityRule } : {},
         }
         autoUIStore.autoUISettingConfig[addAutoUiAppRes.name] = {
-            name: addAutoUiAppRes.name,
-            enable: true
+          name: addAutoUiAppRes.name,
+          enable: true
         }
         const [submitAddAutoUIAppErr, submitAddAutoUIAppRes] = await $to(ksuApi.updateAutoUIApp({
           customAutoUIListXML: xmlFormat.objectToXML(autoUIStore.customConfigAutoUIList, 'package', undefined),
@@ -557,10 +557,22 @@ import { ShareIcon, TrashIcon } from '@heroicons/vue/24/outline';
 
   function createColumns(): DataTableColumns<AutoUIMergeRuleItem> {
     return [
-      {
-        title: '应用包名',
-        minWidth: 200,
-        key: 'name'
+    {
+        title: '应用名称',
+        width: 250,
+        key: 'name',
+        render(row,index) {
+          return (
+            <div>
+              {
+                row.applicationName && (<p>{ row.applicationName }</p>)
+              }
+              {
+                row.name && (<p><span class={{'hidden': !row.applicationName}}>(</span>{row.name}<span class={{'hidden': !row.applicationName}}>)</span></p>)
+              }
+            </div>
+          )
+        }
       },
       {
         title: '规则来源',
@@ -633,7 +645,7 @@ import { ShareIcon, TrashIcon } from '@heroicons/vue/24/outline';
             }
           }
           return (
-            <n-switch railStyle={railStyle} onUpdateValue={(value:boolean) => handleSwitchAction(row,index,value)} size="medium" value={
+            <n-switch railStyle={railStyle} onUpdateValue={(value: boolean) => handleSwitchAction(row, index, value)} size="medium" value={
               isOpen && isOpen(row)
             } v-slots={slots}>
             </n-switch>
@@ -656,8 +668,8 @@ import { ShareIcon, TrashIcon } from '@heroicons/vue/24/outline';
         @click="openAddDrawer">
         添加应用
       </n-button>
-      <n-button class="mb-3 mr-3" type="warning" :loading="deviceStore.loading || autoUIStore.loading || importShareRuleLoading"
-        @click="importShareRule()">
+      <n-button class="mb-3 mr-3" type="warning"
+        :loading="deviceStore.loading || autoUIStore.loading || importShareRuleLoading" @click="importShareRule()">
         从分享口令导入
       </n-button>
       <n-button class="mb-3 mr-3" type="success" :loading="deviceStore.loading || autoUIStore.loading"

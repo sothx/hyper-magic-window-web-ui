@@ -4,6 +4,7 @@ import type EmbeddedSettingRuleItem from "@/types/EmbeddedSettingRuleItem";
 
 export default interface EmbeddedMergeRuleItem {
     name: string;
+    applicationName?:string;
     settingMode: 'fullScreen' | 'embedded' | 'fixedOrientation' | 'disabled';
     isSupportEmbedded: boolean;
     isSupportFullScreen: boolean;

@@ -1,5 +1,5 @@
 <script setup lang="tsx">
-  import { ref, reactive, watch, type Component, h } from 'vue'
+  import { ref, reactive, watch, type Component, h, onMounted } from 'vue'
   import type EmbeddedMergeRuleItem from "@/types/EmbeddedMergeRuleItem";
   import $to from 'await-to-js'
   import pako, { type Data } from 'pako';
@@ -636,12 +636,25 @@
   function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
     return [
       {
-        title: '应用包名',
-        minWidth: 200,
-        key: 'name'
+        title: '应用名称',
+        width: 250,
+        key: 'name',
+        render(row,index) {
+          return (
+            <div>
+              {
+                row.applicationName && (<p>{ row.applicationName }</p>)
+              }
+              {
+                row.name && (<p><span class={{'hidden': !row.applicationName}}>(</span>{row.name}<span class={{'hidden': !row.applicationName}}>)</span></p>)
+              }
+            </div>
+          )
+        }
       },
       {
         title: '规则来源',
+        width: 100,
         key: 'ruleMode',
         render(row, index) {
           if (row.ruleMode === 'custom') {
@@ -671,7 +684,7 @@
       {
         title: '支持的规则',
         key: 'ruleMode',
-        minWidth: 180,
+        minWidth: 200,
         render(row, index) {
           const rowIsSupportEmbedded = row.isSupportEmbedded
           const rowIsSupportFullScreen = ((deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && row.isSupportFullScreen) || (deviceStore.MIOSVersion && deviceStore.MIOSVersion === 1)) || (!deviceStore.loading && !deviceStore.MIOSVersion)
@@ -702,6 +715,7 @@
       },
       {
         title: '当前规则',
+        width: 100,
         key: 'settingMode',
         render(row, index) {
           const modeMap = {
