@@ -397,7 +397,7 @@ export const getRotationSuggestions = (): Promise<string> => {
       const { errno, stdout, stderr }: ExecResults = await exec(
         shellCommon
       );
-      errno ? reject(stderr) : stdout === null ? reject(stderr) : resolve(stdout)
+      errno ? reject(stderr) : stdout === 'null' ? resolve('') : resolve(stdout)
     }
   }), shellCommon);
 }
@@ -411,7 +411,7 @@ export const getDeviceName = (): Promise<string> => {
       const { errno, stdout, stderr }: ExecResults = await exec(
         shellCommon
       );
-      errno ? reject(stderr) : stdout === null ? reject(stderr) : resolve(stdout)
+      errno ? reject(stderr) : stdout === 'null' ? resolve('') : resolve(stdout)
     }
   }), shellCommon);
 }
@@ -425,7 +425,7 @@ export const getSystemVersion = (): Promise<string> => {
       const { errno, stdout, stderr }: ExecResults = await exec(
         shellCommon
       );
-      errno ? reject(stderr) : stdout === null ? reject(stderr) : resolve(stdout)
+      errno ? reject(stderr) : stdout === 'null' ? resolve('') : resolve(stdout)
     }
   }), shellCommon);
 }
@@ -439,7 +439,7 @@ export const getPreSystemVersion = (): Promise<string> => {
       const { errno, stdout, stderr }: ExecResults = await exec(
         shellCommon
       );
-      errno ? reject(stderr) : stdout === null ? reject(stderr) : resolve(stdout)
+      errno ? reject(stderr) : stdout === 'null' ? resolve('') : resolve(stdout)
     }
   }), shellCommon);
 }
@@ -453,7 +453,7 @@ export const setRotationSuggestions = (mode: 1 | 0): Promise<string> => {
       const { errno, stdout, stderr }: ExecResults = await exec(
         shellCommon
       );
-      errno ? reject(stderr) : stdout === null ? reject(stderr) : resolve(stdout)
+      errno ? reject(stderr) : stdout === 'null' ? resolve('') : resolve(stdout)
     }
   }), shellCommon);
 }

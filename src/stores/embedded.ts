@@ -295,11 +295,12 @@ export const useEmbeddedStore = defineStore("embedded", () => {
     const [getSystemFixedOrientationListErr, getSystemFixedOrientationListRes] =
       await $to<string, string>(ksuApi.getSystemFixedOrientationList());
     if (getSystemFixedOrientationListErr) {
-      errorLogging.push({
-        type: "SystemEmbeddedRulesList",
-        title: "[系统]信箱模式配置文件",
-        msg: getSystemFixedOrientationListErr,
-      });
+      systemFixedOrientationList.value = {}
+      // errorLogging.push({
+      //   type: "SystemEmbeddedRulesList",
+      //   title: "[系统]信箱模式配置文件",
+      //   msg: getSystemFixedOrientationListErr,
+      // });
     }
 
     if (getSystemFixedOrientationListRes) {
