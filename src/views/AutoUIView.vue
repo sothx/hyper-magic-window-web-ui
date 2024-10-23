@@ -21,6 +21,7 @@
     type DataTableColumns,
     type DropdownOption,
   } from 'naive-ui';
+  import { ArrowPathIcon, FunnelIcon, PlusIcon, ShareIcon, TrashIcon } from '@heroicons/vue/24/outline';
   import type AutoUIMergeRuleItem from '@/types/AutoUIMergeRuleItem';
   import { useRouter, useRoute } from 'vue-router';
   import { useLogsStore } from '@/stores/logs';
@@ -30,7 +31,6 @@
   import { findBase64InString } from '@/utils/common';
   import { arrayBufferToBase64, base64ToArrayBuffer } from '@/utils/format';
   import pako from 'pako';
-  import { ShareIcon, TrashIcon } from '@heroicons/vue/24/outline';
   type SearchKeyWordInputInstance = InstanceType<typeof NInput>;
   type AutoUIAppDrawerInstance = InstanceType<typeof AutoUIAppDrawer>;
   const searchKeyWordInput = ref<SearchKeyWordInputInstance | null>(null);
@@ -56,7 +56,12 @@
   }
 
   const reloadPage = async () => {
+    await deviceStore.getAndroidApplicationPackageNameList();
     await autoUIStore.initDefault();
+  };
+
+  const filterHasBeenInstalledApp = () => {
+    autoUIStore.filterInstalledApps = !autoUIStore.filterInstalledApps;
   };
 
   const importShareRule = async () => {
@@ -928,32 +933,65 @@
       </div>
     </div>
     <n-card title="操作栏" size="small">
-      <n-button
-        class="mb-3 mr-3"
-        type="info"
-        :loading="deviceStore.loading || autoUIStore.loading"
-        @click="openAddDrawer"
-      >
-        添加应用
-      </n-button>
-      <n-button
-        class="mb-3 mr-3"
-        type="warning"
-        :loading="
-          deviceStore.loading || autoUIStore.loading || importShareRuleLoading
-        "
-        @click="importShareRule()"
-      >
-        从分享口令导入
-      </n-button>
-      <n-button
-        class="mb-3 mr-3"
-        type="success"
-        :loading="deviceStore.loading || autoUIStore.loading"
-        @click="() => reloadPage()"
-      >
-        刷新当前数据
-      </n-button>
+      <div class="flex mb-3">
+        <n-button
+          class="mr-3"
+          type="info"
+          :loading="deviceStore.loading || autoUIStore.loading"
+          @click="openAddDrawer"
+        >
+        <template #icon>
+            <n-icon>
+              <PlusIcon />
+            </n-icon>
+          </template>
+          添加应用
+        </n-button>
+        <n-button
+          class="mr-3"
+          type="warning"
+          :loading="
+            deviceStore.loading || autoUIStore.loading || importShareRuleLoading
+          "
+          @click="importShareRule()"
+        >
+        <template #icon>
+            <n-icon>
+              <ShareIcon />
+            </n-icon>
+          </template>
+          从分享口令导入
+        </n-button>
+        <n-button
+          class="mr-3"
+          type="success"
+          :loading="deviceStore.loading || autoUIStore.loading"
+          @click="() => reloadPage()"
+        >
+        <template #icon>
+            <n-icon>
+              <ArrowPathIcon />
+            </n-icon>
+          </template>
+          刷新当前数据
+        </n-button>
+      </div>
+      <div class="flex mb-3">
+        <n-button
+          :type="autoUIStore.filterInstalledApps ? 'error' : 'info'"
+          strong
+          :loading="deviceStore.loading || autoUIStore.loading"
+          secondary
+          @click="filterHasBeenInstalledApp"
+        >
+          <template #icon>
+            <n-icon>
+              <FunnelIcon />
+            </n-icon>
+          </template>
+          {{ autoUIStore.filterInstalledApps ? '已安装应用' : '全部应用' }}
+        </n-button>
+      </div>
       <n-input-group>
         <n-input
           size="large"

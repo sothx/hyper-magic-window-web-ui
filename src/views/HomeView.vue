@@ -7,8 +7,10 @@
   import EmbeddedAppDrawer from '@/components/EmbeddedAppDrawer.vue';
   import {
     NButton,
+    NDataTable,
     NIcon,
     NInput,
+    NTable,
     createDiscreteApi,
     type DataTableColumns,
     type DropdownOption,
@@ -19,11 +21,12 @@
   import { useEmbeddedStore } from '@/stores/embedded';
   import { useLogsStore } from '@/stores/logs';
   import eventBus from '@/utils/eventBus';
-  import { ShareIcon, TrashIcon } from '@heroicons/vue/24/outline';
+  import { ArrowPathIcon, FunnelIcon, PlusIcon, ShareIcon, TrashIcon,SquaresPlusIcon } from '@heroicons/vue/24/outline';
   import { arrayBufferToBase64, base64ToArrayBuffer } from '@/utils/format';
   import { findBase64InString } from '@/utils/common';
   type EmbeddedAppDrawerInstance = InstanceType<typeof EmbeddedAppDrawer>;
   type SearchKeyWordInputInstance = InstanceType<typeof NInput>;
+  type NDataTabletInstance = InstanceType<typeof NDataTable>;
   const shareRuleTextarea = ref('');
   const deviceStore = useDeviceStore();
   const embeddedStore = useEmbeddedStore();
@@ -35,6 +38,7 @@
   const { message, modal } = createDiscreteApi(['message', 'modal']);
   const columns = createColumns();
   const showErrorModal = ref(false);
+  const embeddedTableRef = ref<NDataTabletInstance | null>(null);
 
   function renderIcon(icon: Component) {
     return () => {
@@ -43,6 +47,10 @@
       });
     };
   }
+
+  const filterHasBeenInstalledApp = () => {
+    embeddedStore.filterInstalledApps = !embeddedStore.filterInstalledApps;
+  };
 
   onMounted(() => {
     eventBus.once('isNeedReloadPatchRule', () => {
@@ -79,6 +87,7 @@
   );
 
   const reloadPage = async () => {
+    await deviceStore.getAndroidApplicationPackageNameList();
     await embeddedStore.initDefault();
   };
 
@@ -394,7 +403,7 @@
         ),
         negativeText: '确定',
       });
-      embeddedStore.lastInstalledAndroidApplicationPackageNameList = [];
+      deviceStore.lastInstalledAndroidApplicationPackageNameList = [];
       embeddedStore.lastCheckPatchModeTime = '';
       reloadPatchModeConfigLoading.value = false;
       embeddedStore.updateMergeRuleList();
@@ -1167,7 +1176,7 @@
       },
       {
         title: '当前规则',
-        width: 100,
+        width: 150,
         key: 'settingMode',
         render(row, index) {
           const modeMap = {
@@ -1350,45 +1359,85 @@
       </div>
     </div>
     <n-card title="操作栏" size="small">
-      <n-button
-        class="mb-3 mr-3"
-        type="info"
-        :loading="deviceStore.loading || embeddedStore.loading"
-        @click="openAddEmbeddedApp"
-      >
-        添加应用
-      </n-button>
-      <n-button
-        class="mb-3 mr-3"
-        v-if="embeddedStore.isPatchMode"
-        type="error"
-        :loading="
-          deviceStore.loading ||
-          embeddedStore.loading ||
-          reloadPatchModeConfigLoading
-        "
-        @click="() => reloadPatchModeConfigList()"
-      >
-        生成定制应用数据
-      </n-button>
-      <n-button
-        class="mb-3 mr-3"
-        type="warning"
-        :loading="
-          deviceStore.loading || embeddedStore.loading || importShareRuleLoading
-        "
-        @click="importShareRule()"
-      >
-        从分享口令导入
-      </n-button>
-      <n-button
-        class="mb-3 mr-3"
-        type="success"
-        :loading="deviceStore.loading || embeddedStore.loading"
-        @click="() => reloadPage()"
-      >
-        刷新当前数据
-      </n-button>
+      <div class="flex mb-3">
+        <n-button
+          class="mr-3"
+          type="info"
+          :loading="deviceStore.loading || embeddedStore.loading"
+          @click="openAddEmbeddedApp"
+        >
+          <template #icon>
+            <n-icon>
+              <PlusIcon />
+            </n-icon>
+          </template>
+          添加应用
+        </n-button>
+        <n-button
+          class="mr-3"
+          v-if="embeddedStore.isPatchMode"
+          type="error"
+          :loading="
+            deviceStore.loading ||
+            embeddedStore.loading ||
+            reloadPatchModeConfigLoading
+          "
+          @click="() => reloadPatchModeConfigList()"
+        >
+        <template #icon>
+            <n-icon>
+              <SquaresPlusIcon />
+            </n-icon>
+          </template>
+          生成定制应用数据
+        </n-button>
+        <n-button
+          class="mr-3"
+          type="warning"
+          :loading="
+            deviceStore.loading ||
+            embeddedStore.loading ||
+            importShareRuleLoading
+          "
+          @click="importShareRule()"
+        >
+          <template #icon>
+            <n-icon>
+              <ShareIcon />
+            </n-icon>
+          </template>
+          从分享口令导入
+        </n-button>
+        <n-button
+          class="mr-3"
+          type="success"
+          :loading="deviceStore.loading || embeddedStore.loading"
+          @click="() => reloadPage()"
+        >
+          <template #icon>
+            <n-icon>
+              <ArrowPathIcon />
+            </n-icon>
+          </template>
+          刷新当前数据
+        </n-button>
+      </div>
+      <div class="flex mb-3">
+        <n-button
+          :type="embeddedStore.filterInstalledApps ? 'warning' : 'info'"
+          strong
+          :loading="deviceStore.loading || embeddedStore.loading"
+          secondary
+          @click="filterHasBeenInstalledApp"
+        >
+          <template #icon>
+            <n-icon>
+              <FunnelIcon />
+            </n-icon>
+          </template>
+          {{ embeddedStore.filterInstalledApps ? '已安装应用' : '全部应用' }}
+        </n-button>
+      </div>
       <n-input-group>
         <n-input
           size="large"
@@ -1413,6 +1462,7 @@
       </n-input-group>
     </n-card>
     <n-data-table
+      ref="embeddedTableRef"
       :loading="deviceStore.loading || embeddedStore.loading"
       :columns="columns"
       :data="embeddedStore.filterMergeRuleList"

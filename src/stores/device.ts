@@ -52,6 +52,8 @@ export const useDeviceStore = defineStore(
     const moduleDir = ref<string>();
     const moduleID = ref<string>();
     const deviceName = ref<string>('');
+    const installedAndroidApplicationPackageNameList = ref<string[]>([]);
+    const lastInstalledAndroidApplicationPackageNameList = ref<string[]>([]);
     const systemVersion = ref<string>('');
     const systemPreVersion = ref<string>('');
     const currentRootManager = ref<ROOT_MANAGER_TYPE>('Magisk');
@@ -95,6 +97,36 @@ export const useDeviceStore = defineStore(
     const isNeedShowErrorModal = computed(() =>
       Boolean(errorLogging.length > 0)
     );
+
+    async function getAndroidApplicationPackageNameList() {
+      return new Promise(async (resolve, reject) => {
+        // 获取用户已安装的应用包名
+        const [
+          getAndroidApplicationPackageNameListErr,
+          getAndroidApplicationPackageNameListRes,
+        ] = await $to<string, string>(
+          ksuApi.getAndroidApplicationPackageNameList()
+        );
+        if (getAndroidApplicationPackageNameListErr) {
+          errorLogging.push({
+            type: 'getAndroidApplicationPackageNameListErr',
+            title: '获取用户已安装的应用包名',
+            msg: getAndroidApplicationPackageNameListErr,
+          });
+          reject(getAndroidApplicationPackageNameListErr)
+        } else {
+          if (getAndroidApplicationPackageNameListRes) {
+            if (installedAndroidApplicationPackageNameList.value.length) {
+              lastInstalledAndroidApplicationPackageNameList.value =
+                installedAndroidApplicationPackageNameList.value;
+            }
+            installedAndroidApplicationPackageNameList.value =
+              getAndroidApplicationPackageNameListRes?.split(',');
+          }
+          resolve(installedAndroidApplicationPackageNameList.value)
+        }
+      });
+    }
 
     async function initDefault() {
       const executeWithoutWaiting = [
@@ -163,6 +195,8 @@ export const useDeviceStore = defineStore(
           currentRootManager.value = 'Magisk';
         }
       }
+      // 获取用户已安装的应用
+      await getAndroidApplicationPackageNameList()
       // 设备类型 *强校验
       const [getDeviceCharacteristicsErr, getDeviceCharacteristicsRes] =
         await $to<string, string>(ksuApi.getDeviceCharacteristics());
@@ -282,6 +316,9 @@ export const useDeviceStore = defineStore(
       deviceSocModel,
       smartFocusIO,
       showRotationSuggestions,
+      lastInstalledAndroidApplicationPackageNameList,
+      installedAndroidApplicationPackageNameList,
+      getAndroidApplicationPackageNameList,
       miuiCompatEnable,
       miuiAppCompatEnable,
       skipConfirm,
@@ -294,7 +331,7 @@ export const useDeviceStore = defineStore(
   },
   {
     persist: {
-      pick: ['skipConfirm'],
+      pick: ['skipConfirm', 'installedAndroidApplicationPackageNameList'],
     },
   }
 );
