@@ -1,12 +1,13 @@
 <script setup lang="ts">
   import { useDeviceStore } from '@/stores/device';
-  import type { CSSProperties } from 'vue';
-  import { createDiscreteApi, darkTheme, lightTheme } from 'naive-ui';
+  import { computed, type CSSProperties } from 'vue';
+  import { createDiscreteApi, darkTheme, lightTheme, type ConfigProviderProps } from 'naive-ui';
   const deviceStore = useDeviceStore();
-  const { message } = createDiscreteApi(['message'],{
-    configProviderProps: {
+  const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
       theme: deviceStore.isDarkMode ? darkTheme : lightTheme
-    }
+  }))
+  const { message } = createDiscreteApi(['message'],{
+configProviderProps: configProviderPropsRef
   });
 </script>
 <template>
@@ -63,17 +64,16 @@
             </n-alert>
           </div>
           <div class="px-4 flex sm:grid sm:px-0 mt-5">
+            <n-alert title="[已完成] 深色模式" type="success">
+              适配 Web UI 深色模式，优化深色模式下的使用体验
+            </n-alert>
+          </div>
+          <div class="px-4 flex sm:grid sm:px-0 mt-5">
             <n-alert
               title="[开发中] 应用横屏配置- Hyper OS 2.0(Android 15+)"
               type="info"
             >
               开发中，支持Android 15 配置允许使用的适配选项，支持配置自定义比例
-            </n-alert>
-          </div>
-          <div class="px-4 flex sm:grid sm:px-0 mt-5">
-            <n-alert title="[待定] 深色模式" type="warning">
-              待定，需求紧急程度较低，适配 Web UI
-              深色模式，优化深色模式下的使用体验
             </n-alert>
           </div>
           <div class="px-4 flex sm:grid sm:px-0 mt-5">

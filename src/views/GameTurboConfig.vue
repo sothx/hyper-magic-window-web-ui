@@ -6,18 +6,20 @@
     watchEffect,
     ref,
     type CSSProperties,
+    computed,
   } from 'vue';
   import hljs from 'highlight.js/lib/core';
   import { useLogsStore } from '@/stores/logs';
-  import { createDiscreteApi, darkTheme, lightTheme, type LogInst } from 'naive-ui';
+  import { createDiscreteApi, darkTheme, lightTheme, type ConfigProviderProps, type LogInst } from 'naive-ui';
   import axios from 'axios';
   import sqioInstance from '@/utils/sqio';
   const logsStore = useLogsStore();
   const deviceStore = useDeviceStore();
-  const { message } = createDiscreteApi(['message'],{
-    configProviderProps: {
+  const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
       theme: deviceStore.isDarkMode ? darkTheme : lightTheme
-    }
+  }))
+  const { message } = createDiscreteApi(['message'], {
+    configProviderProps: configProviderPropsRef
   });
 
   function escapeSpecialChars(str: string) {
@@ -46,7 +48,7 @@
   <div class="game-turbo-config">
     <div class="mt-5">
       <div class="px-4 sm:px-0">
-        <h3 :class="`text-base font-semibold leading-7 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`" >
+        <h3 :class="`text-base font-semibold leading-7 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
           游戏云控配置
         </h3>
         <p :class="`mt-1 max-w-2xl text-sm leading-6  ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-500'}`">

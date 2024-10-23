@@ -8,18 +8,18 @@ import $to from 'await-to-js';
 import * as ksuApi from '@/apis/ksuApi';
 import * as xmlFormat from '@/utils/xmlFormat';
 import type { ErrorLogging } from '@/types/ErrorLogging';
-import applicationName from '@/config/applicationName';
 import whitelistApplications from '@/config/whitelistApplications';
 import { useDeviceStore } from './device';
 import eventBus from '@/utils/eventBus';
+type ApplicationName = Record<string, string>;
 
 export const useEmbeddedStore = defineStore(
-  'embedded',
-  () => {
+  'embedded',() => {
     // 是否补丁模式
     const isPatchMode = ref<boolean>(false);
     const lastCheckPatchModeTime = ref<string>();
     const filterInstalledApps = ref<boolean>(false);
+    const applicationName = ref<ApplicationName>({});
     // 平行窗口
     const sourceEmbeddedRulesList = ref<
       Record<EmbeddedRuleItem['name'], EmbeddedRuleItem>
@@ -99,8 +99,8 @@ export const useEmbeddedStore = defineStore(
           const itemName = item.name.trim().toLowerCase();
 
           // 先更新 applicationName
-          if (applicationName[item.name]) {
-            item.applicationName = applicationName[item.name];
+          if (applicationName.value[item.name]) {
+            item.applicationName = applicationName.value[item.name];
           }
 
           // 过滤条件，检查 name 和 applicationName
@@ -205,6 +205,10 @@ export const useEmbeddedStore = defineStore(
 
     async function initDefault() {
       loading.value = true;
+      // 获取所有应用包名
+      const applicationNameRes = await import('@/assets/applicationName.json')
+      const applicationNameData = applicationNameRes.default;
+      applicationName.value = applicationNameData;
       // 获取补丁模式
       const [getIsPatchModeErr, getIsPatchModeRes] = await $to<string, string>(
         ksuApi.getIsPatchMode()

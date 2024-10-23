@@ -1,5 +1,5 @@
 <script setup lang="tsx">
-  import { ref } from 'vue'
+  import { computed, reactive, ref } from 'vue'
   import { RouterLink } from 'vue-router'
   import {
     Dialog,
@@ -20,7 +20,7 @@
   } from '@heroicons/vue/24/outline'
   import { useRoute } from 'vue-router';
   import { ChevronDownIcon, MagnifyingGlassIcon } from '@heroicons/vue/20/solid'
-  import { createDiscreteApi, darkTheme, lightTheme } from 'naive-ui';
+  import { createDiscreteApi, darkTheme, lightTheme,type ConfigProviderProps } from 'naive-ui';
   import { useGameMode } from '@/hooks/useGameMode';
   import { useDeviceStore } from '@/stores/device';
   import handlePromiseWithLogging from "@/utils/handlePromiseWithLogging";
@@ -30,12 +30,13 @@
   const gameMode = useGameMode();
   const deviceStore = useDeviceStore();
   const MIUIContentExtension = useMIUIContentExtension()
-  const { message, modal } = createDiscreteApi(['message', 'modal'], {
-    configProviderProps: {
+  const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
       theme: deviceStore.isDarkMode ? darkTheme : lightTheme
-    }
+  }))
+  const { message, modal } = createDiscreteApi(['message', 'modal'], {
+    configProviderProps: configProviderPropsRef
   })
-  const navigation = [
+  const navigation = reactive([
     { name: '应用横屏配置', routeName: 'home', href: '/', icon: WindowIcon },
     { name: '应用布局优化', routeName: 'autoui', href: '/autoui', icon: Squares2X2Icon },
     {
@@ -157,7 +158,7 @@
     },
     { name: '日志记录', routeName: 'logs', href: '/logs', icon: DocumentDuplicateIcon },
     { name: '开发路线图', routeName: 'project', href: '/project', icon: ChartPieIcon },
-  ]
+  ])
   const teams = [
     { id: 1, name: '模块首页', href: '/embedded-webview?url=https://hyper-magic-window.sothx.com', initial: 'H', current: false },
     { id: 2, name: '打赏', href: '/embedded-webview?url=https://hyper-magic-window.sothx.com/donation.html', initial: 'D', current: false },
@@ -236,9 +237,8 @@
                     </li>
                     <li class="mt-auto">
                       <router-link to="/settings"
-                        :class="[route.name === 'settings' ? (deviceStore.isDarkMode ? 'bg-gray-700 text-teal-400' : 'bg-gray-50 text-teal-600') : (deviceStore.isDarkMode ? 'text-gray-300 hover:bg-gray-700 hover:text-teal-400' : 'hover:bg-gray-50 hover:text-teal-600'), 'group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6']">
+                        :class="[route.name === 'settings' ? (deviceStore.isDarkMode ? 'bg-gray-700 text-teal-400' : 'bg-gray-50 text-teal-600') : (deviceStore.isDarkMode ? 'text-gray-300 hover:bg-gray-700 hover:text-teal-400' : 'text-gray-700 hover:bg-gray-50 hover:text-teal-600'), 'group-mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6']">
                         <Cog6ToothIcon class="h-6 w-6 shrink-0"
-                          :class="deviceStore.isDarkMode ? 'text-gray-500 group-hover:text-teal-400' : 'text-gray-400 group-hover:text-teal-600'"
                           aria-hidden="true" />
                         模块设置
                       </router-link>
@@ -291,9 +291,8 @@
             </li>
             <li class="mt-auto">
               <router-link to="/settings"
-                :class="[route.name === 'settings' ? (deviceStore.isDarkMode ? 'bg-gray-700 text-teal-400' : 'bg-gray-50 text-teal-600') : (deviceStore.isDarkMode ? 'text-gray-300 hover:bg-gray-700 hover:text-teal-400' : 'hover:bg-gray-50 hover:text-teal-600'), 'group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6']">
+                :class="[route.name === 'settings' ? (deviceStore.isDarkMode ? 'bg-gray-700 text-teal-400' : 'bg-gray-50 text-teal-600') : (deviceStore.isDarkMode ? 'text-gray-300 hover:bg-gray-700 hover:text-teal-400' : 'text-gray-700 hover:bg-gray-50 hover:text-teal-600'), 'group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6']">
                 <Cog6ToothIcon class="h-6 w-6 shrink-0"
-                  :class="deviceStore.isDarkMode ? 'text-gray-500 group-hover:text-teal-400' : 'text-gray-400 group-hover:text-teal-600'"
                   aria-hidden="true" />
                 模块设置
               </router-link>
@@ -303,7 +302,7 @@
       </div>
     </div>
 
-    <div class="lg:pl-72">
+    <div class="lg:pl-72 min-h-screen">
       <div class="sticky top-0 z-40 lg:mx-auto lg:max-w-7xl lg:px-8">
         <div class="flex h-16 items-center gap-x-4 border-b"
           :class="deviceStore.isDarkMode ? 'border-gray-700 bg-zinc-900' : 'border-gray-200 bg-white'">

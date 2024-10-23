@@ -3,9 +3,9 @@ import { RouterLink, RouterView } from 'vue-router';
 import HelloWorld from './components/HelloWorld.vue';
 import { Sidebar } from './components/Sidebar';
 import ErrorModal from '@/components/ErrorModal.vue';
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted, watch, watchEffect } from 'vue';
 import { useDeviceStore } from '@/stores/device';
-import { darkTheme } from 'naive-ui'
+import { darkTheme } from 'naive-ui';
 import { useEmbeddedStore } from '@/stores/embedded';
 import { useAutoUIStore } from '@/stores/autoui';
 import {
@@ -34,6 +34,32 @@ watch(
 	{ immediate: false }, // 默认是 false，不需要设置，确保不会在初始时执行
 );
 
+function getCurrentTheme() {
+	return window.matchMedia('(prefers-color-scheme: dark)').matches ? true : false;
+}
+
+// 使用 watchEffect 来监听 prefers-color-scheme 的变化
+watchEffect(onCleanup => {
+	const mediaQueryList = window.matchMedia('(prefers-color-scheme: dark)');
+	if (deviceStore.rhythmMode === 'autoRhythm') {
+		deviceStore.isDarkMode = getCurrentTheme(); // 初始化主题
+	}
+
+	const handler = (event: MediaQueryListEvent) => {
+		if (deviceStore.rhythmMode === 'autoRhythm') {
+			deviceStore.isDarkMode = event.matches; // 直接使用 boolean 值
+		}
+	};
+
+	// 添加监听器
+	mediaQueryList.addEventListener('change', handler);
+
+	// 清理函数
+	onCleanup(() => {
+		mediaQueryList.removeEventListener('change', handler);
+	});
+});
+
 onMounted(async () => {
 	initDartMode();
 	deviceStore.initDefault();
@@ -55,14 +81,14 @@ onMounted(async () => {
       </nav>
     </div>
   </header> -->
-  <div class="app-container h-full" :class="`${deviceStore.isDarkMode ? 'bg-zinc-900' : 'bg-white'}`">
-    <n-config-provider :theme="deviceStore.isDarkMode ? darkTheme : undefined">
-		<Sidebar>
-			<RouterView />
-		</Sidebar>
-		<ErrorModal v-model="showErrorModal" :errorLogging="deviceStore.errorLogging" />
-	</n-config-provider>
-  </div>
+	<div class="app-container h-full" :class="`${deviceStore.isDarkMode ? 'bg-zinc-900' : 'bg-white'}`">
+		<n-config-provider :theme="deviceStore.isDarkMode ? darkTheme : undefined">
+			<Sidebar>
+				<RouterView />
+			</Sidebar>
+			<ErrorModal v-model="showErrorModal" :errorLogging="deviceStore.errorLogging" />
+		</n-config-provider>
+	</div>
 </template>
 
 <style scoped>

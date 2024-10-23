@@ -6,6 +6,7 @@
     type CSSProperties,
     h,
     type Component,
+    computed,
   } from 'vue';
   import { useAutoUIStore } from '@/stores/autoui';
   import * as ksuApi from '@/apis/ksuApi';
@@ -20,6 +21,7 @@
     createDiscreteApi,
     darkTheme,
     lightTheme,
+    type ConfigProviderProps,
     type DataTableColumns,
     type DropdownOption,
   } from 'naive-ui';
@@ -38,10 +40,11 @@
   const searchKeyWordInput = ref<SearchKeyWordInputInstance | null>(null);
   const columns = createColumns();
   const deviceStore = useDeviceStore();
-  const { message, modal } = createDiscreteApi(['message', 'modal'],{
-    configProviderProps: {
+  const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
       theme: deviceStore.isDarkMode ? darkTheme : lightTheme
-    }
+  }))
+  const { message, modal } = createDiscreteApi(['message', 'modal'],{
+configProviderProps: configProviderPropsRef
   });
   const autoUIStore = useAutoUIStore();
   const importShareRuleLoading = ref(false);
@@ -984,7 +987,7 @@
       </div>
       <div class="flex mb-3">
         <n-button
-          :type="autoUIStore.filterInstalledApps ? 'error' : 'info'"
+          :type="autoUIStore.filterInstalledApps ? 'warning' : 'info'"
           strong
           :loading="deviceStore.loading || autoUIStore.loading"
           secondary

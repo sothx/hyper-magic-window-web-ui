@@ -6,10 +6,11 @@
     watchEffect,
     ref,
     type CSSProperties,
+    computed,
   } from 'vue';
   import hljs from 'highlight.js/lib/core';
   import { useLogsStore } from '@/stores/logs';
-  import { createDiscreteApi, darkTheme, lightTheme, type LogInst } from 'naive-ui';
+  import { createDiscreteApi, darkTheme, lightTheme, type ConfigProviderProps, type LogInst } from 'naive-ui';
   const logsStore = useLogsStore();
   import {
     ArrowUpCircleIcon,
@@ -17,10 +18,11 @@
     TrashIcon,
   } from '@heroicons/vue/24/outline';
   const deviceStore = useDeviceStore();
-  const { message } = createDiscreteApi(['message'],{
-    configProviderProps: {
+  const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
       theme: deviceStore.isDarkMode ? darkTheme : lightTheme
-    }
+  }))
+  const { message } = createDiscreteApi(['message'],{
+configProviderProps: configProviderPropsRef
   });
 
   const customLanguage = {

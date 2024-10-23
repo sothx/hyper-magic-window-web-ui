@@ -1,7 +1,7 @@
 <script setup lang="tsx">
-  import { onMounted, reactive, ref, watch, type CSSProperties } from 'vue';
+  import { computed, onMounted, reactive, ref, watch, type CSSProperties } from 'vue';
   import { useDeviceStore } from '@/stores/device';
-  import { createDiscreteApi, darkTheme, lightTheme, type NInput } from 'naive-ui';
+  import { createDiscreteApi, darkTheme, lightTheme, type ConfigProviderProps, type NInput } from 'naive-ui';
   import * as validateFun from '@/utils/validateFun';
   import type AutoUIMergeRuleItem from '@/types/AutoUIMergeRuleItem';
   import type AutoUIItem from '@/types/AutoUIItem';
@@ -21,10 +21,11 @@
   const deviceStore = useDeviceStore();
   const autoUIStore = useAutoUIStore();
   const logsStore = useLogsStore();
-  const { message, modal } = createDiscreteApi(['message', 'modal'],{
-    configProviderProps: {
+  const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
       theme: deviceStore.isDarkMode ? darkTheme : lightTheme
-    }
+  }))
+  const { message, modal } = createDiscreteApi(['message', 'modal'],{
+configProviderProps: configProviderPropsRef
   });
   export interface AutoUIDrawerSubmitResult {
     name: string;

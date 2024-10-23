@@ -1,9 +1,9 @@
 <script setup lang="tsx">
-  import { onMounted, reactive, ref, watch, type CSSProperties } from 'vue';
+  import { computed, onMounted, reactive, ref, watch, type CSSProperties } from 'vue';
   import { useDeviceStore } from '@/stores/device';
   import { useEmbeddedStore } from '@/stores/embedded';
   import type EmbeddedMergeRuleItem from '@/types/EmbeddedMergeRuleItem';
-  import { createDiscreteApi, darkTheme, lightTheme, type NInput } from 'naive-ui';
+  import { createDiscreteApi, darkTheme, lightTheme, type ConfigProviderProps, type NInput } from 'naive-ui';
   import * as validateFun from '@/utils/validateFun';
   type NInputInstance = InstanceType<typeof NInput>;
   const currentFullRuleRef = ref<NInputInstance | null>(null);
@@ -20,10 +20,11 @@
   const deviceStore = useDeviceStore();
   const embeddedStore = useEmbeddedStore();
   const logsStore = useLogsStore();
-  const { message, modal } = createDiscreteApi(['message', 'modal'],{
-    configProviderProps: {
+  const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
       theme: deviceStore.isDarkMode ? darkTheme : lightTheme
-    }
+  }))
+  const { message, modal } = createDiscreteApi(['message', 'modal'],{
+configProviderProps: configProviderPropsRef
   });
   export interface EmbeddedAppDrawerSubmitResult {
     name: string;

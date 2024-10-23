@@ -1,5 +1,5 @@
 <script setup lang="tsx">
-  import { ref, reactive, watch, type Component, h, onMounted } from 'vue';
+  import { ref, reactive, watch, type Component, h, onMounted, computed } from 'vue';
   import type EmbeddedMergeRuleItem from '@/types/EmbeddedMergeRuleItem';
   import $to from 'await-to-js';
   import pako from 'pako';
@@ -14,6 +14,7 @@
     createDiscreteApi,
     darkTheme,
     lightTheme,
+    type ConfigProviderProps,
     type DataTableColumns,
     type DropdownOption,
   } from 'naive-ui';
@@ -37,10 +38,11 @@
   const searchKeyWordInput = ref<SearchKeyWordInputInstance | null>(null);
   const addEmbeddedApp = ref<EmbeddedAppDrawerInstance | null>(null);
   const updateEmbeddedApp = ref<EmbeddedAppDrawerInstance | null>(null);
-  const { message, modal } = createDiscreteApi(['message', 'modal'],{
-    configProviderProps: {
+  const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
       theme: deviceStore.isDarkMode ? darkTheme : lightTheme
-    }
+  }))
+  const { message, modal } = createDiscreteApi(['message', 'modal'],{
+configProviderProps: configProviderPropsRef
   });
   const columns = createColumns();
   const showErrorModal = ref(false);
@@ -1182,7 +1184,7 @@
       },
       {
         title: '当前规则',
-        width: 150,
+        width: 100,
         key: 'settingMode',
         render(row, index) {
           const modeMap = {
