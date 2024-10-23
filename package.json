@@ -28,6 +28,10 @@
 		"arrowParens": "avoid",
 		"bracketSameLine": true,
 		"htmlWhitespaceSensitivity": "strict",
+		"tailwindConfig": "./tailwind.config.ts",
+		"plugins": [
+			"prettier-plugin-tailwindcss"
+		],
 		"overrides": [
 			{
 				"files": "*.yml",
@@ -47,10 +51,11 @@
 	"scripts": {
 		"dev": "vite",
 		"clean": "rimraf dist",
-		"build": "run-p type-check \"build-only {@}\" --",
 		"preview": "vite preview",
 		"build-only": "vite build",
-		"type-check": "vue-tsc --build --force"
+		"format": "prettier --write .",
+		"type-check": "vue-tsc --build --force",
+		"build": "run-p type-check \"build-only {@}\" --"
 	},
 	"dependencies": {
 		"pinia": "^2.1.7",
@@ -82,6 +87,7 @@
 		"pako": "^2.1.0",
 		"pinia-plugin-persistedstate": "^4.1.1",
 		"postcss-preset-env": "^10.0.7",
+		"prettier-plugin-tailwindcss": "^0.6.8",
 		"rimraf": "^6.0.1",
 		"tailwindcss": "^3.4.13",
 		"terser": "^5.36.0",
