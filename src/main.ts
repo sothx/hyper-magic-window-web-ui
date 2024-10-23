@@ -4,7 +4,6 @@ import "./style.css";
 import "vfonts/Lato.css";
 // 等宽字体
 import "vfonts/FiraCode.css";
-
 import { createApp } from "vue";
 import { createPinia } from "pinia";
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
@@ -25,6 +24,7 @@ import {
   NTabPane,
   NInput,
   NInputGroup,
+  darkTheme,
   NSpin,
   NSpace,
   NCard,
@@ -44,6 +44,7 @@ import {
   NCheckboxGroup,
   NCheckbox,
   NGi,
+  NThemeEditor,
   NGrid,
   NConfigProvider,
   NLog
@@ -77,7 +78,9 @@ const naive = create({
     NRadioButton,
     NInputGroupLabel,
     NInputNumber,
+    darkTheme,
     NSlider,
+    NThemeEditor,
     NAvatar,
     NBreadcrumb,
     NBreadcrumbItem,
@@ -93,10 +96,10 @@ const naive = create({
 });
 
 const app = createApp(App);
+// enableDarkMode({});
 const pinia = createPinia();
 pinia.use(piniaPluginPersistedstate)
 app.use(pinia);
 app.use(naive);
 app.use(router);
-
 app.mount("#app");

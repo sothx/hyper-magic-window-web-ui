@@ -9,11 +9,16 @@
   } from 'vue';
   import hljs from 'highlight.js/lib/core';
   import { useLogsStore } from '@/stores/logs';
-  import { createDiscreteApi, type LogInst } from 'naive-ui';
+  import { createDiscreteApi, darkTheme, lightTheme, type LogInst } from 'naive-ui';
   import axios from 'axios';
   import sqioInstance from '@/utils/sqio';
   const logsStore = useLogsStore();
-  const { message } = createDiscreteApi(['message']);
+  const deviceStore = useDeviceStore();
+  const { message } = createDiscreteApi(['message'],{
+    configProviderProps: {
+      theme: deviceStore.isDarkMode ? darkTheme : lightTheme
+    }
+  });
 
   function escapeSpecialChars(str: string) {
     return str
@@ -41,13 +46,12 @@
   <div class="game-turbo-config">
     <div class="mt-5">
       <div class="px-4 sm:px-0">
-        <h3 class="text-base font-semibold leading-7 text-gray-900">
+        <h3 :class="`text-base font-semibold leading-7 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`" >
           游戏云控配置
         </h3>
-        <p class="mt-1 max-w-2xl text-sm leading-6 text-gray-500">
+        <p :class="`mt-1 max-w-2xl text-sm leading-6  ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-500'}`">
           在这里可以查看小米的部分云控节点配置
         </p>
-        <!-- <p class="mt-1 max-w-2xl text-sm leading-6 text-gray-500">可能随云控下发而失效，云控重新下发后需要重新配置</p> -->
       </div>
       <n-card :bordered="true" title="操作栏" class="mt-3" size="small">
         <div class="flex">

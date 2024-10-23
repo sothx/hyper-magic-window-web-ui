@@ -76,6 +76,7 @@
 		"axios": "^1.7.7",
 		"child_process": "^1.0.2",
 		"clsx": "^2.1.1",
+		"darkreader": "^4.9.95",
 		"highlight.js": "^11.10.0",
 		"http": "0.0.1-security",
 		"i": "^0.3.7",

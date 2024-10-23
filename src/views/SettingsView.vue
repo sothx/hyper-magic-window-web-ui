@@ -2,14 +2,18 @@
   import { useDeviceStore } from '@/stores/device';
   import { ref, type CSSProperties } from 'vue';
   import * as xmlFormat from '@/utils/xmlFormat';
-  import { createDiscreteApi } from 'naive-ui';
+  import { createDiscreteApi, darkTheme, lightTheme } from 'naive-ui';
   import { useGameMode } from '@/hooks/useGameMode';
   import * as ksuApi from '@/apis/ksuApi';
   import $to from 'await-to-js';
   import { useEmbeddedStore } from '@/stores/embedded';
   const deviceStore = useDeviceStore();
   const embeddedStore = useEmbeddedStore();
-  const { message, modal } = createDiscreteApi(['message', 'modal']);
+  const { message, modal } = createDiscreteApi(['message', 'modal'],{
+    configProviderProps: {
+      theme: deviceStore.isDarkMode ? darkTheme : lightTheme
+    }
+  });
   const gameMode = useGameMode();
   const handleSmartFocusIOChange = (value: boolean) => {
     message.info('功能尚未上线，无任何实际效果，请等待后续更新！');
@@ -47,20 +51,20 @@
             <div>
               {value && (
                 <p>
-                  切换为 <span class="font-bold text-gray-600">定制模式</span>{' '}
+                  切换为 <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>定制模式</span>{' '}
                   后，模块会以您设备的整体应用情况{' '}
-                  <span class="font-bold text-gray-600">
+                  <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
                     修剪模块应用适配列表
                   </span>{' '}
                   ，以解决老机型由于系统优化不佳而导致的卡顿、掉帧等问题，后续每次更新模块或者安装新的应用后，建议前往{' '}
-                  <span class="font-bold text-gray-600">应用横屏配置</span> 重新{' '}
-                  <span class="font-bold text-gray-600">生成定制应用数据</span>{' '}
+                  <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>应用横屏配置</span> 重新{' '}
+                  <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>生成定制应用数据</span>{' '}
                   ，确定要继续吗？
                 </p>
               )}
               {!value && (
                 <p>
-                  切换为 <span class="font-bold text-gray-600">完整模式</span>{' '}
+                  切换为 <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>完整模式</span>{' '}
                   后，可以获得模块提供的大量应用适配，同时可能会导致部分老机型由于系统优化不佳而导致的卡顿、掉帧等问题，确定要继续吗？
                 </p>
               )}
@@ -169,22 +173,22 @@
               {value && (
                 <p>
                   好耶w，已成功切换为{' '}
-                  <span class="font-bold text-gray-600">定制模式</span>{' '}
+                  <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>定制模式</span>{' '}
                   ，模块已根据您设备当前的整体应用情况{' '}
-                  <span class="font-bold text-gray-600">
+                  <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
                     修剪模块应用适配列表
                   </span>{' '}
                   ，以解决老机型由于系统优化不佳而导致的卡顿、掉帧等问题，建议每次更新模块或者安装新的应用后，均需要在前往{' '}
-                  <span class="font-bold text-gray-600">应用横屏配置</span>{' '}
+                  <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>应用横屏配置</span>{' '}
                   界面重新生成{' '}
-                  <span class="font-bold text-gray-600">生成定制应用数据</span>{' '}
+                  <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>生成定制应用数据</span>{' '}
                   。
                 </p>
               )}
               {!value && (
                 <p>
                   好耶w，已成功切换为{' '}
-                  <span class="font-bold text-gray-600">完整模式</span>{' '}
+                  <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>完整模式</span>{' '}
                   ，可以获得模块提供的大量应用适配，同时可能会导致部分老机型由于系统优化不佳而导致的卡顿、掉帧等问题。
                 </p>
               )}
@@ -210,7 +214,7 @@
             <div>
               <p>
                 {value ? '开启' : '关闭'}{' '}
-                <span class="font-bold text-gray-600">游戏显示布局</span>{' '}
+                <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>游戏显示布局</span>{' '}
                 后需要设备重启才会生效~
               </p>
               {value &&
@@ -219,7 +223,7 @@
                 deviceStore.MIOSVersion >= 2 && (
                   <p>
                     从Hyper OS 2.0开始，小米平板需要搭配配套的{' '}
-                    <span class="font-bold text-gray-600">
+                    <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
                       修改版平板/手机管家
                     </span>{' '}
                     才能使用游戏显示布局，详情请前往模块首页了解~
@@ -304,10 +308,10 @@
   <div class="setting">
     <div class="mt-5">
       <div class="px-4 sm:px-0">
-        <h3 class="text-base font-semibold leading-7 text-gray-900">
+        <h3 :class="`text-base font-semibold leading-7 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`" >
           模块设置
         </h3>
-        <p class="mt-1 max-w-2xl text-sm leading-6 text-gray-500">
+        <p :class="`mt-1 max-w-2xl text-sm leading-6  ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-500'}`">
           在这里可以快速了解模块当前的运行数据
         </p>
       </div>
@@ -318,21 +322,21 @@
             v-if="deviceStore.deviceName"
             class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0"
           >
-            <dt class="text-sm font-medium leading-6 text-gray-900">
+            <dt :class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
               设备名称
             </dt>
             <dd
-              class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0"
+              class="mt-1 text-sm leading-6 text-gray-300 sm:col-span-2 sm:mt-0"
             >
               {{ deviceStore.deviceName || '' }}
             </dd>
           </div>
           <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-            <dt class="text-sm font-medium leading-6 text-gray-900">
+            <dt :class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
               ROOT管理器
             </dt>
             <dd
-              class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0"
+              :class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`"
             >
               {{ deviceStore.currentRootManager || '获取失败' }}
             </dd>
@@ -341,11 +345,11 @@
             v-if="deviceStore.currentRootManager === 'KernelSU'"
             class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0"
           >
-            <dt class="text-sm font-medium leading-6 text-gray-900">
+            <dt :class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
               KernelSU 版本
             </dt>
             <dd
-              class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0"
+              :class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`"
             >
               {{ deviceStore.rootManagerInfo.KSU_VER || '获取失败' }}
             </dd>
@@ -354,11 +358,11 @@
             v-if="deviceStore.currentRootManager === 'KernelSU'"
             class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0"
           >
-            <dt class="text-sm font-medium leading-6 text-gray-900">
+            <dt :class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
               KernelSU 用户空间版本号
             </dt>
             <dd
-              class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0"
+              :class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`"
             >
               {{ deviceStore.rootManagerInfo.KSU_VER_CODE || '获取失败' }}
             </dd>
@@ -367,11 +371,11 @@
             v-if="deviceStore.currentRootManager === 'KernelSU'"
             class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0"
           >
-            <dt class="text-sm font-medium leading-6 text-gray-900">
+            <dt :class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
               KernelSU 内核空间版本号
             </dt>
             <dd
-              class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0"
+              :class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`"
             >
               {{
                 deviceStore.rootManagerInfo.KSU_KERNEL_VER_CODE || '获取失败'
@@ -382,11 +386,11 @@
             v-if="deviceStore.currentRootManager === 'APatch'"
             class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0"
           >
-            <dt class="text-sm font-medium leading-6 text-gray-900">
+            <dt :class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
               APatch 版本名
             </dt>
             <dd
-              class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0"
+              :class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`"
             >
               {{ deviceStore.rootManagerInfo.APATCH_VER || '获取失败' }}
             </dd>
@@ -395,11 +399,11 @@
             v-if="deviceStore.currentRootManager === 'APatch'"
             class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0"
           >
-            <dt class="text-sm font-medium leading-6 text-gray-900">
+            <dt :class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
               APatch 版本号
             </dt>
             <dd
-              class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0"
+              :class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`"
             >
               {{ deviceStore.rootManagerInfo.APATCH_VER_CODE || '获取失败' }}
             </dd>
@@ -408,11 +412,11 @@
             v-if="deviceStore.currentRootManager === 'Magisk'"
             class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0"
           >
-            <dt class="text-sm font-medium leading-6 text-gray-900">
+            <dt :class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
               Magisk 版本
             </dt>
             <dd
-              class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0"
+              :class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`"
             >
               {{ deviceStore.rootManagerInfo.MAGISK_VER || '获取失败' }}
             </dd>
@@ -421,39 +425,39 @@
             v-if="deviceStore.currentRootManager === 'Magisk'"
             class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0"
           >
-            <dt class="text-sm font-medium leading-6 text-gray-900">
+            <dt :class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
               Magisk 版本号
             </dt>
             <dd
-              class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0"
+              :class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`"
             >
               {{ deviceStore.rootManagerInfo.MAGISK_VER_CODE || '获取失败' }}
             </dd>
           </div>
           <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-            <dt class="text-sm font-medium leading-6 text-gray-900">模块ID</dt>
+            <dt :class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">模块ID</dt>
             <dd
-              class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0"
+              :class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`"
             >
               {{ deviceStore.moduleID || '获取失败' }}
             </dd>
           </div>
           <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-            <dt class="text-sm font-medium leading-6 text-gray-900">
+            <dt :class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
               模块路径
             </dt>
             <dd
-              class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0"
+              :class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`"
             >
               {{ deviceStore.moduleDir || '获取失败' }}
             </dd>
           </div>
           <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-            <dt class="text-sm font-medium leading-6 text-gray-900">
+            <dt :class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
               模块工作模式
             </dt>
             <dd
-              class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0"
+              :class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`"
             >
               <n-switch
                 @update:value="(value: boolean) => changePatchMode(value)"
@@ -471,11 +475,11 @@
             </dd>
           </div>
           <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-            <dt class="text-sm font-medium leading-6 text-gray-900">
+            <dt :class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
               游戏显示布局
             </dt>
             <dd
-              class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0"
+              :class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`"
             >
               <n-switch
                 @update:value="(value: boolean) => changeGameMode(value)"
@@ -499,11 +503,11 @@
             </dd>
           </div>
           <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-            <dt class="text-sm font-medium leading-6 text-gray-900">
+            <dt :class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
               旋转建议提示按钮
             </dt>
             <dd
-              class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0"
+              :class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`"
             >
               <n-switch
                 @update:value="(value: boolean) => changeShowRotationSuggestions(value)"
@@ -519,11 +523,11 @@
             v-if="deviceStore.MIOSVersion"
             class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0"
           >
-            <dt class="text-sm font-medium leading-6 text-gray-900">
+            <dt :class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
               Xiaomi Hyper OS 版本号
             </dt>
             <dd
-              class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0"
+              :class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`"
             >
               {{
                 deviceStore.MIOSVersion
@@ -537,11 +541,11 @@
             v-if="deviceStore.systemVersion"
             class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0"
           >
-            <dt class="text-sm font-medium leading-6 text-gray-900">
+            <dt :class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
               系统版本
             </dt>
             <dd
-              class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0"
+              :class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`"
             >
               {{ deviceStore.systemVersion || '' }}
             </dd>
@@ -550,31 +554,31 @@
             v-if="deviceStore.systemPreVersion"
             class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0"
           >
-            <dt class="text-sm font-medium leading-6 text-gray-900">
+            <dt :class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
               上次更新的系统版本
             </dt>
             <dd
-              class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0"
+              :class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`"
             >
               {{ deviceStore.systemPreVersion || '' }}
             </dd>
           </div>
           <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-            <dt class="text-sm font-medium leading-6 text-gray-900">
+            <dt :class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
               Android Target Version
             </dt>
             <dd
-              class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0"
+              :class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`"
             >
               {{ deviceStore.androidTargetSdk || '非Android设备环境' }}
             </dd>
           </div>
           <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-            <dt class="text-sm font-medium leading-6 text-gray-900">
+            <dt :class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
               设备类型
             </dt>
             <dd
-              class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0"
+              :class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`"
             >
               {{
                 deviceStore.deviceCharacteristics === 'tablet'
@@ -587,11 +591,11 @@
             v-if="deviceStore.deviceSocModel"
             class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0"
           >
-            <dt class="text-sm font-medium leading-6 text-gray-900">
+            <dt :class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
               设备Soc类型
             </dt>
             <dd
-              class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0"
+              :class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`"
             >
               {{ deviceStore.deviceSocModel || '获取失败' }}
             </dd>
@@ -600,22 +604,22 @@
             v-if="deviceStore.deviceSocName"
             class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0"
           >
-            <dt class="text-sm font-medium leading-6 text-gray-900">
+            <dt :class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
               设备Soc名称
             </dt>
             <dd
-              class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0"
+              :class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`"
             >
               {{ deviceStore.deviceSocName || '获取失败' }}
             </dd>
           </div>
           <!-- <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-            <dt class="text-sm font-medium leading-6 text-gray-900">游戏显示布局</dt>
-            <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">启用(*Android 15+ 需额外搭配修改版手机/平板管家)</dd>
+            <dt :class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">游戏显示布局</dt>
+            <dd :class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">启用(*Android 15+ 需额外搭配修改版手机/平板管家)</dd>
           </div>
           <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-            <dt class="text-sm font-medium leading-6 text-gray-900">智能IO调度</dt>
-            <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+            <dt :class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">智能IO调度</dt>
+            <dd :class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
               <n-switch :rail-style="railStyle" @update:value="handleSmartFocusIOChange" v-if="deviceStore.smartFocusIO"
                 checked-value="on" unchecked-value="off">
                 <template #checked>
@@ -629,18 +633,18 @@
             </dd>
           </div> -->
           <!-- <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-            <dt class="text-sm font-medium leading-6 text-gray-900">Salary expectation</dt>
-            <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">$120,000</dd>
+            <dt :class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">Salary expectation</dt>
+            <dd :class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">$120,000</dd>
           </div>
           <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-            <dt class="text-sm font-medium leading-6 text-gray-900">About</dt>
-            <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">Fugiat ipsum ipsum deserunt culpa
+            <dt :class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">About</dt>
+            <dd :class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">Fugiat ipsum ipsum deserunt culpa
               aute sint do nostrud anim incididunt cillum culpa consequat. Excepteur qui ipsum aliquip consequat sint.
               Sit id mollit nulla mollit nostrud in ea officia proident. Irure nostrud pariatur mollit ad adipisicing
               reprehenderit deserunt qui eu.</dd>
           </div>
           <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-            <dt class="text-sm font-medium leading-6 text-gray-900">Attachments</dt>
+            <dt :class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">Attachments</dt>
             <dd class="mt-2 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
               <ul role="list" class="divide-y divide-gray-100 rounded-md border border-gray-200">
                 <li class="flex items-center justify-between py-4 pl-4 pr-5 text-sm leading-6">

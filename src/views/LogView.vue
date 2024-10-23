@@ -9,14 +9,19 @@
   } from 'vue';
   import hljs from 'highlight.js/lib/core';
   import { useLogsStore } from '@/stores/logs';
-  import { createDiscreteApi, type LogInst } from 'naive-ui';
+  import { createDiscreteApi, darkTheme, lightTheme, type LogInst } from 'naive-ui';
   const logsStore = useLogsStore();
   import {
     ArrowUpCircleIcon,
     ArrowDownCircleIcon,
     TrashIcon,
   } from '@heroicons/vue/24/outline';
-  const { message } = createDiscreteApi(['message']);
+  const deviceStore = useDeviceStore();
+  const { message } = createDiscreteApi(['message'],{
+    configProviderProps: {
+      theme: deviceStore.isDarkMode ? darkTheme : lightTheme
+    }
+  });
 
   const customLanguage = {
     name: 'log',
@@ -75,13 +80,13 @@
   <div class="setting">
     <div class="mt-5">
       <div class="px-4 sm:px-0">
-        <h3 class="text-base font-semibold leading-7 text-gray-900">
+        <h3 :class="`text-base font-semibold leading-7 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`" >
           日志记录
         </h3>
-        <p class="mt-1 max-w-2xl text-sm leading-6 text-gray-500">
+        <p :class="`mt-1 max-w-2xl text-sm leading-6  ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-500'}`">
           在这里可以查看本次 Web UI 运行中产生的日志
         </p>
-        <p class="mt-1 max-w-2xl text-sm leading-6 text-gray-500">
+        <p :class="`mt-1 max-w-2xl text-sm leading-6  ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-500'}`">
           若有影响使用的问题可以通过酷安/Github/模块反馈群上进行反馈
         </p>
       </div>

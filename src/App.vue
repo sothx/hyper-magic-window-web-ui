@@ -1,38 +1,49 @@
 <script setup lang="ts">
-  import { RouterLink, RouterView } from 'vue-router';
-  import HelloWorld from './components/HelloWorld.vue';
-  import { Sidebar } from './components/Sidebar';
-  import ErrorModal from '@/components/ErrorModal.vue';
-  import { ref, onMounted, watch } from 'vue';
-  import { useDeviceStore } from '@/stores/device';
-  import { useEmbeddedStore } from '@/stores/embedded';
-  import { useAutoUIStore } from '@/stores/autoui';
+import { RouterLink, RouterView } from 'vue-router';
+import HelloWorld from './components/HelloWorld.vue';
+import { Sidebar } from './components/Sidebar';
+import ErrorModal from '@/components/ErrorModal.vue';
+import { ref, onMounted, watch } from 'vue';
+import { useDeviceStore } from '@/stores/device';
+import { darkTheme } from 'naive-ui'
+import { useEmbeddedStore } from '@/stores/embedded';
+import { useAutoUIStore } from '@/stores/autoui';
+import {
+	enable as enableDarkMode,
+	disable as disableDarkMode,
+	auto as followSystemColorScheme,
+	exportGeneratedCSS as collectCSS,
+	isEnabled as isDarkReaderEnabled,
+} from 'darkreader';
 
-  const deviceStore = useDeviceStore();
-  const embeddedStore = useEmbeddedStore();
-  const autoUIStore = useAutoUIStore();
-  const showErrorModal = ref(false);
+const deviceStore = useDeviceStore();
+const embeddedStore = useEmbeddedStore();
+const autoUIStore = useAutoUIStore();
+const showErrorModal = ref(false);
 
-  watch(
-    () => deviceStore.isNeedShowErrorModal, // 监听的值
-    (newValue, oldValue) => {
-      // 回调函数，值变化时执行
-      if (newValue) {
-        showErrorModal.value = true;
-      }
-    },
-    { immediate: false } // 默认是 false，不需要设置，确保不会在初始时执行
-  );
+const initDartMode = () => {};
 
-  onMounted(async () => {
-    deviceStore.initDefault();
-    embeddedStore.initDefault();
-    autoUIStore.initDefault();
-  });
+watch(
+	() => deviceStore.isNeedShowErrorModal, // 监听的值
+	(newValue, oldValue) => {
+		// 回调函数，值变化时执行
+		if (newValue) {
+			showErrorModal.value = true;
+		}
+	},
+	{ immediate: false }, // 默认是 false，不需要设置，确保不会在初始时执行
+);
+
+onMounted(async () => {
+	initDartMode();
+	deviceStore.initDefault();
+	embeddedStore.initDefault();
+	autoUIStore.initDefault();
+});
 </script>
 
 <template>
-  <!-- <header>
+	<!-- <header>
     <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
 
     <div class="wrapper">
@@ -44,17 +55,18 @@
       </nav>
     </div>
   </header> -->
-  <Sidebar>
-    <RouterView />
-  </Sidebar>
-  <ErrorModal
-    v-model="showErrorModal"
-    :errorLogging="deviceStore.errorLogging"
-  />
+  <div class="app-container h-full" :class="`${deviceStore.isDarkMode ? 'bg-zinc-900' : 'bg-white'}`">
+    <n-config-provider :theme="deviceStore.isDarkMode ? darkTheme : undefined">
+		<Sidebar>
+			<RouterView />
+		</Sidebar>
+		<ErrorModal v-model="showErrorModal" :errorLogging="deviceStore.errorLogging" />
+	</n-config-provider>
+  </div>
 </template>
 
 <style scoped>
-  /* header {
+/* header {
   line-height: 1.5;
   max-height: 100vh;
 }

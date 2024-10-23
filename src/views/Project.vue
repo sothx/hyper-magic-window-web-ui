@@ -1,24 +1,28 @@
 <script setup lang="ts">
   import { useDeviceStore } from '@/stores/device';
   import type { CSSProperties } from 'vue';
-  import { createDiscreteApi } from 'naive-ui';
+  import { createDiscreteApi, darkTheme, lightTheme } from 'naive-ui';
   const deviceStore = useDeviceStore();
-  const { message } = createDiscreteApi(['message']);
+  const { message } = createDiscreteApi(['message'],{
+    configProviderProps: {
+      theme: deviceStore.isDarkMode ? darkTheme : lightTheme
+    }
+  });
 </script>
 <template>
   <div class="setting">
     <div class="mt-5">
       <div class="px-4 sm:px-0">
-        <h3 class="text-base font-semibold leading-7 text-gray-900">
+        <h3 :class="`text-base font-semibold leading-7 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`" >
           开发路线图
         </h3>
-        <p class="mt-1 max-w-2xl text-sm leading-6 text-gray-500">
+        <p :class="`mt-1 max-w-2xl text-sm leading-6  ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-500'}`">
           在这里是一些功能需求和开发进度
         </p>
-        <p class="mt-1 max-w-2xl text-sm leading-6 text-gray-500">
+        <p :class="`mt-1 max-w-2xl text-sm leading-6  ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-500'}`">
           若有期待的需求可以通过酷安/Github/模块反馈群上进行反馈
         </p>
-        <p class="mt-1 max-w-2xl text-sm leading-6 text-gray-500">
+        <p :class="`mt-1 max-w-2xl text-sm leading-6  ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-500'}`">
           （写不过来QwQ，可能进展缓慢，请勿催更~）
         </p>
       </div>

@@ -87,6 +87,7 @@ export const useDeviceStore = defineStore(
     const miuiCompatEnable = ref<boolean>(false);
     const miuiAppCompatEnable = ref<boolean>(false);
     const showRotationSuggestions = ref<boolean>(false);
+    const isDarkMode = ref<boolean>(false);
     const loading = ref<boolean>(true);
     const errorLogging = reactive<ErrorLogging[]>([]);
     const skipConfirm = reactive({
@@ -326,6 +327,7 @@ export const useDeviceStore = defineStore(
       rootManagerInfo,
       errorLogging,
       loading,
+      isDarkMode,
       initDefault,
     };
   },

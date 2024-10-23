@@ -3,7 +3,7 @@
   import { useDeviceStore } from '@/stores/device';
   import { useEmbeddedStore } from '@/stores/embedded';
   import type EmbeddedMergeRuleItem from '@/types/EmbeddedMergeRuleItem';
-  import { createDiscreteApi, type NInput } from 'naive-ui';
+  import { createDiscreteApi, darkTheme, lightTheme, type NInput } from 'naive-ui';
   import * as validateFun from '@/utils/validateFun';
   type NInputInstance = InstanceType<typeof NInput>;
   const currentFullRuleRef = ref<NInputInstance | null>(null);
@@ -20,7 +20,11 @@
   const deviceStore = useDeviceStore();
   const embeddedStore = useEmbeddedStore();
   const logsStore = useLogsStore();
-  const { message, modal } = createDiscreteApi(['message', 'modal']);
+  const { message, modal } = createDiscreteApi(['message', 'modal'],{
+    configProviderProps: {
+      theme: deviceStore.isDarkMode ? darkTheme : lightTheme
+    }
+  });
   export interface EmbeddedAppDrawerSubmitResult {
     name: string;
     settingMode: EmbeddedMergeRuleItem['settingMode'];
@@ -389,11 +393,11 @@
                 return (
                   <p>
                     当前应用已存在{' '}
-                    <span class="font-bold text-gray-600">
+                    <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
                       平行窗口的自定义规则
                     </span>{' '}
                     ，继续提交将导致{' '}
-                    <span class="font-bold text-gray-600">
+                    <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
                       平行窗口的自定义规则
                     </span>{' '}
                     丢失。确定要继续吗？
@@ -403,13 +407,13 @@
                 return (
                   <p>
                     当前应用已存在{' '}
-                    <span class="font-bold text-gray-600">
+                    <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
                       平行窗口的模块规则
                     </span>{' '}
                     ，继续更新将会被更替为{' '}
-                    <span class="font-bold text-gray-600">全屏规则</span>{' '}
+                    <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>全屏规则</span>{' '}
                     ，如后续需要改回{' '}
-                    <span class="font-bold text-gray-600">
+                    <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
                       平行窗口的模块规则
                     </span>{' '}
                     则需要先清除自定义规则，确定要继续吗？
@@ -447,15 +451,15 @@
               return (
                 <p>
                   当前应用已存在{' '}
-                  <span class="font-bold text-gray-600">
+                  <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
                     平行窗口的模块规则
                   </span>{' '}
                   ，继续更新将会被更替为{' '}
-                  <span class="font-bold text-gray-600">
+                  <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
                     平行窗口的自定义规则
                   </span>{' '}
                   ，且该应用规则不再随模块版本更新，如后续需要改回{' '}
-                  <span class="font-bold text-gray-600">
+                  <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
                     平行窗口的模块规则
                   </span>{' '}
                   则需要先清除自定义规则，确定要继续吗？

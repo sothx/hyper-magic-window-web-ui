@@ -12,6 +12,8 @@
     NInput,
     NTable,
     createDiscreteApi,
+    darkTheme,
+    lightTheme,
     type DataTableColumns,
     type DropdownOption,
   } from 'naive-ui';
@@ -35,7 +37,11 @@
   const searchKeyWordInput = ref<SearchKeyWordInputInstance | null>(null);
   const addEmbeddedApp = ref<EmbeddedAppDrawerInstance | null>(null);
   const updateEmbeddedApp = ref<EmbeddedAppDrawerInstance | null>(null);
-  const { message, modal } = createDiscreteApi(['message', 'modal']);
+  const { message, modal } = createDiscreteApi(['message', 'modal'],{
+    configProviderProps: {
+      theme: deviceStore.isDarkMode ? darkTheme : lightTheme
+    }
+  });
   const columns = createColumns();
   const showErrorModal = ref(false);
   const embeddedTableRef = ref<NDataTabletInstance | null>(null);
@@ -129,7 +135,7 @@
           content: () => (
             <p>
               导入分享规则失败了QwQ，解析{' '}
-              <span class="font-bold text-gray-600">自定义规则</span>{' '}
+              <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>自定义规则</span>{' '}
               口令发生错误，无法正常解析。
             </p>
           ),
@@ -152,7 +158,7 @@
             content: () => (
               <p>
                 导入分享规则失败了QwQ，该{' '}
-                <span class="font-bold text-gray-600">自定义规则</span>{' '}
+                <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>自定义规则</span>{' '}
                 不适用于应用横屏布局。
               </p>
             ),
@@ -192,7 +198,7 @@
             content: () => (
               <p>
                 导入分享规则失败了QwQ，该{' '}
-                <span class="font-bold text-gray-600">自定义规则</span>{' '}
+                <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>自定义规则</span>{' '}
                 仅兼容Android 13 - 14 的小米机型。
               </p>
             ),
@@ -213,7 +219,7 @@
             content: () => (
               <p>
                 导入分享规则失败了QwQ，该{' '}
-                <span class="font-bold text-gray-600">自定义规则</span>{' '}
+                <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>自定义规则</span>{' '}
                 仅兼容Hyper OS 2.0的小米机型。
               </p>
             ),
@@ -293,13 +299,13 @@
             content: () => (
               <p>
                 好耶w，{' '}
-                <span class="font-bold text-gray-600">
+                <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
                   {importRuleContent.name}
                 </span>{' '}
                 的应用配置成功了OwO~如果应用更新后的规则不生效，可以尝试重启平板并且在{' '}
-                <span class="font-bold text-gray-600">平板专区-平行窗口</span>{' '}
+                <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>平板专区-平行窗口</span>{' '}
                 内{' '}
-                <span class="font-bold text-gray-600">
+                <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
                   {['embedded', 'fullScreen'].includes(importRuleContent.mode)
                     ? '打开'
                     : '关闭'}
@@ -395,9 +401,9 @@
           <div>
             <p>
               好耶w，已根据您设备当前的整体应用情况重新{' '}
-              <span class="font-bold text-gray-600">修剪模块应用适配列表</span>{' '}
+              <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>修剪模块应用适配列表</span>{' '}
               ，后续每次更新模块或者安装新的应用后，建议重新操作{' '}
-              <span class="font-bold text-gray-600">生成定制应用数据</span> 。
+              <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>生成定制应用数据</span> 。
             </p>
           </div>
         ),
@@ -581,13 +587,13 @@
             content: () => (
               <p>
                 好耶w，{' '}
-                <span class="font-bold text-gray-600">
+                <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
                   {addEmbeddedAppRes.name}
                 </span>{' '}
                 的应用配置添加成功了OwO~如果应用添加后的规则不生效，可以尝试重启平板并且在{' '}
-                <span class="font-bold text-gray-600">平板专区-平行窗口</span>{' '}
+                <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>平板专区-平行窗口</span>{' '}
                 内{' '}
-                <span class="font-bold text-gray-600">
+                <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
                   {['embedded', 'fullScreen'].includes(
                     addEmbeddedAppRes.settingMode
                   )
@@ -821,11 +827,11 @@
             preset: 'dialog',
             content: () => (
               <p>
-                好耶w， <span class="font-bold text-gray-600">{row.name}</span>{' '}
+                好耶w， <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>{row.name}</span>{' '}
                 的应用配置更新成功了OwO~如果应用更新后的规则不生效，可以尝试重启平板并且在{' '}
-                <span class="font-bold text-gray-600">平板专区-平行窗口</span>{' '}
+                <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>平板专区-平行窗口</span>{' '}
                 内{' '}
-                <span class="font-bold text-gray-600">
+                <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
                   {['embedded', 'fullScreen'].includes(
                     updateEmbeddedAppRes.settingMode
                   )
@@ -861,9 +867,9 @@
         content: () => (
           <p>
             清除自定义规则后，你对{' '}
-            <span class="font-bold text-gray-600">{row.name}</span>{' '}
+            <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>{row.name}</span>{' '}
             所做的所有自定义配置将丢失，如果该应用同时还存在{' '}
-            <span class="font-bold text-gray-600">模块规则</span>{' '}
+            <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>模块规则</span>{' '}
             ，将会还原回模块自身的适配规则。确定要继续吗？
           </p>
         ),
@@ -983,9 +989,9 @@
           preset: 'dialog',
           content: () => (
             <p>
-              复制 <span class="font-bold text-gray-600">{row.name}</span>{' '}
+              复制 <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>{row.name}</span>{' '}
               的分享口令失败了QwQ，可能由于没有读取/写入剪切板的权限或{' '}
-              <span class="font-bold text-gray-600">自定义规则</span> 长度过大。
+              <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>自定义规则</span> 长度过大。
             </p>
           ),
           negativeText: '确定',
@@ -1000,17 +1006,17 @@
             <div>
               <p>
                 好耶w，复制{' '}
-                <span class="font-bold text-gray-600">{row.name}</span>{' '}
+                <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>{row.name}</span>{' '}
                 分享口令成功了~
               </p>
               <p>
                 如果没有复制成功，请确认是否给予了读取/写入剪切板的权限或{' '}
-                <span class="font-bold text-gray-600">自定义规则</span>{' '}
+                <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>自定义规则</span>{' '}
                 长度过大。
               </p>
               <p>
                 分享口令导入入口位于{' '}
-                <span class="font-bold text-gray-600">
+                <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
                   应用横屏配置- 从分享口令导入
                 </span>{' '}
                 。
@@ -1059,7 +1065,7 @@
       preset: 'dialog',
       content: () => (
         <p>
-          模块已对 <span class="font-bold text-gray-600">{row.name}</span>{' '}
+          模块已对 <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>{row.name}</span>{' '}
           配置了合适的适配规则，且不可被移除，仅有自定义规则可以被移除哦~
         </p>
       ),
@@ -1350,10 +1356,10 @@
   <main class="mb-10">
     <div class="mt-5">
       <div class="px-4 sm:px-0 mb-5">
-        <h3 class="text-base font-semibold leading-7 text-gray-900">
+        <h3 :class="`text-base font-semibold leading-7 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`" >
           应用横屏配置
         </h3>
-        <p class="mt-1 max-w-2xl text-sm leading-6 text-gray-500">
+        <p :class="`mt-1 max-w-2xl text-sm leading-6  ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-500'}`">
           在这里可以快速管理平板在横屏应用下的配置
         </p>
       </div>

@@ -1,7 +1,7 @@
 <script setup lang="tsx">
   import { onMounted, reactive, ref, watch, type CSSProperties } from 'vue';
   import { useDeviceStore } from '@/stores/device';
-  import { createDiscreteApi, type NInput } from 'naive-ui';
+  import { createDiscreteApi, darkTheme, lightTheme, type NInput } from 'naive-ui';
   import * as validateFun from '@/utils/validateFun';
   import type AutoUIMergeRuleItem from '@/types/AutoUIMergeRuleItem';
   import type AutoUIItem from '@/types/AutoUIItem';
@@ -21,7 +21,11 @@
   const deviceStore = useDeviceStore();
   const autoUIStore = useAutoUIStore();
   const logsStore = useLogsStore();
-  const { message, modal } = createDiscreteApi(['message', 'modal']);
+  const { message, modal } = createDiscreteApi(['message', 'modal'],{
+    configProviderProps: {
+      theme: deviceStore.isDarkMode ? darkTheme : lightTheme
+    }
+  });
   export interface AutoUIDrawerSubmitResult {
     name: string;
     modePayload: {
@@ -319,11 +323,11 @@
         return (
           <p>
             应用布局优化的规则仅在应用横屏全屏场景下才会生效，建议将应用的横屏配置修改为{' '}
-            <span class="font-bold text-gray-600">全屏</span>
+            <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>全屏</span>
             ，规则效果以应用个体差异而异，建议多多尝试。继续更新将会被更替为{' '}
-            <span class="font-bold text-gray-600">自定义规则</span>{' '}
+            <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>自定义规则</span>{' '}
             ，且该应用规则不再随模块版本更新，如后续需要改回{' '}
-            <span class="font-bold text-gray-600">模块规则</span>{' '}
+            <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>模块规则</span>{' '}
             则需要先清除自定义规则，确定要继续吗？
           </p>
         );
