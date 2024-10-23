@@ -288,10 +288,10 @@
   }
 
   const openAddEmbeddedApp = async () => {
-    const a = Object.entries(embeddedStore.mergeRuleList)
-    .filter(([, value]) => !value.applicationName)
-    .map(([key,value]) => value.name);
-    console.log(a,'a')
+    // const a = Object.entries(embeddedStore.mergeRuleList)
+    // .filter(([, value]) => !value.applicationName)
+    // .map(([key,value]) => value.name);
+    // console.log(a,'a')
     if (deviceStore.deviceCharacteristics !== 'tablet') {
       modal.create({
         title: '不兼容说明',
