@@ -46,7 +46,7 @@
 	},
 	"scripts": {
 		"dev": "vite",
-		"clean": "rimraf build",
+		"clean": "rimraf dist",
 		"build": "run-p type-check \"build-only {@}\" --",
 		"preview": "vite preview",
 		"build-only": "vite build",
