@@ -97,10 +97,30 @@ export const useDeviceStore = defineStore(
     );
 
     async function initDefault() {
-      // 模块信息 *弱校验
-      const [, getModuleInfoRes] = await $to<string, string>(
-        ksuApi.getModuleInfo()
+      const executeWithoutWaiting = [
+        // 模块信息 *弱校验
+        $to<string, string>(ksuApi.getModuleInfo()),
+        // 设备名称
+        $to<string, string>(ksuApi.getDeviceName()),
+        // ROOT管理器信息 *弱校验
+        $to<string, string>(ksuApi.getRootManagerInfo()),
+        // 系统版本
+        $to<string, string>(ksuApi.getSystemVersion()),
+        // 上个系统版本
+        $to<string, string>(ksuApi.getPreSystemVersion()),
+      ];
+      // 等待所有 promises 完成
+      const executeWithoutWaitingResults = await Promise.all(
+        executeWithoutWaiting
       );
+      const [
+        [, getModuleInfoRes],
+        [, getDeviceNameRes],
+        [, getRootManagerInfo],
+        [, getSystemVersionRes],
+        [, getPreSystemVersionRes],
+      ] = executeWithoutWaitingResults;
+      // 模块信息 *弱校验
       if (!getModuleInfoRes?.length) {
         errorLogging.push({
           type: 'moduleInfo',
@@ -114,30 +134,12 @@ export const useDeviceStore = defineStore(
         moduleID.value = moduleInfoObj.id;
       }
       // 设备名称
-      const [, getDeviceNameRes] = await $to<string, string>(
-        ksuApi.getDeviceName()
-      );
       deviceName.value = getDeviceNameRes || '';
       // 系统版本
-      const [, getSystemVersionRes] = await $to<string, string>(
-        ksuApi.getSystemVersion()
-      );
       systemVersion.value = getSystemVersionRes || '';
-      const [, getPreSystemVersionRes] = await $to<string, string>(
-        ksuApi.getPreSystemVersion()
-      );
+      // 上个系统版本
       systemPreVersion.value = getPreSystemVersionRes || '';
-      // ROOT管理器信息 *弱校验
-      const [, getRootManagerInfo] = await $to<string, string>(
-        ksuApi.getRootManagerInfo()
-      );
-      if (!getRootManagerInfo?.length) {
-        errorLogging.push({
-          type: 'moduleInfo',
-          title: 'ROOT管理器信息',
-          msg: '获取ROOT管理器信息失败',
-        });
-      }
+      // ROOT管理器信息
       if (getRootManagerInfo?.length) {
         const shellCommon = `echo "$KSU,$KSU_VER,$KSU_VER_CODE,$KSU_KERNEL_VER_CODE,$APATCH,$APATCH_VER_CODE,$APATCH_VER,$MAGISK_VER,$MAGISK_VER_CODE"`;
         const rootManagerStrArr: string[] = getRootManagerInfo.split(',');
