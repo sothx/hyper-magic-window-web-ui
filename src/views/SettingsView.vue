@@ -144,8 +144,8 @@
           {value && deviceStore.deviceCharacteristics === 'tablet' && deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && (<p>从Hyper OS 2.0开始，小米平板需要搭配配套的 <span class="font-bold text-gray-600">修改版平板/手机管家</span> 才能使用游戏显示布局，详情请前往模块首页了解~</p>)}
           <p>是否立即重启？</p>
         </div>),
-        positiveText: '立即重启',
-        negativeText: '稍后重启',
+        positiveText: '确认并立即重启',
+        negativeText: '取消',
         onPositiveClick: () => {
           resolve('positiveClick')
         },
@@ -191,16 +191,6 @@
         })
         return;
       }
-    }
-    if (negativeRes) {
-      modal.create({
-        title: '操作成功',
-        type: 'success',
-        preset: 'dialog',
-        content: () => (<p>修改模块配置成功，请手动重启设备~</p>),
-        negativeText: '确定'
-      })
-      return;
     }
 
   }
