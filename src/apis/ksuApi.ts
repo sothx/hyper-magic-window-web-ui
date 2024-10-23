@@ -378,7 +378,7 @@ export const getIsPatchMode = (): Promise<string> => {
   const shellCommon = `grep 'is_patch_mode=' /data/adb/MIUI_MagicWindow+/config.prop | awk -F'=' '{print $2}'`
   return handlePromiseWithLogging(new Promise(async (resolve, reject) => {
     if (import.meta.env.MODE === "development") {
-      resolve(`true`);
+      resolve(`false`);
     } else {
       const { errno, stdout, stderr }: ExecResults = await exec(
         shellCommon
