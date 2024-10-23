@@ -1,18 +1,17 @@
-import { ref, computed, reactive } from "vue";
-import { defineStore } from "pinia";
-import type AutoUIItem from "@/types/AutoUIItem";
-import type AutoUISettingRuleItem from "@/types/AutoUISettingRuleItem";
-import type AutoUIMergeRuleItem from "@/types/AutoUIMergeRuleItem";
-import $to from "await-to-js";
-import * as ksuApi from "@/apis/ksuApi";
-import * as xmlFormat from "@/utils/xmlFormat";
-import type { ErrorLogging } from "@/types/ErrorLogging";
-import applicationName from "@/config/applicationName";
+import { ref, computed, reactive } from 'vue';
+import { defineStore } from 'pinia';
+import type AutoUIItem from '@/types/AutoUIItem';
+import type AutoUISettingRuleItem from '@/types/AutoUISettingRuleItem';
+import type AutoUIMergeRuleItem from '@/types/AutoUIMergeRuleItem';
+import $to from 'await-to-js';
+import * as ksuApi from '@/apis/ksuApi';
+import * as xmlFormat from '@/utils/xmlFormat';
+import type { ErrorLogging } from '@/types/ErrorLogging';
+import applicationName from '@/config/applicationName';
 
-
-export const useAutoUIStore = defineStore("autoui", () => {
+export const useAutoUIStore = defineStore('autoui', () => {
   // 应用布局优化
-  const sourceAutoUIList = ref<Record<AutoUIItem["name"], AutoUIItem>>({});
+  const sourceAutoUIList = ref<Record<AutoUIItem['name'], AutoUIItem>>({});
   const customConfigAutoUIList = ref<Record<string, AutoUIItem>>({});
   // 配置文件
   const autoUISettingConfig = ref<Record<string, AutoUISettingRuleItem>>({});
@@ -33,8 +32,13 @@ export const useAutoUIStore = defineStore("autoui", () => {
         }
 
         // 过滤条件，检查 name 和 applicationName
-        const applicationNameLower = item.applicationName ? item.applicationName.toLowerCase() : '';
-        if (!itemName.includes(searchValue) && !applicationNameLower.includes(searchValue)) {
+        const applicationNameLower = item.applicationName
+          ? item.applicationName.toLowerCase()
+          : '';
+        if (
+          !itemName.includes(searchValue) &&
+          !applicationNameLower.includes(searchValue)
+        ) {
           return result;
         }
 
@@ -43,10 +47,10 @@ export const useAutoUIStore = defineStore("autoui", () => {
       }, [])
       .sort((a, b) => {
         // 将 ruleMode 为 'custom' 的项排在前面
-        if (a.ruleMode === "custom" && b.ruleMode !== "custom") {
+        if (a.ruleMode === 'custom' && b.ruleMode !== 'custom') {
           return -1;
         }
-        if (a.ruleMode !== "custom" && b.ruleMode === "custom") {
+        if (a.ruleMode !== 'custom' && b.ruleMode === 'custom') {
           return 1;
         }
         return a.name.localeCompare(b.name);
@@ -57,7 +61,7 @@ export const useAutoUIStore = defineStore("autoui", () => {
   // 应用总数
   const ruleCount = computed(() => mergeRuleList.value.length);
   // 搜索值
-  const searchKeyWord = ref<string>("");
+  const searchKeyWord = ref<string>('');
   // 加载状态
   const loading = ref<boolean>(true);
   // 错误存储
@@ -88,8 +92,8 @@ export const useAutoUIStore = defineStore("autoui", () => {
     >(ksuApi.getSourceAutoUIList());
     if (getSourceAutoUIListErr) {
       errorLogging.push({
-        type: "sourceAutoUIList",
-        title: "[模块]应用布局优化配置文件",
+        type: 'sourceAutoUIList',
+        title: '[模块]应用布局优化配置文件',
         msg: getSourceAutoUIListErr,
       });
     }
@@ -97,8 +101,8 @@ export const useAutoUIStore = defineStore("autoui", () => {
     if (getSourceAutoUIListRes) {
       sourceAutoUIList.value = xmlFormat.parseXMLToObject<AutoUIItem>(
         getSourceAutoUIListRes,
-        "packageRules",
-        "package"
+        'packageRules',
+        'package'
       );
     }
 
@@ -108,8 +112,8 @@ export const useAutoUIStore = defineStore("autoui", () => {
     if (!getCustomConfigAutoUIListErr) {
       customConfigAutoUIList.value = xmlFormat.parseXMLToObject<AutoUIItem>(
         getCustomConfigAutoUIListRes,
-        "packageRules",
-        "package",
+        'packageRules',
+        'package',
         true
       );
     }
@@ -132,8 +136,8 @@ export const useAutoUIStore = defineStore("autoui", () => {
       autoUISettingConfig.value =
         xmlFormat.parseXMLToObject<AutoUISettingRuleItem>(
           getAutoUISettingConfigRes,
-          "setting_config",
-          "setting"
+          'setting_config',
+          'setting'
         );
     }
 
@@ -143,7 +147,6 @@ export const useAutoUIStore = defineStore("autoui", () => {
       customConfigAutoUIList.value,
       autoUISettingConfig.value
     );
-
 
     if (!errorLogging.length) {
       loading.value = false;

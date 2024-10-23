@@ -1,31 +1,33 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import WelcomeItem from './WelcomeItem.vue'
-import DocumentationIcon from './icons/IconDocumentation.vue'
-import ToolingIcon from './icons/IconTooling.vue'
-import EcosystemIcon from './icons/IconEcosystem.vue'
-import CommunityIcon from './icons/IconCommunity.vue'
-import SupportIcon from './icons/IconSupport.vue'
-const activeDrawer = ref(false)
+  import { ref } from 'vue';
+  import WelcomeItem from './WelcomeItem.vue';
+  import DocumentationIcon from './icons/IconDocumentation.vue';
+  import ToolingIcon from './icons/IconTooling.vue';
+  import EcosystemIcon from './icons/IconEcosystem.vue';
+  import CommunityIcon from './icons/IconCommunity.vue';
+  import SupportIcon from './icons/IconSupport.vue';
+  const activeDrawer = ref(false);
 </script>
 
 <template>
   <div>
-    <p class="text-blue-600 text-2xl text-center text-indigo-600">完美横屏应用计划 Web UI 管理后台正在建设中，敬请期待~</p>
+    <p class="text-blue-600 text-2xl text-center text-indigo-600">
+      完美横屏应用计划 Web UI 管理后台正在建设中，敬请期待~
+    </p>
     <div class="text-center mt-10">
       <n-button @click="activeDrawer = true">
-      这是一个测试用的抽屉~内容是小米的往年标语~
-    </n-button>
+        这是一个测试用的抽屉~内容是小米的往年标语~
+      </n-button>
     </div>
-  <n-drawer v-model:show="activeDrawer" :width="502" placement="right">
-    <n-drawer-content title="测试抽屉" closable>
-      <p>永远相信美好的事情即将发生！！！</p>
-      <p>让每个人都能享受科技的乐趣！！！</p>
-      <p>优秀的公司赚取利润，伟大的公司赢得人心！！！</p>
-      <p>小米为发烧而生！！！</p>
-      <p>我所有的向往！！！</p>
-    </n-drawer-content>
-  </n-drawer>
+    <n-drawer v-model:show="activeDrawer" :width="502" placement="right">
+      <n-drawer-content title="测试抽屉" closable>
+        <p>永远相信美好的事情即将发生！！！</p>
+        <p>让每个人都能享受科技的乐趣！！！</p>
+        <p>优秀的公司赚取利润，伟大的公司赢得人心！！！</p>
+        <p>小米为发烧而生！！！</p>
+        <p>我所有的向往！！！</p>
+      </n-drawer-content>
+    </n-drawer>
   </div>
   <!-- <WelcomeItem>
     <template #icon>
