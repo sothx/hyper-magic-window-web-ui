@@ -10,6 +10,7 @@ import * as xmlFormat from '@/utils/xmlFormat';
 import type { ErrorLogging } from '@/types/ErrorLogging';
 import applicationName from '@/config/applicationName';
 import whitelistApplications from '@/config/whitelistApplications';
+import { useDeviceStore } from './device';
 import eventBus from '@/utils/eventBus';
 
 export const useEmbeddedStore = defineStore(
@@ -17,9 +18,8 @@ export const useEmbeddedStore = defineStore(
   () => {
     // 是否补丁模式
     const isPatchMode = ref<boolean>(false);
-    const installedAndroidApplicationPackageNameList = ref<string[]>([]);
-    const lastInstalledAndroidApplicationPackageNameList = ref<string[]>([]);
     const lastCheckPatchModeTime = ref<string>();
+    const filterInstalledApps = ref<boolean>(false);
     // 平行窗口
     const sourceEmbeddedRulesList = ref<
       Record<EmbeddedRuleItem['name'], EmbeddedRuleItem>
@@ -47,10 +47,11 @@ export const useEmbeddedStore = defineStore(
     // diff后的平行窗口配置
     const patchEmbeddedRulesList = computed(
       (): Record<EmbeddedRuleItem['name'], EmbeddedRuleItem> => {
+        const deviceStore = useDeviceStore()
         const combinedSet = new Set([
           ...Object.keys(systemEmbeddedRulesList.value),
           ...Object.keys(systemFixedOrientationList.value),
-          ...installedAndroidApplicationPackageNameList.value,
+          ...deviceStore.installedAndroidApplicationPackageNameList,
           ...whitelistApplications,
         ]);
 
@@ -69,10 +70,11 @@ export const useEmbeddedStore = defineStore(
         FixedOrientationRuleItem['name'],
         FixedOrientationRuleItem
       > => {
+        const deviceStore = useDeviceStore()
         const combinedSet = new Set([
           ...Object.keys(systemEmbeddedRulesList.value),
           ...Object.keys(systemFixedOrientationList.value),
-          ...installedAndroidApplicationPackageNameList.value,
+          ...deviceStore.installedAndroidApplicationPackageNameList,
           ...whitelistApplications,
         ]);
 
@@ -90,6 +92,7 @@ export const useEmbeddedStore = defineStore(
     const filterMergeRuleList = computed(() => {
       const searchValue = searchKeyWord.value.trim().toLowerCase();
       const cachedMergeRuleList = mergeRuleList.value;
+      const deviceStore = useDeviceStore()
 
       return cachedMergeRuleList
         .reduce((result: EmbeddedMergeRuleItem[], item) => {
@@ -104,11 +107,19 @@ export const useEmbeddedStore = defineStore(
           const applicationNameLower = item.applicationName
             ? item.applicationName.toLowerCase()
             : '';
+
           if (
             !itemName.includes(searchValue) &&
             !applicationNameLower.includes(searchValue)
           ) {
             return result;
+          }
+
+          const isInstalled = new Set(deviceStore.installedAndroidApplicationPackageNameList);
+
+          // 如果 filterInstalledApps 为 true，检查 item 是否为已安装的应用
+          if (filterInstalledApps.value && !isInstalled.has(item.name)) {
+            return result; // 如果不是已安装的应用，跳过该项
           }
 
           result.push(item);
@@ -129,6 +140,7 @@ export const useEmbeddedStore = defineStore(
     // 自动检查定制模式规则是否需要更新
     const checkPatchModeIsNeedReload = () => {
       const now = Date.now();
+      const deviceStore = useDeviceStore()
       const threeDaysInMilliseconds = 3 * 24 * 60 * 60 * 1000;
       if (
         !lastCheckPatchModeTime.value ||
@@ -137,11 +149,11 @@ export const useEmbeddedStore = defineStore(
         lastCheckPatchModeTime.value = now.toString();
         if (
           isPatchMode &&
-          lastInstalledAndroidApplicationPackageNameList.value.length !==
-            installedAndroidApplicationPackageNameList.value.length
+          deviceStore.lastInstalledAndroidApplicationPackageNameList.length !==
+            deviceStore.installedAndroidApplicationPackageNameList.length
         ) {
           const isNeedReloadPathRule =
-            lastInstalledAndroidApplicationPackageNameList.value.some(item => {
+          deviceStore.lastInstalledAndroidApplicationPackageNameList.some(item => {
               return !allPackageName.value.has(item);
             });
           if (isNeedReloadPathRule) {
@@ -208,29 +220,6 @@ export const useEmbeddedStore = defineStore(
           isPatchMode.value = true;
         } else {
           isPatchMode.value = false;
-        }
-      }
-      // 获取用户已安装的应用包名
-      const [
-        getAndroidApplicationPackageNameListErr,
-        getAndroidApplicationPackageNameListRes,
-      ] = await $to<string, string>(
-        ksuApi.getAndroidApplicationPackageNameList()
-      );
-      if (getAndroidApplicationPackageNameListErr) {
-        errorLogging.push({
-          type: 'getAndroidApplicationPackageNameListErr',
-          title: '获取用户已安装的应用包名',
-          msg: getAndroidApplicationPackageNameListErr,
-        });
-      } else {
-        if (getAndroidApplicationPackageNameListRes) {
-          if (installedAndroidApplicationPackageNameList.value.length) {
-            lastInstalledAndroidApplicationPackageNameList.value =
-              installedAndroidApplicationPackageNameList.value;
-          }
-          installedAndroidApplicationPackageNameList.value =
-            getAndroidApplicationPackageNameListRes?.split(',');
         }
       }
       // 获取源平行窗口列表
@@ -413,11 +402,10 @@ export const useEmbeddedStore = defineStore(
       customConfigEmbeddedRulesList,
       customConfigFixedOrientationList,
       embeddedSettingConfig,
-      lastInstalledAndroidApplicationPackageNameList,
-      installedAndroidApplicationPackageNameList,
       systemEmbeddedRulesList,
       systemFixedOrientationList,
       mergeRuleList,
+      filterInstalledApps,
       filterMergeRuleList,
       searchKeyWord,
       errorLogging,
@@ -434,8 +422,8 @@ export const useEmbeddedStore = defineStore(
   {
     persist: {
       pick: [
-        'installedAndroidApplicationPackageNameList',
         'lastCheckPatchModeTime',
+        'filterInstalledApps'
       ],
     },
   }

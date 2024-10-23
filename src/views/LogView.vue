@@ -11,6 +11,11 @@
   import { useLogsStore } from '@/stores/logs';
   import { createDiscreteApi, type LogInst } from 'naive-ui';
   const logsStore = useLogsStore();
+  import {
+    ArrowUpCircleIcon,
+    ArrowDownCircleIcon,
+    TrashIcon,
+  } from '@heroicons/vue/24/outline';
   const { message } = createDiscreteApi(['message']);
 
   const customLanguage = {
@@ -91,6 +96,9 @@
               }
             "
           >
+            <template #icon>
+              <ArrowUpCircleIcon />
+            </template>
             回到顶部
           </n-button>
           <n-button
@@ -102,6 +110,9 @@
               }
             "
           >
+            <template #icon>
+              <ArrowDownCircleIcon />
+            </template>
             回到底部
           </n-button>
           <n-button
@@ -113,6 +124,9 @@
               }
             "
           >
+            <template #icon>
+              <TrashIcon />
+            </template>
             清空日志
           </n-button>
         </div>
