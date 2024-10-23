@@ -1,54 +1,95 @@
 {
-  "name": "hyper-magic-window-web-ui",
-  "version": "0.0.0",
-  "private": true,
-  "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "run-p type-check \"build-only {@}\" --",
-    "preview": "vite preview",
-    "build-only": "vite build",
-    "type-check": "vue-tsc --build --force"
-  },
-  "dependencies": {
-    "pinia": "^2.1.7",
-    "vue": "^3.4.29",
-    "vue-router": "^4.3.3"
-  },
-  "devDependencies": {
-    "@headlessui/vue": "^1.7.23",
-    "@heroicons/vue": "^2.1.5",
-    "@tsconfig/node20": "^20.1.4",
-    "@types/lodash-es": "^4.17.12",
-    "@types/node": "^20.14.5",
-    "@types/pako": "^2.0.3",
-    "@vitejs/plugin-legacy": "^5.4.2",
-    "@vitejs/plugin-vue": "^5.0.5",
-    "@vitejs/plugin-vue-jsx": "^4.0.0",
-    "@vue/tsconfig": "^0.5.1",
-    "autoprefixer": "^10.4.20",
-    "await-to-js": "^3.0.0",
-    "axios": "^1.7.7",
-    "child_process": "^1.0.2",
-    "clsx": "^2.1.1",
-    "highlight.js": "^11.10.0",
-    "http": "0.0.1-security",
-    "i": "^0.3.7",
-    "lodash-es": "^4.17.21",
-    "lz-string": "^1.5.0",
-    "mitt": "^3.0.1",
-    "naive-ui": "^2.40.1",
-    "npm-run-all2": "^6.2.0",
-    "pako": "^2.1.0",
-    "pinia-plugin-persistedstate": "^4.1.1",
-    "postcss": "^8.4.47",
-    "tailwindcss": "^3.4.13",
-    "terser": "^5.36.0",
-    "typescript": "~5.4.0",
-    "url": "^0.11.4",
-    "vfonts": "^0.0.3",
-    "vite": "^5.3.1",
-    "vite-plugin-vue-devtools": "^7.3.1",
-    "vue-tsc": "^2.0.21"
-  }
+	"name": "hyper-magic-window-web-ui",
+	"version": "0.0.0",
+	"private": true,
+	"type": "module",
+	"devEngines": {
+		"runtime": {
+			"name": "node",
+			"onFail": "error"
+		},
+		"packageManager": {
+			"name": "pnpm",
+			"onFail": "error"
+		}
+	},
+	"browserslist": [
+		"android >= 11"
+	],
+	"prettier": {
+		"semi": true,
+		"tabWidth": 4,
+		"useTabs": true,
+		"endOfLine": "lf",
+		"printWidth": 120,
+		"singleQuote": true,
+		"jsxSingleQuote": true,
+		"trailingComma": "all",
+		"arrowParens": "avoid",
+		"bracketSameLine": true,
+		"htmlWhitespaceSensitivity": "strict",
+		"overrides": [
+			{
+				"files": "*.yml",
+				"options": {
+					"useTabs": false
+				}
+			},
+			{
+				"files": "*.md",
+				"options": {
+					"tabWidth": 2,
+					"useTabs": false
+				}
+			}
+		]
+	},
+	"scripts": {
+		"dev": "vite",
+		"clean": "rimraf build",
+		"build": "run-p type-check \"build-only {@}\" --",
+		"preview": "vite preview",
+		"build-only": "vite build",
+		"type-check": "vue-tsc --build --force"
+	},
+	"dependencies": {
+		"pinia": "^2.1.7",
+		"vue": "^3.4.29",
+		"vue-router": "^4.3.3"
+	},
+	"devDependencies": {
+		"@headlessui/vue": "^1.7.23",
+		"@heroicons/vue": "^2.1.5",
+		"@tsconfig/node20": "^20.1.4",
+		"@types/lodash-es": "^4.17.12",
+		"@types/node": "^20.14.5",
+		"@types/pako": "^2.0.3",
+		"@vitejs/plugin-vue": "^5.0.5",
+		"@vitejs/plugin-vue-jsx": "^4.0.0",
+		"@vue/tsconfig": "^0.5.1",
+		"await-to-js": "^3.0.0",
+		"axios": "^1.7.7",
+		"child_process": "^1.0.2",
+		"clsx": "^2.1.1",
+		"highlight.js": "^11.10.0",
+		"http": "0.0.1-security",
+		"i": "^0.3.7",
+		"lodash-es": "^4.17.21",
+		"lz-string": "^1.5.0",
+		"mitt": "^3.0.1",
+		"naive-ui": "^2.40.1",
+		"npm-run-all2": "^6.2.0",
+		"pako": "^2.1.0",
+		"pinia-plugin-persistedstate": "^4.1.1",
+		"postcss-preset-env": "^10.0.7",
+		"rimraf": "^6.0.1",
+		"tailwindcss": "^3.4.13",
+		"terser": "^5.36.0",
+		"typescript": "~5.4.0",
+		"url": "^0.11.4",
+		"vfonts": "^0.0.3",
+		"vite": "^5.3.1",
+		"vite-plugin-vue-devtools": "^7.3.1",
+		"vue-tsc": "^2.0.21"
+	}
 }
