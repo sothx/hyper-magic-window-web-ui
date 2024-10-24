@@ -525,7 +525,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
 							<n-dropdown size="large" trigger="click" :options="rhythmModeOptions" @select="handleSelectRhythmMode">
-								<n-button size="small" dashed :type="deviceStore.rhythmMode === 'autoRhythm' ? 'error' : 'success'">{{  deviceStore.rhythmMode === 'autoRhythm' && '跟随系统' || deviceStore.rhythmMode === 'lightMode' && '浅色模式' || deviceStore.rhythmMode === 'dartMode' && '深色模式'  }}</n-button>
+								<n-button size="small" strong secondary :type="deviceStore.rhythmMode === 'autoRhythm' ? 'error' : 'success'">{{  deviceStore.rhythmMode === 'autoRhythm' && '跟随系统' || deviceStore.rhythmMode === 'lightMode' && '浅色模式' || deviceStore.rhythmMode === 'dartMode' && '深色模式'  }}</n-button>
 							</n-dropdown>
 						</dd>
 					</div>
