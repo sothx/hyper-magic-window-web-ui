@@ -2,7 +2,7 @@
 
 @font-face {
     font-family: 'OPPO Sans';
-    src: url('@/assets/fonts/OPPO-Sans-4.0.woff') format('woff2');
+    src: url('@/assets/fonts/OPPO-Sans-4.0.woff') format('woff');
     font-weight: normal;
     font-style: normal;
 }

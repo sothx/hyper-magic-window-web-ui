@@ -4,3 +4,7 @@ export const findBase64InString = (input: string): string | null => {
 
     return match && match.length > 0 ? match[0] : null; // 返回第一个匹配的Base64字符串，若无则返回null
 }
+
+export const renderApplicationName = (name:string,packageName?:string) => {
+    return packageName ? `${packageName}(${name})` : name;
+}

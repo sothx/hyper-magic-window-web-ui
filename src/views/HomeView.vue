@@ -26,7 +26,7 @@
   import eventBus from '@/utils/eventBus';
   import { ArrowPathIcon, FunnelIcon, PlusIcon, ShareIcon, TrashIcon,SquaresPlusIcon } from '@heroicons/vue/24/outline';
   import { arrayBufferToBase64, base64ToArrayBuffer } from '@/utils/format';
-  import { findBase64InString } from '@/utils/common';
+  import { findBase64InString, renderApplicationName } from '@/utils/common';
   type EmbeddedAppDrawerInstance = InstanceType<typeof EmbeddedAppDrawer>;
   type SearchKeyWordInputInstance = InstanceType<typeof NInput>;
   type NDataTabletInstance = InstanceType<typeof NDataTable>;
@@ -302,7 +302,7 @@ configProviderProps: configProviderPropsRef
               <p>
                 好耶w，{' '}
                 <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-                  {importRuleContent.name}
+                  {renderApplicationName(importRuleContent.name,embeddedStore.applicationName[importRuleContent.name])}
                 </span>{' '}
                 的应用配置成功了OwO~如果应用更新后的规则不生效，可以尝试重启平板并且在{' '}
                 <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>平板专区-平行窗口</span>{' '}
@@ -590,7 +590,7 @@ configProviderProps: configProviderPropsRef
               <p>
                 好耶w，{' '}
                 <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-                  {addEmbeddedAppRes.name}
+                  {renderApplicationName(addEmbeddedAppRes.name,embeddedStore.applicationName[addEmbeddedAppRes.name])}
                 </span>{' '}
                 的应用配置添加成功了OwO~如果应用添加后的规则不生效，可以尝试重启平板并且在{' '}
                 <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>平板专区-平行窗口</span>{' '}
@@ -829,7 +829,7 @@ configProviderProps: configProviderPropsRef
             preset: 'dialog',
             content: () => (
               <p>
-                好耶w， <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>{row.name}</span>{' '}
+                好耶w， <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>{renderApplicationName(row.name,row.applicationName)}</span>{' '}
                 的应用配置更新成功了OwO~如果应用更新后的规则不生效，可以尝试重启平板并且在{' '}
                 <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>平板专区-平行窗口</span>{' '}
                 内{' '}
@@ -869,7 +869,7 @@ configProviderProps: configProviderPropsRef
         content: () => (
           <p>
             清除自定义规则后，你对{' '}
-            <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>{row.name}</span>{' '}
+            <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>{renderApplicationName(row.name,row.applicationName)}</span>{' '}
             所做的所有自定义配置将丢失，如果该应用同时还存在{' '}
             <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>模块规则</span>{' '}
             ，将会还原回模块自身的适配规则。确定要继续吗？
@@ -991,7 +991,7 @@ configProviderProps: configProviderPropsRef
           preset: 'dialog',
           content: () => (
             <p>
-              复制 <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>{row.name}</span>{' '}
+              复制 <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>{renderApplicationName(row.name,row.applicationName)}</span>{' '}
               的分享口令失败了QwQ，可能由于没有读取/写入剪切板的权限或{' '}
               <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>自定义规则</span> 长度过大。
             </p>
@@ -1008,7 +1008,7 @@ configProviderProps: configProviderPropsRef
             <div>
               <p>
                 好耶w，复制{' '}
-                <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>{row.name}</span>{' '}
+                <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>{renderApplicationName(row.name,row.applicationName)}</span>{' '}
                 分享口令成功了~
               </p>
               <p>
@@ -1067,7 +1067,7 @@ configProviderProps: configProviderPropsRef
       preset: 'dialog',
       content: () => (
         <p>
-          模块已对 <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>{row.name}</span>{' '}
+          模块已对 <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>{renderApplicationName(row.name,row.applicationName)}</span>{' '}
           配置了合适的适配规则，且不可被移除，仅有自定义规则可以被移除哦~
         </p>
       ),

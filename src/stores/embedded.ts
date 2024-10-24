@@ -417,6 +417,7 @@ export const useEmbeddedStore = defineStore(
       loading,
       ruleCount,
       allPackageName,
+      applicationName,
       isPatchMode,
       initDefault,
       lastCheckPatchModeTime,

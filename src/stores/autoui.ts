@@ -167,6 +167,7 @@ export const useAutoUIStore = defineStore(
 			autoUISettingConfig,
 			mergeRuleList,
 			filterMergeRuleList,
+			applicationName,
 			searchKeyWord,
 			errorLogging,
 			isNeedShowErrorModal,
