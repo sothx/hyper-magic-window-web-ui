@@ -615,8 +615,8 @@ onMounted(() => {
 							</n-tag>
 						</div>
 						<n-switch :rail-style="railStyle" v-model:value="currentEmbeddedRelaunch" size="large">
-							<template #checked>平行窗口显示比例变化时重启</template>
-							<template #unchecked>平行窗口显示比例变化时不重启</template>
+							<template #checked>平行窗口显示比例变化时重载</template>
+							<template #unchecked>平行窗口显示比例变化时不重载</template>
 						</n-switch>
 					</n-card>
 				</n-tab-pane>
@@ -736,10 +736,10 @@ onMounted(() => {
 							:max="1.99"
 							:step="0.01" />
 					</n-card>
-					<n-card :bordered="false" title="应用比例变化时是否重启应用" size="small">
+					<n-card :bordered="false" title="应用比例变化时是否重载应用" size="small">
 						<n-switch :rail-style="railStyle" v-model:value="currentFixedOrientationRelaunch" size="large">
-							<template #checked>应用比例变化时重启应用</template>
-							<template #unchecked>应用比例变化时不重启应用</template>
+							<template #checked>应用比例变化时重载应用</template>
+							<template #unchecked>应用比例变化时不重载应用</template>
 						</n-switch>
 					</n-card>
 				</n-tab-pane>
@@ -747,10 +747,10 @@ onMounted(() => {
 					<n-alert :show-icon="false" :bordered="false" title="应用原始布局" type="error">
 						开启后，将禁用任何系统规则干预，应用会根据自身的适配规则进行显示，大多数应用仅竖屏显示
 					</n-alert>
-					<n-card :bordered="false" title="应用比例变化时是否重启应用" size="small">
+					<n-card :bordered="false" title="应用比例变化时是否重载应用" size="small">
 						<n-switch :rail-style="railStyle" v-model:value="currentFixedOrientationRelaunch" size="large">
-							<template #checked>应用比例变化时重启应用</template>
-							<template #unchecked>应用比例变化时不重启应用</template>
+							<template #checked>应用比例变化时重载应用</template>
+							<template #unchecked>应用比例变化时不重载应用</template>
 						</n-switch>
 					</n-card>
 				</n-tab-pane>
