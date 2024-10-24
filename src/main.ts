@@ -1,3 +1,4 @@
+import "./assets/fonts.css";
 import "./assets/main.css";
 import "./style.css";
 // 通用字体
