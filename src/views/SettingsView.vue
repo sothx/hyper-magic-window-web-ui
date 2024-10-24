@@ -7,7 +7,9 @@ import { useGameMode } from '@/hooks/useGameMode';
 import * as ksuApi from '@/apis/ksuApi';
 import $to from 'await-to-js';
 import { useEmbeddedStore } from '@/stores/embedded';
+import { keyBy } from 'lodash-es';
 const deviceStore = useDeviceStore();
+import { useFontStore } from '@/stores/font';
 const embeddedStore = useEmbeddedStore();
 const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
 	theme: deviceStore.isDarkMode ? darkTheme : lightTheme,
@@ -16,6 +18,7 @@ const { message, modal } = createDiscreteApi(['message', 'modal'], {
 	configProviderProps: configProviderPropsRef,
 });
 const gameMode = useGameMode();
+const fontStore = useFontStore()
 const handleSmartFocusIOChange = (value: boolean) => {
 	message.info('功能尚未上线，无任何实际效果，请等待后续更新！');
 };
@@ -33,6 +36,32 @@ const rhythmModeOptions = [
 		key: 'dartMode',
 	},
 ];
+
+const fontModeOptions = ref([
+	{
+		label: 'MiSans',
+		key: 'MiSans',
+		type: 'info'
+	},
+	{
+		label: 'HarmonyOS Sans',
+		key: "HarmonyOS Sans",
+		type: 'error'
+	},
+	{
+		label: 'OPPO Sans',
+		key: 'OPPO Sans',
+		type: 'success'
+	},
+]);
+
+const fontModeMap = computed(() => {
+	return keyBy(fontModeOptions.value,'key')
+})
+
+const handleSelectFontMode = (item:string) => {
+	fontStore.currentFont = item;
+}
 
 const handleSelectRhythmMode = (item:string) => {
   deviceStore.rhythmMode = item;
@@ -497,6 +526,18 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
 							<n-dropdown size="large" trigger="click" :options="rhythmModeOptions" @select="handleSelectRhythmMode">
 								<n-button size="small" dashed :type="deviceStore.rhythmMode === 'autoRhythm' ? 'error' : 'success'">{{  deviceStore.rhythmMode === 'autoRhythm' && '跟随系统' || deviceStore.rhythmMode === 'lightMode' && '浅色模式' || deviceStore.rhythmMode === 'dartMode' && '深色模式'  }}</n-button>
+							</n-dropdown>
+						</dd>
+					</div>
+					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+						<dt
+							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
+							应用字体
+						</dt>
+						<dd
+							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
+							<n-dropdown size="large" trigger="click" :options="fontModeOptions" @select="handleSelectFontMode">
+								<n-button size="small" strong secondary :type="fontModeMap[fontStore.currentFont].type">{{  fontStore.currentFont  }}</n-button>
 							</n-dropdown>
 						</dd>
 					</div>

@@ -7,6 +7,7 @@ import { ref, onMounted, watch, watchEffect } from 'vue';
 import { useDeviceStore } from '@/stores/device';
 import { darkTheme } from 'naive-ui';
 import { useEmbeddedStore } from '@/stores/embedded';
+import { useFontStore } from '@/stores/font';
 import { useAutoUIStore } from '@/stores/autoui';
 import {
 	enable as enableDarkMode,
@@ -18,10 +19,21 @@ import {
 
 const deviceStore = useDeviceStore();
 const embeddedStore = useEmbeddedStore();
+const fontStore = useFontStore()
 const autoUIStore = useAutoUIStore();
 const showErrorModal = ref(false);
 
-const initDartMode = () => {};
+
+watch(
+	() => fontStore.currentFont, // 监听的值
+	(newValue, oldValue) => {
+		// 回调函数，值变化时执行
+		if (newValue) {
+			document.documentElement.style.setProperty('--global-font-family', fontStore.currentFontFamily);
+		}
+	},
+	{ immediate: true }, // 默认是 false，不需要设置，确保不会在初始时执行
+);
 
 watch(
 	() => deviceStore.isNeedShowErrorModal, // 监听的值
@@ -61,7 +73,6 @@ watchEffect(onCleanup => {
 });
 
 onMounted(async () => {
-	initDartMode();
 	deviceStore.initDefault();
 	embeddedStore.initDefault();
 	autoUIStore.initDefault();
