@@ -1,6 +1,13 @@
 @charset "UTF-8";
 
 @font-face {
+    font-family: 'MiSans';
+    src: url('@/assets/fonts/MiSans-Regular.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
     font-family: 'OPPO Sans';
     src: url('@/assets/fonts/OPPO-Sans-4.0.woff') format('woff');
     font-weight: normal;

@@ -1,4 +1,3 @@
-import "./assets/fonts/MiSans/MiSans-Regular.min.css";
 import "./assets/fonts.css";
 import "./assets/main.css";
 import "./style.css";
