@@ -45,7 +45,7 @@ export const validateFullRule = (packageName: string): boolean => {
 
 export const validateAutoUIRule = (activityRule: string): boolean => {
     // 正则表达式校验应用布局优化规则
-    const autoUIRuleRegex = /^[a-zA-Z0-9_:,.-]+$/;
+    const autoUIRuleRegex = /^[a-zA-Z0-9_:,.*-]+$/;
 
     // 允许空字符串
     if (activityRule === '') {
