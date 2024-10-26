@@ -70,17 +70,10 @@ configProviderProps: configProviderPropsRef
           </div>
           <div class="px-4 flex sm:grid sm:px-0 mt-5">
             <n-alert
-              title="[开发中] 应用横屏配置- Hyper OS 2.0(Android 15+)"
-              type="info"
+              title="[待定] 应用横屏配置- Hyper OS 2.0(Android 15+)"
+              type="warning"
             >
-              开发中，支持Android 15 配置允许使用的适配选项，支持配置自定义比例
-            </n-alert>
-          </div>
-          <div class="px-4 flex sm:grid sm:px-0 mt-5">
-            <n-alert title="[远期规划] 横屏模式配置-Android 11" type="default">
-              远期规划，需求紧急程度较低，Android
-              11模块用户量过少，提供可视化修改小米平板Android
-              11下类华为的横屏模式规则。(缺Android 11的测试志愿者，欢迎自荐)
+              待定，支持Android 15 配置允许使用的适配选项，支持配置自定义比例
             </n-alert>
           </div>
           <div class="px-4 flex sm:grid sm:px-0 mt-5">

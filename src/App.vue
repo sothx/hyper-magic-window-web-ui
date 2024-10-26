@@ -1,23 +1,22 @@
-<script setup lang="ts">
+<script setup lang="tsx">
 import { RouterLink, RouterView } from 'vue-router';
 import HelloWorld from './components/HelloWorld.vue';
 import { Sidebar } from './components/Sidebar';
 import ErrorModal from '@/components/ErrorModal.vue';
-import { ref, onMounted, watch, watchEffect } from 'vue';
+import { ref, onMounted, watch, watchEffect, computed } from 'vue';
 import { useDeviceStore } from '@/stores/device';
-import { darkTheme } from 'naive-ui';
+import { createDiscreteApi, darkTheme, lightTheme, type ConfigProviderProps } from 'naive-ui';
 import { useEmbeddedStore } from '@/stores/embedded';
 import { useFontStore } from '@/stores/font';
 import { useAutoUIStore } from '@/stores/autoui';
-import {
-	enable as enableDarkMode,
-	disable as disableDarkMode,
-	auto as followSystemColorScheme,
-	exportGeneratedCSS as collectCSS,
-	isEnabled as isDarkReaderEnabled,
-} from 'darkreader';
-
 const deviceStore = useDeviceStore();
+const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
+  theme: deviceStore.isDarkMode ? darkTheme : lightTheme
+}))
+const { message, modal } = createDiscreteApi(['message', 'modal'], {
+  configProviderProps: configProviderPropsRef
+});
+
 const embeddedStore = useEmbeddedStore();
 const fontStore = useFontStore()
 const autoUIStore = useAutoUIStore();
@@ -73,9 +72,21 @@ watchEffect(onCleanup => {
 });
 
 onMounted(async () => {
-	deviceStore.initDefault();
-	embeddedStore.initDefault();
-	autoUIStore.initDefault();
+	await deviceStore.initDefault();
+	if (deviceStore.androidTargetSdk === 31) {
+		modal.create({
+          title: '不适配说明',
+          type: 'error',
+          preset: 'dialog',
+          content: () => (
+            <p>Web UI 未对Android 11做适配，无法使用~</p>
+          ),
+          negativeText: '确定',
+        });
+	} else {
+		embeddedStore.initDefault();
+		autoUIStore.initDefault();
+	}
 });
 </script>
 
