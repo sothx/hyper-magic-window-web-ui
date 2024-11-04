@@ -166,6 +166,12 @@ const topApplicationList = [
     'com.quark.browser', // 夸克浏览器
     'com.smzdm.client.android', // 什么值得买
     'com.baidu.netdisk', // 百度网盘
+    'com.mfcloudcalculate.networkdisk', // 123云盘
+    'com.chinamobile.mcloud', // 中国移动云盘
+    'info.muge.appshare', // AppShare
+    'com.x7890.shortcutcreator', // 创建快捷方式
+    'org.kde.kdeconnect_tp', // KDE Connect
+    'com.tencent.weread', // 微信读书
 ]
 
 

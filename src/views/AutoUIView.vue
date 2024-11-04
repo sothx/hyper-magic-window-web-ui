@@ -378,16 +378,6 @@ configProviderProps: configProviderPropsRef
   };
 
   const handleModuleRuleMode = (row: AutoUIMergeRuleItem, index: number) => {
-    if (deviceStore.androidTargetSdk && deviceStore.androidTargetSdk < 33) {
-      modal.create({
-        title: '不兼容说明',
-        type: 'warning',
-        preset: 'dialog',
-        content: () => <p>应用布局优化不支持低于 Android 13 的设备！</p>,
-      });
-      return;
-    }
-
     if (row.ruleMode === 'module') {
       modal.create({
         title: '模块规则说明',
@@ -408,15 +398,6 @@ configProviderProps: configProviderPropsRef
     index: number,
     value: boolean
   ) => {
-    if (deviceStore.androidTargetSdk && deviceStore.androidTargetSdk < 33) {
-      modal.create({
-        title: '不兼容说明',
-        type: 'warning',
-        preset: 'dialog',
-        content: () => <p>应用布局优化不支持低于 Android 13 的设备！</p>,
-      });
-      return;
-    }
     const switchCustomModal = modal.create({
       title: `想${value ? '开启' : '关闭'}该应用的应用布局优化吗？`,
       type: 'warning',
@@ -489,15 +470,6 @@ configProviderProps: configProviderPropsRef
   };
 
   const openAddDrawer = async () => {
-    if (deviceStore.androidTargetSdk && deviceStore.androidTargetSdk < 33) {
-      modal.create({
-        title: '不兼容说明',
-        type: 'warning',
-        preset: 'dialog',
-        content: () => <p>应用布局优化不支持低于 Android 13 的设备！</p>,
-      });
-      return;
-    }
     if (addAutoUIApp.value) {
       const [addAutoUiAppCancel, addAutoUiAppRes] = await $to(
         addAutoUIApp.value.openDrawer()
@@ -582,15 +554,6 @@ configProviderProps: configProviderPropsRef
   };
 
   const openUpdateDrawer = async (row: AutoUIMergeRuleItem, index: number) => {
-    if (deviceStore.androidTargetSdk && deviceStore.androidTargetSdk < 33) {
-      modal.create({
-        title: '不兼容说明',
-        type: 'warning',
-        preset: 'dialog',
-        content: () => <p>应用布局优化不支持低于 Android 13 的设备！</p>,
-      });
-      return;
-    }
     if (updateAutoUIApp && updateAutoUIApp.value) {
       const [updateAutoUiAppCancel, updateAutoUiAppRes] = await $to(
         updateAutoUIApp.value.openDrawer(row)

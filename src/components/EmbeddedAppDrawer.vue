@@ -160,15 +160,6 @@ const embeddedAppDrawer = ref({
 				return;
 			}
 
-			if (
-				deviceStore.androidTargetSdk &&
-				(deviceStore.androidTargetSdk > 34 || deviceStore.androidTargetSdk < 32)
-			) {
-				reject(new Error('该功能暂时未兼容Android 11或Android 15+，请等待后续消息~'));
-				message.warning('该功能暂时未兼容Android 11或Android 15+，请等待后续消息~');
-				return;
-			}
-
 			// 保存Promise的resolve和reject
 			resolvePromise = resolve;
 			rejectPromise = reject;

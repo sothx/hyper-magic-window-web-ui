@@ -38,7 +38,15 @@
   })
   const navigation = reactive([
     { name: '应用横屏配置', routeName: 'home', href: '/', icon: WindowIcon },
-    { name: '应用布局优化', routeName: 'autoui', href: '/autoui', icon: Squares2X2Icon },
+    { 
+      name: '应用布局优化', 
+      routeName: 'autoui', 
+      isShow() {
+        return deviceStore.androidTargetSdk && deviceStore.androidTargetSdk >= 33
+      },
+      href: '/autoui', 
+      icon: Squares2X2Icon 
+    },
     {
       name: '游戏显示布局',
       isShow() {
