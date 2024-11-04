@@ -1020,6 +1020,13 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 			render(row, index) {
 				return (
 					<div>
+            {
+              !row.applicationName && false && (
+              <n-button size='tiny' type="warning" dashed>
+								补充应用名称
+							</n-button>
+              )
+            }
 						{row.applicationName && <p>{row.applicationName}</p>}
 						{row.name && (
 							<p>
@@ -1029,45 +1036,6 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 							</p>
 						)}
 					</div>
-				);
-			},
-		},
-		{
-			title: '规则来源',
-			width: 100,
-			key: 'ruleMode',
-			render(row, index) {
-				if (row.ruleMode === 'custom') {
-					const rule = [
-						{
-							label: '分享自定义规则',
-							key: 'shareCustomRule',
-							icon: renderIcon(ShareIcon),
-						},
-						{
-							label: '清除自定义规则',
-							key: 'cleanCustomRule',
-							icon: renderIcon(TrashIcon),
-						},
-					];
-					return (
-						<n-dropdown
-							onSelect={(key: string | number, option: DropdownOption) =>
-								handleCustomRuleDropdown(key, option, row, index)
-							}
-							size='large'
-							trigger='click'
-							options={rule}>
-							<n-button size='small' dashed type='info'>
-								自定义规则
-							</n-button>
-						</n-dropdown>
-					);
-				}
-				return (
-					<n-button size='small' dashed type='error' onClick={() => handleModuleRuleMode(row, index)}>
-						模块规则
-					</n-button>
 				);
 			},
 		},
@@ -1110,23 +1078,45 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 			},
 		},
     {
-			title: '应用兼容性',
-			minWidth: 100,
-			key: 'setting',
+			title: '规则来源',
+			width: 100,
+			key: 'ruleMode',
 			render(row, index) {
-        const handleClickAppCompatReset = (row: EmbeddedMergeRuleItem, index: number) => {
-          message.info('该功能尚未开放，请等待后续更新')
-        }
+				if (row.ruleMode === 'custom') {
+					const rule = [
+						{
+							label: '分享自定义规则',
+							key: 'shareCustomRule',
+							icon: renderIcon(ShareIcon),
+						},
+						{
+							label: '清除自定义规则',
+							key: 'cleanCustomRule',
+							icon: renderIcon(TrashIcon),
+						},
+					];
+					return (
+						<n-dropdown
+							onSelect={(key: string | number, option: DropdownOption) =>
+								handleCustomRuleDropdown(key, option, row, index)
+							}
+							size='large'
+							trigger='click'
+							options={rule}>
+							<n-button size='small' dashed type='info'>
+								自定义规则
+							</n-button>
+						</n-dropdown>
+					);
+				}
 				return (
-					<div>
-						<n-button size='small'dashed type='error' onClick={() => handleClickAppCompatReset(row, index)}>
-							重置兼容规则
-						</n-button>
-					</div>
+					<n-button size='small' dashed type='error' onClick={() => handleModuleRuleMode(row, index)}>
+						模块规则
+					</n-button>
 				);
 			},
 		},
-		{
+    {
 			title: '当前规则',
 			width: 100,
 			key: 'settingMode',
@@ -1258,6 +1248,23 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 						onClick={() => modeMap[row.settingMode].onClick(row, index)}>
 						{modeMap[row.settingMode].name}
 					</n-button>
+				);
+			},
+		},
+    {
+			title: '应用兼容性',
+			minWidth: 100,
+			key: 'setting',
+			render(row, index) {
+        const handleClickAppCompatReset = (row: EmbeddedMergeRuleItem, index: number) => {
+          message.info('该功能尚未开放，请等待后续更新')
+        }
+				return (
+					<div>
+						<n-button size='small'dashed type='error' onClick={() => handleClickAppCompatReset(row, index)}>
+							重置兼容规则
+						</n-button>
+					</div>
 				);
 			},
 		},
