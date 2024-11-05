@@ -1261,8 +1261,8 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
         }
 				return (
 					<div>
-						<n-button size='small'dashed type='error' onClick={() => handleClickAppCompatReset(row, index)}>
-							重置兼容规则
+						<n-button size='small'dashed type='warning' onClick={() => handleClickAppCompatReset(row, index)}>
+							兼容性重置
 						</n-button>
 					</div>
 				);
