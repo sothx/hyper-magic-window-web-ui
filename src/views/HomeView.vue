@@ -1320,9 +1320,9 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 			</div>
 		</div>
 		<n-card title="操作栏" size="small">
-			<div class="mb-3 flex">
+			<div class="flex flex-wrap">
 				<n-button
-					class="mr-3"
+					class="mr-3 mb-3"
 					type="info"
 					:loading="deviceStore.loading || embeddedStore.loading"
 					@click="openAddEmbeddedApp">
@@ -1334,7 +1334,7 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 					添加应用
 				</n-button>
 				<n-button
-					class="mr-3"
+					class="mr-3 mb-3"
 					color="#8a2be2"
 					:loading="deviceStore.loading || embeddedStore.loading"
 					@click="() => reloadApplicationData()">
@@ -1346,7 +1346,7 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 					热重载应用数据
 				</n-button>
 				<n-button
-					class="mr-3"
+					class="mr-3 mb-3"
 					v-if="embeddedStore.isPatchMode"
 					type="error"
 					:loading="deviceStore.loading || embeddedStore.loading || reloadPatchModeConfigLoading"
@@ -1359,7 +1359,7 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 					生成定制应用数据
 				</n-button>
 				<n-button
-					class="mr-3"
+					class="mr-3 mb-3"
 					type="warning"
 					:loading="deviceStore.loading || embeddedStore.loading || importShareRuleLoading"
 					@click="importShareRule()">
@@ -1371,7 +1371,7 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 					从分享口令导入
 				</n-button>
 				<n-button
-					class="mr-3"
+					class="mr-3 mb-3"
 					type="success"
 					:loading="deviceStore.loading || embeddedStore.loading"
 					@click="() => reloadPage()">
@@ -1383,8 +1383,9 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 					刷新当前数据
 				</n-button>
 			</div>
-			<div class="mb-3 flex">
+			<div class="flex flex-wrap">
 				<n-button
+					class="mr-3 mb-3"
 					:type="embeddedStore.filterInstalledApps ? 'warning' : 'info'"
 					strong
 					:loading="deviceStore.loading || embeddedStore.loading"

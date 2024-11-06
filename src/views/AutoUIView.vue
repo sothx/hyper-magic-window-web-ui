@@ -927,9 +927,9 @@ configProviderProps: configProviderPropsRef
       </div>
     </div>
     <n-card title="操作栏" size="small">
-      <div class="flex mb-3">
+      <div class="flex flex-wrap">
         <n-button
-          class="mr-3"
+          class="mr-3 mb-3"
           type="info"
           :loading="deviceStore.loading || autoUIStore.loading"
           @click="openAddDrawer"
@@ -942,7 +942,7 @@ configProviderProps: configProviderPropsRef
           添加应用
         </n-button>
         <n-button
-					class="mr-3"
+					class="mr-3 mb-3"
 					color="#8a2be2"
 					:loading="deviceStore.loading || autoUIStore.loading"
 					@click="() => reloadApplicationData()">
@@ -954,7 +954,7 @@ configProviderProps: configProviderPropsRef
 					热重载应用数据
 				</n-button>
         <n-button
-          class="mr-3"
+          class="mr-3 mb-3"
           type="warning"
           :loading="
             deviceStore.loading || autoUIStore.loading || importShareRuleLoading
@@ -969,7 +969,7 @@ configProviderProps: configProviderPropsRef
           从分享口令导入
         </n-button>
         <n-button
-          class="mr-3"
+          class="mr-3 mb-3"
           type="success"
           :loading="deviceStore.loading || autoUIStore.loading"
           @click="() => reloadPage()"
@@ -982,8 +982,9 @@ configProviderProps: configProviderPropsRef
           刷新当前数据
         </n-button>
       </div>
-      <div class="flex mb-3">
+      <div class="flex flex-wrap">
         <n-button
+          class="mr-3 mb-3"
           :type="autoUIStore.filterInstalledApps ? 'warning' : 'info'"
           strong
           :loading="deviceStore.loading || autoUIStore.loading"
