@@ -25,7 +25,7 @@
     type DataTableColumns,
     type DropdownOption,
   } from 'naive-ui';
-  import { ArrowPathIcon, FunnelIcon, PlusIcon, ShareIcon, TrashIcon } from '@heroicons/vue/24/outline';
+  import { ArrowPathIcon, FunnelIcon, PlusIcon, ShareIcon, TrashIcon, SquaresPlusIcon } from '@heroicons/vue/24/outline';
   import type AutoUIMergeRuleItem from '@/types/AutoUIMergeRuleItem';
   import { useRouter, useRoute } from 'vue-router';
   import { useLogsStore } from '@/stores/logs';
@@ -72,6 +72,15 @@ configProviderProps: configProviderPropsRef
   const filterHasBeenInstalledApp = () => {
     autoUIStore.filterInstalledApps = !autoUIStore.filterInstalledApps;
   };
+
+  const reloadApplicationData = async () => {
+	modal.create({
+			title: '不兼容说明',
+			type: 'warning',
+			preset: 'dialog',
+			content: () => <p>该功能尚未开放，请等待后续更新情况！</p>,
+		});
+}
 
   const importShareRule = async () => {
     shareRuleTextarea.value = '';
@@ -752,25 +761,38 @@ configProviderProps: configProviderPropsRef
 
   function createColumns(): DataTableColumns<AutoUIMergeRuleItem> {
     return [
-      {
-        title: '应用名称',
-        width: 250,
-        key: 'name',
-        render(row, index) {
-          return (
-            <div>
-              {row.applicationName && <p>{row.applicationName}</p>}
-              {row.name && (
-                <p>
-                  <span class={{ hidden: !row.applicationName }}>(</span>
-                  {row.name}
-                  <span class={{ hidden: !row.applicationName }}>)</span>
-                </p>
-              )}
-            </div>
-          );
-        },
-      },
+		{
+			title: '应用名称',
+			width: 250,
+			key: 'name',
+			render(row, index) {
+				const handleClickPushApplicationName = (row: AutoUIMergeRuleItem, index: number) => {
+					modal.create({
+						title: '不兼容说明',
+						type: 'warning',
+						preset: 'dialog',
+						content: () => <p>该功能尚未开放，请等待后续更新情况！</p>,
+					});
+				};
+				return (
+					<div>
+						{!row.applicationName && (
+							<n-button size='tiny' type='warning' onClick={() => handleClickPushApplicationName(row,index)} dashed>
+								补充应用名称
+							</n-button>
+						)}
+						{row.applicationName && <p>{row.applicationName}</p>}
+						{row.name && (
+							<p>
+								<span class={{ hidden: !row.applicationName }}>(</span>
+								{row.name}
+								<span class={{ hidden: !row.applicationName }}>)</span>
+							</p>
+						)}
+					</div>
+				);
+			},
+		},
       {
         title: '规则来源',
         key: 'ruleMode',
@@ -919,6 +941,18 @@ configProviderProps: configProviderPropsRef
           </template>
           添加应用
         </n-button>
+        <n-button
+					class="mr-3"
+					color="#8a2be2"
+					:loading="deviceStore.loading || autoUIStore.loading"
+					@click="() => reloadApplicationData()">
+					<template #icon>
+						<n-icon>
+							<SquaresPlusIcon />
+						</n-icon>
+					</template>
+					热重载应用数据
+				</n-button>
         <n-button
           class="mr-3"
           type="warning"

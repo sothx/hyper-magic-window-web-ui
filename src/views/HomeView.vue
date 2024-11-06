@@ -24,7 +24,15 @@ import * as xmlFormat from '@/utils/xmlFormat';
 import { useEmbeddedStore } from '@/stores/embedded';
 import { useLogsStore } from '@/stores/logs';
 import eventBus from '@/utils/eventBus';
-import { ArrowPathIcon, FunnelIcon, PlusIcon, ShareIcon, TrashIcon, SquaresPlusIcon } from '@heroicons/vue/24/outline';
+import {
+	ArrowPathIcon,
+	FunnelIcon,
+	PlusIcon,
+	ShareIcon,
+	TrashIcon,
+	SquaresPlusIcon,
+	ScissorsIcon,
+} from '@heroicons/vue/24/outline';
 import { arrayBufferToBase64, base64ToArrayBuffer } from '@/utils/format';
 import { findBase64InString, renderApplicationName } from '@/utils/common';
 type EmbeddedAppDrawerInstance = InstanceType<typeof EmbeddedAppDrawer>;
@@ -337,6 +345,15 @@ const pagination = reactive({
 
 const reloadPatchModeConfigLoading = ref<boolean>(false);
 
+const reloadApplicationData = async () => {
+	modal.create({
+		title: '不兼容说明',
+		type: 'warning',
+		preset: 'dialog',
+		content: () => <p>该功能尚未开放，请等待后续更新情况！</p>,
+	});
+};
+
 const reloadPatchModeConfigList = async () => {
 	reloadPatchModeConfigLoading.value = true;
 	const [submitUpdateEmbeddedAppErr, submitUpdateEmbeddedAppRes] = await $to(
@@ -435,12 +452,13 @@ const openAddEmbeddedApp = async () => {
 		logsStore.info('应用横屏配置-添加应用', '该功能仅兼容平板设备，暂时不兼容折叠屏设备，请等待后续更新情况！');
 		return;
 	}
+	console.log(deviceStore.androidTargetSdk,'deviceStore.androidTargetSdk')
 	if (deviceStore.androidTargetSdk && ![32, 33, 34].includes(deviceStore.androidTargetSdk)) {
 		modal.create({
 			title: '不兼容说明',
 			type: 'warning',
 			preset: 'dialog',
-			content: () => <p>该功能尚未对 Android 11 或 Android 15+ 做兼容，请等待后续更新情况！</p>,
+			content: () => <p>该功能尚未对Android 15+ 做兼容，请等待后续更新情况！</p>,
 		});
 		return;
 	}
@@ -1018,15 +1036,21 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 			width: 250,
 			key: 'name',
 			render(row, index) {
+				const handleClickPushApplicationName = (row: EmbeddedMergeRuleItem, index: number) => {
+					modal.create({
+						title: '不兼容说明',
+						type: 'warning',
+						preset: 'dialog',
+						content: () => <p>该功能尚未开放，请等待后续更新情况！</p>,
+					});
+				};
 				return (
 					<div>
-            {
-              !row.applicationName && false && (
-              <n-button size='tiny' type="warning" dashed>
+						{!row.applicationName && (
+							<n-button size='tiny' type='warning' onClick={() => handleClickPushApplicationName(row,index)} dashed>
 								补充应用名称
 							</n-button>
-              )
-            }
+						)}
 						{row.applicationName && <p>{row.applicationName}</p>}
 						{row.name && (
 							<p>
@@ -1077,7 +1101,7 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 				);
 			},
 		},
-    {
+		{
 			title: '规则来源',
 			width: 100,
 			key: 'ruleMode',
@@ -1116,7 +1140,7 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 				);
 			},
 		},
-    {
+		{
 			title: '当前规则',
 			width: 100,
 			key: 'settingMode',
@@ -1251,17 +1275,26 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 				);
 			},
 		},
-    {
+		{
 			title: '应用兼容性',
 			minWidth: 100,
 			key: 'setting',
 			render(row, index) {
-        const handleClickAppCompatReset = (row: EmbeddedMergeRuleItem, index: number) => {
-          message.info('该功能尚未开放，请等待后续更新')
-        }
+				const handleClickAppCompatReset = (row: EmbeddedMergeRuleItem, index: number) => {
+					modal.create({
+						title: '不兼容说明',
+						type: 'warning',
+						preset: 'dialog',
+						content: () => <p>该功能尚未开放，请等待后续更新情况！</p>,
+					});
+				};
 				return (
 					<div>
-						<n-button size='small'dashed type='warning' onClick={() => handleClickAppCompatReset(row, index)}>
+						<n-button
+							size='small'
+							dashed
+							type='warning'
+							onClick={() => handleClickAppCompatReset(row, index)}>
 							兼容性重置
 						</n-button>
 					</div>
@@ -1302,13 +1335,25 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 				</n-button>
 				<n-button
 					class="mr-3"
+					color="#8a2be2"
+					:loading="deviceStore.loading || embeddedStore.loading"
+					@click="() => reloadApplicationData()">
+					<template #icon>
+						<n-icon>
+							<SquaresPlusIcon />
+						</n-icon>
+					</template>
+					热重载应用数据
+				</n-button>
+				<n-button
+					class="mr-3"
 					v-if="embeddedStore.isPatchMode"
 					type="error"
 					:loading="deviceStore.loading || embeddedStore.loading || reloadPatchModeConfigLoading"
 					@click="() => reloadPatchModeConfigList()">
 					<template #icon>
 						<n-icon>
-							<SquaresPlusIcon />
+							<ScissorsIcon />
 						</n-icon>
 					</template>
 					生成定制应用数据
