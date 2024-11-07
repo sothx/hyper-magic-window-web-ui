@@ -1074,7 +1074,7 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 					(deviceStore.MIOSVersion && deviceStore.MIOSVersion === 1) ||
 					(!deviceStore.loading && !deviceStore.MIOSVersion);
 				const rowIsSupportFixedOrientation =
-					(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && row.isSupportFullScreen) ||
+					(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && row.isSupportFixedOrientation) ||
 					(deviceStore.MIOSVersion && deviceStore.MIOSVersion === 1) ||
 					(!deviceStore.loading && !deviceStore.MIOSVersion);
 				return (
