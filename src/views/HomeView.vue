@@ -43,6 +43,7 @@ const deviceStore = useDeviceStore();
 const embeddedStore = useEmbeddedStore();
 const logsStore = useLogsStore();
 const importShareRuleLoading = ref(false);
+const hotReloadLoading = ref(false);
 const searchKeyWordInput = ref<SearchKeyWordInputInstance | null>(null);
 const addEmbeddedApp = ref<EmbeddedAppDrawerInstance | null>(null);
 const updateEmbeddedApp = ref<EmbeddedAppDrawerInstance | null>(null);
@@ -345,13 +346,44 @@ const pagination = reactive({
 
 const reloadPatchModeConfigLoading = ref<boolean>(false);
 
-const reloadApplicationData = async () => {
-	modal.create({
-		title: '不兼容说明',
-		type: 'warning',
-		preset: 'dialog',
-		content: () => <p>该功能尚未开放，请等待后续更新情况！</p>,
-	});
+const hotReloadApplicationData = async () => {
+	if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2) {
+		modal.create({
+			title: '不兼容说明',
+			type: 'warning',
+			preset: 'dialog',
+			content: () => <p>该功能尚未兼容Android 15，请等待后续更新情况！</p>,
+		});
+	} else {
+		hotReloadLoading.value = true;
+		await reloadPage();
+		const [updateRuleErr, updateRuleRes] = await $to(ksuApi.updateRule())
+		if (updateRuleErr) {
+			modal.create({
+					title: '热重载应用数据失败',
+					type: 'error',
+					preset: 'dialog',
+					content: () => <p>热重载应用数据失败了QwQ，详情请查看错误日志~</p>,
+					negativeText: '确定',
+				});
+			hotReloadLoading.value = false;
+		}
+
+		if (updateRuleRes) {
+			modal.create({
+					title: '热重载应用数据成功',
+					type: 'success',
+					preset: 'dialog',
+					content: () => (
+						<p>
+							好耶w，已经重新为你载入包括自定义规则在内的应用数据~
+						</p>
+					),
+					positiveText: '确定',
+			});
+			hotReloadLoading.value = false;
+		}
+	}
 };
 
 const reloadPatchModeConfigList = async () => {
@@ -452,7 +484,7 @@ const openAddEmbeddedApp = async () => {
 		logsStore.info('应用横屏配置-添加应用', '该功能仅兼容平板设备，暂时不兼容折叠屏设备，请等待后续更新情况！');
 		return;
 	}
-	console.log(deviceStore.androidTargetSdk,'deviceStore.androidTargetSdk')
+	console.log(deviceStore.androidTargetSdk, 'deviceStore.androidTargetSdk');
 	if (deviceStore.androidTargetSdk && ![32, 33, 34].includes(deviceStore.androidTargetSdk)) {
 		modal.create({
 			title: '不兼容说明',
@@ -1047,7 +1079,11 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 				return (
 					<div>
 						{!row.applicationName && (
-							<n-button size='tiny' type='warning' onClick={() => handleClickPushApplicationName(row,index)} dashed>
+							<n-button
+								size='tiny'
+								type='warning'
+								onClick={() => handleClickPushApplicationName(row, index)}
+								dashed>
 								补充应用名称
 							</n-button>
 						)}
@@ -1282,10 +1318,49 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 			render(row, index) {
 				const handleClickAppCompatReset = (row: EmbeddedMergeRuleItem, index: number) => {
 					modal.create({
-						title: '不兼容说明',
+						title: '想重置应用兼容性吗？',
 						type: 'warning',
 						preset: 'dialog',
-						content: () => <p>该功能尚未开放，请等待后续更新情况！</p>,
+						content: () => (
+							<p>
+								重置后，可以解决{' '}
+								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+									{renderApplicationName(row.name, row.applicationName)}
+								</span>{' '}
+								由于系统错误的应用兼容性配置导致应用布局异常的问题（正常情况下不需要重置），确定要继续吗？
+							</p>
+						),
+						positiveText: '确定重置',
+						negativeText: '我再想想',
+						onPositiveClick: async () => {
+							const [resetCompatErr, resetCompatRes] = await $to(ksuApi.resetApplicationCompat(row.name));
+							if (resetCompatErr) {
+								modal.create({
+									title: '重置应用兼容性失败',
+									type: 'error',
+									preset: 'dialog',
+									content: () => (
+										<p>
+											发生异常错误，重置应用兼容性失败了QwQ，该功能尚在测试阶段，尚不稳定，出现异常请及时反馈~
+										</p>
+									),
+								});
+							} else {
+								modal.create({
+									title: '重置应用兼容性成功',
+									type: 'success',
+									preset: 'dialog',
+									content: () => (
+										<p>
+											好耶w，重置{' '}
+								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+									{renderApplicationName(row.name, row.applicationName)}
+								</span>{' '}的应用兼容性成功了OwO~
+										</p>
+									),
+								});
+							}
+						},
 					});
 				};
 				return (
@@ -1322,7 +1397,7 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 		<n-card title="操作栏" size="small">
 			<div class="flex flex-wrap">
 				<n-button
-					class="mr-3 mb-3"
+					class="mb-3 mr-3"
 					type="info"
 					:loading="deviceStore.loading || embeddedStore.loading"
 					@click="openAddEmbeddedApp">
@@ -1334,10 +1409,22 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 					添加应用
 				</n-button>
 				<n-button
-					class="mr-3 mb-3"
-					color="#8a2be2"
+					class="mb-3 mr-3"
+					type="success"
 					:loading="deviceStore.loading || embeddedStore.loading"
-					@click="() => reloadApplicationData()">
+					@click="() => reloadPage()">
+					<template #icon>
+						<n-icon>
+							<ArrowPathIcon />
+						</n-icon>
+					</template>
+					刷新应用列表
+				</n-button>
+				<n-button
+					class="mb-3 mr-3"
+					color="#8a2be2"
+					:loading="deviceStore.loading || embeddedStore.loading || hotReloadLoading"
+					@click="() => hotReloadApplicationData()">
 					<template #icon>
 						<n-icon>
 							<SquaresPlusIcon />
@@ -1346,7 +1433,7 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 					热重载应用数据
 				</n-button>
 				<n-button
-					class="mr-3 mb-3"
+					class="mb-3 mr-3"
 					v-if="embeddedStore.isPatchMode"
 					type="error"
 					:loading="deviceStore.loading || embeddedStore.loading || reloadPatchModeConfigLoading"
@@ -1359,7 +1446,7 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 					生成定制应用数据
 				</n-button>
 				<n-button
-					class="mr-3 mb-3"
+					class="mb-3 mr-3"
 					type="warning"
 					:loading="deviceStore.loading || embeddedStore.loading || importShareRuleLoading"
 					@click="importShareRule()">
@@ -1370,22 +1457,10 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 					</template>
 					从分享口令导入
 				</n-button>
-				<n-button
-					class="mr-3 mb-3"
-					type="success"
-					:loading="deviceStore.loading || embeddedStore.loading"
-					@click="() => reloadPage()">
-					<template #icon>
-						<n-icon>
-							<ArrowPathIcon />
-						</n-icon>
-					</template>
-					刷新当前数据
-				</n-button>
 			</div>
 			<div class="flex flex-wrap">
 				<n-button
-					class="mr-3 mb-3"
+					class="mb-3 mr-3"
 					:type="embeddedStore.filterInstalledApps ? 'warning' : 'info'"
 					strong
 					:loading="deviceStore.loading || embeddedStore.loading"

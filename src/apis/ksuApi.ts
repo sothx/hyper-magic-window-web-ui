@@ -8,6 +8,7 @@ import {
 } from "@/utils/kernelsu/index.js";
 import axios from "axios";
 import handlePromiseWithLogging from "@/utils/handlePromiseWithLogging";
+import $to from 'await-to-js';
 
 export interface SmartFocusIOResult extends ExecResults {
   stdout: "on" | "off";
@@ -50,7 +51,7 @@ export const getMIOSVersion = (): Promise<number> => {
   const shellCommon = `getprop ro.mi.os.version.code`
   return handlePromiseWithLogging(new Promise(async (resolve, reject) => {
     if (import.meta.env.MODE === "development") {
-      resolve(2);
+      resolve(1);
     } else {
       const { errno, stdout, stderr }: ExecResults = await exec(
         shellCommon
@@ -458,6 +459,27 @@ export const setRotationSuggestions = (mode: 1 | 0): Promise<string> => {
   }), shellCommon);
 }
 
+export const updateRule = ():Promise<string> => {
+  return handlePromiseWithLogging(new Promise(async (resolve, reject) => {
+    if (import.meta.env.MODE === "development") {
+      resolve('success,success')
+    } else {
+      const {
+        errno: UpdateRuleErrno,
+        stdout: UpdateRuleStdout,
+        stderr: UpdateRuleStderr,
+      }: ExecResults = await exec(
+        `sh /data/adb/modules/MIUI_MagicWindow+/common/source/update_rule/update_rule.sh`
+      );
+      if (UpdateRuleErrno) {
+        reject(UpdateRuleStderr)
+      } else {
+        resolve(UpdateRuleStdout)
+      }
+    }
+  }), 'updateMiuiEmbeddingWindowRule');
+}
+
 export const addIsPatchMode = (): Promise<string> => {
   const shellCommon = `grep -q '^is_patch_mode=' /data/adb/MIUI_MagicWindow+/config.prop || (echo "is_patch_mode=true" | tee -a /data/adb/MIUI_MagicWindow+/config.prop > /dev/null && echo "Command executed successfully." || echo "Command failed.")`
   return handlePromiseWithLogging(new Promise(async (resolve, reject) => {
@@ -557,6 +579,19 @@ export const reboot = (): Promise<string> => {
     } else {
       const { errno, stdout, stderr }: ExecResults = await exec(
         "cat /data/system/users/0/autoui_setting_config.xml"
+      );
+      errno ? reject(stderr) : resolve(stdout);
+    }
+  }), 'getUserAppList');
+};
+
+export const resetApplicationCompat = (packageName:string): Promise<string> => {
+  return handlePromiseWithLogging(new Promise(async (resolve, reject) => {
+    if (import.meta.env.MODE === "development") {
+      resolve(`Reset all changes for ${packageName} to default value.`);
+    } else {
+      const { errno, stdout, stderr }: ExecResults = await exec(
+        `am compat reset-all ${packageName}`
       );
       errno ? reject(stderr) : resolve(stdout);
     }
@@ -718,26 +753,24 @@ export const updateEmbeddedApp = (
         });
       }
 
-      const {
-        errno: UpdateRuleErrno,
-        stdout: UpdateRuleStdout,
-        stderr: UpdateRuleStderr,
-      }: ExecResults = await exec(
-        `sh /data/adb/modules/MIUI_MagicWindow+/common/source/update_rule/update_rule.sh`
-      );
-      if (UpdateRuleErrno) {
+      const [UpdateRuleStderr,UpdateRuleStdout] = await $to<string,string>(updateRule())
+
+       if (UpdateRuleStderr) {
         errorLogging.push({
           type: "updateMiuiEmbeddingWindowRule",
           name: "[模块]重新载入模块应用横屏布局规则",
           message: UpdateRuleStderr,
         });
-      } else {
+      }
+      
+      if (UpdateRuleStdout) {
         successLogging.push({
           type: "updateMiuiEmbeddingWindowRule",
           name: "[模块]重新载入模块应用横屏布局配置文件",
           message: UpdateRuleStdout.split("\n"),
         });
       }
+
 
       if (params.switchAction) {
         const {
@@ -932,26 +965,23 @@ export const updateAutoUIApp = (
         });
       }
 
-      const {
-        errno: UpdateRuleErrno,
-        stdout: UpdateRuleStdout,
-        stderr: UpdateRuleStderr,
-      }: ExecResults = await exec(
-        `sh /data/adb/modules/MIUI_MagicWindow+/common/source/update_rule/update_rule.sh`
-      );
-      if (UpdateRuleErrno) {
-        errorLogging.push({
-          type: "updateMiuiEmbeddingWindowRule",
-          name: "[模块]重新载入模块应用布局优化规则",
-          message: UpdateRuleStderr,
-        });
-      } else {
-        successLogging.push({
-          type: "updateMiuiEmbeddingWindowRule",
-          name: "[模块]重新载入模块应用布局优化规则",
-          message: UpdateRuleStdout.split("\n"),
-        });
-      }
+      const [UpdateRuleStderr,UpdateRuleStdout] = await $to<string,string>(updateRule())
+
+      if (UpdateRuleStderr) {
+       errorLogging.push({
+         type: "updateAutoUIRule",
+         name: "[模块]重新载入模块应用布局优化规则",
+         message: UpdateRuleStderr,
+       });
+     }
+     
+     if (UpdateRuleStdout) {
+       successLogging.push({
+         type: "updateAutoUIRule",
+         name: "[模块]重新载入模块应用布局优化规则",
+         message: UpdateRuleStdout.split("\n"),
+       });
+     }
 
       if (params.reloadRuleAction) {
         const {

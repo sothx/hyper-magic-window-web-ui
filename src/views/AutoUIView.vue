@@ -48,6 +48,7 @@ configProviderProps: configProviderPropsRef
   });
   const autoUIStore = useAutoUIStore();
   const importShareRuleLoading = ref(false);
+  const hotReloadLoading = ref(false);
   const autoUI = useAutoUI();
   const addAutoUIApp = ref<AutoUIAppDrawerInstance | null>(null);
   const updateAutoUIApp = ref<AutoUIAppDrawerInstance | null>(null);
@@ -73,14 +74,45 @@ configProviderProps: configProviderPropsRef
     autoUIStore.filterInstalledApps = !autoUIStore.filterInstalledApps;
   };
 
-  const reloadApplicationData = async () => {
-	modal.create({
+  const hotReloadApplicationData = async () => {
+	if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2) {
+		modal.create({
 			title: '不兼容说明',
 			type: 'warning',
 			preset: 'dialog',
-			content: () => <p>该功能尚未开放，请等待后续更新情况！</p>,
+			content: () => <p>该功能尚未兼容Android 15，请等待后续更新情况！</p>,
 		});
-}
+	} else {
+		hotReloadLoading.value = true;
+		await reloadPage();
+		const [updateRuleErr, updateRuleRes] = await $to(ksuApi.updateRule())
+		if (updateRuleErr) {
+			modal.create({
+					title: '热重载应用数据失败',
+					type: 'error',
+					preset: 'dialog',
+					content: () => <p>热重载应用数据失败了QwQ，详情请查看错误日志~</p>,
+					negativeText: '确定',
+				});
+			hotReloadLoading.value = false;
+		}
+
+		if (updateRuleRes) {
+			modal.create({
+					title: '热重载应用数据成功',
+					type: 'success',
+					preset: 'dialog',
+					content: () => (
+						<p>
+							好耶w，已经重新为你载入包括自定义规则在内的应用数据~
+						</p>
+					),
+					positiveText: '确定',
+			});
+			hotReloadLoading.value = false;
+		}
+	}
+};
 
   const importShareRule = async () => {
     shareRuleTextarea.value = '';
@@ -942,10 +974,23 @@ configProviderProps: configProviderPropsRef
           添加应用
         </n-button>
         <n-button
+          class="mr-3 mb-3"
+          type="success"
+          :loading="deviceStore.loading || autoUIStore.loading"
+          @click="() => reloadPage()"
+        >
+        <template #icon>
+            <n-icon>
+              <ArrowPathIcon />
+            </n-icon>
+          </template>
+          刷新应用列表
+        </n-button>
+        <n-button
 					class="mr-3 mb-3"
 					color="#8a2be2"
 					:loading="deviceStore.loading || autoUIStore.loading"
-					@click="() => reloadApplicationData()">
+					@click="() => hotReloadApplicationData()">
 					<template #icon>
 						<n-icon>
 							<SquaresPlusIcon />
@@ -967,19 +1012,6 @@ configProviderProps: configProviderPropsRef
             </n-icon>
           </template>
           从分享口令导入
-        </n-button>
-        <n-button
-          class="mr-3 mb-3"
-          type="success"
-          :loading="deviceStore.loading || autoUIStore.loading"
-          @click="() => reloadPage()"
-        >
-        <template #icon>
-            <n-icon>
-              <ArrowPathIcon />
-            </n-icon>
-          </template>
-          刷新当前数据
         </n-button>
       </div>
       <div class="flex flex-wrap">
