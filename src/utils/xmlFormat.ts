@@ -216,6 +216,7 @@ export const mergeEmbeddedRule = (
 
     // 初始化模式
     const getSupportModes = fixedOrientationConfig?.supportModes?.split(',')
+    const getDefaultSettings = fixedOrientationConfig?.defaultSettings
     let settingMode: EmbeddedMergeRuleItem["settingMode"] = "disabled";
     let isSupportEmbedded = embeddedConfig ? !embeddedConfig.fullRule : false;
     let isSupportFixedOrientation = getSupportModes?.includes('fo') || (fixedOrientationConfig && !fixedOrientationConfig.hasOwnProperty('disable')) || false
@@ -224,8 +225,30 @@ export const mergeEmbeddedRule = (
 
     if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2) {
       // 有设置优先设置
-      if (settingConfig?.hasOwnProperty('embeddedEnable')) {
+      if (settingConfig) {
         if (settingConfig.embeddedEnable) {
+          settingMode = 'embedded'
+        } else if (settingConfig.fixedOrientationEnable) {
+          settingMode = 'fixedOrientation'
+        } else if (settingConfig.ratio_fullScreenEnable) {
+          settingMode = 'fullScreen'
+        } else {
+          settingMode = 'disabled'
+        }
+      } else {
+        if (fixedOrientationConfig) {
+          settingMode = 'fixedOrientation'
+        }
+        if (fixedOrientationConfig && fixedOrientationConfig.hasOwnProperty('disable') && !fixedOrientationConfig.disable) {
+          settingMode = 'disabled'
+        }
+        if (fixedOrientationConfig && fixedOrientationConfig.hasOwnProperty('supportModes') && getSupportModes?.includes('full') && (!getDefaultSettings || getDefaultSettings === 'full')) {
+          if (pkgName === 'ai.zuoye.app') {
+            console.log('进来了true')
+          }
+          settingMode = "fullScreen";
+        }
+        if (embeddedConfig && !embeddedConfig.hasOwnProperty('fullRule') && (!getDefaultSettings || getDefaultSettings === 'ae')) {
           settingMode = 'embedded'
         }
       }

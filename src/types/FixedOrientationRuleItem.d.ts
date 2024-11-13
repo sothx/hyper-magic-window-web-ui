@@ -55,7 +55,7 @@ export default interface FixedOrientationRuleItem {
   autoUI?: string;
 
   /** 是否配置默认设置(Hyper OS 2.0+可用)，例如full，默认全屏（可选） */
-  defaultSettings?: boolean;
+  defaultSettings?: boolean | 'full' | 'ae' | 'fo';
 
   /** 是否禁用相机预览，默认 false（可选） */
   disableCameraPreview?: boolean;
