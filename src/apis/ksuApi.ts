@@ -51,7 +51,7 @@ export const getMIOSVersion = (): Promise<number> => {
   const shellCommon = `getprop ro.mi.os.version.code`
   return handlePromiseWithLogging(new Promise(async (resolve, reject) => {
     if (import.meta.env.MODE === "development") {
-      resolve(1);
+      resolve(2);
     } else {
       const { errno, stdout, stderr }: ExecResults = await exec(
         shellCommon

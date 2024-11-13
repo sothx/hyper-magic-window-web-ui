@@ -538,7 +538,7 @@ onMounted(() => {
 				<n-tag :bordered="false" type="info">自定义规则</n-tag>
 				。
 			</n-alert>
-			<n-card
+			<!-- <n-card
 				:bordered="false"
 				title="支持的规则"
 				size="small"
@@ -562,7 +562,7 @@ onMounted(() => {
 						</n-gi>
 					</n-grid>
 				</n-checkbox-group>
-			</n-card>
+			</n-card> -->
 			<n-tabs type="segment" v-if="isShowTabs" animated v-model:value="currentSettingMode">
 				<n-tab-pane name="embedded" tab="平行窗口" v-if="props.type === 'update' && isSupportEmbedded">
 					<n-alert :show-icon="false" :bordered="false" title="应用分屏显示" type="success">
@@ -613,12 +613,7 @@ onMounted(() => {
 				</n-tab-pane>
 				<n-tab-pane
 					name="fullScreen"
-					tab="全屏"
-					v-if="
-						deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2
-							? currentSupportModes.includes('fullScreen')
-							: true
-					">
+					tab="全屏">
 					<n-alert :show-icon="false" :bordered="false" title="应用横屏显示" type="info">
 						开启后，未适配横屏应用界面将全屏显示，并可更改显示规则
 					</n-alert>
@@ -690,12 +685,7 @@ onMounted(() => {
 				</n-tab-pane>
 				<n-tab-pane
 					name="fixedOrientation"
-					tab="居中布局"
-					v-if="
-						deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2
-							? currentSupportModes.includes('fixedOrientation')
-							: true
-					">
+					tab="居中布局">
 					<n-alert :show-icon="false" :bordered="false" title="应用居中显示" type="warning">
 						开启后，未适配横屏应用界面将居中显示，并可更改显示比例
 					</n-alert>

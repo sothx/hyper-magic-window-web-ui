@@ -8,6 +8,7 @@ import type AutoUISettingRuleItem from "@/types/AutoUISettingRuleItem";
 import type AutoUIItem from "@/types/AutoUIItem";
 import type AutoUIMergeRuleItem from "@/types/AutoUIMergeRuleItem";
 import * as autoUIFun from '@/utils/autoUIFun';
+import { useDeviceStore } from "@/stores/device";
 
 const transformValues = <T>(obj: Record<string, T>): Record<string, T> => {
   return mapValues(obj, (value) => {
@@ -199,6 +200,7 @@ export const mergeEmbeddedRule = (
   customEmbeddedRules: Record<string, EmbeddedRuleItem> = {}, // 默认值为 {}
   customFixedOrientationRules: Record<string, FixedOrientationRuleItem> = {}, // 默认值为 {}
 ): EmbeddedMergeRuleItem[] => {
+  const deviceStore = useDeviceStore()
   const result: EmbeddedMergeRuleItem[] = [];
   const allPackages = new Set([
     ...Object.keys(embeddedRules),
@@ -216,27 +218,37 @@ export const mergeEmbeddedRule = (
     const getSupportModes = fixedOrientationConfig?.supportModes?.split(',')
     let settingMode: EmbeddedMergeRuleItem["settingMode"] = "disabled";
     let isSupportEmbedded = embeddedConfig ? !embeddedConfig.fullRule : false;
-    let isSupportFixedOrientation = getSupportModes?.includes('fo') || false
+    let isSupportFixedOrientation = getSupportModes?.includes('fo') || (fixedOrientationConfig && !fixedOrientationConfig.hasOwnProperty('disable')) || false
     let isSupportFullScreen = getSupportModes?.includes('full') ||  false
     let ruleMode: EmbeddedMergeRuleItem["ruleMode"] = customEmbeddedRules[pkgName] || customFixedOrientationRules[pkgName] ? "custom" : "module";
 
-    if (settingConfig?.hasOwnProperty('embeddedEnable')) {
-      if (settingConfig.embeddedEnable && embeddedConfig) {
-        settingMode = embeddedConfig.fullRule ? 'fullScreen' : 'embedded';
-      } else if (fixedOrientationConfig) {
-        if (!fixedOrientationConfig.hasOwnProperty('disable') || !fixedOrientationConfig.disable) {
-          settingMode = "fixedOrientation";
+    if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2) {
+      // 有设置优先设置
+      if (settingConfig?.hasOwnProperty('embeddedEnable')) {
+        if (settingConfig.embeddedEnable) {
+          settingMode = 'embedded'
         }
       }
+      // 没设置根据规则约定来判断
     } else {
-      if (fixedOrientationConfig && (!fixedOrientationConfig.hasOwnProperty('disable') || !fixedOrientationConfig.disable)) {
-        settingMode = "fixedOrientation";
-      }
-    
-      if (embeddedConfig) {
-        const hasDefaultSettings = embeddedConfig.hasOwnProperty('defaultSettings') && embeddedConfig.defaultSettings;
-        if (!embeddedConfig.hasOwnProperty('defaultSettings') || hasDefaultSettings) {
+      if (settingConfig?.hasOwnProperty('embeddedEnable')) {
+        if (settingConfig.embeddedEnable && embeddedConfig) {
           settingMode = embeddedConfig.fullRule ? 'fullScreen' : 'embedded';
+        } else if (fixedOrientationConfig) {
+          if (!fixedOrientationConfig.hasOwnProperty('disable') || !fixedOrientationConfig.disable) {
+            settingMode = "fixedOrientation";
+          }
+        }
+      } else {
+        if (fixedOrientationConfig && (!fixedOrientationConfig.hasOwnProperty('disable') || !fixedOrientationConfig.disable)) {
+          settingMode = "fixedOrientation";
+        }
+      
+        if (embeddedConfig) {
+          const hasDefaultSettings = embeddedConfig.hasOwnProperty('defaultSettings') && embeddedConfig.defaultSettings;
+          if (!embeddedConfig.hasOwnProperty('defaultSettings') || hasDefaultSettings) {
+            settingMode = embeddedConfig.fullRule ? 'fullScreen' : 'embedded';
+          }
         }
       }
     }

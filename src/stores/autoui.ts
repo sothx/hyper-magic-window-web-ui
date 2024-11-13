@@ -92,9 +92,9 @@ export const useAutoUIStore = defineStore(
 		async function initDefault() {
 			loading.value = true;
 			// 获取所有应用包名
-      const applicationNameRes = await import('@/assets/applicationName.json')
-      const applicationNameData = applicationNameRes.default;
-      applicationName.value = applicationNameData;
+			const applicationNameRes = await import('@/assets/applicationName.json')
+			const applicationNameData = applicationNameRes.default;
+			applicationName.value = applicationNameData;
 			// 获取源应用布局优化列表
 			const [getSourceAutoUIListErr, getSourceAutoUIListRes] = await $to<string, string>(
 				ksuApi.getSourceAutoUIList(),
@@ -134,11 +134,6 @@ export const useAutoUIStore = defineStore(
 			);
 			if (getAutoUISettingConfigErr) {
 				autoUISettingConfig.value = {};
-				// errorLogging.push({
-				//   type: "autoUISettingConfig",
-				//   title: "[模块]应用布局优化配置文件",
-				//   msg: getAutoUISettingConfigErr,
-				// });
 			}
 
 			if (getAutoUISettingConfigRes) {

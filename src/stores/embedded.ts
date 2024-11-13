@@ -88,6 +88,31 @@ export const useEmbeddedStore = defineStore(
     );
     // 合并后的配置
     const mergeRuleList = ref<EmbeddedMergeRuleItem[]>([]);
+    // 需要设置应用模式的应用列表
+    const filterSetAppModeAppList = computed(() => {
+      const deviceStore = useDeviceStore()
+      const hasInstalledApp = new Set(deviceStore.installedAndroidApplicationPackageNameList)
+      const needSetAppModeAppList: string[] = mergeRuleList.value.reduce((result: string[], item) => {
+        if (hasInstalledApp.has(item.name)) {
+          result.push(item.name)
+        }
+        return result
+      }, [])
+      return needSetAppModeAppList;
+    })
+    const filterResetAppCompatAppList = computed(() => {
+      const deviceStore = useDeviceStore()
+      const hasInstalledApp = new Set(deviceStore.installedAndroidApplicationPackageNameList)
+      const compatAppList: string[] = mergeRuleList.value.reduce((result: string[], item) => {
+        if (hasInstalledApp.has(item.name)) {
+          if (item.fixedOrientationRule?.compatChange) {
+            result.push(item.name)
+          }
+        }
+        return result
+      }, [])
+      return compatAppList;
+    })
     // 搜索后的配置列表
     const filterMergeRuleList = computed(() => {
       const searchValue = searchKeyWord.value.trim().toLowerCase();
@@ -226,17 +251,36 @@ export const useEmbeddedStore = defineStore(
           isPatchMode.value = false;
         }
       }
+
+      const seriesRequests = [
+        ksuApi.getSourceEmbeddedRulesList(),
+        ksuApi.getSystemEmbeddedRulesList(),
+        ksuApi.getCustomConfigEmbeddedRulesList(),
+        ksuApi.getSourceFixedOrientationList(),
+        ksuApi.getSystemFixedOrientationList(),
+        ksuApi.getCustomConfigFixedOrientationList(),
+        ksuApi.getEmbeddedSettingConfig()
+      ];
+      
+      const [
+        [getSourceEmbeddedRulesListErr,getSourceEmbeddedRulesListRes],
+        [getSystemEmbeddedRulesListErr,getSystemEmbeddedRulesListRes],
+        [getCustomConfigEmbeddedRulesListErr,getCustomConfigEmbeddedRulesListRes],
+        [getSourceFixedOrientationListErr,getSourceFixedOrientationListRes],
+        [getSystemFixedOrientationListErr,getSystemFixedOrientationListRes],
+        [getCustomConfigFixedOrientationListErr,getCustomConfigFixedOrientationListRes],
+        [getEmbeddedSettingConfigErr,getEmbeddedSettingConfigRes]
+      ] = await Promise.all(seriesRequests.map(req => $to<string, string>(req)));
+      
       // 获取源平行窗口列表
-      const [getSourceEmbeddedRulesListErr, getSourceEmbeddedRulesListRes] =
-        await $to<string, string>(ksuApi.getSourceEmbeddedRulesList());
       if (getSourceEmbeddedRulesListErr) {
+        sourceEmbeddedRulesList.value = {}
         errorLogging.push({
           type: 'sourceEmbeddedRulesList',
           title: '[模块]平行窗口配置文件',
           msg: getSourceEmbeddedRulesListErr,
         });
       }
-
       if (getSourceEmbeddedRulesListRes) {
         sourceEmbeddedRulesList.value =
           xmlFormat.parseXMLToObject<EmbeddedRuleItem>(
@@ -245,19 +289,16 @@ export const useEmbeddedStore = defineStore(
             'package'
           );
       }
-
+      
       // 获取系统内置平行窗口列表
-
-      const [getSystemEmbeddedRulesListErr, getSystemEmbeddedRulesListRes] =
-        await $to<string, string>(ksuApi.getSystemEmbeddedRulesList());
       if (getSystemEmbeddedRulesListErr) {
+        systemEmbeddedRulesList.value = {}
         errorLogging.push({
           type: 'SystemEmbeddedRulesList',
           title: '[系统]平行窗口配置文件',
           msg: getSystemEmbeddedRulesListErr,
         });
       }
-
       if (getSystemEmbeddedRulesListRes) {
         systemEmbeddedRulesList.value =
           xmlFormat.parseXMLToObject<EmbeddedRuleItem>(
@@ -266,13 +307,12 @@ export const useEmbeddedStore = defineStore(
             'package'
           );
       }
-
+      
       // 获取自定义配置平行窗口列表
-      const [
-        getCustomConfigEmbeddedRulesListErr,
-        getCustomConfigEmbeddedRulesListRes,
-      ] = await $to(ksuApi.getCustomConfigEmbeddedRulesList());
-      if (!getCustomConfigEmbeddedRulesListErr) {
+      if (getCustomConfigEmbeddedRulesListErr) {
+        customConfigEmbeddedRulesList.value = {}
+      }
+      if (getCustomConfigEmbeddedRulesListRes) {
         customConfigEmbeddedRulesList.value =
           xmlFormat.parseXMLToObject<EmbeddedRuleItem>(
             getCustomConfigEmbeddedRulesListRes,
@@ -280,25 +320,18 @@ export const useEmbeddedStore = defineStore(
             'package',
             true
           );
-        console.log(
-          customConfigEmbeddedRulesList.value,
-          'customConfigEmbeddedRulesList.value'
-        );
+        console.log(customConfigEmbeddedRulesList.value, 'customConfigEmbeddedRulesList.value');
       }
-
+      
       // 获取源居中布局列表
-      const [
-        getSourceFixedOrientationListErr,
-        getSourceFixedOrientationListRes,
-      ] = await $to<string, string>(ksuApi.getSourceFixedOrientationList());
       if (getSourceFixedOrientationListErr) {
+        sourceFixedOrientationList.value = {}
         errorLogging.push({
           type: 'sourceFixedOrientationList',
           title: '[模块]信箱模式配置文件',
           msg: getSourceFixedOrientationListErr,
         });
       }
-
       if (getSourceFixedOrientationListRes) {
         sourceFixedOrientationList.value =
           xmlFormat.parseXMLToObject<FixedOrientationRuleItem>(
@@ -307,22 +340,16 @@ export const useEmbeddedStore = defineStore(
             'package'
           );
       }
-
-      // 获取系统内置平行窗口列表
-
-      const [
-        getSystemFixedOrientationListErr,
-        getSystemFixedOrientationListRes,
-      ] = await $to<string, string>(ksuApi.getSystemFixedOrientationList());
+      
+      // 获取系统内置居中布局列表
       if (getSystemFixedOrientationListErr) {
         systemFixedOrientationList.value = {};
-        // errorLogging.push({
-        //   type: "SystemEmbeddedRulesList",
-        //   title: "[系统]信箱模式配置文件",
-        //   msg: getSystemFixedOrientationListErr,
-        // });
+        errorLogging.push({
+          type: 'systemFixedOrientationList',
+          title: '[模块]信箱模式配置文件',
+          msg: getSystemFixedOrientationListErr,
+        });
       }
-
       if (getSystemFixedOrientationListRes) {
         systemFixedOrientationList.value =
           xmlFormat.parseXMLToObject<FixedOrientationRuleItem>(
@@ -331,13 +358,12 @@ export const useEmbeddedStore = defineStore(
             'package'
           );
       }
-
+      
       // 获取自定义配置居中布局列表
-      const [
-        getCustomConfigFixedOrientationListErr,
-        getCustomConfigFixedOrientationListRes,
-      ] = await $to(ksuApi.getCustomConfigFixedOrientationList());
-      if (!getCustomConfigFixedOrientationListErr) {
+      if (getCustomConfigFixedOrientationListErr) {
+        customConfigFixedOrientationList.value = {}
+      }
+      if (getCustomConfigFixedOrientationListRes) {
         customConfigFixedOrientationList.value =
           xmlFormat.parseXMLToObject<FixedOrientationRuleItem>(
             getCustomConfigFixedOrientationListRes,
@@ -346,18 +372,12 @@ export const useEmbeddedStore = defineStore(
             true
           );
       }
-
+      
       // 获取嵌入设置配置
-      const [getEmbeddedSettingConfigErr, getEmbeddedSettingConfigRes] =
-        await $to(ksuApi.getEmbeddedSettingConfig());
       if (getEmbeddedSettingConfigErr) {
-        // errorLogging.push({
-        //   type: "embeddedSettingConfig",
-        //   title: '[模块]应用横屏布局配置文件',
-        //   msg: getEmbeddedSettingConfigErr,
-        // });
         embeddedSettingConfig.value = {};
-      } else {
+      }
+      if (getEmbeddedSettingConfigRes) {
         embeddedSettingConfig.value =
           xmlFormat.parseXMLToObject<EmbeddedSettingRuleItem>(
             getEmbeddedSettingConfigRes,
@@ -405,6 +425,8 @@ export const useEmbeddedStore = defineStore(
       patchFixedOrientationList,
       customConfigEmbeddedRulesList,
       customConfigFixedOrientationList,
+      filterSetAppModeAppList,
+      filterResetAppCompatAppList,
       embeddedSettingConfig,
       systemEmbeddedRulesList,
       systemFixedOrientationList,
