@@ -347,15 +347,7 @@ const pagination = reactive({
 const reloadPatchModeConfigLoading = ref<boolean>(false);
 
 const hotReloadApplicationData = async () => {
-	if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2) {
-		modal.create({
-			title: '不兼容说明',
-			type: 'warning',
-			preset: 'dialog',
-			content: () => <p>该功能尚未兼容Android 15，请等待后续更新情况！</p>,
-		});
-	} else {
-		hotReloadLoading.value = true;
+	hotReloadLoading.value = true;
 		await reloadPage();
 		const [updateRuleErr, updateRuleRes] = await $to(ksuApi.updateRule())
 		if (updateRuleErr) {
@@ -383,7 +375,6 @@ const hotReloadApplicationData = async () => {
 			});
 			hotReloadLoading.value = false;
 		}
-	}
 };
 
 const reloadPatchModeConfigList = async () => {

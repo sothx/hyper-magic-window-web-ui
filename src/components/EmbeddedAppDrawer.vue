@@ -59,7 +59,7 @@ interface fixedOrientationRatioOptions {
 	ratio?: number;
 }
 
-const fullScreenRuleOptions: fullScreenRuleOptions[] = [
+const fullScreenRuleOptions: fullScreenRuleOptions[] = reactive([
 	{
 		label: '强制应用所有界面横屏[nra:cr:rcr:nr]',
 		key: 'fullScreen_nra:cr:rcr:nr',
@@ -74,7 +74,7 @@ const fullScreenRuleOptions: fullScreenRuleOptions[] = [
 		label: '自定义',
 		key: 'fullScreen_custom',
 	},
-];
+]);
 
 const fixedOrientationRatioOptions: fixedOrientationRatioOptions[] = [
 	{
@@ -207,14 +207,14 @@ const embeddedAppDrawer = ref({
 				currentIsShowDivider.value = initialParams.fixedOrientationRule?.isShowDivider ?? false;
 				currentFullRule.value = initialParams.embeddedRules?.fullRule ?? undefined;
 				if (currentFullRule.value === 'nra:cr:rcr:nr') {
-					currentFullScreenRuleOptions.value = fullScreenRuleOptions[0];
+					currentFullScreenRuleOptions.value = deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 ? fullScreenRuleOptions[1] : fullScreenRuleOptions[0];
 				} else if (initialParams.embeddedRules && !initialParams.embeddedRules.hasOwnProperty('fullRule')) {
-					currentFullRule.value = 'nra:cr:rcr:nr';
-					currentFullScreenRuleOptions.value = fullScreenRuleOptions[0];
+					currentFullRule.value = deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 ? undefined :'nra:cr:rcr:nr';
+					currentFullScreenRuleOptions.value = deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 ? fullScreenRuleOptions[0] : fullScreenRuleOptions[1];
 				} else if (currentFullRule.value === '*') {
-					currentFullScreenRuleOptions.value = fullScreenRuleOptions[1];
-				} else {
 					currentFullScreenRuleOptions.value = fullScreenRuleOptions[2];
+				} else {
+					currentFullScreenRuleOptions.value = fullScreenRuleOptions[3];
 				}
 				currentSupportFullSize.value = initialParams.embeddedRules?.supportFullSize ?? false;
 				if (
@@ -307,7 +307,7 @@ const handleDrawerSubmit = async () => {
 		});
 		return;
 	}
-	if (currentSettingMode.value === 'fullScreen' && !currentFullRule.value) {
+	if (currentSettingMode.value === 'fullScreen' && !currentFullRule.value && (!deviceStore.MIOSVersion || deviceStore.MIOSVersion < 2)) {
 		modal.create({
 			title: '应用全屏规则不能为空',
 			type: 'error',
@@ -447,7 +447,7 @@ const handleDrawerSubmit = async () => {
 			...(currentSettingMode.value === 'fullScreen' && {
 				fullRule: currentFullRule.value,
 			}),
-			...(currentSettingMode.value === 'fullScreen' && {
+			...(currentSettingMode.value === 'fullScreen' && (!deviceStore.MIOSVersion || deviceStore.MIOSVersion < 2) && {
 				skipSelfAdaptive: currentSkipSelfAdaptive.value,
 			}),
 			...(currentSettingMode.value === 'fullScreen' && {
@@ -509,8 +509,16 @@ defineExpose({
 	openDrawer: embeddedAppDrawer.value.openDrawer, // 传递 openDrawer 方法
 });
 
-onMounted(() => {
+watch(
+	() => deviceStore.MIOSVersion,
+	(newValue, oldValue) => {
 	// console.log(import.meta.env, 'import.meta.env')
+	if (newValue && newValue >= 2) {
+		fullScreenRuleOptions.unshift({
+		label: '默认横屏规则',
+		key: 'fullScreen_default',
+	})
+	}
 });
 </script>
 
@@ -643,7 +651,7 @@ onMounted(() => {
 								placeholder="请输入横屏规则" />
 						</n-input-group>
 					</n-card>
-					<n-card class="" :bordered="false" title="跳过应用自适配声明" size="small">
+					<n-card class="" v-if="!deviceStore.MIOSVersion || deviceStore.MIOSVersion < 2" :bordered="false" title="跳过应用自适配声明" size="small">
 						<div class="mb-4">
 							<n-tag :bordered="false" type="success">
 								适用于即使设置了

@@ -181,7 +181,7 @@ export const useEmbeddedStore = defineStore(
           deviceStore.lastInstalledAndroidApplicationPackageNameList.some(item => {
               return !allPackageName.value.has(item);
             });
-          if (isNeedReloadPathRule) {
+          if (isNeedReloadPathRule && isPatchMode) {
             eventBus.emit('isNeedReloadPatchRule');
           }
         }
