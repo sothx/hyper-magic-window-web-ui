@@ -243,9 +243,6 @@ export const mergeEmbeddedRule = (
           settingMode = 'disabled'
         }
         if (fixedOrientationConfig && fixedOrientationConfig.hasOwnProperty('supportModes') && getSupportModes?.includes('full') && (!getDefaultSettings || getDefaultSettings === 'full')) {
-          if (pkgName === 'ai.zuoye.app') {
-            console.log('进来了true')
-          }
           settingMode = "fullScreen";
         }
         if (embeddedConfig && !embeddedConfig.hasOwnProperty('fullRule') && (!getDefaultSettings || getDefaultSettings === 'ae')) {
