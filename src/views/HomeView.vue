@@ -284,6 +284,11 @@ const importShareRule = async () => {
 						'package',
 						'package_config',
 					),
+					patchEmbeddedSettingConfigXML: xmlFormat.objectToXML(
+						embeddedStore.patchEmbeddedSettingConfig,
+						'setting',
+						'setting_rule',
+					),
 					customEmbeddedRulesListXML: xmlFormat.objectToXML(
 						embeddedStore.customConfigEmbeddedRulesList,
 						'package',
@@ -441,6 +446,11 @@ const reloadPatchModeConfigList = async () => {
 				embeddedStore.patchFixedOrientationList,
 				'package',
 				'package_config',
+			),
+			patchEmbeddedSettingConfigXML: xmlFormat.objectToXML(
+						embeddedStore.patchEmbeddedSettingConfig,
+						'setting',
+						'setting_rule',
 			),
 			customEmbeddedRulesListXML: xmlFormat.objectToXML(
 				embeddedStore.customConfigEmbeddedRulesList,
@@ -645,6 +655,11 @@ const openAddEmbeddedApp = async () => {
 						embeddedStore.patchFixedOrientationList,
 						'package',
 						'package_config',
+					),
+					patchEmbeddedSettingConfigXML: xmlFormat.objectToXML(
+						embeddedStore.patchEmbeddedSettingConfig,
+						'setting',
+						'setting_rule',
 					),
 					customEmbeddedRulesListXML: xmlFormat.objectToXML(
 						embeddedStore.customConfigEmbeddedRulesList,
@@ -1038,6 +1053,11 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 						'package',
 						'package_config',
 					),
+					patchEmbeddedSettingConfigXML: xmlFormat.objectToXML(
+						embeddedStore.patchEmbeddedSettingConfig,
+						'setting',
+						'setting_rule',
+					),
 					customEmbeddedRulesListXML: xmlFormat.objectToXML(
 						embeddedStore.customConfigEmbeddedRulesList,
 						'package',
@@ -1129,7 +1149,7 @@ const handleCustomRuleDropdown = async (
 	row: EmbeddedMergeRuleItem,
 	index: number,
 ) => {
-	if (deviceStore.ABTestInfo.OS2_PAD_EMBEDDED_APP_MANAGER) {
+	if (!deviceStore.ABTestInfo.OS2_PAD_EMBEDDED_APP_MANAGER) {
 		modal.create({
 			title: '内测说明',
 			type: 'warning',
@@ -1181,6 +1201,11 @@ const handleCustomRuleDropdown = async (
 							embeddedStore.patchFixedOrientationList,
 							'package',
 							'package_config',
+						),
+						patchEmbeddedSettingConfigXML: xmlFormat.objectToXML(
+						embeddedStore.patchEmbeddedSettingConfig,
+						'setting',
+						'setting_rule',
 						),
 						customEmbeddedRulesListXML: xmlFormat.objectToXML(
 							embeddedStore.customConfigEmbeddedRulesList,

@@ -640,6 +640,7 @@ export interface updateEmbeddedAppParams {
   isPatchMode: boolean;
   patchEmbeddedRulesListXML: string;
   patchFixedOrientationListXML: string;
+  patchEmbeddedSettingConfigXML: string;
   customEmbeddedRulesListXML: string;
   customFixedOrientationListXML: string;
   settingConfigXML: string;
@@ -685,7 +686,7 @@ export const updateEmbeddedApp = (
     } else {
       const errorLogging: updateEmbeddedAppErrorLoggingItem[] = [];
       const successLogging: updateEmbeddedAppSuccessLoggingItem[] = [];
-
+      const deviceStore = useDeviceStore();
       if (params.isPatchMode) {
         const {
           errno: PatchEmErrno,
@@ -727,6 +728,30 @@ export const updateEmbeddedApp = (
             name: "[定制模式]信箱模式配置文件",
             message: "更新成功",
           });
+        }
+
+        if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2) {
+
+          const {
+            errno: PatchSettingsErrno,
+            stdout: PatchSettingsStdout,
+            stderr: PatchSettingsStderr,
+          }: ExecResults = await exec(
+            `echo '${params.patchEmbeddedSettingConfigXML}' > /data/adb/MIUI_MagicWindow+/patch_rule/embedded_setting_config.xml`
+          );
+          if (PatchSettingsErrno) {
+            errorLogging.push({
+              type: "patchEmbeddedSettingConfigXML",
+              name: "[定制模式]应用横屏布局配置文件",
+              message: PatchSettingsStderr,
+            });
+          } else {
+            successLogging.push({
+              type: "patchEmbeddedSettingConfigXML",
+              name: "[定制模式]应用横屏布局配置文件",
+              message: "更新成功",
+            });
+          }
         }
       }
 
@@ -773,8 +798,6 @@ export const updateEmbeddedApp = (
           message: "更新成功",
         });
       }
-
-      const deviceStore = useDeviceStore();
 
       if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2) {
         const {

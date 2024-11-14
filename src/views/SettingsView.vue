@@ -308,6 +308,11 @@ const changePatchMode = async (value: boolean) => {
 					'package',
 					'package_config',
 				),
+				patchEmbeddedSettingConfigXML: xmlFormat.objectToXML(
+						embeddedStore.patchEmbeddedSettingConfig,
+						'setting',
+						'setting_rule',
+				),
 				customEmbeddedRulesListXML: xmlFormat.objectToXML(
 					embeddedStore.customConfigEmbeddedRulesList,
 					'package',
