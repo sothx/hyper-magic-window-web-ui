@@ -38,6 +38,7 @@ export interface EmbeddedAppDrawerSubmitResult {
 		splitRatio?: number;
 		foRelaunch?: boolean;
 		emRelaunch?: boolean;
+		forceFixedOrientation?: boolean;
 	};
 	loadingCallback: () => void;
 	closeCallback: () => void;
@@ -119,6 +120,8 @@ const currentRatio = ref<number>();
 
 const currentSplitRatio = ref<number>(0.5);
 
+const currentForceFixedOrientation = ref<boolean>(false);
+
 const currentIsSwitchEmbeddedCustom = ref<boolean>(false);
 
 const currentSupportModes = ref<EmbeddedMergeRuleItem['settingMode'][]>([]);
@@ -173,6 +176,7 @@ const embeddedAppDrawer = ref({
 				currentSupportModes.value = ['fullScreen', 'fixedOrientation', 'disabled'];
 				currentFixedOrientationRelaunch.value = false;
 				currentEmbeddedRelaunch.value = false;
+				currentForceFixedOrientation.value = false;
 			}
 
 			// 如果是update模式，初始化参数
@@ -206,6 +210,7 @@ const embeddedAppDrawer = ref({
 				currentSkipSelfAdaptive.value = initialParams.fixedOrientationRule?.disable ?? false;
 				currentIsShowDivider.value = initialParams.fixedOrientationRule?.isShowDivider ?? false;
 				currentFullRule.value = initialParams.embeddedRules?.fullRule ?? undefined;
+				currentForceFixedOrientation.value = initialParams.fixedOrientationRule?.compatChange?.split(',').includes('OVERRIDE_UNDEFINED_ORIENTATION_TO_PORTRAIT') ?? false
 				if (currentFullRule.value === 'nra:cr:rcr:nr') {
 					currentFullScreenRuleOptions.value =
 						deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2
@@ -474,6 +479,10 @@ const handleDrawerSubmit = async () => {
 			...(currentSettingMode.value === 'fixedOrientation' && {
 				foRelaunch: currentFixedOrientationRelaunch.value,
 			}),
+			...(currentSettingMode.value === 'fixedOrientation' &&
+				(!deviceStore.MIOSVersion || deviceStore.MIOSVersion < 2) && {
+					forceFixedOrientation: currentForceFixedOrientation.value,
+				}),
 			...(currentSettingMode.value === 'embedded' &&
 				(currentRuleMode.value === 'custom' ||
 					(currentRuleMode.value === 'module' && currentIsSwitchEmbeddedCustom.value)) && {
@@ -743,6 +752,24 @@ watch(
 						<n-switch :rail-style="railStyle" v-model:value="currentFixedOrientationRelaunch" size="large">
 							<template #checked>应用比例变化时重载应用</template>
 							<template #unchecked>应用比例变化时不重载应用</template>
+						</n-switch>
+					</n-card>
+					<n-card
+						class=""
+						v-if="deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2"
+						:bordered="false"
+						title="强制应用居中显示"
+						size="small">
+						<div class="mb-4">
+							<n-tag :bordered="false" type="success">
+								适用于即使设置了
+								<span class="font-bold">居中布局</span>
+								仍无法居中显示的应用
+							</n-tag>
+						</div>
+						<n-switch :rail-style="railStyle" v-model:value="currentForceFixedOrientation" size="large">
+							<template #checked>强制应用居中显示</template>
+							<template #unchecked>不强制应用居中显示</template>
 						</n-switch>
 					</n-card>
 				</n-tab-pane>
