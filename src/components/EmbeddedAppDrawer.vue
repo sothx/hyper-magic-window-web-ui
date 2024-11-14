@@ -539,7 +539,7 @@ watch(
 					:readonly="props.type === 'update'"
 					placeholder="请输入应用包名" />
 			</n-input-group>
-			<n-alert v-if="currentRuleMode === 'custom'" type="info" class="mb-5">
+			<n-alert v-if="currentRuleMode === 'custom'" type="info" class="mt-5">
 				当前应用已被
 				<n-tag :bordered="false" type="info">自定义规则</n-tag>
 				覆盖，该应用规则不再随模块版本更新，如需恢复模块规则，请先清除
@@ -571,7 +571,7 @@ watch(
 					</n-grid>
 				</n-checkbox-group>
 			</n-card> -->
-			<n-tabs type="segment" v-if="isShowTabs" animated v-model:value="currentSettingMode">
+			<n-tabs class="my-5" type="segment" v-if="isShowTabs" animated v-model:value="currentSettingMode">
 				<n-tab-pane name="embedded" tab="平行窗口" v-if="props.type === 'update' && isSupportEmbedded">
 					<n-alert :show-icon="false" :bordered="false" title="应用分屏显示" type="success">
 						开启后，未适配横屏应用界面将通过平行窗口显示

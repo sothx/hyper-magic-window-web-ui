@@ -1191,7 +1191,7 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 	return [
 		{
 			title: '应用名称',
-			width: 250,
+			minWidth: 250,
 			key: 'name',
 			render(row, index) {
 				const handleClickPushApplicationName = (row: EmbeddedMergeRuleItem, index: number) => {
@@ -1225,47 +1225,47 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 				);
 			},
 		},
-		{
-			title: '支持的规则',
-			key: 'ruleMode',
-			minWidth: 200,
-			render(row, index) {
-				const rowIsSupportEmbedded = row.isSupportEmbedded;
-				const rowIsSupportFullScreen =
-					(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && row.isSupportFullScreen) ||
-					(deviceStore.MIOSVersion && deviceStore.MIOSVersion === 1) ||
-					(!deviceStore.loading && !deviceStore.MIOSVersion);
-				const rowIsSupportFixedOrientation =
-					(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && row.isSupportFixedOrientation) ||
-					(deviceStore.MIOSVersion && deviceStore.MIOSVersion === 1) ||
-					(!deviceStore.loading && !deviceStore.MIOSVersion);
-				return (
-					<div>
-						{rowIsSupportEmbedded && (
-							<n-tag type='success' bordered={false} class='my-1 mr-2'>
-								平行窗口
-							</n-tag>
-						)}
-						{rowIsSupportFullScreen && (
-							<n-tag type='info' bordered={false} class='my-1 mr-2'>
-								全屏
-							</n-tag>
-						)}
-						{rowIsSupportFixedOrientation && (
-							<n-tag type='warning' bordered={false} class='my-1 mr-2'>
-								居中布局
-							</n-tag>
-						)}
-						<n-tag type='error' bordered={false} class='my-1'>
-							原始布局
-						</n-tag>
-					</div>
-				);
-			},
-		},
+		// {
+		// 	title: '支持的规则',
+		// 	key: 'ruleMode',
+		// 	minWidth: 200,
+		// 	render(row, index) {
+		// 		const rowIsSupportEmbedded = row.isSupportEmbedded;
+		// 		const rowIsSupportFullScreen =
+		// 			(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && row.isSupportFullScreen) ||
+		// 			(deviceStore.MIOSVersion && deviceStore.MIOSVersion === 1) ||
+		// 			(!deviceStore.loading && !deviceStore.MIOSVersion);
+		// 		const rowIsSupportFixedOrientation =
+		// 			(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && row.isSupportFixedOrientation) ||
+		// 			(deviceStore.MIOSVersion && deviceStore.MIOSVersion === 1) ||
+		// 			(!deviceStore.loading && !deviceStore.MIOSVersion);
+		// 		return (
+		// 			<div>
+		// 				{rowIsSupportEmbedded && (
+		// 					<n-tag type='success' bordered={false} class='my-1 mr-2'>
+		// 						平行窗口
+		// 					</n-tag>
+		// 				)}
+		// 				{rowIsSupportFullScreen && (
+		// 					<n-tag type='info' bordered={false} class='my-1 mr-2'>
+		// 						全屏
+		// 					</n-tag>
+		// 				)}
+		// 				{rowIsSupportFixedOrientation && (
+		// 					<n-tag type='warning' bordered={false} class='my-1 mr-2'>
+		// 						居中布局
+		// 					</n-tag>
+		// 				)}
+		// 				<n-tag type='error' bordered={false} class='my-1'>
+		// 					原始布局
+		// 				</n-tag>
+		// 			</div>
+		// 		);
+		// 	},
+		// },
 		{
 			title: '规则来源',
-			width: 100,
+			minWidth: 100,
 			key: 'ruleMode',
 			render(row, index) {
 				if (row.ruleMode === 'custom') {
@@ -1304,7 +1304,7 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 		},
 		{
 			title: '当前规则',
-			width: 100,
+			minWidth: 100,
 			key: 'settingMode',
 			render(row, index) {
 				const modeMap = {
