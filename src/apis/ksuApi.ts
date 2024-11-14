@@ -9,6 +9,7 @@ import {
 import axios from "axios";
 import handlePromiseWithLogging from "@/utils/handlePromiseWithLogging";
 import $to from 'await-to-js';
+import { useDeviceStore } from "@/stores/device";
 
 export interface SmartFocusIOResult extends ExecResults {
   stdout: "on" | "off";
@@ -610,6 +611,11 @@ export interface updateEmbeddedAppParams {
     name: string;
     action: "enable" | "disable";
   };
+  setAppMode?: {
+    name: string;
+    // 0 is Disable, 1 is ActivityEmbedding, 2 is FixedOrientation, 3 is FullScreen
+    action: 0 | 1 | 2 | 3
+  }
 }
 
 export interface updateEmbeddedAppErrorLoggingItem {
@@ -732,6 +738,32 @@ export const updateEmbeddedApp = (
         });
       }
 
+      const deviceStore = useDeviceStore();
+
+      if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2) {
+        const {
+          errno: UnlockSettingsErrno,
+          stdout:UnlockSettingsStdout,
+          stderr: UnlockSettingsStderr
+        } : ExecResults = await exec(
+          `chattr -i /data/system/users/0/embedded_setting_config.xml`
+        );
+
+        if (UnlockSettingsErrno) {
+          errorLogging.push({
+            type: "UnlockSettingConfigXML",
+            name: "[模块]解锁应用横屏布局配置文件",
+            message: UnlockSettingsStderr,
+          });
+        } else {
+          successLogging.push({
+            type: "UnlockSttingConfigXML",
+            name: "[模块]解锁应用横屏布局配置文件",
+            message: "解锁成功",
+          });
+        }
+      }
+
       const {
         errno: SettingsErrno,
         stdout: SettingsStdout,
@@ -751,6 +783,31 @@ export const updateEmbeddedApp = (
           name: "[模块]应用横屏布局配置文件",
           message: "更新成功",
         });
+      }
+
+      
+      if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2) {
+        const {
+          errno: LockSettingsErrno,
+          stdout:LockSettingsStdout,
+          stderr: LockSettingsStderr
+        } : ExecResults = await exec(
+          `chattr +i /data/system/users/0/embedded_setting_config.xml`
+        );
+
+        if (LockSettingsErrno) {
+          errorLogging.push({
+            type: "LockSettingConfigXML",
+            name: "[模块]锁定应用横屏布局配置文件",
+            message: LockSettingsStderr,
+          });
+        } else {
+          successLogging.push({
+            type: "LockSttingConfigXML",
+            name: "[模块]锁定应用横屏布局配置文件",
+            message: "加锁成功",
+          });
+        }
       }
 
       const [UpdateRuleStderr,UpdateRuleStdout] = await $to<string,string>(updateRule())
@@ -791,6 +848,29 @@ export const updateEmbeddedApp = (
             type: "updateMiuiEmbeddingWindowSwitchAction",
             name: `[模块]更新${params.switchAction.action}的设置`,
             message: SwitchActionStdout,
+          });
+        }
+      }
+
+      if (params.setAppMode) {
+        const {
+          errno: SetAppModeErrno,
+          stdout: SetAppModeStdout,
+          stderr: SetAppModeStderr
+        } : ExecResults = await exec(
+          `cmd miui_embedding_window set-appMode ${params.setAppMode.name} ${params.setAppMode.action}`
+        );
+        if (SetAppModeErrno) {
+          errorLogging.push({
+            type: "updateMiuiEmbeddingWindowSwitchAction",
+            name: `[模块]更新${params.setAppMode.name}的设置为${params.setAppMode.action}`,
+            message: SetAppModeStderr,
+          });
+        } else {
+          successLogging.push({
+            type: "updateMiuiEmbeddingWindowSwitchAction",
+            name: `[模块]更新${params.setAppMode.name}的设置${params.setAppMode.action}`,
+            message: SetAppModeStdout,
           });
         }
       }

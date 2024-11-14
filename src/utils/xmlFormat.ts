@@ -9,6 +9,7 @@ import type AutoUIItem from "@/types/AutoUIItem";
 import type AutoUIMergeRuleItem from "@/types/AutoUIMergeRuleItem";
 import * as autoUIFun from '@/utils/autoUIFun';
 import { useDeviceStore } from "@/stores/device";
+import { getSettingMode } from "./embeddedFun";
 
 const transformValues = <T>(obj: Record<string, T>): Record<string, T> => {
   return mapValues(obj, (value) => {
@@ -236,18 +237,7 @@ export const mergeEmbeddedRule = (
           settingMode = 'disabled'
         }
       } else {
-        if (fixedOrientationConfig) {
-          settingMode = 'fixedOrientation'
-        }
-        if (fixedOrientationConfig && fixedOrientationConfig.hasOwnProperty('disable') && !fixedOrientationConfig.disable) {
-          settingMode = 'disabled'
-        }
-        if (fixedOrientationConfig && fixedOrientationConfig.hasOwnProperty('supportModes') && getSupportModes?.includes('full') && (!getDefaultSettings || getDefaultSettings === 'full')) {
-          settingMode = "fullScreen";
-        }
-        if (embeddedConfig && !embeddedConfig.hasOwnProperty('fullRule') && (!getDefaultSettings || getDefaultSettings === 'ae')) {
-          settingMode = 'embedded'
-        }
+        settingMode = getSettingMode(embeddedConfig,fixedOrientationConfig)
       }
       // 没设置根据规则约定来判断
     } else {

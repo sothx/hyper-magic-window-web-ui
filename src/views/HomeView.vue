@@ -35,6 +35,7 @@ import {
 } from '@heroicons/vue/24/outline';
 import { arrayBufferToBase64, base64ToArrayBuffer } from '@/utils/format';
 import { findBase64InString, renderApplicationName } from '@/utils/common';
+import { getAppModeCode } from '@/utils/embeddedFun';
 type EmbeddedAppDrawerInstance = InstanceType<typeof EmbeddedAppDrawer>;
 type SearchKeyWordInputInstance = InstanceType<typeof NInput>;
 type NDataTabletInstance = InstanceType<typeof NDataTable>;
@@ -348,33 +349,29 @@ const reloadPatchModeConfigLoading = ref<boolean>(false);
 
 const hotReloadApplicationData = async () => {
 	hotReloadLoading.value = true;
-		await reloadPage();
-		const [updateRuleErr, updateRuleRes] = await $to(ksuApi.updateRule())
-		if (updateRuleErr) {
-			modal.create({
-					title: '热重载应用数据失败',
-					type: 'error',
-					preset: 'dialog',
-					content: () => <p>热重载应用数据失败了QwQ，详情请查看错误日志~</p>,
-					negativeText: '确定',
-				});
-			hotReloadLoading.value = false;
-		}
+	await reloadPage();
+	const [updateRuleErr, updateRuleRes] = await $to(ksuApi.updateRule());
+	if (updateRuleErr) {
+		modal.create({
+			title: '热重载应用数据失败',
+			type: 'error',
+			preset: 'dialog',
+			content: () => <p>热重载应用数据失败了QwQ，详情请查看错误日志~</p>,
+			negativeText: '确定',
+		});
+		hotReloadLoading.value = false;
+	}
 
-		if (updateRuleRes) {
-			modal.create({
-					title: '热重载应用数据成功',
-					type: 'success',
-					preset: 'dialog',
-					content: () => (
-						<p>
-							好耶w，已经重新为你载入包括自定义规则在内的应用数据~
-						</p>
-					),
-					positiveText: '确定',
-			});
-			hotReloadLoading.value = false;
-		}
+	if (updateRuleRes) {
+		modal.create({
+			title: '热重载应用数据成功',
+			type: 'success',
+			preset: 'dialog',
+			content: () => <p>好耶w，已经重新为你载入包括自定义规则在内的应用数据~</p>,
+			positiveText: '确定',
+		});
+		hotReloadLoading.value = false;
+	}
 };
 
 const reloadPatchModeConfigList = async () => {
@@ -461,11 +458,6 @@ const reloadPatchModeConfigList = async () => {
 };
 
 const openAddEmbeddedApp = async () => {
-	console.log(embeddedStore.filterSetAppModeAppList,'fff')
-	console.log(embeddedStore.filterResetAppCompatAppList,'ggg')
-	const a = Object.entries(embeddedStore.mergeRuleList)
-		.filter(([, value]) => !value.applicationName)
-		.map(([key, value]) => value.name);
 	if (deviceStore.deviceCharacteristics !== 'tablet') {
 		modal.create({
 			title: '不兼容说明',
@@ -476,7 +468,6 @@ const openAddEmbeddedApp = async () => {
 		logsStore.info('应用横屏配置-添加应用', '该功能仅兼容平板设备，暂时不兼容折叠屏设备，请等待后续更新情况！');
 		return;
 	}
-	console.log(deviceStore.androidTargetSdk, 'deviceStore.androidTargetSdk');
 	if (deviceStore.androidTargetSdk && ![32, 33, 34].includes(deviceStore.androidTargetSdk)) {
 		modal.create({
 			title: '不兼容说明',
@@ -492,20 +483,29 @@ const openAddEmbeddedApp = async () => {
 			console.log('操作取消:', addEmbeddedAppCancel);
 		} else {
 			if (addEmbeddedAppRes.settingMode === 'fullScreen') {
-				embeddedStore.customConfigEmbeddedRulesList[addEmbeddedAppRes.name] = {
-					name: addEmbeddedAppRes.name,
-					fullRule: addEmbeddedAppRes.modePayload.fullRule,
-				};
+				if (addEmbeddedAppRes.modePayload.fullRule) {
+					embeddedStore.customConfigEmbeddedRulesList[addEmbeddedAppRes.name] = {
+						name: addEmbeddedAppRes.name,
+						fullRule: addEmbeddedAppRes.modePayload.fullRule,
+					};
+				}
 				embeddedStore.customConfigFixedOrientationList[addEmbeddedAppRes.name] = {
 					name: addEmbeddedAppRes.name,
 					...(addEmbeddedAppRes.modePayload.isShowDivider ? { isShowDivider: true } : {}),
-					...(addEmbeddedAppRes.modePayload.skipSelfAdaptive ? { disable: true } : {}),
+					...(addEmbeddedAppRes.modePayload.skipSelfAdaptive &&
+					(!deviceStore.MIOSVersion || deviceStore.MIOSVersion < 2)
+						? { disable: true }
+						: {}),
 					...(addEmbeddedAppRes.modePayload.supportFullSize ? { supportFullSize: true } : {}),
+					...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 ? { supportModes: 'full,fo' } : {}),
+					...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 ? { defaultSettings: 'full' } : {}),
 				};
 			}
 			if (addEmbeddedAppRes.settingMode === 'fixedOrientation') {
 				embeddedStore.customConfigFixedOrientationList[addEmbeddedAppRes.name] = {
 					name: addEmbeddedAppRes.name,
+					...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 ? { supportModes: 'full,fo' } : {}),
+					...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 ? { defaultSettings: 'fo' } : {}),
 					...(addEmbeddedAppRes.modePayload.ratio !== undefined
 						? {
 								ratio: addEmbeddedAppRes.modePayload.ratio,
@@ -529,10 +529,44 @@ const openAddEmbeddedApp = async () => {
 						: {}),
 				};
 			}
-			embeddedStore.embeddedSettingConfig[addEmbeddedAppRes.name] = {
-				name: addEmbeddedAppRes.name,
-				embeddedEnable: ['embedded', 'fullScreen'].includes(addEmbeddedAppRes.settingMode) ? true : false,
-			};
+			if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2) {
+				if (addEmbeddedAppRes.settingMode === 'disabled') {
+					delete embeddedStore.embeddedSettingConfig[addEmbeddedAppRes.name];
+				} else {
+					embeddedStore.embeddedSettingConfig[addEmbeddedAppRes.name] = {
+						name: addEmbeddedAppRes.name,
+						...(embeddedStore.customConfigEmbeddedRulesList[addEmbeddedAppRes.name]
+							? { embeddedEnable: addEmbeddedAppRes.settingMode === 'embedded' ? true : false }
+							: {}),
+						...(embeddedStore.customConfigFixedOrientationList[addEmbeddedAppRes.name]
+							? {
+									fixedOrientationEnable:
+										addEmbeddedAppRes.settingMode === 'fixedOrientation' ? true : false,
+								}
+							: {}),
+						...(embeddedStore.customConfigFixedOrientationList[addEmbeddedAppRes.name]
+							? {
+									ratio_fullScreenEnable:
+										addEmbeddedAppRes.settingMode === 'fullScreen' ? true : false,
+								}
+							: {}),
+						...(embeddedStore.customConfigEmbeddedRulesList[addEmbeddedAppRes.name]
+							? {
+									fullScreenEnable:
+										addEmbeddedAppRes.settingMode === 'fullScreen' &&
+										embeddedStore.customConfigEmbeddedRulesList[addEmbeddedAppRes.name].fullRule
+											? true
+											: false,
+								}
+							: {}),
+					};
+				}
+			} else {
+				embeddedStore.embeddedSettingConfig[addEmbeddedAppRes.name] = {
+					name: addEmbeddedAppRes.name,
+					embeddedEnable: ['embedded', 'fullScreen'].includes(addEmbeddedAppRes.settingMode) ? true : false,
+				};
+			}
 			const [submitAddEmbeddedAppErr, submitAddEmbeddedAppRes] = await $to(
 				ksuApi.updateEmbeddedApp({
 					isPatchMode: embeddedStore.isPatchMode,
@@ -561,12 +595,21 @@ const openAddEmbeddedApp = async () => {
 						'setting',
 						'setting_rule',
 					),
-					switchAction: {
-						name: addEmbeddedAppRes.name,
-						action: ['embedded', 'fullScreen'].includes(addEmbeddedAppRes.settingMode)
-							? 'enable'
-							: 'disable',
-					},
+					...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2
+						? {
+								setAppMode: {
+									name: addEmbeddedAppRes.name,
+									action: getAppModeCode(addEmbeddedAppRes.settingMode),
+								},
+							}
+						: {
+								switchAction: {
+									name: addEmbeddedAppRes.name,
+									action: ['embedded', 'fullScreen'].includes(addEmbeddedAppRes.settingMode)
+										? 'enable'
+										: 'disable',
+								},
+							}),
 				}),
 			);
 			if (submitAddEmbeddedAppErr) {
@@ -621,17 +664,32 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 		} else {
 			if (updateEmbeddedAppRes.settingMode === 'fullScreen') {
 				if (embeddedStore.customConfigEmbeddedRulesList[row.name]) {
-					embeddedStore.customConfigEmbeddedRulesList[row.name].fullRule =
-						updateEmbeddedAppRes.modePayload.fullRule;
-					// const hasDefaultSettings = embeddedStore.sourceEmbeddedRulesList[row.name]?.hasOwnProperty('defaultSettings')
-					// if (hasDefaultSettings) {
-					//   embeddedStore.sourceEmbeddedRulesList[row.name].defaultSettings = true
-					// }
+					if (updateEmbeddedAppRes.modePayload.fullRule) {
+						embeddedStore.customConfigEmbeddedRulesList[row.name].fullRule =
+							updateEmbeddedAppRes.modePayload.fullRule;
+					}
+					if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2) {
+						if (
+							!updateEmbeddedAppRes.modePayload.fullRule &&
+							embeddedStore.customConfigEmbeddedRulesList[row.name].fullRule
+						) {
+							delete embeddedStore.customConfigEmbeddedRulesList[row.name].fullRule;
+						}
+						embeddedStore.customConfigFixedOrientationList[row.name].supportModes = 'full,fo';
+						embeddedStore.customConfigFixedOrientationList[row.name].defaultSettings = 'full';
+						const hasDisable =
+							embeddedStore.customConfigFixedOrientationList[row.name].hasOwnProperty('disable');
+						if (hasDisable) {
+							delete embeddedStore.customConfigFixedOrientationList[row.name].disable;
+						}
+					}
 				} else {
-					embeddedStore.customConfigEmbeddedRulesList[row.name] = {
-						name: row.name,
-						fullRule: updateEmbeddedAppRes.modePayload.fullRule,
-					};
+					if (updateEmbeddedAppRes.modePayload.fullRule) {
+						embeddedStore.customConfigEmbeddedRulesList[row.name] = {
+							name: row.name,
+							fullRule: updateEmbeddedAppRes.modePayload.fullRule,
+						};
+					}
 				}
 				if (embeddedStore.customConfigFixedOrientationList[row.name]) {
 					if (updateEmbeddedAppRes.modePayload.hasOwnProperty('isShowDivider')) {
@@ -650,8 +708,13 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 					embeddedStore.customConfigFixedOrientationList[row.name] = {
 						name: row.name,
 						...(updateEmbeddedAppRes.modePayload.isShowDivider ? { isShowDivider: true } : {}),
-						...(updateEmbeddedAppRes.modePayload.skipSelfAdaptive ? { disable: true } : {}),
+						...(updateEmbeddedAppRes.modePayload.skipSelfAdaptive &&
+						(!deviceStore.MIOSVersion || deviceStore.MIOSVersion < 2)
+							? { disable: true }
+							: {}),
 						...(updateEmbeddedAppRes.modePayload.supportFullSize ? { supportFullSize: true } : {}),
+						...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 ? { supportModes: 'full,fo' } : {}),
+						...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 ? { defaultSettings: 'full' } : {}),
 					};
 				}
 			}
@@ -679,9 +742,15 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 					} else {
 						delete embeddedStore.customConfigFixedOrientationList[row.name].relaunch;
 					}
+					if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2) {
+						embeddedStore.customConfigFixedOrientationList[row.name].supportModes = 'full,fo';
+						embeddedStore.customConfigFixedOrientationList[row.name].defaultSettings = 'fo';
+					}
 				} else {
 					embeddedStore.customConfigFixedOrientationList[row.name] = {
 						name: row.name,
+						...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 ? { supportModes: 'full,fo' } : {}),
+						...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 ? { defaultSettings: 'fo' } : {}),
 						...(updateEmbeddedAppRes.modePayload.ratio !== undefined
 							? {
 									ratio: updateEmbeddedAppRes.modePayload.ratio,
@@ -748,11 +817,62 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 						};
 					}
 				}
+				if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2) {
+					if (embeddedStore.customConfigFixedOrientationList[row.name]) {
+						const hasDisable =
+							embeddedStore.customConfigFixedOrientationList[row.name].hasOwnProperty('disable');
+						if (hasDisable) {
+							delete embeddedStore.customConfigFixedOrientationList[row.name].disable;
+						}
+						const hasDefaultSettings =
+							embeddedStore.customConfigFixedOrientationList[row.name].hasOwnProperty('defaultSettings');
+						if (hasDefaultSettings) {
+							delete embeddedStore.customConfigFixedOrientationList[row.name].defaultSettings;
+						}
+					}
+				}
 			}
-			embeddedStore.embeddedSettingConfig[row.name] = {
-				name: row.name,
-				embeddedEnable: ['embedded', 'fullScreen'].includes(updateEmbeddedAppRes.settingMode) ? true : false,
-			};
+			// settings 配置
+			if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2) {
+				if (updateEmbeddedAppRes.settingMode === 'disabled') {
+					delete embeddedStore.embeddedSettingConfig[row.name];
+				} else {
+					embeddedStore.embeddedSettingConfig[row.name] = {
+						name: row.name,
+						...(embeddedStore.customConfigEmbeddedRulesList[row.name]
+							? { embeddedEnable: updateEmbeddedAppRes.settingMode === 'embedded' ? true : false }
+							: {}),
+						...(embeddedStore.customConfigFixedOrientationList[row.name]
+							? {
+									fixedOrientationEnable:
+										updateEmbeddedAppRes.settingMode === 'fixedOrientation' ? true : false,
+								}
+							: {}),
+						...(embeddedStore.customConfigFixedOrientationList[row.name]
+							? {
+									ratio_fullScreenEnable:
+										updateEmbeddedAppRes.settingMode === 'fullScreen' ? true : false,
+								}
+							: {}),
+						...(embeddedStore.customConfigEmbeddedRulesList[row.name]
+							? {
+									fullScreenEnable:
+										updateEmbeddedAppRes.settingMode === 'fullScreen' &&
+										embeddedStore.customConfigEmbeddedRulesList[row.name].fullRule
+											? true
+											: false,
+								}
+							: {}),
+					};
+				}
+			} else {
+				embeddedStore.embeddedSettingConfig[row.name] = {
+					name: row.name,
+					embeddedEnable: ['embedded', 'fullScreen'].includes(updateEmbeddedAppRes.settingMode)
+						? true
+						: false,
+				};
+			}
 			const [submitUpdateEmbeddedAppErr, submitUpdateEmbeddedAppRes] = await $to(
 				ksuApi.updateEmbeddedApp({
 					isPatchMode: embeddedStore.isPatchMode,
@@ -781,12 +901,21 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 						'setting',
 						'setting_rule',
 					),
-					switchAction: {
-						name: row.name,
-						action: ['embedded', 'fullScreen'].includes(updateEmbeddedAppRes.settingMode)
-							? 'enable'
-							: 'disable',
-					},
+					...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2
+						? {
+								setAppMode: {
+									name: row.name,
+									action: getAppModeCode(updateEmbeddedAppRes.settingMode),
+								},
+							}
+						: {
+								switchAction: {
+									name: row.name,
+									action: ['embedded', 'fullScreen'].includes(updateEmbeddedAppRes.settingMode)
+										? 'enable'
+										: 'disable',
+								},
+							}),
 				}),
 			);
 			if (submitUpdateEmbeddedAppErr) {
@@ -1345,9 +1474,11 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 									content: () => (
 										<p>
 											好耶w，重置{' '}
-								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-									{renderApplicationName(row.name, row.applicationName)}
-								</span>{' '}的应用兼容性成功了OwO~
+											<span
+												class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+												{renderApplicationName(row.name, row.applicationName)}
+											</span>{' '}
+											的应用兼容性成功了OwO~
 										</p>
 									),
 								});
