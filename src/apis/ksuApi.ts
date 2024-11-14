@@ -234,7 +234,7 @@ export const getCustomConfigFixedOrientationList = (): Promise<string> => {
   }), shellCommon);
 };
 
-export const getEmbeddedSettingConfig = (): Promise<string> => {
+export const getSystemEmbeddedSettingConfig = (): Promise<string> => {
   const shellCommon = `cat /data/system/users/0/embedded_setting_config.xml`
   return handlePromiseWithLogging(new Promise(async (resolve, reject) => {
     if (import.meta.env.MODE === "development") {
@@ -245,7 +245,43 @@ export const getEmbeddedSettingConfig = (): Promise<string> => {
       resolve(xmlText);
     } else {
       const { errno, stdout, stderr }: ExecResults = await exec(
-        "cat /data/system/users/0/embedded_setting_config.xml"
+        shellCommon
+      );
+      errno ? reject(stderr) : resolve(stdout);
+    }
+  }), shellCommon);
+};
+
+export const getSourceEmbeddedSettingConfig = (): Promise<string> => {
+  const shellCommon = `cat /data/adb/modules/MIUI_MagicWindow+/common/source/embedded_setting_config.xml`
+  return handlePromiseWithLogging(new Promise(async (resolve, reject) => {
+    if (import.meta.env.MODE === "development") {
+      const response = await axios.get(
+        "/data/origin/embedded_setting_config.xml"
+      );
+      const xmlText = response.data; // 这是 XML 内容
+      resolve(xmlText);
+    } else {
+      const { errno, stdout, stderr }: ExecResults = await exec(
+        shellCommon
+      );
+      errno ? reject(stderr) : resolve(stdout);
+    }
+  }), shellCommon);
+};
+
+export const getCustomConfigEmbeddedSettingConfig = (): Promise<string> => {
+  const shellCommon = `cat /data/adb/MIUI_MagicWindow+/config/embedded_setting_config.xml`
+  return handlePromiseWithLogging(new Promise(async (resolve, reject) => {
+    if (import.meta.env.MODE === "development") {
+      const response = await axios.get(
+        "/data/custom/embedded_setting_config.xml"
+      );
+      const xmlText = response.data; // 这是 XML 内容
+      resolve(xmlText);
+    } else {
+      const { errno, stdout, stderr }: ExecResults = await exec(
+        shellCommon
       );
       errno ? reject(stderr) : resolve(stdout);
     }
@@ -742,74 +778,49 @@ export const updateEmbeddedApp = (
 
       if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2) {
         const {
-          errno: UnlockSettingsErrno,
-          stdout:UnlockSettingsStdout,
-          stderr: UnlockSettingsStderr
+          errno: SettingsErrno,
+          stdout: SettingsStdout,
+          stderr: SettingsStderr,
         } : ExecResults = await exec(
-          `chattr -i /data/system/users/0/embedded_setting_config.xml`
+          `echo '${params.settingConfigXML}' > cat /data/adb/MIUI_MagicWindow+/config/embedded_setting_config.xml`
         );
 
-        if (UnlockSettingsErrno) {
+        if (SettingsErrno) {
           errorLogging.push({
-            type: "UnlockSettingConfigXML",
-            name: "[模块]解锁应用横屏布局配置文件",
-            message: UnlockSettingsStderr,
+            type: "settingConfigXML",
+            name: "[自定义规则]应用横屏布局配置文件",
+            message: SettingsStderr,
           });
         } else {
           successLogging.push({
-            type: "UnlockSttingConfigXML",
-            name: "[模块]解锁应用横屏布局配置文件",
-            message: "解锁成功",
+            type: "settingConfigXML",
+            name: "[自定义规则]应用横屏布局配置文件",
+            message: "更新成功",
           });
         }
-      }
-
-      const {
-        errno: SettingsErrno,
-        stdout: SettingsStdout,
-        stderr: SettingsStderr,
-      }: ExecResults = await exec(
-        `echo '${params.settingConfigXML}' > /data/system/users/0/embedded_setting_config.xml`
-      );
-      if (SettingsErrno) {
-        errorLogging.push({
-          type: "settingConfigXML",
-          name: "[模块]应用横屏布局配置文件",
-          message: SettingsStderr,
-        });
       } else {
-        successLogging.push({
-          type: "settingConfigXML",
-          name: "[模块]应用横屏布局配置文件",
-          message: "更新成功",
-        });
-      }
-
-      
-      if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2) {
         const {
-          errno: LockSettingsErrno,
-          stdout:LockSettingsStdout,
-          stderr: LockSettingsStderr
-        } : ExecResults = await exec(
-          `chattr +i /data/system/users/0/embedded_setting_config.xml`
+          errno: SettingsErrno,
+          stdout: SettingsStdout,
+          stderr: SettingsStderr,
+        }: ExecResults = await exec(
+          `echo '${params.settingConfigXML}' > /data/system/users/0/embedded_setting_config.xml`
         );
-
-        if (LockSettingsErrno) {
+        if (SettingsErrno) {
           errorLogging.push({
-            type: "LockSettingConfigXML",
-            name: "[模块]锁定应用横屏布局配置文件",
-            message: LockSettingsStderr,
+            type: "settingConfigXML",
+            name: "[系统]应用横屏布局配置文件",
+            message: SettingsStderr,
           });
         } else {
           successLogging.push({
-            type: "LockSttingConfigXML",
-            name: "[模块]锁定应用横屏布局配置文件",
-            message: "加锁成功",
+            type: "settingConfigXML",
+            name: "[系统]应用横屏布局配置文件",
+            message: "更新成功",
           });
         }
       }
-
+      
       const [UpdateRuleStderr,UpdateRuleStdout] = await $to<string,string>(updateRule())
 
        if (UpdateRuleStderr) {

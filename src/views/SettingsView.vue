@@ -201,7 +201,7 @@ const changePatchMode = async (value: boolean) => {
 					'package',
 					undefined,
 				),
-				settingConfigXML: xmlFormat.objectToXML(embeddedStore.embeddedSettingConfig, 'setting', 'setting_rule'),
+				settingConfigXML: xmlFormat.objectToXML(embeddedStore.systemEmbeddedSettingConfig, 'setting', 'setting_rule'),
 			}),
 		);
 		if (submitUpdateEmbeddedAppErr) {

@@ -239,7 +239,7 @@ const importShareRule = async () => {
 			}
 			embeddedStore.customConfigEmbeddedRulesList[importRuleContent.name] = importRuleContent.em;
 			embeddedStore.customConfigFixedOrientationList[importRuleContent.name] = importRuleContent.fo;
-			embeddedStore.embeddedSettingConfig[importRuleContent.name] = {
+			embeddedStore.systemEmbeddedSettingConfig[importRuleContent.name] = {
 				name: importRuleContent.name,
 				embeddedEnable: ['embedded', 'fullScreen'].includes(importRuleContent.mode) ? true : false,
 			};
@@ -267,7 +267,7 @@ const importShareRule = async () => {
 						undefined,
 					),
 					settingConfigXML: xmlFormat.objectToXML(
-						embeddedStore.embeddedSettingConfig,
+						embeddedStore.systemEmbeddedSettingConfig,
 						'setting',
 						'setting_rule',
 					),
@@ -399,7 +399,11 @@ const reloadPatchModeConfigList = async () => {
 				'package',
 				undefined,
 			),
-			settingConfigXML: xmlFormat.objectToXML(embeddedStore.embeddedSettingConfig, 'setting', 'setting_rule'),
+			settingConfigXML: xmlFormat.objectToXML(
+				embeddedStore.systemEmbeddedSettingConfig,
+				'setting',
+				'setting_rule',
+			),
 		}),
 	);
 	if (submitUpdateEmbeddedAppErr) {
@@ -530,39 +534,34 @@ const openAddEmbeddedApp = async () => {
 				};
 			}
 			if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2) {
-				if (addEmbeddedAppRes.settingMode === 'disabled') {
-					delete embeddedStore.embeddedSettingConfig[addEmbeddedAppRes.name];
-				} else {
-					embeddedStore.embeddedSettingConfig[addEmbeddedAppRes.name] = {
-						name: addEmbeddedAppRes.name,
-						...(embeddedStore.customConfigEmbeddedRulesList[addEmbeddedAppRes.name]
-							? { embeddedEnable: addEmbeddedAppRes.settingMode === 'embedded' ? true : false }
-							: {}),
-						...(embeddedStore.customConfigFixedOrientationList[addEmbeddedAppRes.name]
-							? {
-									fixedOrientationEnable:
-										addEmbeddedAppRes.settingMode === 'fixedOrientation' ? true : false,
-								}
-							: {}),
-						...(embeddedStore.customConfigFixedOrientationList[addEmbeddedAppRes.name]
-							? {
-									ratio_fullScreenEnable:
-										addEmbeddedAppRes.settingMode === 'fullScreen' ? true : false,
-								}
-							: {}),
-						...(embeddedStore.customConfigEmbeddedRulesList[addEmbeddedAppRes.name]
-							? {
-									fullScreenEnable:
-										addEmbeddedAppRes.settingMode === 'fullScreen' &&
-										embeddedStore.customConfigEmbeddedRulesList[addEmbeddedAppRes.name].fullRule
-											? true
-											: false,
-								}
-							: {}),
-					};
-				}
+				embeddedStore.customConfigEmbeddedSettingConfig[addEmbeddedAppRes.name] = {
+					name: addEmbeddedAppRes.name,
+					...(embeddedStore.customConfigEmbeddedRulesList[addEmbeddedAppRes.name]
+						? { embeddedEnable: addEmbeddedAppRes.settingMode === 'embedded' ? true : false }
+						: {}),
+					...(embeddedStore.customConfigFixedOrientationList[addEmbeddedAppRes.name]
+						? {
+								fixedOrientationEnable:
+									addEmbeddedAppRes.settingMode === 'fixedOrientation' ? true : false,
+							}
+						: {}),
+					...(embeddedStore.customConfigFixedOrientationList[addEmbeddedAppRes.name]
+						? {
+								ratio_fullScreenEnable: addEmbeddedAppRes.settingMode === 'fullScreen' ? true : false,
+							}
+						: {}),
+					...(embeddedStore.customConfigEmbeddedRulesList[addEmbeddedAppRes.name]
+						? {
+								fullScreenEnable:
+									addEmbeddedAppRes.settingMode === 'fullScreen' &&
+									embeddedStore.customConfigEmbeddedRulesList[addEmbeddedAppRes.name].fullRule
+										? true
+										: false,
+							}
+						: {}),
+				};
 			} else {
-				embeddedStore.embeddedSettingConfig[addEmbeddedAppRes.name] = {
+				embeddedStore.systemEmbeddedSettingConfig[addEmbeddedAppRes.name] = {
 					name: addEmbeddedAppRes.name,
 					embeddedEnable: ['embedded', 'fullScreen'].includes(addEmbeddedAppRes.settingMode) ? true : false,
 				};
@@ -591,7 +590,7 @@ const openAddEmbeddedApp = async () => {
 						undefined,
 					),
 					settingConfigXML: xmlFormat.objectToXML(
-						embeddedStore.embeddedSettingConfig,
+						embeddedStore.systemEmbeddedSettingConfig,
 						'setting',
 						'setting_rule',
 					),
@@ -834,39 +833,35 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 			}
 			// settings 配置
 			if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2) {
-				if (updateEmbeddedAppRes.settingMode === 'disabled') {
-					delete embeddedStore.embeddedSettingConfig[row.name];
-				} else {
-					embeddedStore.embeddedSettingConfig[row.name] = {
-						name: row.name,
-						...(embeddedStore.customConfigEmbeddedRulesList[row.name]
-							? { embeddedEnable: updateEmbeddedAppRes.settingMode === 'embedded' ? true : false }
-							: {}),
-						...(embeddedStore.customConfigFixedOrientationList[row.name]
-							? {
-									fixedOrientationEnable:
-										updateEmbeddedAppRes.settingMode === 'fixedOrientation' ? true : false,
-								}
-							: {}),
-						...(embeddedStore.customConfigFixedOrientationList[row.name]
-							? {
-									ratio_fullScreenEnable:
-										updateEmbeddedAppRes.settingMode === 'fullScreen' ? true : false,
-								}
-							: {}),
-						...(embeddedStore.customConfigEmbeddedRulesList[row.name]
-							? {
-									fullScreenEnable:
-										updateEmbeddedAppRes.settingMode === 'fullScreen' &&
-										embeddedStore.customConfigEmbeddedRulesList[row.name].fullRule
-											? true
-											: false,
-								}
-							: {}),
-					};
-				}
+				embeddedStore.customConfigEmbeddedSettingConfig[row.name] = {
+					name: row.name,
+					...(embeddedStore.customConfigEmbeddedRulesList[row.name]
+						? { embeddedEnable: updateEmbeddedAppRes.settingMode === 'embedded' ? true : false }
+						: {}),
+					...(embeddedStore.customConfigFixedOrientationList[row.name]
+						? {
+								fixedOrientationEnable:
+									updateEmbeddedAppRes.settingMode === 'fixedOrientation' ? true : false,
+							}
+						: {}),
+					...(embeddedStore.customConfigFixedOrientationList[row.name]
+						? {
+								ratio_fullScreenEnable:
+									updateEmbeddedAppRes.settingMode === 'fullScreen' ? true : false,
+							}
+						: {}),
+					...(embeddedStore.customConfigEmbeddedRulesList[row.name]
+						? {
+								fullScreenEnable:
+									updateEmbeddedAppRes.settingMode === 'fullScreen' &&
+									embeddedStore.customConfigEmbeddedRulesList[row.name].fullRule
+										? true
+										: false,
+							}
+						: {}),
+				};
 			} else {
-				embeddedStore.embeddedSettingConfig[row.name] = {
+				embeddedStore.systemEmbeddedSettingConfig[row.name] = {
 					name: row.name,
 					embeddedEnable: ['embedded', 'fullScreen'].includes(updateEmbeddedAppRes.settingMode)
 						? true
@@ -896,11 +891,21 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 						'package',
 						undefined,
 					),
-					settingConfigXML: xmlFormat.objectToXML(
-						embeddedStore.embeddedSettingConfig,
-						'setting',
-						'setting_rule',
-					),
+					...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2
+						? {
+								settingConfigXML: xmlFormat.objectToXML(
+									embeddedStore.customConfigEmbeddedSettingConfig,
+									'setting',
+									undefined,
+								),
+							}
+						: {
+								settingConfigXML: xmlFormat.objectToXML(
+									embeddedStore.systemEmbeddedSettingConfig,
+									'setting',
+									'setting_rule',
+								),
+							}),
 					...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2
 						? {
 								setAppMode: {
@@ -1020,7 +1025,7 @@ const handleCustomRuleDropdown = async (
 							undefined,
 						),
 						settingConfigXML: xmlFormat.objectToXML(
-							embeddedStore.embeddedSettingConfig,
+							embeddedStore.systemEmbeddedSettingConfig,
 							'setting',
 							'setting_rule',
 						),
