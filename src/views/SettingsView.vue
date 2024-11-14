@@ -18,18 +18,18 @@ const { message, modal } = createDiscreteApi(['message', 'modal'], {
 	configProviderProps: configProviderPropsRef,
 });
 const gameMode = useGameMode();
-const fontStore = useFontStore()
+const fontStore = useFontStore();
 const handleSmartFocusIOChange = (value: boolean) => {
 	message.info('功能尚未上线，无任何实际效果，请等待后续更新！');
 };
 const rhythmModeOptions = [
 	{
 		label: '跟随系统',
-		key: 'autoRhythm'
+		key: 'autoRhythm',
 	},
 	{
 		label: '浅色模式',
-		key: "lightMode",
+		key: 'lightMode',
 	},
 	{
 		label: '深色模式',
@@ -41,37 +41,37 @@ const fontModeOptions = ref([
 	{
 		label: 'MiSans',
 		key: 'MiSans',
-		type: 'info'
+		type: 'info',
 	},
 	{
 		label: 'HarmonyOS Sans',
-		key: "HarmonyOS Sans",
-		type: 'error'
+		key: 'HarmonyOS Sans',
+		type: 'error',
 	},
 	{
 		label: 'OPPO Sans',
 		key: 'OPPO Sans',
-		type: 'success'
+		type: 'success',
 	},
 ]);
 
 const fontModeMap = computed(() => {
-	return keyBy(fontModeOptions.value,'key')
-})
+	return keyBy(fontModeOptions.value, 'key');
+});
 
-const handleSelectFontMode = (item:string) => {
+const handleSelectFontMode = (item: string) => {
 	fontStore.currentFont = item;
-}
+};
 
-const handleSelectRhythmMode = (item:string) => {
-  deviceStore.rhythmMode = item;
-  if (item === 'lightMode') {
-    deviceStore.isDarkMode = false;
-  }
-  if (item === 'dartMode') {
-    deviceStore.isDarkMode = true;
-  }
-}
+const handleSelectRhythmMode = (item: string) => {
+	deviceStore.rhythmMode = item;
+	if (item === 'lightMode') {
+		deviceStore.isDarkMode = false;
+	}
+	if (item === 'dartMode') {
+		deviceStore.isDarkMode = true;
+	}
+};
 const switchPatchModeLoading = ref<boolean>(false);
 const changeShowRotationSuggestions = async (value: boolean) => {
 	const [setRotationSuggestionsErr] = await $to(ksuApi.setRotationSuggestions(value ? 1 : 0));
@@ -201,7 +201,21 @@ const changePatchMode = async (value: boolean) => {
 					'package',
 					undefined,
 				),
-				settingConfigXML: xmlFormat.objectToXML(embeddedStore.systemEmbeddedSettingConfig, 'setting', 'setting_rule'),
+				...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2
+					? {
+							settingConfigXML: xmlFormat.objectToXML(
+								embeddedStore.customConfigEmbeddedSettingConfig,
+								'setting',
+								undefined,
+							),
+						}
+					: {
+							settingConfigXML: xmlFormat.objectToXML(
+								embeddedStore.systemEmbeddedSettingConfig,
+								'setting',
+								'setting_rule',
+							),
+						}),
 			}),
 		);
 		if (submitUpdateEmbeddedAppErr) {
@@ -502,7 +516,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
-              模块工作模式
+							模块工作模式
 						</dt>
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
@@ -524,8 +538,22 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 						</dt>
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							<n-dropdown size="large" trigger="click" :options="rhythmModeOptions" @select="handleSelectRhythmMode">
-								<n-button size="small" strong secondary :type="deviceStore.rhythmMode === 'autoRhythm' ? 'error' : 'success'">{{  deviceStore.rhythmMode === 'autoRhythm' && '跟随系统' || deviceStore.rhythmMode === 'lightMode' && '浅色模式' || deviceStore.rhythmMode === 'dartMode' && '深色模式'  }}</n-button>
+							<n-dropdown
+								size="large"
+								trigger="click"
+								:options="rhythmModeOptions"
+								@select="handleSelectRhythmMode">
+								<n-button
+									size="small"
+									strong
+									secondary
+									:type="deviceStore.rhythmMode === 'autoRhythm' ? 'error' : 'success'"
+									>{{
+										(deviceStore.rhythmMode === 'autoRhythm' && '跟随系统') ||
+										(deviceStore.rhythmMode === 'lightMode' && '浅色模式') ||
+										(deviceStore.rhythmMode === 'dartMode' && '深色模式')
+									}}</n-button
+								>
 							</n-dropdown>
 						</dd>
 					</div>
@@ -536,8 +564,18 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 						</dt>
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							<n-dropdown size="large" trigger="click" :options="fontModeOptions" @select="handleSelectFontMode">
-								<n-button size="small" strong secondary :type="fontModeMap[fontStore.currentFont].type">{{  fontStore.currentFont  }}</n-button>
+							<n-dropdown
+								size="large"
+								trigger="click"
+								:options="fontModeOptions"
+								@select="handleSelectFontMode">
+								<n-button
+									size="small"
+									strong
+									secondary
+									:type="fontModeMap[fontStore.currentFont].type"
+									>{{ fontStore.currentFont }}</n-button
+								>
 							</n-dropdown>
 						</dd>
 					</div>

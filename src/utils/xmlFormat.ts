@@ -200,6 +200,7 @@ export const mergeEmbeddedRule = (
   settingRules: Record<string, EmbeddedSettingRuleItem>,
   customEmbeddedRules: Record<string, EmbeddedRuleItem> = {}, // 默认值为 {}
   customFixedOrientationRules: Record<string, FixedOrientationRuleItem> = {}, // 默认值为 {}
+  customConfigEmbeddedSettingConfig: Record<string, EmbeddedSettingRuleItem> = {} // 默认值为 {}
 ): EmbeddedMergeRuleItem[] => {
   const deviceStore = useDeviceStore()
   const result: EmbeddedMergeRuleItem[] = [];
@@ -213,7 +214,7 @@ export const mergeEmbeddedRule = (
   allPackages.forEach((pkgName) => {
     const embeddedConfig = customEmbeddedRules[pkgName] ?? embeddedRules[pkgName];
     const fixedOrientationConfig = customFixedOrientationRules[pkgName] ?? fixedOrientationRules[pkgName];
-    const settingConfig = settingRules[pkgName];
+    const settingConfig = customConfigEmbeddedSettingConfig[pkgName] ?? settingRules[pkgName];
 
     // 初始化模式
     const getSupportModes = fixedOrientationConfig?.supportModes?.split(',')
@@ -227,14 +228,15 @@ export const mergeEmbeddedRule = (
     if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2) {
       // 有设置优先设置
       if (settingConfig) {
+        settingMode = 'disabled'
+        if (settingConfig.fixedOrientationEnable) {
+          settingMode = 'fixedOrientation'
+        }
+        if (settingConfig.ratio_fullScreenEnable) {
+          settingMode = 'fullScreen'
+        }
         if (settingConfig.embeddedEnable) {
           settingMode = 'embedded'
-        } else if (settingConfig.fixedOrientationEnable) {
-          settingMode = 'fixedOrientation'
-        } else if (settingConfig.ratio_fullScreenEnable) {
-          settingMode = 'fullScreen'
-        } else {
-          settingMode = 'disabled'
         }
       } else {
         settingMode = getSettingMode(embeddedConfig,fixedOrientationConfig)

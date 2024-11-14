@@ -782,7 +782,7 @@ export const updateEmbeddedApp = (
           stdout: SettingsStdout,
           stderr: SettingsStderr,
         } : ExecResults = await exec(
-          `echo '${params.settingConfigXML}' > cat /data/adb/MIUI_MagicWindow+/config/embedded_setting_config.xml`
+          `echo '${params.settingConfigXML}' > /data/adb/MIUI_MagicWindow+/config/embedded_setting_config.xml`
         );
 
         if (SettingsErrno) {

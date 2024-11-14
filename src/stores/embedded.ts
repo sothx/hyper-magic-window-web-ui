@@ -212,17 +212,19 @@ export const useEmbeddedStore = defineStore(
 		});
 
 		function updateMergeRuleList() {
+			const deviceStore = useDeviceStore();
 			mergeRuleList.value = xmlFormat.mergeEmbeddedRule(
 				isPatchMode.value ? patchEmbeddedRulesList.value : sourceEmbeddedRulesList.value,
 				isPatchMode.value ? patchFixedOrientationList.value : sourceFixedOrientationList.value,
-				systemEmbeddedSettingConfig.value,
+				deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 ? (isPatchMode.value ? patchEmbeddedSettingConfig.value : sourceEmbeddedSettingConfig.value) : systemEmbeddedSettingConfig.value,
 				customConfigEmbeddedRulesList.value,
 				customConfigFixedOrientationList.value,
+				customConfigEmbeddedSettingConfig.value,
 			);
 		}
 
 		async function initDefault() {
-      const deviceStore = useDeviceStore();
+      	const deviceStore = useDeviceStore();
 			loading.value = true;
 			// 获取所有应用包名
 			const applicationNameRes = await import('@/assets/applicationName.json');
@@ -404,6 +406,7 @@ export const useEmbeddedStore = defineStore(
 				deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 ? (isPatchMode.value ? patchEmbeddedSettingConfig.value : sourceEmbeddedSettingConfig.value) : systemEmbeddedSettingConfig.value,
 				customConfigEmbeddedRulesList.value,
 				customConfigFixedOrientationList.value,
+				customConfigEmbeddedSettingConfig.value,
 			);
 
 			// errorLogging.push({
