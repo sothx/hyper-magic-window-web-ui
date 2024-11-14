@@ -480,7 +480,7 @@ const handleDrawerSubmit = async () => {
 				foRelaunch: currentFixedOrientationRelaunch.value,
 			}),
 			...(currentSettingMode.value === 'fixedOrientation' &&
-				(!deviceStore.MIOSVersion || deviceStore.MIOSVersion < 2) && {
+				(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2) && {
 					forceFixedOrientation: currentForceFixedOrientation.value,
 				}),
 			...(currentSettingMode.value === 'embedded' &&
