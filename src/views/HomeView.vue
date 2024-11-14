@@ -536,15 +536,6 @@ const openAddEmbeddedApp = async () => {
 		logsStore.info('应用横屏配置-添加应用', '该功能仅兼容平板设备，暂时不兼容折叠屏设备，请等待后续更新情况！');
 		return;
 	}
-	if (deviceStore.androidTargetSdk && ![32, 33, 34].includes(deviceStore.androidTargetSdk)) {
-		modal.create({
-			title: '不兼容说明',
-			type: 'warning',
-			preset: 'dialog',
-			content: () => <p>该功能尚未对Android 15+ 做兼容，请等待后续更新情况！</p>,
-		});
-		return;
-	}
 	if (addEmbeddedApp.value) {
 		const [addEmbeddedAppCancel, addEmbeddedAppRes] = await $to(addEmbeddedApp.value.openDrawer());
 		if (addEmbeddedAppCancel) {
@@ -1265,15 +1256,6 @@ const handleModuleRuleMode = (row: EmbeddedMergeRuleItem, index: number) => {
 		});
 		return;
 	}
-	if (deviceStore.androidTargetSdk && ![32, 33, 34].includes(deviceStore.androidTargetSdk)) {
-		modal.create({
-			title: '不兼容说明',
-			type: 'warning',
-			preset: 'dialog',
-			content: () => <p>该功能尚未对 Android 11 或 Android 15+ 做兼容，请等待后续更新情况！</p>,
-		});
-		return;
-	}
 	modal.create({
 		title: '模块规则说明',
 		type: 'warning',
@@ -1426,17 +1408,6 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 								});
 								return;
 							}
-							if (deviceStore.androidTargetSdk && ![32, 33, 34].includes(deviceStore.androidTargetSdk)) {
-								modal.create({
-									title: '不兼容说明',
-									type: 'warning',
-									preset: 'dialog',
-									content: () => (
-										<p>该功能尚未对 Android 11 或 Android 15+ 做兼容，请等待后续更新情况！</p>
-									),
-								});
-								return;
-							}
 							openUpdateEmbeddedApp(row, index);
 						},
 					},
@@ -1451,17 +1422,6 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 									preset: 'dialog',
 									content: () => (
 										<p>该功能仅兼容平板设备，暂时不兼容折叠屏设备，请等待后续更新情况！</p>
-									),
-								});
-								return;
-							}
-							if (deviceStore.androidTargetSdk && ![32, 33, 34].includes(deviceStore.androidTargetSdk)) {
-								modal.create({
-									title: '不兼容说明',
-									type: 'warning',
-									preset: 'dialog',
-									content: () => (
-										<p>该功能尚未对 Android 11 或 Android 15+ 做兼容，请等待后续更新情况！</p>
 									),
 								});
 								return;
@@ -1484,17 +1444,6 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 								});
 								return;
 							}
-							if (deviceStore.androidTargetSdk && ![32, 33, 34].includes(deviceStore.androidTargetSdk)) {
-								modal.create({
-									title: '不兼容说明',
-									type: 'warning',
-									preset: 'dialog',
-									content: () => (
-										<p>该功能尚未对 Android 11 或 Android 15+ 做兼容，请等待后续更新情况！</p>
-									),
-								});
-								return;
-							}
 							openUpdateEmbeddedApp(row, index);
 						},
 					},
@@ -1509,17 +1458,6 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 									preset: 'dialog',
 									content: () => (
 										<p>该功能仅兼容平板设备，暂时不兼容折叠屏设备，请等待后续更新情况！</p>
-									),
-								});
-								return;
-							}
-							if (deviceStore.androidTargetSdk && ![32, 33, 34].includes(deviceStore.androidTargetSdk)) {
-								modal.create({
-									title: '不兼容说明',
-									type: 'warning',
-									preset: 'dialog',
-									content: () => (
-										<p>该功能尚未对 Android 11 或 Android 15+ 做兼容，请等待后续更新情况！</p>
 									),
 								});
 								return;

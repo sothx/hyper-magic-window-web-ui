@@ -38,7 +38,7 @@ export const getAndroidTargetSdk = (): Promise<number> => {
   const shellCommon = `getprop ro.build.version.sdk`
   return handlePromiseWithLogging(new Promise(async (resolve, reject) => {
     if (import.meta.env.MODE === "development") {
-      resolve(34);
+      resolve(35);
     } else {
       const { errno, stdout, stderr }: ExecResults = await exec(
         shellCommon
