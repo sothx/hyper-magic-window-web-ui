@@ -35,7 +35,7 @@ import {
 } from '@heroicons/vue/24/outline';
 import { arrayBufferToBase64, base64ToArrayBuffer } from '@/utils/format';
 import { findBase64InString, renderApplicationName } from '@/utils/common';
-import { getAppModeCode } from '@/utils/embeddedFun';
+import { getAppModeCode, getSettingMode } from '@/utils/embeddedFun';
 type EmbeddedAppDrawerInstance = InstanceType<typeof EmbeddedAppDrawer>;
 type SearchKeyWordInputInstance = InstanceType<typeof NInput>;
 type NDataTabletInstance = InstanceType<typeof NDataTable>;
@@ -239,10 +239,39 @@ const importShareRule = async () => {
 			}
 			embeddedStore.customConfigEmbeddedRulesList[importRuleContent.name] = importRuleContent.em;
 			embeddedStore.customConfigFixedOrientationList[importRuleContent.name] = importRuleContent.fo;
-			embeddedStore.systemEmbeddedSettingConfig[importRuleContent.name] = {
-				name: importRuleContent.name,
-				embeddedEnable: ['embedded', 'fullScreen'].includes(importRuleContent.mode) ? true : false,
-			};
+			if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2) {
+				embeddedStore.customConfigEmbeddedSettingConfig[importRuleContent.name] = {
+					name: importRuleContent.name,
+					...(embeddedStore.customConfigEmbeddedRulesList[importRuleContent.name]
+						? { embeddedEnable: importRuleContent.mode === 'embedded' ? true : false }
+						: {}),
+					...(embeddedStore.customConfigFixedOrientationList[importRuleContent.name]
+						? {
+								fixedOrientationEnable:
+								importRuleContent.mode === 'fixedOrientation' ? true : false,
+							}
+						: {}),
+					...(embeddedStore.customConfigFixedOrientationList[importRuleContent.name]
+						? {
+								ratio_fullScreenEnable: importRuleContent.mode === 'fullScreen' ? true : false,
+							}
+						: {}),
+					...(embeddedStore.customConfigEmbeddedRulesList[importRuleContent.name]
+						? {
+								fullScreenEnable:
+								importRuleContent.mode === 'fullScreen' &&
+									embeddedStore.customConfigEmbeddedRulesList[importRuleContent.name].fullRule
+										? true
+										: false,
+							}
+						: {}),
+				}
+			} else {
+				embeddedStore.systemEmbeddedSettingConfig[importRuleContent.name] = {
+					name: importRuleContent.name,
+					embeddedEnable: ['embedded', 'fullScreen'].includes(importRuleContent.mode) ? true : false,
+				};
+			}
 			const [submitUpdateEmbeddedAppErr, submitUpdateEmbeddedAppRes] = await $to(
 				ksuApi.updateEmbeddedApp({
 					isPatchMode: embeddedStore.isPatchMode,
@@ -266,11 +295,36 @@ const importShareRule = async () => {
 						'package',
 						undefined,
 					),
-					settingConfigXML: xmlFormat.objectToXML(
-						embeddedStore.systemEmbeddedSettingConfig,
-						'setting',
-						'setting_rule',
-					),
+					...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2
+						? {
+								settingConfigXML: xmlFormat.objectToXML(
+									embeddedStore.customConfigEmbeddedSettingConfig,
+									'setting',
+									undefined,
+								),
+							}
+						: {
+								settingConfigXML: xmlFormat.objectToXML(
+									embeddedStore.systemEmbeddedSettingConfig,
+									'setting',
+									'setting_rule',
+								),
+					}),
+					...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2
+						? {
+								setAppMode: {
+									name: importRuleContent.name,
+									action: getAppModeCode(importRuleContent.mode),
+								},
+							}
+						: {
+								switchAction: {
+									name: importRuleContent.name,
+									action: ['embedded', 'fullScreen'].includes(importRuleContent.mode)
+										? 'enable'
+										: 'disable',
+								},
+							}),
 					switchAction: {
 						name: importRuleContent.name,
 						action: ['embedded', 'fullScreen'].includes(importRuleContent.mode) ? 'enable' : 'disable',
@@ -399,11 +453,21 @@ const reloadPatchModeConfigList = async () => {
 				'package',
 				undefined,
 			),
-			settingConfigXML: xmlFormat.objectToXML(
-				embeddedStore.systemEmbeddedSettingConfig,
-				'setting',
-				'setting_rule',
-			),
+			...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2
+				? {
+						settingConfigXML: xmlFormat.objectToXML(
+							embeddedStore.customConfigEmbeddedSettingConfig,
+							'setting',
+							undefined,
+						),
+					}
+				: {
+						settingConfigXML: xmlFormat.objectToXML(
+							embeddedStore.systemEmbeddedSettingConfig,
+							'setting',
+							'setting_rule',
+						),
+					}),
 		}),
 	);
 	if (submitUpdateEmbeddedAppErr) {
@@ -589,11 +653,21 @@ const openAddEmbeddedApp = async () => {
 						'package',
 						undefined,
 					),
-					settingConfigXML: xmlFormat.objectToXML(
-						embeddedStore.systemEmbeddedSettingConfig,
-						'setting',
-						'setting_rule',
-					),
+					...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2
+						? {
+								settingConfigXML: xmlFormat.objectToXML(
+									embeddedStore.customConfigEmbeddedSettingConfig,
+									'setting',
+									undefined,
+								),
+							}
+						: {
+								settingConfigXML: xmlFormat.objectToXML(
+									embeddedStore.systemEmbeddedSettingConfig,
+									'setting',
+									'setting_rule',
+								),
+					}),
 					...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2
 						? {
 								setAppMode: {
@@ -1001,6 +1075,9 @@ const handleCustomRuleDropdown = async (
 				if (embeddedStore.customConfigFixedOrientationList[row.name]) {
 					delete embeddedStore.customConfigFixedOrientationList[row.name];
 				}
+				if (embeddedStore.customConfigEmbeddedSettingConfig[row.name]) {
+					delete embeddedStore.customConfigEmbeddedSettingConfig[row.name];
+				}
 				const [submitUpdateEmbeddedAppErr, submitUpdateEmbeddedAppRes] = await $to(
 					ksuApi.updateEmbeddedApp({
 						isPatchMode: embeddedStore.isPatchMode,
@@ -1024,12 +1101,37 @@ const handleCustomRuleDropdown = async (
 							'package',
 							undefined,
 						),
-						settingConfigXML: xmlFormat.objectToXML(
-							embeddedStore.systemEmbeddedSettingConfig,
-							'setting',
-							'setting_rule',
-						),
-						switchAction: {
+						...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2
+						? {
+								settingConfigXML: xmlFormat.objectToXML(
+									embeddedStore.customConfigEmbeddedSettingConfig,
+									'setting',
+									undefined,
+								),
+							}
+						: {
+								settingConfigXML: xmlFormat.objectToXML(
+									embeddedStore.systemEmbeddedSettingConfig,
+									'setting',
+									'setting_rule',
+								),
+						}),
+						...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2
+						? {
+								setAppMode: {
+									name: row.name,
+									action:getAppModeCode(getSettingMode(
+										embeddedStore.isPatchMode
+									? embeddedStore.patchEmbeddedRulesList[row.name]
+									: embeddedStore.sourceEmbeddedRulesList[row.name],
+									embeddedStore.isPatchMode
+									? embeddedStore.patchFixedOrientationList[row.name]
+									: embeddedStore.sourceFixedOrientationList[row.name]
+									)),
+								},
+							}
+						: {
+							switchAction: {
 							name: row.name,
 							action: (
 								embeddedStore.isPatchMode
@@ -1039,6 +1141,7 @@ const handleCustomRuleDropdown = async (
 								? 'enable'
 								: 'disable',
 						},
+						}),
 					}),
 				);
 				if (submitUpdateEmbeddedAppErr) {

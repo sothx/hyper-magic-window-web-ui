@@ -649,8 +649,8 @@ export interface updateEmbeddedAppParams {
   };
   setAppMode?: {
     name: string;
-    // 0 is Disable, 1 is ActivityEmbedding, 2 is FixedOrientation, 3 is FullScreen
-    action: 0 | 1 | 2 | 3
+    // 0 is Disable, 1 is ActivityEmbedding, 2 is FixedOrientation, 3 is FullScreen, null is Clean
+    action: 0 | 1 | 2 | 3 | null;
   }
 }
 
