@@ -535,6 +535,15 @@ const openAddEmbeddedApp = async () => {
 		logsStore.info('应用横屏配置-添加应用', '该功能仅兼容平板设备，暂时不兼容折叠屏设备，请等待后续更新情况！');
 		return;
 	}
+	if (!deviceStore.ABTestInfo.OS2_PAD_EMBEDDED_APP_MANAGER) {
+		modal.create({
+			title: '内测说明',
+			type: 'warning',
+			preset: 'dialog',
+			content: () => <p>该功能仅尚处于测试阶段，可能存在不稳定性，需要有一定的搞机知识与问题解决能力，如需参与测试请通过做梦书的酷安动态获取新功能内测的激活口令！</p>,
+		});
+		return;
+	}
 	if (addEmbeddedApp.value) {
 		const [addEmbeddedAppCancel, addEmbeddedAppRes] = await $to(addEmbeddedApp.value.openDrawer());
 		if (addEmbeddedAppCancel) {
@@ -724,6 +733,15 @@ const openAddEmbeddedApp = async () => {
 };
 
 const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) => {
+	if (!deviceStore.ABTestInfo.OS2_PAD_EMBEDDED_APP_MANAGER) {
+		modal.create({
+			title: '内测说明',
+			type: 'warning',
+			preset: 'dialog',
+			content: () => <p>该功能仅尚处于测试阶段，可能存在不稳定性，需要有一定的搞机知识与问题解决能力，如需参与测试请通过做梦书的酷安动态获取新功能内测的激活口令！</p>,
+		});
+		return;
+	}
 	if (updateEmbeddedApp.value) {
 		const [updateEmbeddedAppCancel, updateEmbeddedAppRes] = await $to(updateEmbeddedApp.value.openDrawer(row));
 		if (updateEmbeddedAppCancel) {
@@ -1111,7 +1129,15 @@ const handleCustomRuleDropdown = async (
 	row: EmbeddedMergeRuleItem,
 	index: number,
 ) => {
-	console.log(key, 'option');
+	if (deviceStore.ABTestInfo.OS2_PAD_EMBEDDED_APP_MANAGER) {
+		modal.create({
+			title: '内测说明',
+			type: 'warning',
+			preset: 'dialog',
+			content: () => <p>该功能仅尚处于测试阶段，可能存在不稳定性，需要有一定的搞机知识与问题解决能力，如需参与测试请通过做梦书的酷安动态获取新功能内测的激活口令！</p>,
+		});
+		return;
+	}
 	if (key === 'cleanCustomRule') {
 		const cleanCustomModal = modal.create({
 			title: '想清除自定义规则吗？',

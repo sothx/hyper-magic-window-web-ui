@@ -83,6 +83,9 @@ export const useDeviceStore = defineStore(
 			MAGISK_VER: '',
 			MAGISK_VER_CODE: '',
 		});
+		const ABTestInfo = reactive({
+			OS2_PAD_EMBEDDED_APP_MANAGER: false
+		})
 		const smartFocusIO = ref<ksuApi.SmartFocusIOResult['stdout']>();
 		const miuiCompatEnable = ref<boolean>(false);
 		const miuiAppCompatEnable = ref<boolean>(false);
@@ -307,11 +310,12 @@ export const useDeviceStore = defineStore(
 			isDarkMode,
 			rhythmMode,
 			initDefault,
+			ABTestInfo
 		};
 	},
 	{
 		persist: {
-			pick: ['skipConfirm', 'installedAndroidApplicationPackageNameList', 'isDarkMode', 'rhythmMode'],
+			pick: ['skipConfirm', 'installedAndroidApplicationPackageNameList', 'isDarkMode', 'rhythmMode','ABTestInfo'],
 		},
 	},
 );

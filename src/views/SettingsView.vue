@@ -1,8 +1,8 @@
 <script setup lang="tsx">
 import { useDeviceStore } from '@/stores/device';
-import { computed, ref, type CSSProperties } from 'vue';
+import { computed, h, ref, type CSSProperties } from 'vue';
 import * as xmlFormat from '@/utils/xmlFormat';
-import { createDiscreteApi, darkTheme, lightTheme, type ConfigProviderProps } from 'naive-ui';
+import { createDiscreteApi, darkTheme, lightTheme, NInput, type ConfigProviderProps } from 'naive-ui';
 import { useGameMode } from '@/hooks/useGameMode';
 import * as ksuApi from '@/apis/ksuApi';
 import $to from 'await-to-js';
@@ -10,6 +10,9 @@ import { useEmbeddedStore } from '@/stores/embedded';
 import { keyBy } from 'lodash-es';
 const deviceStore = useDeviceStore();
 import { useFontStore } from '@/stores/font';
+import { findBase64InString } from '@/utils/common';
+import { arrayBufferToBase64, base64ToArrayBuffer } from '@/utils/format';
+import pako from 'pako';
 const embeddedStore = useEmbeddedStore();
 const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
 	theme: deviceStore.isDarkMode ? darkTheme : lightTheme,
@@ -18,6 +21,7 @@ const { message, modal } = createDiscreteApi(['message', 'modal'], {
 	configProviderProps: configProviderPropsRef,
 });
 const gameMode = useGameMode();
+const activateABTestLoading = ref(false);
 const fontStore = useFontStore();
 const handleSmartFocusIOChange = (value: boolean) => {
 	message.info('功能尚未上线，无任何实际效果，请等待后续更新！');
@@ -70,6 +74,119 @@ const handleSelectRhythmMode = (item: string) => {
 	}
 	if (item === 'dartMode') {
 		deviceStore.isDarkMode = true;
+	}
+};
+const activateABTestTextarea = ref<string>('');
+const activateABTest = async () => {
+	const ABTestontent = {
+		OS2_PAD_EMBEDDED_APP_MANAGER: true
+	};
+	const jsonString = JSON.stringify(ABTestontent);
+	const deflate = pako.deflate(jsonString, {
+		level: 9,
+		memLevel: 9,
+		windowBits: 15,
+	});
+	const compressedData = new Uint8Array(deflate);
+	const base64String: string = arrayBufferToBase64(compressedData);
+	activateABTestTextarea.value = '';
+	const [activateABTestTextareaModalErr, activateABTestTextareaModalRes] = await $to(
+		new Promise((resolve, reject) => {
+			modal.create({
+				title: '请粘贴激活口令',
+				preset: 'dialog',
+				style: 'min-width:500px; width:50%;',
+				content: () =>
+					h(NInput, {
+						type: 'textarea',
+						value: activateABTestTextarea.value,
+						'onUpdate:value': newValue => {
+							activateABTestTextarea.value = newValue;
+						},
+						autosize: { minRows: 8, maxRows: 8 },
+						placeholder: '在此处粘贴激活口令',
+					}),
+				positiveText: '确定提交',
+				negativeText: '取消',
+				onPositiveClick() {
+					resolve('positiveClick');
+				},
+			});
+		}),
+	);
+	if (activateABTestTextareaModalRes) {
+		activateABTestLoading.value = true;
+		const base64StringFromClipboard: string = activateABTestTextarea.value;
+		const getBase64String = findBase64InString(base64StringFromClipboard);
+		if (!getBase64String?.length) {
+			modal.create({
+				title: '导入激活口令失败',
+				type: 'error',
+				preset: 'dialog',
+				content: () => <p>导入激活口令失败了QwQ，解析口令发生错误，无法正常解析。</p>,
+				negativeText: '确定',
+			});
+			activateABTestLoading.value = false;
+			return;
+		}
+		try {
+			const uint8Array: Uint8Array = base64ToArrayBuffer(getBase64String);
+			const inflate = pako.inflate(uint8Array, {
+				to: 'string',
+			});
+			const activateABTestRuleContent = JSON.parse(inflate);
+			if (activateABTestRuleContent.OS2_PAD_EMBEDDED_APP_MANAGER) {
+				deviceStore.ABTestInfo.OS2_PAD_EMBEDDED_APP_MANAGER = true;
+				modal.create({
+					title: '操作成功',
+					type: 'success',
+					preset: 'dialog',
+					content: () => (
+						<div>
+							<p>
+								已成功参与OS2{' '}
+								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+									应用横屏配置 For Web UI
+								</span>{' '}
+								的Beta测试w。由于小米在OS2新开发的{' '}
+								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+									应用横屏布局
+								</span>{' '}
+								存在较多BUG，模块强制劫持了所有配置，仅能通过Web UI去调整应用横屏适配，在{' '}
+								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+									平板专区
+								</span>{' '}所做的相关修改会在重启后丢失。
+							</p>
+							<p>开发Hyper OS 2.0模块的Web
+								UI真的消耗了我大量的个人时间和精力QwQ(特别是在小米的BUG加持下)，如果对{' '}
+								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>完美横屏应用计划感到满意</span>{' '}，求个随缘打赏。(打赏入口在Web UI侧边栏)
+							</p>
+						</div>
+					),
+					negativeText: '确定',
+				});
+				activateABTestLoading.value = false;
+			} else {
+				modal.create({
+					title: '解析激活口令失败',
+					type: 'error',
+					preset: 'dialog',
+					content: () => <p>解析激活口令失败了QwQ，请检查激活口令是否有误</p>,
+					negativeText: '确定',
+				});
+				activateABTestLoading.value = false;
+			}
+		} catch (error) {
+			// 解析失败，处理错误
+			modal.create({
+				title: '解析激活口令失败',
+				type: 'error',
+				preset: 'dialog',
+				content: () => <p>解析激活口令失败了QwQ，请检查激活口令是否有误</p>,
+				negativeText: '确定',
+			});
+			activateABTestLoading.value = false;
+		}
 	}
 };
 const switchPatchModeLoading = ref<boolean>(false);
@@ -620,6 +737,22 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							</n-switch>
 						</dd>
 					</div>
+					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+						<dt
+							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
+							激活口令
+						</dt>
+						<dd
+							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
+							<n-button
+								size="small"
+								type="warning"
+								:loading="deviceStore.loading || embeddedStore.loading || activateABTestLoading"
+								@click="activateABTest()">
+								导入激活口令
+							</n-button>
+						</dd>
+					</div>
 					<div v-if="deviceStore.MIOSVersion" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
@@ -695,6 +828,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							{{ deviceStore.deviceSocName || '获取失败' }}
 						</dd>
 					</div>
+
 					<!-- <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
             <dt :class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">游戏显示布局</dt>
             <dd :class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">启用(*Android 15+ 需额外搭配修改版手机/平板管家)</dd>

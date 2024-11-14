@@ -11,6 +11,7 @@ import type { ErrorLogging } from '@/types/ErrorLogging';
 import whitelistApplications from '@/config/whitelistApplications';
 import { useDeviceStore } from './device';
 import eventBus from '@/utils/eventBus';
+import { useLogsStore } from './logs';
 type ApplicationName = Record<string, string>;
 
 export const useEmbeddedStore = defineStore(
@@ -31,8 +32,8 @@ export const useEmbeddedStore = defineStore(
 		const customConfigFixedOrientationList = ref<Record<string, FixedOrientationRuleItem>>({});
 		// 配置文件
 		const systemEmbeddedSettingConfig = ref<Record<string, EmbeddedSettingRuleItem>>({});
-    const sourceEmbeddedSettingConfig = ref<Record<string, EmbeddedSettingRuleItem>>({});
-    const customConfigEmbeddedSettingConfig = ref<Record<string, EmbeddedSettingRuleItem>>({});
+		const sourceEmbeddedSettingConfig = ref<Record<string, EmbeddedSettingRuleItem>>({});
+		const customConfigEmbeddedSettingConfig = ref<Record<string, EmbeddedSettingRuleItem>>({});
 		// diff后的平行窗口配置
 		const patchEmbeddedRulesList = computed((): Record<EmbeddedRuleItem['name'], EmbeddedRuleItem> => {
 			const deviceStore = useDeviceStore();
@@ -82,7 +83,7 @@ export const useEmbeddedStore = defineStore(
 					...whitelistApplications,
 				]);
 
-				const filteredEntries = Object.entries(systemEmbeddedSettingConfig.value).filter(([key]) =>
+				const filteredEntries = Object.entries(sourceEmbeddedSettingConfig.value).filter(([key]) =>
 					combinedSet.has(key),
 				);
 				// 将过滤后的键值对数组重新转换为对象
@@ -216,7 +217,11 @@ export const useEmbeddedStore = defineStore(
 			mergeRuleList.value = xmlFormat.mergeEmbeddedRule(
 				isPatchMode.value ? patchEmbeddedRulesList.value : sourceEmbeddedRulesList.value,
 				isPatchMode.value ? patchFixedOrientationList.value : sourceFixedOrientationList.value,
-				deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 ? (isPatchMode.value ? patchEmbeddedSettingConfig.value : sourceEmbeddedSettingConfig.value) : systemEmbeddedSettingConfig.value,
+				deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2
+					? isPatchMode.value
+						? patchEmbeddedSettingConfig.value
+						: sourceEmbeddedSettingConfig.value
+					: systemEmbeddedSettingConfig.value,
 				customConfigEmbeddedRulesList.value,
 				customConfigFixedOrientationList.value,
 				customConfigEmbeddedSettingConfig.value,
@@ -224,7 +229,7 @@ export const useEmbeddedStore = defineStore(
 		}
 
 		async function initDefault() {
-      	const deviceStore = useDeviceStore();
+			const deviceStore = useDeviceStore();
 			loading.value = true;
 			// 获取所有应用包名
 			const applicationNameRes = await import('@/assets/applicationName.json');
@@ -253,9 +258,9 @@ export const useEmbeddedStore = defineStore(
 				ksuApi.getSourceFixedOrientationList(),
 				ksuApi.getSystemFixedOrientationList(),
 				ksuApi.getCustomConfigFixedOrientationList(),
-        ksuApi.getSourceEmbeddedSettingConfig(),
+				ksuApi.getSourceEmbeddedSettingConfig(),
 				ksuApi.getSystemEmbeddedSettingConfig(),
-        ksuApi.getCustomConfigEmbeddedSettingConfig(),
+				ksuApi.getCustomConfigEmbeddedSettingConfig(),
 			];
 
 			const [
@@ -265,9 +270,9 @@ export const useEmbeddedStore = defineStore(
 				[getSourceFixedOrientationListErr, getSourceFixedOrientationListRes],
 				[getSystemFixedOrientationListErr, getSystemFixedOrientationListRes],
 				[getCustomConfigFixedOrientationListErr, getCustomConfigFixedOrientationListRes],
-        [getSourceEmbeddedSettingConfigErr,getSourceEmbeddedSettingConfigRes],
+				[getSourceEmbeddedSettingConfigErr, getSourceEmbeddedSettingConfigRes],
 				[getSystemEmbeddedSettingConfigErr, getSystemEmbeddedSettingConfigRes],
-        [getCustomConfigEmbeddedSettingConfigErr,getCustomConfigEmbeddedSettingConfigRes],
+				[getCustomConfigEmbeddedSettingConfigErr, getCustomConfigEmbeddedSettingConfigRes],
 			] = await Promise.all(seriesRequests.map(req => $to<string, string>(req)));
 
 			// 获取源平行窗口列表
@@ -364,17 +369,17 @@ export const useEmbeddedStore = defineStore(
 					true,
 				);
 			}
-      // 获取源应用横屏布局设置配置
-      if (getSourceEmbeddedSettingConfigErr) {
-        sourceEmbeddedSettingConfig.value = {}
-      }
-      if (getSourceEmbeddedSettingConfigRes) {
-        sourceEmbeddedSettingConfig.value = xmlFormat.parseXMLToObject<EmbeddedSettingRuleItem>(
+			// 获取源应用横屏布局设置配置
+			if (getSourceEmbeddedSettingConfigErr) {
+				sourceEmbeddedSettingConfig.value = {};
+			}
+			if (getSourceEmbeddedSettingConfigRes) {
+				sourceEmbeddedSettingConfig.value = xmlFormat.parseXMLToObject<EmbeddedSettingRuleItem>(
 					getSourceEmbeddedSettingConfigRes,
 					'setting_rule',
 					'setting',
 				);
-      }
+			}
 			// 获取系统应用横屏布局设置配置
 			if (getSystemEmbeddedSettingConfigErr) {
 				systemEmbeddedSettingConfig.value = {};
@@ -386,24 +391,31 @@ export const useEmbeddedStore = defineStore(
 					'setting',
 				);
 			}
-      // 获取自定义应用横屏布局设置配置
-      if (getCustomConfigEmbeddedSettingConfigErr) {
-        customConfigEmbeddedSettingConfig.value = {};
-      }
-      if (getCustomConfigEmbeddedSettingConfigRes) {
-        customConfigEmbeddedSettingConfig.value = xmlFormat.parseXMLToObject<EmbeddedSettingRuleItem>(
+			// 获取自定义应用横屏布局设置配置
+			if (getCustomConfigEmbeddedSettingConfigErr) {
+				customConfigEmbeddedSettingConfig.value = {};
+			}
+			if (getCustomConfigEmbeddedSettingConfigRes) {
+				customConfigEmbeddedSettingConfig.value = xmlFormat.parseXMLToObject<EmbeddedSettingRuleItem>(
 					getCustomConfigEmbeddedSettingConfigRes,
 					'setting_rule',
 					'setting',
-          true,
+					true,
 				);
-      }
+			}
 
 			// 合并最终配置
+			const logsStore = useLogsStore()
+			logsStore.info('deviceStore.MIOSVersion',deviceStore.MIOSVersion);
+			
 			mergeRuleList.value = xmlFormat.mergeEmbeddedRule(
 				isPatchMode.value ? patchEmbeddedRulesList.value : sourceEmbeddedRulesList.value,
 				isPatchMode.value ? patchFixedOrientationList.value : sourceFixedOrientationList.value,
-				deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 ? (isPatchMode.value ? patchEmbeddedSettingConfig.value : sourceEmbeddedSettingConfig.value) : systemEmbeddedSettingConfig.value,
+				deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2
+					? (isPatchMode.value
+						? patchEmbeddedSettingConfig.value
+						: sourceEmbeddedSettingConfig.value)
+					: systemEmbeddedSettingConfig.value,
 				customConfigEmbeddedRulesList.value,
 				customConfigFixedOrientationList.value,
 				customConfigEmbeddedSettingConfig.value,
@@ -433,10 +445,10 @@ export const useEmbeddedStore = defineStore(
 			sourceFixedOrientationList,
 			patchEmbeddedRulesList,
 			patchFixedOrientationList,
-      patchEmbeddedSettingConfig,
+			patchEmbeddedSettingConfig,
 			customConfigEmbeddedRulesList,
 			customConfigFixedOrientationList,
-      customConfigEmbeddedSettingConfig,
+			customConfigEmbeddedSettingConfig,
 			filterSetAppModeAppList,
 			filterResetAppCompatAppList,
 			systemEmbeddedSettingConfig,
