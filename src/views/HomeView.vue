@@ -546,6 +546,7 @@ const openAddEmbeddedApp = async () => {
 					embeddedStore.customConfigEmbeddedRulesList[addEmbeddedAppRes.name] = {
 						name: addEmbeddedAppRes.name,
 						fullRule: addEmbeddedAppRes.modePayload.fullRule,
+						...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 ? { skipSelfAdaptive: true } : {}),
 					};
 				}
 				embeddedStore.customConfigFixedOrientationList[addEmbeddedAppRes.name] = {
@@ -558,6 +559,7 @@ const openAddEmbeddedApp = async () => {
 					...(addEmbeddedAppRes.modePayload.supportFullSize ? { supportFullSize: true } : {}),
 					...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 ? { supportModes: 'full,fo' } : {}),
 					...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 ? { defaultSettings: 'full' } : {}),
+					...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 ? { skipSelfAdaptive: true } : {}),
 				};
 			}
 			if (addEmbeddedAppRes.settingMode === 'fixedOrientation') {
@@ -565,6 +567,7 @@ const openAddEmbeddedApp = async () => {
 					name: addEmbeddedAppRes.name,
 					...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 ? { supportModes: 'full,fo' } : {}),
 					...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 ? { defaultSettings: 'fo' } : {}),
+					...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 ? { skipSelfAdaptive: true } : {}),
 					...(addEmbeddedAppRes.modePayload.ratio !== undefined
 						? {
 								ratio: addEmbeddedAppRes.modePayload.ratio,
@@ -581,6 +584,7 @@ const openAddEmbeddedApp = async () => {
 				embeddedStore.customConfigFixedOrientationList[addEmbeddedAppRes.name] = {
 					name: addEmbeddedAppRes.name,
 					disable: true,
+					...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 ? { skipSelfAdaptive: true } : {}),
 					...(addEmbeddedAppRes.modePayload.foRelaunch !== undefined
 						? {
 								relaunch: addEmbeddedAppRes.modePayload.foRelaunch,
@@ -729,8 +733,8 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 			if (updateEmbeddedAppRes.settingMode === 'fullScreen') {
 				if (embeddedStore.customConfigEmbeddedRulesList[row.name]) {
 					if (updateEmbeddedAppRes.modePayload.fullRule) {
-						embeddedStore.customConfigEmbeddedRulesList[row.name].fullRule =
-							updateEmbeddedAppRes.modePayload.fullRule;
+						embeddedStore.customConfigEmbeddedRulesList[row.name].fullRule = updateEmbeddedAppRes.modePayload.fullRule;
+						embeddedStore.customConfigEmbeddedRulesList[row.name].skipSelfAdaptive = true;
 					}
 					if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2) {
 						if (
@@ -740,6 +744,7 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 							delete embeddedStore.customConfigEmbeddedRulesList[row.name].fullRule;
 						}
 						embeddedStore.customConfigFixedOrientationList[row.name].supportModes = 'full,fo';
+						embeddedStore.customConfigFixedOrientationList[row.name].skipSelfAdaptive = true;
 						embeddedStore.customConfigFixedOrientationList[row.name].defaultSettings = 'full';
 						const hasDisable =
 							embeddedStore.customConfigFixedOrientationList[row.name].hasOwnProperty('disable');
@@ -752,6 +757,7 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 						embeddedStore.customConfigEmbeddedRulesList[row.name] = {
 							name: row.name,
 							fullRule: updateEmbeddedAppRes.modePayload.fullRule,
+							...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2) ? {skipSelfAdaptive: true} : {}
 						};
 					}
 				}
@@ -760,7 +766,7 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 						embeddedStore.customConfigFixedOrientationList[row.name].isShowDivider =
 							updateEmbeddedAppRes.modePayload.isShowDivider;
 					}
-					if (updateEmbeddedAppRes.modePayload.hasOwnProperty('skipSelfAdaptive')) {
+					if (updateEmbeddedAppRes.modePayload.hasOwnProperty('skipSelfAdaptive') && (!deviceStore.MIOSVersion || deviceStore.MIOSVersion < 2)) {
 						embeddedStore.customConfigFixedOrientationList[row.name].disable =
 							updateEmbeddedAppRes.modePayload.skipSelfAdaptive;
 					}
@@ -779,6 +785,7 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 						...(updateEmbeddedAppRes.modePayload.supportFullSize ? { supportFullSize: true } : {}),
 						...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 ? { supportModes: 'full,fo' } : {}),
 						...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 ? { defaultSettings: 'full' } : {}),
+						...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 ? { skipSelfAdaptive: true } : {}),
 					};
 				}
 			}
@@ -809,12 +816,14 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 					if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2) {
 						embeddedStore.customConfigFixedOrientationList[row.name].supportModes = 'full,fo';
 						embeddedStore.customConfigFixedOrientationList[row.name].defaultSettings = 'fo';
+						embeddedStore.customConfigFixedOrientationList[row.name].skipSelfAdaptive = true;
 					}
 				} else {
 					embeddedStore.customConfigFixedOrientationList[row.name] = {
 						name: row.name,
 						...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 ? { supportModes: 'full,fo' } : {}),
 						...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 ? { defaultSettings: 'fo' } : {}),
+						...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 ? { skipSelfAdaptive: true } : {}),
 						...(updateEmbeddedAppRes.modePayload.ratio !== undefined
 							? {
 									ratio: updateEmbeddedAppRes.modePayload.ratio,
@@ -833,11 +842,13 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 				row.settingMode !== updateEmbeddedAppRes.settingMode
 			) {
 				if (embeddedStore.customConfigFixedOrientationList[row.name]) {
+					embeddedStore.customConfigFixedOrientationList[row.name].skipSelfAdaptive = true;
 					embeddedStore.customConfigFixedOrientationList[row.name].disable = true;
 				} else {
 					embeddedStore.customConfigFixedOrientationList[row.name] = {
 						name: row.name,
 						disable: true,
+						...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 ? { skipSelfAdaptive: true } : {}),
 					};
 				}
 			}
@@ -892,6 +903,18 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 							embeddedStore.customConfigFixedOrientationList[row.name].hasOwnProperty('defaultSettings');
 						if (hasDefaultSettings) {
 							delete embeddedStore.customConfigFixedOrientationList[row.name].defaultSettings;
+						}
+						if (embeddedStore.customConfigEmbeddedRulesList[row.name]) {
+							const hasEmSkipSelfAdaptive = embeddedStore.customConfigEmbeddedRulesList[row.name].hasOwnProperty('skipSelfAdaptive')
+							if (!hasEmSkipSelfAdaptive) {
+								embeddedStore.customConfigEmbeddedRulesList[row.name].skipSelfAdaptive = true;
+							}
+						}
+						if (embeddedStore.customConfigFixedOrientationList[row.name]) {
+							const hasFoSkipSelfAdaptive = embeddedStore.customConfigFixedOrientationList[row.name].hasOwnProperty('skipSelfAdaptive')
+							if (!hasFoSkipSelfAdaptive) {
+								embeddedStore.customConfigFixedOrientationList[row.name].skipSelfAdaptive = true;
+							}
 						}
 					}
 				}
