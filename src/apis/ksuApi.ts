@@ -820,6 +820,26 @@ export const updateEmbeddedApp = (
           });
         }
       }
+
+      if (params.setAppMode) {
+        const [resetCompatErr, resetCompatRes] = await $to<string,string>(resetApplicationCompat(params.setAppMode.name))
+        if (resetCompatErr) {
+          errorLogging.push({
+            type: "resetApplicationCompat",
+            name: "[模块]重置应用兼容性",
+            message: resetCompatErr,
+          });
+        }
+
+        if (resetCompatRes) {
+          successLogging.push({
+            type: "resetApplicationCompat",
+            name: "[模块]重置应用兼容性",
+            message: resetCompatRes
+          });
+        }
+      
+      }
       
       const [UpdateRuleStderr,UpdateRuleStdout] = await $to<string,string>(updateRule())
 
