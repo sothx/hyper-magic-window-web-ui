@@ -29,7 +29,9 @@ import {
 	ArrowPathIcon,
 	FunnelIcon,
 	PlusIcon,
+	MagnifyingGlassIcon,
 	ShareIcon,
+	XCircleIcon,
 	TrashIcon,
 	SquaresPlusIcon,
 	ScissorsIcon,
@@ -1025,12 +1027,8 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 			}
 			// settings 配置
 			if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2) {
-				const {
-						moduleEmbeddedRules,
-						currentEmbeddedRules,
-						moduleFixedOrientation,
-						currentFixedOrientation,
-				} = useEmbedded(row.name);
+				const { moduleEmbeddedRules, currentEmbeddedRules, moduleFixedOrientation, currentFixedOrientation } =
+					useEmbedded(row.name);
 				if (row.settingMode !== updateEmbeddedAppRes.settingMode) {
 					embeddedStore.customConfigEmbeddedSettingConfig[row.name] = {
 						name: row.name,
@@ -1786,7 +1784,7 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 					从分享口令导入
 				</n-button>
 			</div>
-			<div class="flex flex-wrap">
+			<div class="flex">
 				<n-button
 					class="mb-3 mr-3"
 					:type="embeddedStore.filterInstalledApps ? 'warning' : 'info'"
@@ -1802,26 +1800,49 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 					{{ embeddedStore.filterInstalledApps ? '已安装应用' : '全部应用' }}
 				</n-button>
 			</div>
-			<n-input-group>
-				<n-input
-					size="large"
-					clearable
-					v-model:value="embeddedStore.searchKeyWord"
-					ref="searchKeyWordInput"
-					placeholder="搜索应用包名"
-					autosize
-					style="min-width: 80%" />
-				<n-button
-					size="large"
-					type="primary"
-					@click="
-						() => {
-							searchKeyWordInput?.blur();
-						}
-					">
-					确定
-				</n-button>
-			</n-input-group>
+			<div class="flex">
+				<n-input-group>
+					<n-input
+						size="large"
+						clearable
+						v-model:value="embeddedStore.searchKeyWord"
+						ref="searchKeyWordInput"
+						placeholder="搜索应用包名"
+						autosize
+						:style="{ width: '80%' }" />
+					<n-button
+						size="large"
+						type="primary"
+						@click="
+							() => {
+								searchKeyWordInput?.blur();
+							}
+						">
+						<template #icon>
+							<n-icon>
+								<MagnifyingGlassIcon />
+							</n-icon>
+						</template>
+						搜索
+					</n-button>
+					<n-button
+						size="large"
+						type="tertiary"
+						bordered
+						@click="
+							() => {
+								embeddedStore.searchKeyWord = '';
+							}
+						">
+						<template #icon>
+							<n-icon>
+								<XCircleIcon />
+							</n-icon>
+						</template>
+						清空
+					</n-button>
+				</n-input-group>
+			</div>
 		</n-card>
 		<n-data-table
 			ref="embeddedTableRef"

@@ -1,4 +1,4 @@
-import { ref, computed, reactive } from 'vue';
+import { ref, computed, reactive, watch } from 'vue';
 import { defineStore } from 'pinia';
 import type EmbeddedRuleItem from '@/types/EmbeddedRuleItem';
 import type FixedOrientationRuleItem from '@/types/FixedOrientationRuleItem';
@@ -12,6 +12,7 @@ import whitelistApplications from '@/config/whitelistApplications';
 import { useDeviceStore } from './device';
 import eventBus from '@/utils/eventBus';
 import { useLogsStore } from './logs';
+import { debounce } from 'lodash-es';
 type ApplicationName = Record<string, string>;
 
 export const useEmbeddedStore = defineStore(
@@ -117,9 +118,20 @@ export const useEmbeddedStore = defineStore(
 			}, []);
 			return compatAppList;
 		});
+		const searchValue = ref(''); // 用来存储经过防抖处理后的搜索关键字
+		// 搜索值
+		const searchKeyWord = ref<string>('');
+		// 防抖处理搜索关键字
+		const debouncedSearch = debounce((value: string) => {
+			searchValue.value = value.trim().toLowerCase();
+		}, 500); // 设置防抖延迟为 500ms
+
+		// 监听 searchKeyWord 的变化并执行防抖
+		watch(searchKeyWord, newValue => {
+			debouncedSearch(newValue);
+		});
 		// 搜索后的配置列表
 		const filterMergeRuleList = computed(() => {
-			const searchValue = searchKeyWord.value.trim().toLowerCase();
 			const cachedMergeRuleList = mergeRuleList.value;
 			const deviceStore = useDeviceStore();
 
@@ -135,7 +147,7 @@ export const useEmbeddedStore = defineStore(
 					// 过滤条件，检查 name 和 applicationName
 					const applicationNameLower = item.applicationName ? item.applicationName.toLowerCase() : '';
 
-					if (!itemName.includes(searchValue) && !applicationNameLower.includes(searchValue)) {
+					if (!itemName.includes(searchValue.value) && !applicationNameLower.includes(searchValue.value)) {
 						return result;
 					}
 
@@ -192,8 +204,6 @@ export const useEmbeddedStore = defineStore(
 		const isNeedShowErrorModal = computed(() => Boolean(errorLogging.length > 0));
 		// 应用总数
 		const ruleCount = computed(() => mergeRuleList.value.length);
-		// 搜索值
-		const searchKeyWord = ref<string>('');
 		// 加载状态
 		const loading = ref<boolean>(true);
 		// 错误存储
@@ -405,16 +415,16 @@ export const useEmbeddedStore = defineStore(
 			}
 
 			// 合并最终配置
-			const logsStore = useLogsStore()
-			logsStore.info('deviceStore.MIOSVersion',deviceStore.MIOSVersion);
-			
+			const logsStore = useLogsStore();
+			logsStore.info('deviceStore.MIOSVersion', deviceStore.MIOSVersion);
+
 			mergeRuleList.value = xmlFormat.mergeEmbeddedRule(
 				isPatchMode.value ? patchEmbeddedRulesList.value : sourceEmbeddedRulesList.value,
 				isPatchMode.value ? patchFixedOrientationList.value : sourceFixedOrientationList.value,
 				deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2
-					? (isPatchMode.value
+					? isPatchMode.value
 						? patchEmbeddedSettingConfig.value
-						: sourceEmbeddedSettingConfig.value)
+						: sourceEmbeddedSettingConfig.value
 					: systemEmbeddedSettingConfig.value,
 				customConfigEmbeddedRulesList.value,
 				customConfigFixedOrientationList.value,

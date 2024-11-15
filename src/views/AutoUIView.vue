@@ -25,7 +25,7 @@
     type DataTableColumns,
     type DropdownOption,
   } from 'naive-ui';
-  import { ArrowPathIcon, FunnelIcon, PlusIcon, ShareIcon, TrashIcon, SquaresPlusIcon } from '@heroicons/vue/24/outline';
+  import { ArrowPathIcon, FunnelIcon, PlusIcon, ShareIcon, TrashIcon, SquaresPlusIcon, XCircleIcon,MagnifyingGlassIcon } from '@heroicons/vue/24/outline';
   import type AutoUIMergeRuleItem from '@/types/AutoUIMergeRuleItem';
   import { useRouter, useRoute } from 'vue-router';
   import { useLogsStore } from '@/stores/logs';
@@ -1030,7 +1030,7 @@ configProviderProps: configProviderPropsRef
           ref="searchKeyWordInput"
           placeholder="搜索应用包名"
           autosize
-          style="min-width: 80%"
+          :style="{ width: '80%' }"
         />
         <n-button
           size="large"
@@ -1041,8 +1041,29 @@ configProviderProps: configProviderPropsRef
             }
           "
         >
-          确定
+        <template #icon>
+						<n-icon>
+							<MagnifyingGlassIcon />
+						</n-icon>
+					</template>
+          搜索
         </n-button>
+        <n-button
+					size="large"
+					type="tertiary"
+					bordered
+					@click="
+						() => {
+							autoUIStore.searchKeyWord = '';
+						}
+					">
+					<template #icon>
+						<n-icon>
+							<XCircleIcon />
+						</n-icon>
+					</template>
+					清空
+				</n-button>
       </n-input-group>
     </n-card>
     <n-data-table
