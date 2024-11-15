@@ -448,9 +448,9 @@ const reloadPatchModeConfigList = async () => {
 				'package_config',
 			),
 			patchEmbeddedSettingConfigXML: xmlFormat.objectToXML(
-						embeddedStore.patchEmbeddedSettingConfig,
-						'setting',
-						'setting_rule',
+				embeddedStore.patchEmbeddedSettingConfig,
+				'setting',
+				'setting_rule',
 			),
 			customEmbeddedRulesListXML: xmlFormat.objectToXML(
 				embeddedStore.customConfigEmbeddedRulesList,
@@ -550,7 +550,11 @@ const openAddEmbeddedApp = async () => {
 			title: '内测说明',
 			type: 'warning',
 			preset: 'dialog',
-			content: () => <p>该功能仅尚处于测试阶段，可能存在不稳定性，需要有一定的搞机知识与问题解决能力，如需参与测试请通过做梦书的酷安动态获取新功能内测的激活口令！</p>,
+			content: () => (
+				<p>
+					该功能仅尚处于测试阶段，可能存在不稳定性，需要有一定的搞机知识与问题解决能力，如需参与测试请通过做梦书的酷安动态获取新功能内测的激活口令！
+				</p>
+			),
 		});
 		return;
 	}
@@ -753,7 +757,11 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 			title: '内测说明',
 			type: 'warning',
 			preset: 'dialog',
-			content: () => <p>该功能仅尚处于测试阶段，可能存在不稳定性，需要有一定的搞机知识与问题解决能力，如需参与测试请通过做梦书的酷安动态获取新功能内测的激活口令！</p>,
+			content: () => (
+				<p>
+					该功能仅尚处于测试阶段，可能存在不稳定性，需要有一定的搞机知识与问题解决能力，如需参与测试请通过做梦书的酷安动态获取新功能内测的激活口令！
+				</p>
+			),
 		});
 		return;
 	}
@@ -769,6 +777,14 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 							updateEmbeddedAppRes.modePayload.fullRule;
 						embeddedStore.customConfigEmbeddedRulesList[row.name].skipSelfAdaptive = true;
 					}
+					if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2) {
+						if (
+							!updateEmbeddedAppRes.modePayload.fullRule &&
+							embeddedStore.customConfigEmbeddedRulesList[row.name].fullRule
+						) {
+							delete embeddedStore.customConfigEmbeddedRulesList[row.name].fullRule;
+						}
+					}
 				} else {
 					if (updateEmbeddedAppRes.modePayload.fullRule) {
 						embeddedStore.customConfigEmbeddedRulesList[row.name] = {
@@ -778,6 +794,13 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 								? { skipSelfAdaptive: true }
 								: {}),
 						};
+					} else {
+						embeddedStore.customConfigEmbeddedRulesList[row.name] = {
+							name: row.name,
+							...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2
+								? { skipSelfAdaptive: true }
+								: {}),
+						}
 					}
 				}
 				if (embeddedStore.customConfigFixedOrientationList[row.name]) {
@@ -785,16 +808,26 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 						embeddedStore.customConfigFixedOrientationList[row.name].isShowDivider =
 							updateEmbeddedAppRes.modePayload.isShowDivider;
 					}
-					if (
-						updateEmbeddedAppRes.modePayload.hasOwnProperty('skipSelfAdaptive') &&
-						(!deviceStore.MIOSVersion || deviceStore.MIOSVersion < 2)
-					) {
-						embeddedStore.customConfigFixedOrientationList[row.name].disable =
-							updateEmbeddedAppRes.modePayload.skipSelfAdaptive;
-					}
 					if (updateEmbeddedAppRes.modePayload.hasOwnProperty('supportFullSize')) {
 						embeddedStore.customConfigFixedOrientationList[row.name].supportFullSize =
 							updateEmbeddedAppRes.modePayload.supportFullSize;
+					}
+					if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2) {
+						const hasDisable =
+							embeddedStore.customConfigFixedOrientationList[row.name].hasOwnProperty('disable');
+						if (hasDisable) {
+							delete embeddedStore.customConfigFixedOrientationList[row.name].disable;
+						}
+						const hasCompatChange =
+							embeddedStore.customConfigFixedOrientationList[row.name].hasOwnProperty('compatChange');
+						if (hasCompatChange) {
+							delete embeddedStore.customConfigFixedOrientationList[row.name].compatChange;
+						}
+					} else {
+						if (updateEmbeddedAppRes.modePayload.hasOwnProperty('skipSelfAdaptive')) {
+							embeddedStore.customConfigFixedOrientationList[row.name].disable =
+								updateEmbeddedAppRes.modePayload.skipSelfAdaptive;
+						}
 					}
 				} else {
 					embeddedStore.customConfigFixedOrientationList[row.name] = {
@@ -810,28 +843,7 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 						...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 ? { skipSelfAdaptive: true } : {}),
 					};
 				}
-				if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2) {
-					if (embeddedStore.customConfigEmbeddedRulesList[row.name]) {
-						if (
-							!updateEmbeddedAppRes.modePayload.fullRule &&
-							embeddedStore.customConfigEmbeddedRulesList[row.name].fullRule
-						) {
-							delete embeddedStore.customConfigEmbeddedRulesList[row.name].fullRule;
-						}
-					}
-					if (embeddedStore.customConfigFixedOrientationList[row.name]) {
-						const hasDisable =
-							embeddedStore.customConfigFixedOrientationList[row.name].hasOwnProperty('disable');
-						if (hasDisable) {
-							delete embeddedStore.customConfigFixedOrientationList[row.name].disable;
-						}
-						const hasCompatChange =
-							embeddedStore.customConfigFixedOrientationList[row.name].hasOwnProperty('compatChange');
-						if (hasCompatChange) {
-							delete embeddedStore.customConfigFixedOrientationList[row.name].compatChange;
-						}
-					}
-				}
+				console.log(embeddedStore.customConfigEmbeddedRulesList[row.name],embeddedStore.customConfigFixedOrientationList[row.name],'进到这里333')
 			}
 			if (updateEmbeddedAppRes.settingMode === 'fixedOrientation') {
 				if (embeddedStore.customConfigFixedOrientationList[row.name]) {
@@ -1154,7 +1166,11 @@ const handleCustomRuleDropdown = async (
 			title: '内测说明',
 			type: 'warning',
 			preset: 'dialog',
-			content: () => <p>该功能仅尚处于测试阶段，可能存在不稳定性，需要有一定的搞机知识与问题解决能力，如需参与测试请通过做梦书的酷安动态获取新功能内测的激活口令！</p>,
+			content: () => (
+				<p>
+					该功能仅尚处于测试阶段，可能存在不稳定性，需要有一定的搞机知识与问题解决能力，如需参与测试请通过做梦书的酷安动态获取新功能内测的激活口令！
+				</p>
+			),
 		});
 		return;
 	}
@@ -1203,9 +1219,9 @@ const handleCustomRuleDropdown = async (
 							'package_config',
 						),
 						patchEmbeddedSettingConfigXML: xmlFormat.objectToXML(
-						embeddedStore.patchEmbeddedSettingConfig,
-						'setting',
-						'setting_rule',
+							embeddedStore.patchEmbeddedSettingConfig,
+							'setting',
+							'setting_rule',
 						),
 						customEmbeddedRulesListXML: xmlFormat.objectToXML(
 							embeddedStore.customConfigEmbeddedRulesList,

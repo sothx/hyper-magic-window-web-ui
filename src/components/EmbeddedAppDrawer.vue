@@ -60,7 +60,7 @@ interface fixedOrientationRatioOptions {
 	ratio?: number;
 }
 
-const fullScreenRuleOptions: fullScreenRuleOptions[] = reactive([
+const FULL_SCREEN_OPTIONS: fullScreenRuleOptions[] = [
 	{
 		label: '强制应用所有界面横屏[nra:cr:rcr:nr]',
 		key: 'fullScreen_nra:cr:rcr:nr',
@@ -75,7 +75,22 @@ const fullScreenRuleOptions: fullScreenRuleOptions[] = reactive([
 		label: '自定义',
 		key: 'fullScreen_custom',
 	},
-]);
+];
+
+const fullScreenRuleOptions = computed<fullScreenRuleOptions[]>(() => {
+	const MI_OS2_OPTIONS = [
+		{
+			label: '默认横屏规则',
+			key: 'fullScreen_default',
+		},
+	];
+
+	if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2) {
+		return [...MI_OS2_OPTIONS, ...FULL_SCREEN_OPTIONS];
+	} else {
+		return FULL_SCREEN_OPTIONS;
+	}
+});
 
 const fixedOrientationRatioOptions: fixedOrientationRatioOptions[] = [
 	{
@@ -104,7 +119,7 @@ const fixedOrientationRatioOptions: fixedOrientationRatioOptions[] = [
 ];
 
 // 选项的状态
-const currentFullScreenRuleOptions = ref<fullScreenRuleOptions>(fullScreenRuleOptions[0]);
+const currentFullScreenRuleOptions = ref<fullScreenRuleOptions>(fullScreenRuleOptions.value[0]);
 
 const currentFullRule = ref<fullScreenRuleOptions['rule']>();
 
@@ -170,7 +185,7 @@ const embeddedAppDrawer = ref({
 			// add模式，初始化参数
 			if (props.type === 'add') {
 				currentType.value = 'add';
-				currentFullScreenRuleOptions.value = fullScreenRuleOptions[0];
+				currentFullScreenRuleOptions.value = fullScreenRuleOptions.value[0];
 				currentAppName.value = '';
 				currentFullRule.value = 'nra:cr:rcr:nr';
 				currentSupportModes.value = ['fullScreen', 'fixedOrientation', 'disabled'];
@@ -210,23 +225,26 @@ const embeddedAppDrawer = ref({
 				currentSkipSelfAdaptive.value = initialParams.fixedOrientationRule?.disable ?? false;
 				currentIsShowDivider.value = initialParams.fixedOrientationRule?.isShowDivider ?? false;
 				currentFullRule.value = initialParams.embeddedRules?.fullRule ?? undefined;
-				currentForceFixedOrientation.value = initialParams.fixedOrientationRule?.compatChange?.split(',').includes('OVERRIDE_UNDEFINED_ORIENTATION_TO_PORTRAIT') ?? false
+				currentForceFixedOrientation.value =
+					initialParams.fixedOrientationRule?.compatChange
+						?.split(',')
+						.includes('OVERRIDE_UNDEFINED_ORIENTATION_TO_PORTRAIT') ?? false;
 				if (currentFullRule.value === 'nra:cr:rcr:nr') {
 					currentFullScreenRuleOptions.value =
 						deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2
-							? fullScreenRuleOptions[1]
-							: fullScreenRuleOptions[0];
+							? fullScreenRuleOptions.value[1]
+							: fullScreenRuleOptions.value[0];
 				} else if (initialParams.embeddedRules && !initialParams.embeddedRules.hasOwnProperty('fullRule')) {
 					currentFullRule.value =
 						deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 ? undefined : 'nra:cr:rcr:nr';
 					currentFullScreenRuleOptions.value =
 						deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2
-							? fullScreenRuleOptions[0]
-							: fullScreenRuleOptions[1];
+							? fullScreenRuleOptions.value[0]
+							: fullScreenRuleOptions.value[1];
 				} else if (currentFullRule.value === '*') {
-					currentFullScreenRuleOptions.value = fullScreenRuleOptions[2];
+					currentFullScreenRuleOptions.value = fullScreenRuleOptions.value[2];
 				} else {
-					currentFullScreenRuleOptions.value = fullScreenRuleOptions[3];
+					currentFullScreenRuleOptions.value = fullScreenRuleOptions.value[3];
 				}
 				currentSupportFullSize.value = initialParams.embeddedRules?.supportFullSize ?? false;
 				if (
@@ -479,7 +497,8 @@ const handleDrawerSubmit = async () => {
 				foRelaunch: currentFixedOrientationRelaunch.value,
 			}),
 			...(currentSettingMode.value === 'fixedOrientation' &&
-				(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2) && {
+				deviceStore.MIOSVersion &&
+				deviceStore.MIOSVersion >= 2 && {
 					forceFixedOrientation: currentForceFixedOrientation.value,
 				}),
 			...(currentSettingMode.value === 'embedded' &&
@@ -528,19 +547,6 @@ watch(
 defineExpose({
 	openDrawer: embeddedAppDrawer.value.openDrawer, // 传递 openDrawer 方法
 });
-
-watch(
-	() => deviceStore.MIOSVersion,
-	(newValue, oldValue) => {
-		// console.log(import.meta.env, 'import.meta.env')
-		if (newValue && newValue >= 2) {
-			fullScreenRuleOptions.unshift({
-				label: '默认横屏规则',
-				key: 'fullScreen_default',
-			});
-		}
-	},
-);
 </script>
 
 <template>
