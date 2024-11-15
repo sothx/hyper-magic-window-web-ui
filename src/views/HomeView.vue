@@ -36,6 +36,7 @@ import {
 import { arrayBufferToBase64, base64ToArrayBuffer } from '@/utils/format';
 import { findBase64InString, renderApplicationName } from '@/utils/common';
 import { getAppModeCode, getSettingMode } from '@/utils/embeddedFun';
+import { cloneDeep, isEqual } from 'lodash-es';
 type EmbeddedAppDrawerInstance = InstanceType<typeof EmbeddedAppDrawer>;
 type SearchKeyWordInputInstance = InstanceType<typeof NInput>;
 type NDataTabletInstance = InstanceType<typeof NDataTable>;
@@ -798,7 +799,7 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 						if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2) {
 							embeddedStore.customConfigEmbeddedRulesList[row.name] = {
 								name: row.name,
-								skipSelfAdaptive: true
+								skipSelfAdaptive: true,
 							};
 						}
 					}
@@ -988,34 +989,52 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 					}
 				}
 				if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2) {
-					if (embeddedStore.customConfigFixedOrientationList[row.name]) {
-						const hasDisable =
-							embeddedStore.customConfigFixedOrientationList[row.name].hasOwnProperty('disable');
+					const moduleEmbeddedRules = cloneDeep(
+						embeddedStore.isPatchMode
+							? embeddedStore.patchEmbeddedRulesList[row.name]
+							: embeddedStore.sourceEmbeddedRulesList[row.name],
+					);
+					const currentEmbeddedRules = cloneDeep(
+						embeddedStore.customConfigEmbeddedRulesList[row.name] || moduleEmbeddedRules,
+					);
+					const moduleFixedOrientation = cloneDeep(
+						embeddedStore.isPatchMode
+							? embeddedStore.patchFixedOrientationList[row.name]
+							: embeddedStore.sourceFixedOrientationList[row.name],
+					);
+					const currentFixedOrientation = cloneDeep(
+						embeddedStore.customConfigFixedOrientationList[row.name] || moduleFixedOrientation,
+					);
+					if (currentFixedOrientation) {
+						const hasDisable = currentFixedOrientation.hasOwnProperty('disable');
 						if (hasDisable) {
-							delete embeddedStore.customConfigFixedOrientationList[row.name].disable;
+							delete currentFixedOrientation.disable;
 						}
-						const hasDefaultSettings =
-							embeddedStore.customConfigFixedOrientationList[row.name].hasOwnProperty('defaultSettings');
+						const hasDefaultSettings = currentFixedOrientation.hasOwnProperty('defaultSettings');
 						if (hasDefaultSettings) {
-							delete embeddedStore.customConfigFixedOrientationList[row.name].defaultSettings;
+							delete currentFixedOrientation.defaultSettings;
 						}
-						const hasFoSkipSelfAdaptive =
-							embeddedStore.customConfigFixedOrientationList[row.name].hasOwnProperty('skipSelfAdaptive');
+						const hasFoSkipSelfAdaptive = currentFixedOrientation.hasOwnProperty('skipSelfAdaptive');
 						if (!hasFoSkipSelfAdaptive) {
-							embeddedStore.customConfigFixedOrientationList[row.name].skipSelfAdaptive = true;
+							currentFixedOrientation.skipSelfAdaptive = true;
 						}
-						const hasCompatChange =
-							embeddedStore.customConfigFixedOrientationList[row.name].hasOwnProperty('compatChange');
+						const hasCompatChange = currentFixedOrientation.hasOwnProperty('compatChange');
 						if (hasCompatChange) {
-							delete embeddedStore.customConfigFixedOrientationList[row.name].compatChange;
+							delete currentFixedOrientation.compatChange;
 						}
 					}
-					if (embeddedStore.customConfigEmbeddedRulesList[row.name]) {
+					if (currentEmbeddedRules) {
 						const hasEmSkipSelfAdaptive =
-							embeddedStore.customConfigEmbeddedRulesList[row.name].hasOwnProperty('skipSelfAdaptive');
+						currentEmbeddedRules.hasOwnProperty('skipSelfAdaptive');
 						if (!hasEmSkipSelfAdaptive) {
-							embeddedStore.customConfigEmbeddedRulesList[row.name].skipSelfAdaptive = true;
+							currentEmbeddedRules.skipSelfAdaptive = true;
 						}
+					}
+					if (!isEqual(moduleEmbeddedRules,currentEmbeddedRules)) {
+						embeddedStore.customConfigFixedOrientationList[row.name] = currentFixedOrientation;
+					}
+					if (!isEqual(moduleFixedOrientation,currentFixedOrientation)) {
+						embeddedStore.customConfigEmbeddedRulesList[row.name] = currentEmbeddedRules;
 					}
 				}
 			}
