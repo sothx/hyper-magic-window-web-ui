@@ -193,7 +193,7 @@ const embeddedAppDrawer = ref({
 				if (initialParams.embeddedRules && initialParams.embeddedRules.hasOwnProperty('relaunch')) {
 					currentFixedOrientationRelaunch.value = initialParams.embeddedRules.relaunch ? true : false;
 				} else {
-					currentFixedOrientationRelaunch.value = false;
+					currentFixedOrientationRelaunch.value = true;
 				}
 				// const initialSupportModes: EmbeddedMergeRuleItem['settingMode'][] = ['disabled'];
 				// if (initialParams.fixedOrientationRule?.supportModes?.includes('fo')) {
@@ -235,7 +235,7 @@ const embeddedAppDrawer = ref({
 				) {
 					currentFixedOrientationRelaunch.value = initialParams.fixedOrientationRule.relaunch ? true : false;
 				} else {
-					currentFixedOrientationRelaunch.value = true;
+					currentFixedOrientationRelaunch.value = false;
 				}
 				currentRatio.value = initialParams.fixedOrientationRule?.ratio ?? undefined;
 				if (currentRatio.value) {
@@ -455,7 +455,6 @@ const handleDrawerSubmit = async () => {
 	const loadingCallback = () => {
 		drawerSubmitLoading.value = false;
 	};
-
 	const result: EmbeddedAppDrawerSubmitResult = {
 		name: currentAppName.value,
 		settingMode: currentSettingMode.value,
