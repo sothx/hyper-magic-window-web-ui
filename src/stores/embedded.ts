@@ -134,27 +134,26 @@ export const useEmbeddedStore = defineStore(
 		const filterMergeRuleList = computed(() => {
 			const cachedMergeRuleList = mergeRuleList.value;
 			const deviceStore = useDeviceStore();
-
+			const isInstalled = new Set(deviceStore.installedAndroidApplicationPackageNameList);
+			const isFilterInstalledApps = filterInstalledApps.value;
+			const currentSearchValue = searchValue.value;
+			const currentApplicationName = applicationName.value;
 			return cachedMergeRuleList
 				.reduce((result: EmbeddedMergeRuleItem[], item) => {
 					const itemName = item.name.trim().toLowerCase();
+					const itemApplicationName = item.applicationName ? item.applicationName.toLowerCase() : '';
 
 					// 先更新 applicationName
-					if (applicationName.value[item.name]) {
-						item.applicationName = applicationName.value[item.name];
+					if (currentApplicationName[item.name]) {
+						item.applicationName = currentApplicationName[item.name];
 					}
 
-					// 过滤条件，检查 name 和 applicationName
-					const applicationNameLower = item.applicationName ? item.applicationName.toLowerCase() : '';
-
-					if (!itemName.includes(searchValue.value) && !applicationNameLower.includes(searchValue.value)) {
+					if (!itemName.includes(currentSearchValue) && !itemApplicationName.includes(currentSearchValue)) {
 						return result;
 					}
 
-					const isInstalled = new Set(deviceStore.installedAndroidApplicationPackageNameList);
-
 					// 如果 filterInstalledApps 为 true，检查 item 是否为已安装的应用
-					if (filterInstalledApps.value && !isInstalled.has(item.name)) {
+					if (isFilterInstalledApps && !isInstalled.has(item.name)) {
 						return result; // 如果不是已安装的应用，跳过该项
 					}
 
