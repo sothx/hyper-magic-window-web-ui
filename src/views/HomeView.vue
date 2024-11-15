@@ -4,6 +4,7 @@ import type EmbeddedMergeRuleItem from '@/types/EmbeddedMergeRuleItem';
 import $to from 'await-to-js';
 import pako from 'pako';
 import ErrorModal from '@/components/ErrorModal.vue';
+import { useEmbedded } from '@/hooks/useEmbedded';
 import EmbeddedAppDrawer from '@/components/EmbeddedAppDrawer.vue';
 import {
 	NButton,
@@ -772,19 +773,23 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 			console.log('操作取消:', updateEmbeddedAppCancel);
 		} else {
 			if (updateEmbeddedAppRes.settingMode === 'fullScreen') {
-				if (embeddedStore.customConfigEmbeddedRulesList[row.name]) {
+				const { moduleEmbeddedRules, currentEmbeddedRules, moduleFixedOrientation, currentFixedOrientation } = useEmbedded(row.name);
+				if (currentEmbeddedRules.value) {
 					if (updateEmbeddedAppRes.modePayload.fullRule) {
-						embeddedStore.customConfigEmbeddedRulesList[row.name].fullRule =
+						currentEmbeddedRules.value.fullRule =
 							updateEmbeddedAppRes.modePayload.fullRule;
-						embeddedStore.customConfigEmbeddedRulesList[row.name].skipSelfAdaptive = true;
+							currentEmbeddedRules.value.skipSelfAdaptive = true;
 					}
 					if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2) {
 						if (
 							!updateEmbeddedAppRes.modePayload.fullRule &&
-							embeddedStore.customConfigEmbeddedRulesList[row.name].fullRule
+							currentEmbeddedRules.value.fullRule
 						) {
-							delete embeddedStore.customConfigEmbeddedRulesList[row.name].fullRule;
+							delete currentEmbeddedRules.value.fullRule;
 						}
+					}
+					if (!isEqual(moduleEmbeddedRules.value, currentEmbeddedRules.value)) {
+						embeddedStore.customConfigEmbeddedRulesList[row.name] = currentEmbeddedRules.value;
 					}
 				} else {
 					if (updateEmbeddedAppRes.modePayload.fullRule) {
@@ -804,31 +809,34 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 						}
 					}
 				}
-				if (embeddedStore.customConfigFixedOrientationList[row.name]) {
+				if (currentFixedOrientation.value) {
 					if (updateEmbeddedAppRes.modePayload.hasOwnProperty('isShowDivider')) {
-						embeddedStore.customConfigFixedOrientationList[row.name].isShowDivider =
+						currentFixedOrientation.value.isShowDivider =
 							updateEmbeddedAppRes.modePayload.isShowDivider;
 					}
 					if (updateEmbeddedAppRes.modePayload.hasOwnProperty('supportFullSize')) {
-						embeddedStore.customConfigFixedOrientationList[row.name].supportFullSize =
+						currentFixedOrientation.value.supportFullSize =
 							updateEmbeddedAppRes.modePayload.supportFullSize;
 					}
 					if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2) {
 						const hasDisable =
-							embeddedStore.customConfigFixedOrientationList[row.name].hasOwnProperty('disable');
+						currentFixedOrientation.value.hasOwnProperty('disable');
 						if (hasDisable) {
-							delete embeddedStore.customConfigFixedOrientationList[row.name].disable;
+							delete currentFixedOrientation.value.disable;
 						}
 						const hasCompatChange =
-							embeddedStore.customConfigFixedOrientationList[row.name].hasOwnProperty('compatChange');
+						currentFixedOrientation.value.hasOwnProperty('compatChange');
 						if (hasCompatChange) {
-							delete embeddedStore.customConfigFixedOrientationList[row.name].compatChange;
+							delete currentFixedOrientation.value.compatChange;
 						}
 					} else {
 						if (updateEmbeddedAppRes.modePayload.hasOwnProperty('skipSelfAdaptive')) {
-							embeddedStore.customConfigFixedOrientationList[row.name].disable =
+							currentFixedOrientation.value.disable =
 								updateEmbeddedAppRes.modePayload.skipSelfAdaptive;
 						}
+					}
+					if (!isEqual(moduleFixedOrientation.value, currentFixedOrientation.value)) {
+						embeddedStore.customConfigFixedOrientationList[row.name] = currentFixedOrientation.value;
 					}
 				} else {
 					embeddedStore.customConfigFixedOrientationList[row.name] = {
@@ -844,63 +852,62 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 						...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 ? { skipSelfAdaptive: true } : {}),
 					};
 				}
-				console.log(
-					embeddedStore.customConfigEmbeddedRulesList[row.name],
-					embeddedStore.customConfigFixedOrientationList[row.name],
-					'进到这里333',
-				);
 			}
 			if (updateEmbeddedAppRes.settingMode === 'fixedOrientation') {
-				if (embeddedStore.customConfigFixedOrientationList[row.name]) {
+				const { moduleEmbeddedRules, currentEmbeddedRules, moduleFixedOrientation, currentFixedOrientation } = useEmbedded(row.name);
+				if (currentFixedOrientation.value) {
 					const hasDisable =
-						embeddedStore.customConfigFixedOrientationList[row.name].hasOwnProperty('disable');
+					currentFixedOrientation.value.hasOwnProperty('disable');
 					if (hasDisable) {
-						delete embeddedStore.customConfigFixedOrientationList[row.name].disable;
+						delete currentFixedOrientation.value.disable;
 					}
 					const hasIsScale =
-						embeddedStore.customConfigFixedOrientationList[row.name].hasOwnProperty('isScale');
+					currentFixedOrientation.value.hasOwnProperty('isScale');
 					if (hasIsScale) {
-						delete embeddedStore.customConfigFixedOrientationList[row.name].isScale;
+						delete currentFixedOrientation.value.isScale;
 					}
 					if (updateEmbeddedAppRes.modePayload.ratio !== undefined) {
-						embeddedStore.customConfigFixedOrientationList[row.name].ratio =
+						currentFixedOrientation.value.ratio =
 							updateEmbeddedAppRes.modePayload.ratio;
 					} else {
-						delete embeddedStore.customConfigFixedOrientationList[row.name].ratio;
+						delete currentFixedOrientation.value.ratio;
 					}
 					if (updateEmbeddedAppRes.modePayload.foRelaunch !== undefined) {
-						embeddedStore.customConfigFixedOrientationList[row.name].relaunch =
+						currentFixedOrientation.value.relaunch =
 							updateEmbeddedAppRes.modePayload.foRelaunch;
 					} else {
-						delete embeddedStore.customConfigFixedOrientationList[row.name].relaunch;
+						delete currentFixedOrientation.value.relaunch;
 					}
 					if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2) {
-						embeddedStore.customConfigFixedOrientationList[row.name].supportModes = 'full,fo';
-						embeddedStore.customConfigFixedOrientationList[row.name].defaultSettings = 'fo';
-						embeddedStore.customConfigFixedOrientationList[row.name].skipSelfAdaptive = true;
+						currentFixedOrientation.value.supportModes = 'full,fo';
+						currentFixedOrientation.value.defaultSettings = 'fo';
+						currentFixedOrientation.value.skipSelfAdaptive = true;
 						if (
 							updateEmbeddedAppRes.modePayload.hasOwnProperty('forceFixedOrientation') &&
 							updateEmbeddedAppRes.modePayload.forceFixedOrientation
 						) {
-							if (embeddedStore.customConfigFixedOrientationList[row.name].compatChange) {
+							if (currentFixedOrientation.value.compatChange) {
 								const compatSet = new Set(
-									embeddedStore.customConfigFixedOrientationList[row.name].compatChange?.split(','),
+									currentFixedOrientation.value.compatChange?.split(','),
 								);
 								compatSet.add('OVERRIDE_UNDEFINED_ORIENTATION_TO_PORTRAIT');
-								embeddedStore.customConfigFixedOrientationList[row.name].compatChange = [
+								currentFixedOrientation.value.compatChange = [
 									...compatSet,
 								].join(',');
 							} else {
-								embeddedStore.customConfigFixedOrientationList[row.name].compatChange =
+								currentFixedOrientation.value.compatChange =
 									'OVERRIDE_UNDEFINED_ORIENTATION_TO_PORTRAIT';
 							}
 						} else {
 							const hasCompatChange =
-								embeddedStore.customConfigFixedOrientationList[row.name].hasOwnProperty('compatChange');
+							currentFixedOrientation.value.hasOwnProperty('compatChange');
 							if (hasCompatChange) {
-								delete embeddedStore.customConfigFixedOrientationList[row.name].compatChange;
+								delete currentFixedOrientation.value.compatChange;
 							}
 						}
+					}
+					if (!isEqual(moduleFixedOrientation.value, currentFixedOrientation.value)) {
+						embeddedStore.customConfigFixedOrientationList[row.name] = currentFixedOrientation.value;
 					}
 				} else {
 					embeddedStore.customConfigFixedOrientationList[row.name] = {
@@ -932,13 +939,17 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 				updateEmbeddedAppRes.settingMode === 'disabled' &&
 				row.settingMode !== updateEmbeddedAppRes.settingMode
 			) {
-				if (embeddedStore.customConfigFixedOrientationList[row.name]) {
-					embeddedStore.customConfigFixedOrientationList[row.name].skipSelfAdaptive = true;
-					embeddedStore.customConfigFixedOrientationList[row.name].disable = true;
+				const { moduleEmbeddedRules, currentEmbeddedRules, moduleFixedOrientation, currentFixedOrientation } = useEmbedded(row.name);
+				if (currentFixedOrientation.value) {
+					currentFixedOrientation.value.skipSelfAdaptive = true;
+					currentFixedOrientation.value.disable = true;
 					const hasCompatChange =
-						embeddedStore.customConfigFixedOrientationList[row.name].hasOwnProperty('compatChange');
+					currentFixedOrientation.value.hasOwnProperty('compatChange');
 					if (hasCompatChange) {
-						delete embeddedStore.customConfigFixedOrientationList[row.name].compatChange;
+						delete currentFixedOrientation.value.compatChange;
+					}
+					if (!isEqual(moduleFixedOrientation.value, currentFixedOrientation.value)) {
+						embeddedStore.customConfigFixedOrientationList[row.name] = currentFixedOrientation.value;
 					}
 				} else {
 					embeddedStore.customConfigFixedOrientationList[row.name] = {
@@ -989,52 +1000,36 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 					}
 				}
 				if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2) {
-					const moduleEmbeddedRules = cloneDeep(
-						embeddedStore.isPatchMode
-							? embeddedStore.patchEmbeddedRulesList[row.name]
-							: embeddedStore.sourceEmbeddedRulesList[row.name],
-					);
-					const currentEmbeddedRules = cloneDeep(
-						embeddedStore.customConfigEmbeddedRulesList[row.name] || moduleEmbeddedRules,
-					);
-					const moduleFixedOrientation = cloneDeep(
-						embeddedStore.isPatchMode
-							? embeddedStore.patchFixedOrientationList[row.name]
-							: embeddedStore.sourceFixedOrientationList[row.name],
-					);
-					const currentFixedOrientation = cloneDeep(
-						embeddedStore.customConfigFixedOrientationList[row.name] || moduleFixedOrientation,
-					);
-					if (currentFixedOrientation) {
+					const { moduleEmbeddedRules, currentEmbeddedRules, moduleFixedOrientation, currentFixedOrientation } = useEmbedded(row.name);
+					if (currentFixedOrientation.value) {
 						const hasDisable = currentFixedOrientation.hasOwnProperty('disable');
 						if (hasDisable) {
-							delete currentFixedOrientation.disable;
+							delete currentFixedOrientation.value.disable;
 						}
 						const hasDefaultSettings = currentFixedOrientation.hasOwnProperty('defaultSettings');
 						if (hasDefaultSettings) {
-							delete currentFixedOrientation.defaultSettings;
+							delete currentFixedOrientation.value.defaultSettings;
 						}
 						const hasFoSkipSelfAdaptive = currentFixedOrientation.hasOwnProperty('skipSelfAdaptive');
 						if (!hasFoSkipSelfAdaptive) {
-							currentFixedOrientation.skipSelfAdaptive = true;
+							currentFixedOrientation.value.skipSelfAdaptive = true;
 						}
 						const hasCompatChange = currentFixedOrientation.hasOwnProperty('compatChange');
 						if (hasCompatChange) {
-							delete currentFixedOrientation.compatChange;
+							delete currentFixedOrientation.value.compatChange;
 						}
 					}
-					if (currentEmbeddedRules) {
-						const hasEmSkipSelfAdaptive =
-						currentEmbeddedRules.hasOwnProperty('skipSelfAdaptive');
+					if (currentFixedOrientation.value) {
+						const hasEmSkipSelfAdaptive = currentEmbeddedRules.hasOwnProperty('skipSelfAdaptive');
 						if (!hasEmSkipSelfAdaptive) {
-							currentEmbeddedRules.skipSelfAdaptive = true;
+							currentEmbeddedRules.value.skipSelfAdaptive = true;
 						}
 					}
-					if (!isEqual(moduleEmbeddedRules,currentEmbeddedRules)) {
-						embeddedStore.customConfigFixedOrientationList[row.name] = currentFixedOrientation;
+					if (!isEqual(moduleEmbeddedRules.value, currentEmbeddedRules.value)) {
+						embeddedStore.customConfigFixedOrientationList[row.name] = currentFixedOrientation.value;
 					}
-					if (!isEqual(moduleFixedOrientation,currentFixedOrientation)) {
-						embeddedStore.customConfigEmbeddedRulesList[row.name] = currentEmbeddedRules;
+					if (!isEqual(moduleFixedOrientation.value, currentFixedOrientation.value)) {
+						embeddedStore.customConfigEmbeddedRulesList[row.name] = currentEmbeddedRules.value;
 					}
 				}
 			}
