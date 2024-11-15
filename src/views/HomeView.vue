@@ -773,18 +773,15 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 			console.log('操作取消:', updateEmbeddedAppCancel);
 		} else {
 			if (updateEmbeddedAppRes.settingMode === 'fullScreen') {
-				const { moduleEmbeddedRules, currentEmbeddedRules, moduleFixedOrientation, currentFixedOrientation } = useEmbedded(row.name);
+				const { moduleEmbeddedRules, currentEmbeddedRules, moduleFixedOrientation, currentFixedOrientation } =
+					useEmbedded(row.name);
 				if (currentEmbeddedRules.value) {
 					if (updateEmbeddedAppRes.modePayload.fullRule) {
-						currentEmbeddedRules.value.fullRule =
-							updateEmbeddedAppRes.modePayload.fullRule;
-							currentEmbeddedRules.value.skipSelfAdaptive = true;
+						currentEmbeddedRules.value.fullRule = updateEmbeddedAppRes.modePayload.fullRule;
+						currentEmbeddedRules.value.skipSelfAdaptive = true;
 					}
 					if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2) {
-						if (
-							!updateEmbeddedAppRes.modePayload.fullRule &&
-							currentEmbeddedRules.value.fullRule
-						) {
+						if (!updateEmbeddedAppRes.modePayload.fullRule && currentEmbeddedRules.value.fullRule) {
 							delete currentEmbeddedRules.value.fullRule;
 						}
 					}
@@ -811,28 +808,24 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 				}
 				if (currentFixedOrientation.value) {
 					if (updateEmbeddedAppRes.modePayload.hasOwnProperty('isShowDivider')) {
-						currentFixedOrientation.value.isShowDivider =
-							updateEmbeddedAppRes.modePayload.isShowDivider;
+						currentFixedOrientation.value.isShowDivider = updateEmbeddedAppRes.modePayload.isShowDivider;
 					}
 					if (updateEmbeddedAppRes.modePayload.hasOwnProperty('supportFullSize')) {
 						currentFixedOrientation.value.supportFullSize =
 							updateEmbeddedAppRes.modePayload.supportFullSize;
 					}
 					if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2) {
-						const hasDisable =
-						currentFixedOrientation.value.hasOwnProperty('disable');
+						const hasDisable = currentFixedOrientation.value.hasOwnProperty('disable');
 						if (hasDisable) {
 							delete currentFixedOrientation.value.disable;
 						}
-						const hasCompatChange =
-						currentFixedOrientation.value.hasOwnProperty('compatChange');
+						const hasCompatChange = currentFixedOrientation.value.hasOwnProperty('compatChange');
 						if (hasCompatChange) {
 							delete currentFixedOrientation.value.compatChange;
 						}
 					} else {
 						if (updateEmbeddedAppRes.modePayload.hasOwnProperty('skipSelfAdaptive')) {
-							currentFixedOrientation.value.disable =
-								updateEmbeddedAppRes.modePayload.skipSelfAdaptive;
+							currentFixedOrientation.value.disable = updateEmbeddedAppRes.modePayload.skipSelfAdaptive;
 						}
 					}
 					if (!isEqual(moduleFixedOrientation.value, currentFixedOrientation.value)) {
@@ -854,27 +847,24 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 				}
 			}
 			if (updateEmbeddedAppRes.settingMode === 'fixedOrientation') {
-				const { moduleEmbeddedRules, currentEmbeddedRules, moduleFixedOrientation, currentFixedOrientation } = useEmbedded(row.name);
+				const { moduleEmbeddedRules, currentEmbeddedRules, moduleFixedOrientation, currentFixedOrientation } =
+					useEmbedded(row.name);
 				if (currentFixedOrientation.value) {
-					const hasDisable =
-					currentFixedOrientation.value.hasOwnProperty('disable');
+					const hasDisable = currentFixedOrientation.value.hasOwnProperty('disable');
 					if (hasDisable) {
 						delete currentFixedOrientation.value.disable;
 					}
-					const hasIsScale =
-					currentFixedOrientation.value.hasOwnProperty('isScale');
+					const hasIsScale = currentFixedOrientation.value.hasOwnProperty('isScale');
 					if (hasIsScale) {
 						delete currentFixedOrientation.value.isScale;
 					}
 					if (updateEmbeddedAppRes.modePayload.ratio !== undefined) {
-						currentFixedOrientation.value.ratio =
-							updateEmbeddedAppRes.modePayload.ratio;
+						currentFixedOrientation.value.ratio = updateEmbeddedAppRes.modePayload.ratio;
 					} else {
 						delete currentFixedOrientation.value.ratio;
 					}
 					if (updateEmbeddedAppRes.modePayload.foRelaunch !== undefined) {
-						currentFixedOrientation.value.relaunch =
-							updateEmbeddedAppRes.modePayload.foRelaunch;
+						currentFixedOrientation.value.relaunch = updateEmbeddedAppRes.modePayload.foRelaunch;
 					} else {
 						delete currentFixedOrientation.value.relaunch;
 					}
@@ -887,20 +877,15 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 							updateEmbeddedAppRes.modePayload.forceFixedOrientation
 						) {
 							if (currentFixedOrientation.value.compatChange) {
-								const compatSet = new Set(
-									currentFixedOrientation.value.compatChange?.split(','),
-								);
+								const compatSet = new Set(currentFixedOrientation.value.compatChange?.split(','));
 								compatSet.add('OVERRIDE_UNDEFINED_ORIENTATION_TO_PORTRAIT');
-								currentFixedOrientation.value.compatChange = [
-									...compatSet,
-								].join(',');
+								currentFixedOrientation.value.compatChange = [...compatSet].join(',');
 							} else {
 								currentFixedOrientation.value.compatChange =
 									'OVERRIDE_UNDEFINED_ORIENTATION_TO_PORTRAIT';
 							}
 						} else {
-							const hasCompatChange =
-							currentFixedOrientation.value.hasOwnProperty('compatChange');
+							const hasCompatChange = currentFixedOrientation.value.hasOwnProperty('compatChange');
 							if (hasCompatChange) {
 								delete currentFixedOrientation.value.compatChange;
 							}
@@ -939,12 +924,12 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 				updateEmbeddedAppRes.settingMode === 'disabled' &&
 				row.settingMode !== updateEmbeddedAppRes.settingMode
 			) {
-				const { moduleEmbeddedRules, currentEmbeddedRules, moduleFixedOrientation, currentFixedOrientation } = useEmbedded(row.name);
+				const { moduleEmbeddedRules, currentEmbeddedRules, moduleFixedOrientation, currentFixedOrientation } =
+					useEmbedded(row.name);
 				if (currentFixedOrientation.value) {
 					currentFixedOrientation.value.skipSelfAdaptive = true;
 					currentFixedOrientation.value.disable = true;
-					const hasCompatChange =
-					currentFixedOrientation.value.hasOwnProperty('compatChange');
+					const hasCompatChange = currentFixedOrientation.value.hasOwnProperty('compatChange');
 					if (hasCompatChange) {
 						delete currentFixedOrientation.value.compatChange;
 					}
@@ -1000,7 +985,12 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 					}
 				}
 				if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2) {
-					const { moduleEmbeddedRules, currentEmbeddedRules, moduleFixedOrientation, currentFixedOrientation } = useEmbedded(row.name);
+					const {
+						moduleEmbeddedRules,
+						currentEmbeddedRules,
+						moduleFixedOrientation,
+						currentFixedOrientation,
+					} = useEmbedded(row.name);
 					if (currentFixedOrientation.value) {
 						const hasDisable = currentFixedOrientation.hasOwnProperty('disable');
 						if (hasDisable) {
@@ -1035,33 +1025,41 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 			}
 			// settings 配置
 			if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2) {
-				embeddedStore.customConfigEmbeddedSettingConfig[row.name] = {
-					name: row.name,
-					...(embeddedStore.customConfigEmbeddedRulesList[row.name]
-						? { embeddedEnable: updateEmbeddedAppRes.settingMode === 'embedded' ? true : false }
-						: {}),
-					...(embeddedStore.customConfigFixedOrientationList[row.name]
-						? {
-								fixedOrientationEnable:
-									updateEmbeddedAppRes.settingMode === 'fixedOrientation' ? true : false,
-							}
-						: {}),
-					...(embeddedStore.customConfigFixedOrientationList[row.name]
-						? {
-								ratio_fullScreenEnable:
-									updateEmbeddedAppRes.settingMode === 'fullScreen' ? true : false,
-							}
-						: {}),
-					...(embeddedStore.customConfigEmbeddedRulesList[row.name]
-						? {
-								fullScreenEnable:
-									updateEmbeddedAppRes.settingMode === 'fullScreen' &&
-									embeddedStore.customConfigEmbeddedRulesList[row.name].fullRule
-										? true
-										: false,
-							}
-						: {}),
-				};
+				const {
+						moduleEmbeddedRules,
+						currentEmbeddedRules,
+						moduleFixedOrientation,
+						currentFixedOrientation,
+				} = useEmbedded(row.name);
+				if (row.settingMode !== updateEmbeddedAppRes.settingMode) {
+					embeddedStore.customConfigEmbeddedSettingConfig[row.name] = {
+						name: row.name,
+						...(currentEmbeddedRules.value
+							? { embeddedEnable: updateEmbeddedAppRes.settingMode === 'embedded' ? true : false }
+							: {}),
+						...(currentFixedOrientation.value
+							? {
+									fixedOrientationEnable:
+										updateEmbeddedAppRes.settingMode === 'fixedOrientation' ? true : false,
+								}
+							: {}),
+						...(currentFixedOrientation.value
+							? {
+									ratio_fullScreenEnable:
+										updateEmbeddedAppRes.settingMode === 'fullScreen' ? true : false,
+								}
+							: {}),
+						...(currentEmbeddedRules.value
+							? {
+									fullScreenEnable:
+										updateEmbeddedAppRes.settingMode === 'fullScreen' &&
+										currentEmbeddedRules.value.fullRule
+											? true
+											: false,
+								}
+							: {}),
+					};
+				}
 			} else {
 				embeddedStore.systemEmbeddedSettingConfig[row.name] = {
 					name: row.name,
