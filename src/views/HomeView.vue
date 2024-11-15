@@ -795,11 +795,11 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 								: {}),
 						};
 					} else {
-						embeddedStore.customConfigEmbeddedRulesList[row.name] = {
-							name: row.name,
-							...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2
-								? { skipSelfAdaptive: true }
-								: {}),
+						if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2) {
+							embeddedStore.customConfigEmbeddedRulesList[row.name] = {
+								name: row.name,
+								skipSelfAdaptive: true
+							};
 						}
 					}
 				}
@@ -843,7 +843,11 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 						...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 ? { skipSelfAdaptive: true } : {}),
 					};
 				}
-				console.log(embeddedStore.customConfigEmbeddedRulesList[row.name],embeddedStore.customConfigFixedOrientationList[row.name],'进到这里333')
+				console.log(
+					embeddedStore.customConfigEmbeddedRulesList[row.name],
+					embeddedStore.customConfigFixedOrientationList[row.name],
+					'进到这里333',
+				);
 			}
 			if (updateEmbeddedAppRes.settingMode === 'fixedOrientation') {
 				if (embeddedStore.customConfigFixedOrientationList[row.name]) {
