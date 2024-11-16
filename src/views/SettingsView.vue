@@ -390,8 +390,6 @@ const changePatchMode = async (value: boolean) => {
 				),
 				negativeText: '确定',
 			});
-			embeddedStore.lastCheckPatchModeTime = '';
-			deviceStore.lastInstalledAndroidApplicationPackageNameList = [];
 			switchPatchModeLoading.value = false;
 			embeddedStore.updateMergeRuleList();
 		}
@@ -711,6 +709,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							<n-switch
 								@update:value="(value: boolean) => changeGameMode(value)"
 								:value="gameMode.isSupportGameMode"
+								:rail-style="railStyle"
 								:disabled="
 									deviceStore.deviceCharacteristics !== 'tablet' ||
 									(deviceStore.androidTargetSdk && deviceStore.androidTargetSdk < 32)

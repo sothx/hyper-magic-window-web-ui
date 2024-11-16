@@ -55,7 +55,6 @@ export const useDeviceStore = defineStore(
 		const moduleID = ref<string>();
 		const deviceName = ref<string>('');
 		const installedAndroidApplicationPackageNameList = ref<string[]>([]);
-		const lastInstalledAndroidApplicationPackageNameList = ref<string[]>([]);
 		const installedAppNameList = ref<InstallAppNameListDictionary>({});
 		const systemVersion = ref<string>('');
 		const systemPreVersion = ref<string>('');
@@ -120,10 +119,6 @@ export const useDeviceStore = defineStore(
 					reject(getAndroidApplicationPackageNameListErr);
 				} else {
 					if (getAndroidApplicationPackageNameListRes) {
-						if (installedAndroidApplicationPackageNameList.value.length) {
-							lastInstalledAndroidApplicationPackageNameList.value =
-								installedAndroidApplicationPackageNameList.value;
-						}
 						installedAndroidApplicationPackageNameList.value =
 							getAndroidApplicationPackageNameListRes?.split(',');
 					}
@@ -300,7 +295,6 @@ export const useDeviceStore = defineStore(
 			deviceSocModel,
 			smartFocusIO,
 			showRotationSuggestions,
-			lastInstalledAndroidApplicationPackageNameList,
 			installedAndroidApplicationPackageNameList,
 			getAndroidApplicationPackageNameList,
 			miuiCompatEnable,

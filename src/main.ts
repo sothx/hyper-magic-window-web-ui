@@ -45,8 +45,10 @@ import {
   NCheckboxGroup,
   NCheckbox,
   NGi,
+  NStatistic,
   NThemeEditor,
   NGrid,
+  NPageHeader,
   NConfigProvider,
   NLog
 } from "naive-ui";
@@ -61,6 +63,7 @@ const naive = create({
     NDrawerContent,
     NTable,
     NDataTable,
+    NPageHeader,
     NMessageProvider,
     NDropdown,
     NSwitch,
@@ -68,6 +71,7 @@ const naive = create({
     NInputGroup,
     NInput,
     NSpin,
+    NStatistic,
     NSpace,
     NModal,
     NAlert,

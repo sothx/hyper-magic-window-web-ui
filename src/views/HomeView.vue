@@ -101,29 +101,6 @@ const filterHasBeenInstalledApp = () => {
 	embeddedStore.filterInstalledApps = !embeddedStore.filterInstalledApps;
 };
 
-onMounted(() => {
-	eventBus.once('isNeedReloadPatchRule', () => {
-		modal.create({
-			title: '是否需要重新生成定制应用数据？',
-			type: 'info',
-			preset: 'dialog',
-			content: () => (
-				<div>
-					<p>
-						模块检测到您的设备距上一次运行Web
-						UI，应用环境已经发生了一些变化。需要为您重新生成定制模式下的应用数据吗？OwO
-					</p>
-				</div>
-			),
-			positiveText: '确定',
-			negativeText: '取消',
-			onPositiveClick: () => {
-				reloadPatchModeConfigList();
-			},
-		});
-	});
-});
-
 watch(
 	() => embeddedStore.isNeedShowErrorModal, // 监听的值
 	(newValue, oldValue) => {
@@ -401,6 +378,7 @@ const importShareRule = async () => {
 				});
 				importShareRuleLoading.value = false;
 				embeddedStore.updateMergeRuleList();
+				reloadPage();
 			}
 			// 解析成功，可以使用 data
 		} catch (error) {
@@ -536,10 +514,9 @@ const reloadPatchModeConfigList = async () => {
 			),
 			negativeText: '确定',
 		});
-		deviceStore.lastInstalledAndroidApplicationPackageNameList = [];
-		embeddedStore.lastCheckPatchModeTime = '';
 		reloadPatchModeConfigLoading.value = false;
 		embeddedStore.updateMergeRuleList();
+		reloadPage();
 		// logsStore.info('获取到已安装的应用数量', embeddedStore.installedAndroidApplicationPackageNameList.length)
 		// logsStore.info('获取到模块规则的平行窗口的应用数量', Object.keys(embeddedStore.sourceEmbeddedRulesList).length)
 		// logsStore.info('获取到模块规则的信箱模式的应用数量', Object.keys(embeddedStore.sourceFixedOrientationList).length)
@@ -1726,7 +1703,7 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 				</p>
 			</div>
 		</div>
-		<n-card title="操作栏" size="small">
+		<n-card title="操作区" size="small">
 			<div class="flex flex-wrap">
 				<n-button
 					class="mb-3 mr-3"
@@ -1846,7 +1823,6 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 					</n-button>
 					<n-button
 						size="large"
-						type="tertiary"
 						bordered
 						@click="
 							() => {

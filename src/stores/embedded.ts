@@ -20,7 +20,6 @@ export const useEmbeddedStore = defineStore(
 	() => {
 		// 是否补丁模式
 		const isPatchMode = ref<boolean>(false);
-		const lastCheckPatchModeTime = ref<string>();
 		const filterInstalledApps = ref<boolean>(false);
 		const applicationName = ref<ApplicationName>({});
 		// 平行窗口
@@ -176,33 +175,6 @@ export const useEmbeddedStore = defineStore(
 					return a.name.localeCompare(b.name);
 				});
 		});
-
-		// 自动检查定制模式规则是否需要更新
-		const checkPatchModeIsNeedReload = () => {
-			const now = Date.now();
-			const deviceStore = useDeviceStore();
-			const threeDaysInMilliseconds = 3 * 24 * 60 * 60 * 1000;
-			if (
-				!lastCheckPatchModeTime.value ||
-				now - parseInt(lastCheckPatchModeTime.value) > threeDaysInMilliseconds
-			) {
-				lastCheckPatchModeTime.value = now.toString();
-				if (
-					isPatchMode &&
-					deviceStore.lastInstalledAndroidApplicationPackageNameList.length !==
-						deviceStore.installedAndroidApplicationPackageNameList.length
-				) {
-					const isNeedReloadPathRule = deviceStore.lastInstalledAndroidApplicationPackageNameList.some(
-						item => {
-							return !allPackageName.value.has(item);
-						},
-					);
-					if (isNeedReloadPathRule && isPatchMode) {
-						eventBus.emit('isNeedReloadPatchRule');
-					}
-				}
-			}
-		};
 
 		// 是否弹出错误信息弹窗
 		const isNeedShowErrorModal = computed(() => Boolean(errorLogging.length > 0));
@@ -450,8 +422,6 @@ export const useEmbeddedStore = defineStore(
 			if (!errorLogging.length) {
 				loading.value = false;
 			}
-
-			checkPatchModeIsNeedReload();
 		}
 
 		return {
@@ -480,13 +450,12 @@ export const useEmbeddedStore = defineStore(
 			applicationName,
 			isPatchMode,
 			initDefault,
-			lastCheckPatchModeTime,
 			updateMergeRuleList,
 		};
 	},
 	{
 		persist: {
-			pick: ['lastCheckPatchModeTime', 'filterInstalledApps'],
+			pick: ['filterInstalledApps'],
 		},
 	},
 );

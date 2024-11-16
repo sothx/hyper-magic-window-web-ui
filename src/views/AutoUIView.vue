@@ -274,6 +274,7 @@ configProviderProps: configProviderPropsRef
           });
           importShareRuleLoading.value = false;
           autoUIStore.updateMergeRuleList();
+          reloadPage();
         }
         // 解析成功，可以使用 data
       } catch (error) {
@@ -962,7 +963,7 @@ configProviderProps: configProviderPropsRef
         </p>
       </div>
     </div>
-    <n-card title="操作栏" size="small">
+    <n-card title="操作区" size="small">
       <div class="flex flex-wrap">
         <n-button
           class="mr-3 mb-3"
@@ -1076,7 +1077,6 @@ configProviderProps: configProviderPropsRef
         </n-button>
         <n-button
 					size="large"
-					type="tertiary"
 					bordered
 					@click="
 						() => {
