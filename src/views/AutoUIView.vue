@@ -28,6 +28,7 @@
   import { ArrowPathIcon, FunnelIcon, PlusIcon, ShareIcon, TrashIcon, SquaresPlusIcon, XCircleIcon,MagnifyingGlassIcon, CircleStackIcon } from '@heroicons/vue/24/outline';
   import type AutoUIMergeRuleItem from '@/types/AutoUIMergeRuleItem';
   import { useRouter, useRoute } from 'vue-router';
+  import { FunnelIcon as FunnelSolidIcon } from '@heroicons/vue/24/solid';
   import { useLogsStore } from '@/stores/logs';
   import { useAutoUI } from '@/hooks/useAutoUI'; 
   import * as validateFun from '@/utils/validateFun';
@@ -1040,7 +1041,8 @@ configProviderProps: configProviderPropsRef
         >
           <template #icon>
             <n-icon>
-              <FunnelIcon />
+							<FunnelSolidIcon v-if="autoUIStore.filterInstalledApps" />
+							<FunnelIcon v-else />
             </n-icon>
           </template>
           {{ autoUIStore.filterInstalledApps ? '已安装应用' : '全部应用' }}
