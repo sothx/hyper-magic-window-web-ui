@@ -73,11 +73,11 @@ configProviderProps: configProviderPropsRef
   };
 
   const getInstalledAppNameList = async () => {
-	notification.info({
-		content: '已加入任务队列',
-		meta: '正在获取已安装应用名称，请不要关闭模块的 Web UI，完成后会弹出通知，请稍等~',
-		duration: 2500,
-	});
+	// notification.info({
+	// 	content: '已加入任务队列',
+	// 	meta: '正在获取已安装应用名称，请不要关闭模块的 Web UI，完成后会弹出通知，请稍等~',
+	// 	duration: 2500,
+	// });
 	const [getListErr, getListRes] = await $to(installedAppNames.getList());
 	if (getListErr) {
 		notification.error({
