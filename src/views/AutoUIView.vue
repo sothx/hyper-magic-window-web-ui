@@ -25,25 +25,27 @@
     type DataTableColumns,
     type DropdownOption,
   } from 'naive-ui';
-  import { ArrowPathIcon, FunnelIcon, PlusIcon, ShareIcon, TrashIcon, SquaresPlusIcon, XCircleIcon,MagnifyingGlassIcon } from '@heroicons/vue/24/outline';
+  import { ArrowPathIcon, FunnelIcon, PlusIcon, ShareIcon, TrashIcon, SquaresPlusIcon, XCircleIcon,MagnifyingGlassIcon, CircleStackIcon } from '@heroicons/vue/24/outline';
   import type AutoUIMergeRuleItem from '@/types/AutoUIMergeRuleItem';
   import { useRouter, useRoute } from 'vue-router';
   import { useLogsStore } from '@/stores/logs';
-  import { useAutoUI } from '@/hooks/useAutoUI';
+  import { useAutoUI } from '@/hooks/useAutoUI'; 
   import * as validateFun from '@/utils/validateFun';
   import AutoUIAppDrawer from '@/components/AutoUIAppDrawer.vue';
   import { findBase64InString, renderApplicationName } from '@/utils/common';
   import { arrayBufferToBase64, base64ToArrayBuffer } from '@/utils/format';
   import pako from 'pako';
+  import { useInstalledAppNames } from '@/hooks/useInstalledAppNames';
   type SearchKeyWordInputInstance = InstanceType<typeof NInput>;
   type AutoUIAppDrawerInstance = InstanceType<typeof AutoUIAppDrawer>;
   const searchKeyWordInput = ref<SearchKeyWordInputInstance | null>(null);
   const columns = createColumns();
   const deviceStore = useDeviceStore();
+  const installedAppNames = useInstalledAppNames();
   const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
       theme: deviceStore.isDarkMode ? darkTheme : lightTheme
   }))
-  const { message, modal } = createDiscreteApi(['message', 'modal'],{
+  const { message, modal, notification } = createDiscreteApi(['message', 'modal', 'notification'],{
 configProviderProps: configProviderPropsRef
   });
   const autoUIStore = useAutoUIStore();
@@ -69,6 +71,29 @@ configProviderProps: configProviderPropsRef
     await deviceStore.getAndroidApplicationPackageNameList();
     await autoUIStore.initDefault();
   };
+
+  const getInstalledAppNameList = async () => {
+	notification.info({
+		content: '已加入任务队列',
+		meta: '正在获取已安装应用名称，请不要关闭模块的 Web UI，完成后会弹出通知，请稍等~',
+		duration: 2500,
+	});
+	const [getListErr, getListRes] = await $to(installedAppNames.getList());
+	if (getListErr) {
+		notification.error({
+			content: '获取失败',
+			meta: '获取已安装应用名称发生错误，详细错误请查看日志列表~',
+			duration: 2500,
+		});
+	}
+	if (getListRes) {
+		notification.success({
+			content: '获取成功',
+			meta: '好耶！已成功获取已安装应用名称，任务队列已自动销毁~',
+			duration: 2500,
+		});
+	}
+};
 
   const filterHasBeenInstalledApp = () => {
     autoUIStore.filterInstalledApps = !autoUIStore.filterInstalledApps;
@@ -789,21 +814,8 @@ configProviderProps: configProviderPropsRef
 			width: 250,
 			key: 'name',
 			render(row, index) {
-				const handleClickPushApplicationName = (row: AutoUIMergeRuleItem, index: number) => {
-					modal.create({
-						title: '不兼容说明',
-						type: 'warning',
-						preset: 'dialog',
-						content: () => <p>该功能尚未开放，请等待后续更新情况！</p>,
-					});
-				};
 				return (
 					<div>
-						{!row.applicationName && (
-							<n-button size='tiny' type='warning' onClick={() => handleClickPushApplicationName(row,index)} dashed>
-								补充应用名称
-							</n-button>
-						)}
 						{row.applicationName && <p>{row.applicationName}</p>}
 						{row.name && (
 							<p>
@@ -988,6 +1000,18 @@ configProviderProps: configProviderPropsRef
 						</n-icon>
 					</template>
 					热重载应用数据
+				</n-button>
+        <n-button
+					class="mb-3 mr-3"
+					color="#69b2b6"
+					:loading="deviceStore.loading || autoUIStore.loading || installedAppNames.loading.value"
+					@click="getInstalledAppNameList()">
+					<template #icon>
+						<n-icon>
+							<CircleStackIcon />
+						</n-icon>
+					</template>
+					获取已安装应用名称
 				</n-button>
         <n-button
           class="mr-3 mb-3"

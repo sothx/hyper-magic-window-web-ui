@@ -3,6 +3,8 @@ import { defineStore } from 'pinia';
 import $to from 'await-to-js';
 import * as ksuApi from '@/apis/ksuApi';
 import type { ErrorLogging } from '@/types/ErrorLogging';
+import type { InstallAppNameListDictionary } from '@/hooks/useInstalledAppNames';
+
 
 export interface ModuleInfo {
 	moduleDir: string;
@@ -54,6 +56,7 @@ export const useDeviceStore = defineStore(
 		const deviceName = ref<string>('');
 		const installedAndroidApplicationPackageNameList = ref<string[]>([]);
 		const lastInstalledAndroidApplicationPackageNameList = ref<string[]>([]);
+		const installedAppNameList = ref<InstallAppNameListDictionary>({});
 		const systemVersion = ref<string>('');
 		const systemPreVersion = ref<string>('');
 		const currentRootManager = ref<ROOT_MANAGER_TYPE>('Magisk');
@@ -302,6 +305,7 @@ export const useDeviceStore = defineStore(
 			getAndroidApplicationPackageNameList,
 			miuiCompatEnable,
 			miuiAppCompatEnable,
+			installedAppNameList,
 			skipConfirm,
 			currentRootManager,
 			rootManagerInfo,
@@ -315,7 +319,7 @@ export const useDeviceStore = defineStore(
 	},
 	{
 		persist: {
-			pick: ['skipConfirm', 'installedAndroidApplicationPackageNameList', 'isDarkMode', 'rhythmMode','ABTestInfo'],
+			pick: ['skipConfirm', 'installedAndroidApplicationPackageNameList', 'isDarkMode', 'rhythmMode','ABTestInfo','installedAppNameList'],
 		},
 	},
 );

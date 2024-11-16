@@ -6,6 +6,7 @@ import pako from 'pako';
 import ErrorModal from '@/components/ErrorModal.vue';
 import { useEmbedded } from '@/hooks/useEmbedded';
 import EmbeddedAppDrawer from '@/components/EmbeddedAppDrawer.vue';
+import { useInstalledAppNames } from '@/hooks/useInstalledAppNames';
 import {
 	NButton,
 	NDataTable,
@@ -30,12 +31,14 @@ import {
 	FunnelIcon,
 	PlusIcon,
 	MagnifyingGlassIcon,
+	CircleStackIcon,
 	ShareIcon,
 	XCircleIcon,
 	TrashIcon,
 	SquaresPlusIcon,
 	ScissorsIcon,
 } from '@heroicons/vue/24/outline';
+import { FunnelIcon as FunnelSolidIcon } from '@heroicons/vue/24/solid';
 import { arrayBufferToBase64, base64ToArrayBuffer } from '@/utils/format';
 import { findBase64InString, renderApplicationName } from '@/utils/common';
 import { getAppModeCode, getSettingMode } from '@/utils/embeddedFun';
@@ -44,6 +47,7 @@ type EmbeddedAppDrawerInstance = InstanceType<typeof EmbeddedAppDrawer>;
 type SearchKeyWordInputInstance = InstanceType<typeof NInput>;
 type NDataTabletInstance = InstanceType<typeof NDataTable>;
 const shareRuleTextarea = ref('');
+const installedAppNames = useInstalledAppNames();
 const deviceStore = useDeviceStore();
 const embeddedStore = useEmbeddedStore();
 const logsStore = useLogsStore();
@@ -55,7 +59,7 @@ const updateEmbeddedApp = ref<EmbeddedAppDrawerInstance | null>(null);
 const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
 	theme: deviceStore.isDarkMode ? darkTheme : lightTheme,
 }));
-const { message, modal } = createDiscreteApi(['message', 'modal'], {
+const { message, modal, notification } = createDiscreteApi(['message', 'modal', 'notification'], {
 	configProviderProps: configProviderPropsRef,
 });
 const columns = createColumns();
@@ -69,6 +73,29 @@ function renderIcon(icon: Component) {
 		});
 	};
 }
+
+const getInstalledAppNameList = async () => {
+	notification.info({
+		content: '已加入任务队列',
+		meta: '正在获取已安装应用名称，请不要关闭模块的 Web UI，完成后会弹出通知，请稍等~',
+		duration: 2500,
+	});
+	const [getListErr, getListRes] = await $to(installedAppNames.getList());
+	if (getListErr) {
+		notification.error({
+			content: '获取失败',
+			meta: '获取已安装应用名称发生错误，详细错误请查看日志列表~',
+			duration: 2500,
+		});
+	}
+	if (getListRes) {
+		notification.success({
+			content: '获取成功',
+			meta: '好耶！已成功获取已安装应用名称，任务队列已自动销毁~',
+			duration: 2500,
+		});
+	}
+};
 
 const filterHasBeenInstalledApp = () => {
 	embeddedStore.filterInstalledApps = !embeddedStore.filterInstalledApps;
@@ -264,7 +291,7 @@ const importShareRule = async () => {
 								fullScreenEnable:
 									importRuleContent.mode === 'fullScreen' &&
 									embeddedStore.customConfigEmbeddedRulesList[importRuleContent.name].fullRule
-										? true
+										? false
 										: false,
 							}
 						: {}),
@@ -333,10 +360,6 @@ const importShareRule = async () => {
 										: 'disable',
 								},
 							}),
-					switchAction: {
-						name: importRuleContent.name,
-						action: ['embedded', 'fullScreen'].includes(importRuleContent.mode) ? 'enable' : 'disable',
-					},
 				}),
 			);
 			if (submitUpdateEmbeddedAppErr) {
@@ -640,7 +663,7 @@ const openAddEmbeddedApp = async () => {
 								fullScreenEnable:
 									addEmbeddedAppRes.settingMode === 'fullScreen' &&
 									embeddedStore.customConfigEmbeddedRulesList[addEmbeddedAppRes.name].fullRule
-										? true
+										? false
 										: false,
 							}
 						: {}),
@@ -1052,7 +1075,7 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 									fullScreenEnable:
 										updateEmbeddedAppRes.settingMode === 'fullScreen' &&
 										currentEmbeddedRules.value.fullRule
-											? true
+											? false
 											: false,
 								}
 							: {}),
@@ -1436,25 +1459,8 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 			minWidth: 250,
 			key: 'name',
 			render(row, index) {
-				const handleClickPushApplicationName = (row: EmbeddedMergeRuleItem, index: number) => {
-					modal.create({
-						title: '不兼容说明',
-						type: 'warning',
-						preset: 'dialog',
-						content: () => <p>该功能尚未开放，请等待后续更新情况！</p>,
-					});
-				};
 				return (
 					<div>
-						{!row.applicationName && (
-							<n-button
-								size='tiny'
-								type='warning'
-								onClick={() => handleClickPushApplicationName(row, index)}
-								dashed>
-								补充应用名称
-							</n-button>
-						)}
 						{row.applicationName && <p>{row.applicationName}</p>}
 						{row.name && (
 							<p>
@@ -1541,6 +1547,73 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 					<n-button size='small' dashed type='error' onClick={() => handleModuleRuleMode(row, index)}>
 						模块规则
 					</n-button>
+				);
+			},
+		},
+		{
+			title: '应用兼容性',
+			minWidth: 100,
+			key: 'setting',
+			render(row, index) {
+				const handleClickAppCompatReset = (row: EmbeddedMergeRuleItem, index: number) => {
+					modal.create({
+						title: '想重置应用兼容性吗？',
+						type: 'warning',
+						preset: 'dialog',
+						content: () => (
+							<p>
+								重置后，可以解决{' '}
+								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+									{renderApplicationName(row.name, row.applicationName)}
+								</span>{' '}
+								由于系统错误的应用兼容性配置导致应用布局异常的问题（正常情况下不需要重置），确定要继续吗？
+							</p>
+						),
+						positiveText: '确定重置',
+						negativeText: '我再想想',
+						onPositiveClick: async () => {
+							const [resetCompatErr, resetCompatRes] = await $to(ksuApi.resetApplicationCompat(row.name));
+							if (resetCompatErr) {
+								modal.create({
+									title: '重置应用兼容性失败',
+									type: 'error',
+									preset: 'dialog',
+									content: () => (
+										<p>
+											发生异常错误，重置应用兼容性失败了QwQ，该功能尚在测试阶段，尚不稳定，出现异常请及时反馈~
+										</p>
+									),
+								});
+							} else {
+								modal.create({
+									title: '重置应用兼容性成功',
+									type: 'success',
+									preset: 'dialog',
+									content: () => (
+										<p>
+											好耶w，重置{' '}
+											<span
+												class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+												{renderApplicationName(row.name, row.applicationName)}
+											</span>{' '}
+											的应用兼容性成功了OwO~
+										</p>
+									),
+								});
+							}
+						},
+					});
+				};
+				return (
+					<div>
+						<n-button
+							size='small'
+							dashed
+							type='warning'
+							onClick={() => handleClickAppCompatReset(row, index)}>
+							兼容性重置
+						</n-button>
+					</div>
 				);
 			},
 		},
@@ -1635,73 +1708,6 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 				);
 			},
 		},
-		{
-			title: '应用兼容性',
-			minWidth: 100,
-			key: 'setting',
-			render(row, index) {
-				const handleClickAppCompatReset = (row: EmbeddedMergeRuleItem, index: number) => {
-					modal.create({
-						title: '想重置应用兼容性吗？',
-						type: 'warning',
-						preset: 'dialog',
-						content: () => (
-							<p>
-								重置后，可以解决{' '}
-								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-									{renderApplicationName(row.name, row.applicationName)}
-								</span>{' '}
-								由于系统错误的应用兼容性配置导致应用布局异常的问题（正常情况下不需要重置），确定要继续吗？
-							</p>
-						),
-						positiveText: '确定重置',
-						negativeText: '我再想想',
-						onPositiveClick: async () => {
-							const [resetCompatErr, resetCompatRes] = await $to(ksuApi.resetApplicationCompat(row.name));
-							if (resetCompatErr) {
-								modal.create({
-									title: '重置应用兼容性失败',
-									type: 'error',
-									preset: 'dialog',
-									content: () => (
-										<p>
-											发生异常错误，重置应用兼容性失败了QwQ，该功能尚在测试阶段，尚不稳定，出现异常请及时反馈~
-										</p>
-									),
-								});
-							} else {
-								modal.create({
-									title: '重置应用兼容性成功',
-									type: 'success',
-									preset: 'dialog',
-									content: () => (
-										<p>
-											好耶w，重置{' '}
-											<span
-												class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-												{renderApplicationName(row.name, row.applicationName)}
-											</span>{' '}
-											的应用兼容性成功了OwO~
-										</p>
-									),
-								});
-							}
-						},
-					});
-				};
-				return (
-					<div>
-						<n-button
-							size='small'
-							dashed
-							type='warning'
-							onClick={() => handleClickAppCompatReset(row, index)}>
-							兼容性重置
-						</n-button>
-					</div>
-				);
-			},
-		},
 	];
 }
 </script>
@@ -1773,6 +1779,18 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 				</n-button>
 				<n-button
 					class="mb-3 mr-3"
+					color="#69b2b6"
+					:loading="deviceStore.loading || embeddedStore.loading || installedAppNames.loading.value"
+					@click="getInstalledAppNameList()">
+					<template #icon>
+						<n-icon>
+							<CircleStackIcon />
+						</n-icon>
+					</template>
+					获取已安装应用名称
+				</n-button>
+				<n-button
+					class="mb-3 mr-3"
 					type="warning"
 					:loading="deviceStore.loading || embeddedStore.loading || importShareRuleLoading"
 					@click="importShareRule()">
@@ -1794,7 +1812,8 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 					@click="filterHasBeenInstalledApp">
 					<template #icon>
 						<n-icon>
-							<FunnelIcon />
+							<FunnelSolidIcon v-if="embeddedStore.filterInstalledApps" />
+							<FunnelIcon v-else />
 						</n-icon>
 					</template>
 					{{ embeddedStore.filterInstalledApps ? '已安装应用' : '全部应用' }}

@@ -138,16 +138,21 @@ export const useEmbeddedStore = defineStore(
 			const isFilterInstalledApps = filterInstalledApps.value;
 			const currentSearchValue = searchValue.value;
 			const currentApplicationName = applicationName.value;
+			const installedAppName = deviceStore.installedAppNameList;
 			return cachedMergeRuleList
 				.reduce((result: EmbeddedMergeRuleItem[], item) => {
 					const itemName = item.name.trim().toLowerCase();
-					const itemApplicationName = item.applicationName ? item.applicationName.toLowerCase() : '';
-
+					
 					// 先更新 applicationName
-					if (currentApplicationName[item.name]) {
+					
+					if (installedAppName[item.name] && !item.applicationName) {
+						item.applicationName = installedAppName[item.name];
+					}
+					if (currentApplicationName[item.name] && !item.applicationName) {
 						item.applicationName = currentApplicationName[item.name];
 					}
 
+					const itemApplicationName = item.applicationName ? item.applicationName.toLowerCase() : '';
 					if (!itemName.includes(currentSearchValue) && !itemApplicationName.includes(currentSearchValue)) {
 						return result;
 					}

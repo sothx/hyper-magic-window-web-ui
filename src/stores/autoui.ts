@@ -26,12 +26,16 @@ export const useAutoUIStore = defineStore(
 			const searchValue = searchKeyWord.value.trim().toLowerCase();
 			const cachedMergeRuleList = mergeRuleList.value;
 			const deviceStore = useDeviceStore();
+			const installedAppName = deviceStore.installedAppNameList;
 			return cachedMergeRuleList
 				.reduce((result: AutoUIMergeRuleItem[], item) => {
 					const itemName = item.name.trim().toLowerCase();
 
 					// 先更新 applicationName
-					if (applicationName.value[item.name]) {
+					if (installedAppName[item.name] && !item.applicationName) {
+						item.applicationName = installedAppName[item.name];
+					}
+					if (applicationName.value[item.name] && !item.applicationName) {
 						item.applicationName = applicationName.value[item.name];
 					}
 
