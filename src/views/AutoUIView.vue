@@ -257,6 +257,9 @@ configProviderProps: configProviderPropsRef
           });
           importShareRuleLoading.value = false;
         } else {
+          autoUIStore.updateMergeRuleList();
+          await reloadPage();
+          importShareRuleLoading.value = false;
           modal.create({
             title: '导入分享规则成功',
             type: 'success',
@@ -272,9 +275,6 @@ configProviderProps: configProviderPropsRef
             ),
             positiveText: '确定',
           });
-          importShareRuleLoading.value = false;
-          autoUIStore.updateMergeRuleList();
-          reloadPage();
         }
         // 解析成功，可以使用 data
       } catch (error) {

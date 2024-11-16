@@ -350,6 +350,9 @@ const importShareRule = async () => {
 				});
 				importShareRuleLoading.value = false;
 			} else {
+				embeddedStore.updateMergeRuleList();
+				await reloadPage();
+				importShareRuleLoading.value = false;
 				modal.create({
 					title: '导入分享规则成功',
 					type: 'success',
@@ -376,9 +379,6 @@ const importShareRule = async () => {
 					),
 					positiveText: '确定',
 				});
-				importShareRuleLoading.value = false;
-				embeddedStore.updateMergeRuleList();
-				reloadPage();
 			}
 			// 解析成功，可以使用 data
 		} catch (error) {
@@ -493,6 +493,9 @@ const reloadPatchModeConfigList = async () => {
 		});
 		reloadPatchModeConfigLoading.value = false;
 	} else {
+		embeddedStore.updateMergeRuleList();
+		await reloadPage();
+		reloadPatchModeConfigLoading.value = false;
 		modal.create({
 			title: '操作成功',
 			type: 'success',
@@ -514,9 +517,6 @@ const reloadPatchModeConfigList = async () => {
 			),
 			negativeText: '确定',
 		});
-		reloadPatchModeConfigLoading.value = false;
-		embeddedStore.updateMergeRuleList();
-		reloadPage();
 		// logsStore.info('获取到已安装的应用数量', embeddedStore.installedAndroidApplicationPackageNameList.length)
 		// logsStore.info('获取到模块规则的平行窗口的应用数量', Object.keys(embeddedStore.sourceEmbeddedRulesList).length)
 		// logsStore.info('获取到模块规则的信箱模式的应用数量', Object.keys(embeddedStore.sourceFixedOrientationList).length)
