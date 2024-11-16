@@ -165,7 +165,7 @@
       icon: DeviceTabletIcon
     },
     { name: '日志记录', routeName: 'logs', href: '/logs', icon: DocumentDuplicateIcon },
-    { name: '开发路线图', routeName: 'project', href: '/project', icon: ChartPieIcon },
+    // { name: '开发路线图', routeName: 'project', href: '/project', icon: ChartPieIcon },
   ])
   const teams = [
     { id: 1, name: '模块首页', href: '/embedded-webview?url=https://hyper-magic-window.sothx.com', initial: 'H', current: false },
