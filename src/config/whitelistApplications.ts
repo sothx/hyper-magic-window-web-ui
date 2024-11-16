@@ -172,6 +172,18 @@ const topApplicationList = [
     'com.x7890.shortcutcreator', // 创建快捷方式
     'org.kde.kdeconnect_tp', // KDE Connect
     'com.tencent.weread', // 微信读书
+    'com.larus.nova', // 豆包
+    'com.moonshot.kimichat', // Kimi 智能助手
+    'com.baidu.newapp', // 文小言
+    'com.tencent.hunyuan.app.chat', //腾讯元宝
+    'jp.pokemon.pokemonsleep', // Pokémon Sleep
+    'com.heytap.headset', // 欢律
+    'com.twitter.android', // X
+    'cn.jagat.main', // Jagat果汁儿
+    'com.furrybar.chat.app', // FurryBar
+    'me.ele', // 饿了么
+    'com.max.xiaoheihe', // 小黑盒
+    'com.ruanmei.ithome', // IT之家
 ]
 
 
