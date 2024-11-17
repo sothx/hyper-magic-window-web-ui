@@ -757,7 +757,10 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 						}
 					}
 					if (!isEqual(moduleEmbeddedRules.value, currentEmbeddedRules.value)) {
-						embeddedStore.customConfigEmbeddedRulesList[row.name] = currentEmbeddedRules.value;
+						embeddedStore.customConfigEmbeddedRulesList[row.name] = {
+							...{ name: row.name },
+							...currentEmbeddedRules.value,
+						};
 					}
 				} else {
 					if (updateEmbeddedAppRes.modePayload.fullRule) {
@@ -800,7 +803,10 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 						}
 					}
 					if (!isEqual(moduleFixedOrientation.value, currentFixedOrientation.value)) {
-						embeddedStore.customConfigFixedOrientationList[row.name] = currentFixedOrientation.value;
+						embeddedStore.customConfigFixedOrientationList[row.name] = {
+							...{ name: row.name },
+							...currentFixedOrientation.value
+						}
 					}
 				} else {
 					embeddedStore.customConfigFixedOrientationList[row.name] = {
@@ -863,7 +869,10 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 						}
 					}
 					if (!isEqual(moduleFixedOrientation.value, currentFixedOrientation.value)) {
-						embeddedStore.customConfigFixedOrientationList[row.name] = currentFixedOrientation.value;
+						embeddedStore.customConfigFixedOrientationList[row.name] = {
+							...{ name: row.name },
+							...currentFixedOrientation.value
+						}
 					}
 				} else {
 					embeddedStore.customConfigFixedOrientationList[row.name] = {
@@ -905,7 +914,10 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 						delete currentFixedOrientation.value.compatChange;
 					}
 					if (!isEqual(moduleFixedOrientation.value, currentFixedOrientation.value)) {
-						embeddedStore.customConfigFixedOrientationList[row.name] = currentFixedOrientation.value;
+						embeddedStore.customConfigFixedOrientationList[row.name] = {
+							...{ name: row.name },
+							...currentFixedOrientation.value
+						}
 					}
 				} else {
 					embeddedStore.customConfigFixedOrientationList[row.name] = {
@@ -987,10 +999,16 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 						}
 					}
 					if (!isEqual(moduleEmbeddedRules.value, currentEmbeddedRules.value)) {
-						embeddedStore.customConfigFixedOrientationList[row.name] = currentFixedOrientation.value;
+						embeddedStore.customConfigFixedOrientationList[row.name] = {
+							...{ name: row.name },
+							...currentFixedOrientation.value
+						}
 					}
 					if (!isEqual(moduleFixedOrientation.value, currentFixedOrientation.value)) {
-						embeddedStore.customConfigEmbeddedRulesList[row.name] = currentEmbeddedRules.value;
+						embeddedStore.customConfigEmbeddedRulesList[row.name] = {
+							...{name: row.name},
+							...currentEmbeddedRules.value
+						}
 					}
 				}
 			}
