@@ -19,6 +19,7 @@ export function useInstalledAppNames() {
                 const [getListErr,getListRes] = await $to(ksuApi.getInstalledAppNameList())
                 if (getListErr) {
                     reject(getListErr)
+                    loading.value = false;
                 }
                 if (getListRes) {
                     const lines = getListRes.trim().split('\n').filter(line => line);
