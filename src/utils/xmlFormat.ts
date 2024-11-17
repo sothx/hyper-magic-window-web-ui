@@ -223,7 +223,7 @@ export const mergeEmbeddedRule = (
     let isSupportEmbedded = embeddedConfig ? !embeddedConfig.fullRule : false;
     let isSupportFixedOrientation = getSupportModes?.includes('fo') || (fixedOrientationConfig && !fixedOrientationConfig.hasOwnProperty('disable')) || false
     let isSupportFullScreen = getSupportModes?.includes('full') ||  false
-    let ruleMode: EmbeddedMergeRuleItem["ruleMode"] = customEmbeddedRules[pkgName] || customFixedOrientationRules[pkgName] ? "custom" : "module";
+    let ruleMode: EmbeddedMergeRuleItem["ruleMode"] = customEmbeddedRules[pkgName] || customFixedOrientationRules[pkgName] || customConfigEmbeddedSettingConfig[pkgName] ? "custom" : "module";
 
     if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2) {
       // 有设置优先设置
