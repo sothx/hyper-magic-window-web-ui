@@ -205,7 +205,6 @@ const changeShowRotationSuggestions = async (value: boolean) => {
 	deviceStore.showRotationSuggestions = value;
 };
 const changePatchMode = async (value: boolean) => {
-	switchPatchModeLoading.value = false;
 	const [negativeRes, positiveRes] = await $to(
 		new Promise((resolve, reject) => {
 			modal.create({
@@ -253,18 +252,12 @@ const changePatchMode = async (value: boolean) => {
 				},
 				onNegativeClick: () => {
 					reject('negativeClick');
-					switchPatchModeLoading.value = false;
-				},
-				onClose: () => {
-					switchPatchModeLoading.value = false;
-				},
-				onMaskClick: () => {
-					switchPatchModeLoading.value = false;
-				},
+				}
 			});
 		}),
 	);
 	if (positiveRes) {
+		switchPatchModeLoading.value = true;
 		const [removeIsPatchModeErr] = await $to(ksuApi.removeIsPatchMode());
 		if (removeIsPatchModeErr) {
 			modal.create({
@@ -295,6 +288,7 @@ const changePatchMode = async (value: boolean) => {
 			switchPatchModeLoading.value = false;
 			embeddedStore.isPatchMode = false;
 		}
+		await deviceStore.getAndroidApplicationPackageNameList();
 		const [submitUpdateEmbeddedAppErr, submitUpdateEmbeddedAppRes] = await $to(
 			ksuApi.updateEmbeddedApp({
 				isPatchMode: embeddedStore.isPatchMode,

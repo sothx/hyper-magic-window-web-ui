@@ -2,6 +2,42 @@ import type EmbeddedMergeRuleItem from '@/types/EmbeddedMergeRuleItem';
 import type EmbeddedRuleItem from '@/types/EmbeddedRuleItem';
 import type FixedOrientationRuleItem from '@/types/FixedOrientationRuleItem';
 
+type SettingModeType = EmbeddedMergeRuleItem['settingMode'];
+
+export interface SettingSupportEnableMode {
+	embeddedEnable?: boolean
+	fullScreen?: boolean
+	fixedOrientation?: boolean
+	ratio_fullScreenEnable?: boolean
+}
+
+export const getSettingEnableMode = (embeddedConfig: EmbeddedRuleItem, fixedOrientationConfig: FixedOrientationRuleItem,settingMode:EmbeddedMergeRuleItem['settingMode']) => {
+
+	const supportModes = fixedOrientationConfig ? fixedOrientationConfig.supportModes?.split(',') : null;
+
+	const enableModes: SettingSupportEnableMode =  {}
+
+	if (embeddedConfig && !embeddedConfig.fullRule) {
+		enableModes.embeddedEnable = settingMode === 'embedded' ? true : false
+	}
+
+	if (fixedOrientationConfig) {
+		if (supportModes?.includes('full')) {
+			enableModes.ratio_fullScreenEnable = settingMode === 'fullScreen' ? true : false
+			if (embeddedConfig.fullRule) {
+				enableModes.fullScreen = true;
+			}
+		}
+		if (!enableModes.hasOwnProperty('fullScreen')) {
+			enableModes.fixedOrientation = settingMode === 'fixedOrientation' ? true : false;
+		}
+	}
+
+
+	return enableModes
+	
+}
+
 export const getSettingMode = (embeddedConfig: EmbeddedRuleItem, fixedOrientationConfig: FixedOrientationRuleItem) => {
 	const getSupportModes = fixedOrientationConfig?.supportModes?.split(',');
 	const getDefaultSettings = fixedOrientationConfig?.defaultSettings;

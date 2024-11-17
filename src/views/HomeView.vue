@@ -41,7 +41,7 @@ import {
 import { FunnelIcon as FunnelSolidIcon } from '@heroicons/vue/24/solid';
 import { arrayBufferToBase64, base64ToArrayBuffer } from '@/utils/format';
 import { findBase64InString, renderApplicationName } from '@/utils/common';
-import { getAppModeCode, getSettingMode } from '@/utils/embeddedFun';
+import { getAppModeCode, getSettingEnableMode, getSettingMode } from '@/utils/embeddedFun';
 import { cloneDeep, isEqual } from 'lodash-es';
 type EmbeddedAppDrawerInstance = InstanceType<typeof EmbeddedAppDrawer>;
 type SearchKeyWordInputInstance = InstanceType<typeof NInput>;
@@ -250,28 +250,7 @@ const importShareRule = async () => {
 			if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2) {
 				embeddedStore.customConfigEmbeddedSettingConfig[importRuleContent.name] = {
 					name: importRuleContent.name,
-					...(embeddedStore.customConfigEmbeddedRulesList[importRuleContent.name]
-						? { embeddedEnable: importRuleContent.mode === 'embedded' ? true : false }
-						: {}),
-					...(embeddedStore.customConfigFixedOrientationList[importRuleContent.name]
-						? {
-								fixedOrientationEnable: importRuleContent.mode === 'fixedOrientation' ? true : false,
-							}
-						: {}),
-					...(embeddedStore.customConfigFixedOrientationList[importRuleContent.name]
-						? {
-								ratio_fullScreenEnable: importRuleContent.mode === 'fullScreen' ? true : false,
-							}
-						: {}),
-					...(embeddedStore.customConfigEmbeddedRulesList[importRuleContent.name]
-						? {
-								fullScreenEnable:
-									importRuleContent.mode === 'fullScreen' &&
-									embeddedStore.customConfigEmbeddedRulesList[importRuleContent.name].fullRule
-										? false
-										: false,
-							}
-						: {}),
+					...getSettingEnableMode(embeddedStore.customConfigEmbeddedRulesList[importRuleContent.name],embeddedStore.customConfigFixedOrientationList[importRuleContent.name],importRuleContent.mode)
 				};
 			} else {
 				embeddedStore.systemEmbeddedSettingConfig[importRuleContent.name] = {
@@ -438,6 +417,7 @@ const hotReloadApplicationData = async () => {
 };
 
 const reloadPatchModeConfigList = async () => {
+	await deviceStore.getAndroidApplicationPackageNameList();
 	reloadPatchModeConfigLoading.value = true;
 	const [submitUpdateEmbeddedAppErr, submitUpdateEmbeddedAppRes] = await $to(
 		ksuApi.updateEmbeddedApp({
@@ -494,7 +474,6 @@ const reloadPatchModeConfigList = async () => {
 		reloadPatchModeConfigLoading.value = false;
 	} else {
 		embeddedStore.updateMergeRuleList();
-		await reloadPage();
 		reloadPatchModeConfigLoading.value = false;
 		modal.create({
 			title: '操作成功',
@@ -621,29 +600,7 @@ const openAddEmbeddedApp = async () => {
 			if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2) {
 				embeddedStore.customConfigEmbeddedSettingConfig[addEmbeddedAppRes.name] = {
 					name: addEmbeddedAppRes.name,
-					...(embeddedStore.customConfigEmbeddedRulesList[addEmbeddedAppRes.name]
-						? { embeddedEnable: addEmbeddedAppRes.settingMode === 'embedded' ? true : false }
-						: {}),
-					...(embeddedStore.customConfigFixedOrientationList[addEmbeddedAppRes.name]
-						? {
-								fixedOrientationEnable:
-									addEmbeddedAppRes.settingMode === 'fixedOrientation' ? true : false,
-							}
-						: {}),
-					...(embeddedStore.customConfigFixedOrientationList[addEmbeddedAppRes.name]
-						? {
-								ratio_fullScreenEnable: addEmbeddedAppRes.settingMode === 'fullScreen' ? true : false,
-							}
-						: {}),
-					...(embeddedStore.customConfigEmbeddedRulesList[addEmbeddedAppRes.name]
-						? {
-								fullScreenEnable:
-									addEmbeddedAppRes.settingMode === 'fullScreen' &&
-									embeddedStore.customConfigEmbeddedRulesList[addEmbeddedAppRes.name].fullRule
-										? false
-										: false,
-							}
-						: {}),
+					...getSettingEnableMode(embeddedStore.customConfigEmbeddedRulesList[addEmbeddedAppRes.name],embeddedStore.customConfigFixedOrientationList[addEmbeddedAppRes.name],addEmbeddedAppRes.settingMode)
 				};
 			} else {
 				embeddedStore.systemEmbeddedSettingConfig[addEmbeddedAppRes.name] = {
@@ -1032,30 +989,7 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 				if (row.settingMode !== updateEmbeddedAppRes.settingMode) {
 					embeddedStore.customConfigEmbeddedSettingConfig[row.name] = {
 						name: row.name,
-						...(currentEmbeddedRules.value
-							? { embeddedEnable: updateEmbeddedAppRes.settingMode === 'embedded' ? true : false }
-							: {}),
-						...(currentFixedOrientation.value
-							? {
-									fixedOrientationEnable:
-										updateEmbeddedAppRes.settingMode === 'fixedOrientation' ? true : false,
-								}
-							: {}),
-						...(currentFixedOrientation.value
-							? {
-									ratio_fullScreenEnable:
-										updateEmbeddedAppRes.settingMode === 'fullScreen' ? true : false,
-								}
-							: {}),
-						...(currentEmbeddedRules.value
-							? {
-									fullScreenEnable:
-										updateEmbeddedAppRes.settingMode === 'fullScreen' &&
-										currentEmbeddedRules.value.fullRule
-											? false
-											: false,
-								}
-							: {}),
+						...getSettingEnableMode(currentEmbeddedRules.value,currentFixedOrientation.value,updateEmbeddedAppRes.settingMode)
 					};
 				}
 			} else {
