@@ -187,7 +187,7 @@ const embeddedAppDrawer = ref({
 				currentType.value = 'add';
 				currentFullScreenRuleOptions.value = fullScreenRuleOptions.value[0];
 				currentAppName.value = '';
-				currentFullRule.value = 'nra:cr:rcr:nr';
+				currentFullRule.value = deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 ? '' : 'nra:cr:rcr:nr';
 				currentSupportModes.value = ['fullScreen', 'fixedOrientation', 'disabled'];
 				currentFixedOrientationRelaunch.value = false;
 				currentEmbeddedRelaunch.value = false;

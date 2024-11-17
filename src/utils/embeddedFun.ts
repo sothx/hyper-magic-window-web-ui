@@ -6,7 +6,7 @@ type SettingModeType = EmbeddedMergeRuleItem['settingMode'];
 
 export interface SettingSupportEnableMode {
 	embeddedEnable?: boolean
-	fullScreen?: boolean
+	fullScreenEnable?: boolean
 	fixedOrientation?: boolean
 	ratio_fullScreenEnable?: boolean
 }
@@ -24,8 +24,8 @@ export const getSettingEnableMode = (embeddedConfig: EmbeddedRuleItem, fixedOrie
 	if (fixedOrientationConfig) {
 		if (supportModes?.includes('full')) {
 			enableModes.ratio_fullScreenEnable = settingMode === 'fullScreen' ? true : false
-			if (embeddedConfig.fullRule) {
-				enableModes.fullScreen = true;
+			if (embeddedConfig && embeddedConfig.hasOwnProperty('fullRule')) {
+				enableModes.fullScreenEnable = true;
 			}
 		}
 		if (!enableModes.hasOwnProperty('fullScreen')) {
