@@ -74,25 +74,24 @@ configProviderProps: configProviderPropsRef
   };
 
   const getInstalledAppNameList = async () => {
-	// notification.info({
-	// 	content: '已加入任务队列',
-	// 	meta: '正在获取已安装应用名称，请不要关闭模块的 Web UI，完成后会弹出通知，请稍等~',
-	// 	duration: 2500,
-	// });
 	const [getListErr, getListRes] = await $to(installedAppNames.getList());
 	if (getListErr) {
-		notification.error({
-			content: '获取失败',
-			meta: '获取已安装应用名称发生错误，详细错误请查看日志列表~',
-			duration: 2500,
-		});
+    modal.create({
+					title: '获取失败',
+					type: 'error',
+					preset: 'dialog',
+					content: () => <p>获取已安装应用名称发生错误，详细错误请查看日志列表~</p>,
+					negativeText: '确定',
+				});
 	}
 	if (getListRes) {
-		notification.success({
-			content: '获取成功',
-			meta: '好耶！已成功获取已安装应用名称，任务队列已自动销毁~',
-			duration: 2500,
-		});
+    modal.create({
+					title: '获取成功',
+					type: 'success',
+					preset: 'dialog',
+					content: () => <p>好耶OwO，已重新获取当前已安装的应用名称~</p>,
+					negativeText: '确定',
+				});
 	}
 };
 

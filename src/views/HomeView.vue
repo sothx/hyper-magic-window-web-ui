@@ -82,17 +82,21 @@ const getInstalledAppNameList = async () => {
 	// });
 	const [getListErr, getListRes] = await $to(installedAppNames.getList());
 	if (getListErr) {
-		notification.error({
-			content: '获取失败',
-			meta: '获取已安装应用名称发生错误，详细错误请查看日志列表~',
-			duration: 2500,
+		modal.create({
+			title: '获取失败',
+			type: 'error',
+			preset: 'dialog',
+			content: () => <p>获取已安装应用名称发生错误，详细错误请查看日志列表~</p>,
+			negativeText: '确定',
 		});
 	}
 	if (getListRes) {
-		notification.success({
-			content: '获取成功',
-			meta: '好耶！已成功获取已安装应用名称，任务队列已自动销毁~',
-			duration: 2500,
+		modal.create({
+			title: '获取成功',
+			type: 'success',
+			preset: 'dialog',
+			content: () => <p>好耶OwO，已重新获取当前已安装的应用名称~</p>,
+			negativeText: '确定',
 		});
 	}
 };
@@ -250,7 +254,11 @@ const importShareRule = async () => {
 			if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2) {
 				embeddedStore.customConfigEmbeddedSettingConfig[importRuleContent.name] = {
 					name: importRuleContent.name,
-					...getSettingEnableMode(embeddedStore.customConfigEmbeddedRulesList[importRuleContent.name],embeddedStore.customConfigFixedOrientationList[importRuleContent.name],importRuleContent.mode)
+					...getSettingEnableMode(
+						embeddedStore.customConfigEmbeddedRulesList[importRuleContent.name],
+						embeddedStore.customConfigFixedOrientationList[importRuleContent.name],
+						importRuleContent.mode,
+					),
 				};
 			} else {
 				embeddedStore.systemEmbeddedSettingConfig[importRuleContent.name] = {
@@ -600,7 +608,11 @@ const openAddEmbeddedApp = async () => {
 			if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2) {
 				embeddedStore.customConfigEmbeddedSettingConfig[addEmbeddedAppRes.name] = {
 					name: addEmbeddedAppRes.name,
-					...getSettingEnableMode(embeddedStore.customConfigEmbeddedRulesList[addEmbeddedAppRes.name],embeddedStore.customConfigFixedOrientationList[addEmbeddedAppRes.name],addEmbeddedAppRes.settingMode)
+					...getSettingEnableMode(
+						embeddedStore.customConfigEmbeddedRulesList[addEmbeddedAppRes.name],
+						embeddedStore.customConfigFixedOrientationList[addEmbeddedAppRes.name],
+						addEmbeddedAppRes.settingMode,
+					),
 				};
 			} else {
 				embeddedStore.systemEmbeddedSettingConfig[addEmbeddedAppRes.name] = {
@@ -989,7 +1001,11 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 				if (row.settingMode !== updateEmbeddedAppRes.settingMode) {
 					embeddedStore.customConfigEmbeddedSettingConfig[row.name] = {
 						name: row.name,
-						...getSettingEnableMode(currentEmbeddedRules.value,currentFixedOrientation.value,updateEmbeddedAppRes.settingMode)
+						...getSettingEnableMode(
+							currentEmbeddedRules.value,
+							currentFixedOrientation.value,
+							updateEmbeddedAppRes.settingMode,
+						),
 					};
 				}
 			} else {

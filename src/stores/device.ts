@@ -170,7 +170,6 @@ export const useDeviceStore = defineStore(
 			systemPreVersion.value = getPreSystemVersionRes || '';
 			// ROOT管理器信息
 			if (getRootManagerInfo?.length) {
-				const shellCommon = `echo "$KSU,$KSU_VER,$KSU_VER_CODE,$KSU_KERNEL_VER_CODE,$APATCH,$APATCH_VER_CODE,$APATCH_VER,$MAGISK_VER,$MAGISK_VER_CODE"`;
 				const rootManagerStrArr: string[] = getRootManagerInfo.split(',');
 				rootManagerInfo.KSU = rootManagerStrArr[0] === 'true';
 				rootManagerInfo.KSU_VER = rootManagerStrArr[1];
