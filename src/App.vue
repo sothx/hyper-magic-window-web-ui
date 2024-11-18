@@ -8,20 +8,21 @@ import { useDeviceStore } from '@/stores/device';
 import { createDiscreteApi, darkTheme, lightTheme, type ConfigProviderProps } from 'naive-ui';
 import { useEmbeddedStore } from '@/stores/embedded';
 import { useFontStore } from '@/stores/font';
+import { useLogsStore } from "@/stores/logs";
 import { useAutoUIStore } from '@/stores/autoui';
 const deviceStore = useDeviceStore();
+const logsStore = useLogsStore();
 const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
-  theme: deviceStore.isDarkMode ? darkTheme : lightTheme
-}))
+	theme: deviceStore.isDarkMode ? darkTheme : lightTheme,
+}));
 const { message, modal } = createDiscreteApi(['message', 'modal'], {
-  configProviderProps: configProviderPropsRef
+	configProviderProps: configProviderPropsRef,
 });
 
 const embeddedStore = useEmbeddedStore();
-const fontStore = useFontStore()
+const fontStore = useFontStore();
 const autoUIStore = useAutoUIStore();
 const showErrorModal = ref(false);
-
 
 watch(
 	() => fontStore.currentFont, // 监听的值
@@ -72,17 +73,25 @@ watchEffect(onCleanup => {
 });
 
 onMounted(async () => {
+	window.onerror = function (message, source, lineno, colno, error) {
+    if (logsStore) {
+      logsStore.error('[JavaScript Error]',message.toString())
+    }
+	};
+	window.addEventListener('unhandledrejection', function (event:PromiseRejectionEvent) {
+    if (logsStore) {
+      logsStore.error('[JavaScript Promise Error]',event.reason.toString())
+    }
+	});
 	await deviceStore.initDefault();
 	if (deviceStore.androidTargetSdk === 31) {
 		modal.create({
-          title: '不适配说明',
-          type: 'error',
-          preset: 'dialog',
-          content: () => (
-            <p>Web UI 未对Android 11做适配，无法使用~</p>
-          ),
-          negativeText: '确定',
-        });
+			title: '不适配说明',
+			type: 'error',
+			preset: 'dialog',
+			content: () => <p>Web UI 未对Android 11做适配，无法使用~</p>,
+			negativeText: '确定',
+		});
 	} else {
 		embeddedStore.initDefault();
 		autoUIStore.initDefault();

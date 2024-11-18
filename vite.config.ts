@@ -7,6 +7,7 @@ import vueJsx from '@vitejs/plugin-vue-jsx';
 import { fileURLToPath, URL } from 'node:url';
 import postcssPresetEnv from 'postcss-preset-env';
 import vueDevTools from 'vite-plugin-vue-devtools';
+import legacy from '@vitejs/plugin-legacy'
 
 export default defineConfig({
 	css: {
@@ -60,9 +61,30 @@ export default defineConfig({
 				});
 			},
 		},
-		// legacy({
-		//   targets: ['defaults', 'not IE 11'],
-		// }),
+        // legacy({
+        //     targets: ['defaults', 'not IE 11', 'chrome >= 87', 'android >= 5.0'],
+        //     additionalLegacyPolyfills: ['regenerator-runtime/runtime'],
+        //     renderLegacyChunks: true,
+        //     polyfills: [
+        //       'es.symbol',
+        //       'es.promise',
+        //       'es.promise.finally',
+        //       'es/map',
+        //       'es/set',
+        //       'es.array.filter',
+        //       'es.array.for-each',
+        //       'es.array.flat-map',
+        //       'es.object.define-properties',
+        //       'es.object.define-property',
+        //       'es.object.get-own-property-descriptor',
+        //       'es.object.get-own-property-descriptors',
+        //       'es.object.keys',
+        //       'es.object.to-string',
+        //       'web.dom-collections.for-each',
+        //       'esnext.global-this',
+        //       'esnext.string.match-all'
+        //     ]
+        //   })
 	],
 
 	// assetsInclude: ['**/*.xml'], // 添加这一行以包括 XML 文件
