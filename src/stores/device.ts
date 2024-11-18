@@ -41,7 +41,8 @@ export interface ROOTManagerInfo {
 }
 
 export interface BatteryInfo {
-	soh: number
+	sohQcom: number
+	sohMTK: number
 	chargeFullDesign: number
 	chargeFull: number
 	cycleCount: number
@@ -93,7 +94,8 @@ export const useDeviceStore = defineStore(
 			MAGISK_VER_CODE: '',
 		});
 		const batteryInfo = reactive<BatteryInfo>({
-			soh: 0,
+			sohQcom: 0,
+			sohMTK:0,
 			chargeFullDesign: 0,
 			chargeFull: 0,
 			cycleCount: 0
@@ -153,7 +155,8 @@ export const useDeviceStore = defineStore(
 				// 上个系统版本
 				$to<string, string>(ksuApi.getPreSystemVersion()),
 				// 售后电池健康度
-				$to<string, string>(ksuApi.getBatterySoh()),
+				$to<string, string>(ksuApi.getBatterySohQcom()),
+				$to<string, string>(ksuApi.getBatterySohMTK()),
 				// 电池设计容量
 				$to<string, string>(ksuApi.getBatteryChargeFullDesign()),
 				// 当前电池容量
@@ -169,7 +172,8 @@ export const useDeviceStore = defineStore(
 				[, getRootManagerInfo],
 				[, getSystemVersionRes],
 				[, getPreSystemVersionRes],
-				[, getBatterySohRes],
+				[, getBatterySohQcomRes],
+				[, getBatterySohMTKRes],
 				[, getBatteryChargeFullDesignRes],
 				[, getBatteryChargeFullRes],
 				[, getBatteryCycleCountRes],
@@ -214,7 +218,8 @@ export const useDeviceStore = defineStore(
 				}
 			}
 			// 售后电池健康度
-			batteryInfo.soh = Number(getBatterySohRes)
+			batteryInfo.sohQcom = Number(getBatterySohQcomRes)
+			batteryInfo.sohMTK = Number(getBatterySohMTKRes)
 			// 电池设计容量
 			batteryInfo.chargeFullDesign = Number(getBatteryChargeFullDesignRes)
 			// 当前电池容量

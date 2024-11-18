@@ -493,8 +493,23 @@ export const getSystemVersion = (): Promise<string> => {
 	);
 };
 
-export const getBatterySoh = (): Promise<string> => {
+export const getBatterySohQcom = (): Promise<string> => {
 	const shellCommon = `cat /sys/class/qcom-battery/soh`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`90`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : stdout === 'null' ? resolve('') : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const getBatterySohMTK = (): Promise<string> => {
+	const shellCommon = `cat /sys/class/power_supply/bms/soh`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -524,7 +539,7 @@ export const getBatteryChargeFullDesign = (): Promise<string> => {
 }
 
 export const getBatteryChargeFull = (): Promise<string> => {
-	const shellCommon = `cat /sys/class/power_supply/battery/charge_full_design`;
+	const shellCommon = `cat /sys/class/power_supply/battery/charge_full`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {

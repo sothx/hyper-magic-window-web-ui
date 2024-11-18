@@ -866,14 +866,25 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							<p>{{ `${((deviceStore.batteryInfo.chargeFull / deviceStore.batteryInfo.chargeFullDesign) * 100).toFixed(2)} %` }}</p>
 						</dd>
 					</div>
-					<div v-if="deviceStore.batteryInfo.soh" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+					<div v-if="deviceStore.batteryInfo.sohQcom" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
-							电池售后健康度
+							电池售后健康度(高通)
 						</dt>
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							<p>{{ `${deviceStore.batteryInfo.soh} %` }}</p>
+							<p>{{ `${deviceStore.batteryInfo.sohQcom} %` }}</p>
+							<p>(Tips:在设备保修期内健康度低于80%可以申请电池质保)</p>
+						</dd>
+					</div>
+					<div v-if="deviceStore.batteryInfo.sohMTK" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+						<dt
+							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
+							电池售后健康度(联发科)
+						</dt>
+						<dd
+							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
+							<p>{{ `${deviceStore.batteryInfo.sohMTK} %` }}</p>
 							<p>(Tips:在设备保修期内健康度低于80%可以申请电池质保)</p>
 						</dd>
 					</div>
