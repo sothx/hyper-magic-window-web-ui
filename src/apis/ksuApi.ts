@@ -493,6 +493,67 @@ export const getSystemVersion = (): Promise<string> => {
 	);
 };
 
+export const getBatterySoh = (): Promise<string> => {
+	const shellCommon = `cat /sys/class/qcom-battery/soh`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`90`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : stdout === 'null' ? resolve('') : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const getBatteryChargeFullDesign = (): Promise<string> => {
+	const shellCommon = `cat /sys/class/power_supply/battery/charge_full_design`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`8600000`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : stdout === 'null' ? resolve('') : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+}
+
+export const getBatteryChargeFull = (): Promise<string> => {
+	const shellCommon = `cat /sys/class/power_supply/battery/charge_full_design`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`7785000`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : stdout === 'null' ? resolve('') : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+}
+
+export const getBatteryCycleCount = (): Promise<string> => {
+	const shellCommon = `cat /sys/class/power_supply/battery/cycle_count`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`338`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : stdout === 'null' ? resolve('') : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+}
+
+
 export const getPreSystemVersion = (): Promise<string> => {
 	const shellCommon = `settings get global miui_pre_version`;
 	return handlePromiseWithLogging(

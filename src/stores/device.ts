@@ -40,6 +40,13 @@ export interface ROOTManagerInfo {
 	MAGISK_VER_CODE: string;
 }
 
+export interface BatteryInfo {
+	soh: number
+	chargeFullDesign: number
+	chargeFull: number
+	cycleCount: number
+}
+
 export type ROOT_MANAGER_TYPE = 'Magisk' | 'APatch' | 'KernelSU';
 
 export const useDeviceStore = defineStore(
@@ -85,6 +92,12 @@ export const useDeviceStore = defineStore(
 			MAGISK_VER: '',
 			MAGISK_VER_CODE: '',
 		});
+		const batteryInfo = reactive<BatteryInfo>({
+			soh: 0,
+			chargeFullDesign: 0,
+			chargeFull: 0,
+			cycleCount: 0
+		})
 		const ABTestInfo = reactive({
 			OS2_PAD_EMBEDDED_APP_MANAGER: false
 		})
@@ -139,6 +152,14 @@ export const useDeviceStore = defineStore(
 				$to<string, string>(ksuApi.getSystemVersion()),
 				// 上个系统版本
 				$to<string, string>(ksuApi.getPreSystemVersion()),
+				// 售后电池健康度
+				$to<string, string>(ksuApi.getBatterySoh()),
+				// 电池设计容量
+				$to<string, string>(ksuApi.getBatteryChargeFullDesign()),
+				// 当前电池容量
+				$to<string, string>(ksuApi.getBatteryChargeFull()),
+				// 电池循环次数
+				$to<string, string>(ksuApi.getBatteryCycleCount()),
 			];
 			// 等待所有 promises 完成
 			const executeWithoutWaitingResults = await Promise.all(executeWithoutWaiting);
@@ -148,6 +169,10 @@ export const useDeviceStore = defineStore(
 				[, getRootManagerInfo],
 				[, getSystemVersionRes],
 				[, getPreSystemVersionRes],
+				[, getBatterySohRes],
+				[, getBatteryChargeFullDesignRes],
+				[, getBatteryChargeFullRes],
+				[, getBatteryCycleCountRes],
 			] = executeWithoutWaitingResults;
 			// 模块信息 *弱校验
 			if (!getModuleInfoRes?.length) {
@@ -188,6 +213,14 @@ export const useDeviceStore = defineStore(
 					currentRootManager.value = 'Magisk';
 				}
 			}
+			// 售后电池健康度
+			batteryInfo.soh = Number(getBatterySohRes)
+			// 电池设计容量
+			batteryInfo.chargeFullDesign = Number(getBatteryChargeFullDesignRes)
+			// 当前电池容量
+			batteryInfo.chargeFull = Number(getBatteryChargeFullRes)
+			// 当前电池循环次数
+			batteryInfo.cycleCount = Number(getBatteryCycleCountRes)
 			// 获取用户已安装的应用
 			await getAndroidApplicationPackageNameList();
 			// 设备类型 *强校验
@@ -292,6 +325,7 @@ export const useDeviceStore = defineStore(
 			deviceName,
 			deviceSocName,
 			deviceSocModel,
+			batteryInfo,
 			smartFocusIO,
 			showRotationSuggestions,
 			installedAndroidApplicationPackageNameList,
