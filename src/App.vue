@@ -105,7 +105,7 @@ onMounted(async () => {
 					navigator.clipboard.writeText(`https://play.google.com/store/apps/details?id=com.google.android.webview`)
 				},
 				onNegativeClick: () => {
-						deviceStore.skipConfirm.lowWebviewVerion = true;
+						deviceStore.skipConfirm.lowWebviewVersion = true;
 				},
 			});
 		}
