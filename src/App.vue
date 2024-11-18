@@ -93,7 +93,7 @@ onMounted(async () => {
 			negativeText: '确定',
 		});
 	} else {
-		if (deviceStore.androidTargetSdk && deviceStore.androidTargetSdk <= 33 && !deviceStore.skipConfirm.lowWebviewVerion) {
+		if (deviceStore.androidTargetSdk && deviceStore.androidTargetSdk <= 33 && !deviceStore.skipConfirm.lowWebViewVersion) {
 			modal.create({
 				title: '不兼容说明',
 				type: 'warning',
@@ -105,7 +105,7 @@ onMounted(async () => {
 					navigator.clipboard.writeText(`https://play.google.com/store/apps/details?id=com.google.android.webview`)
 				},
 				onNegativeClick: () => {
-						deviceStore.skipConfirm.lowWebviewVersion = true;
+						deviceStore.skipConfirm.lowWebViewVersion = true;
 				},
 			});
 		}

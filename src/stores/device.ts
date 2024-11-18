@@ -114,7 +114,7 @@ export const useDeviceStore = defineStore(
 		const skipConfirm = reactive({
 			GameMode: false,
 			MIUIContentExt: false,
-			lowWebviewVersion: false
+			lowWebViewVersion: false
 		});
 
 		const isNeedShowErrorModal = computed(() => Boolean(errorLogging.length > 0));
