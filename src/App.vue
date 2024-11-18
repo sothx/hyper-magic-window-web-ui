@@ -8,7 +8,7 @@ import { useDeviceStore } from '@/stores/device';
 import { createDiscreteApi, darkTheme, lightTheme, type ConfigProviderProps } from 'naive-ui';
 import { useEmbeddedStore } from '@/stores/embedded';
 import { useFontStore } from '@/stores/font';
-import { useLogsStore } from "@/stores/logs";
+import { useLogsStore } from '@/stores/logs';
 import { useAutoUIStore } from '@/stores/autoui';
 const deviceStore = useDeviceStore();
 const logsStore = useLogsStore();
@@ -74,14 +74,14 @@ watchEffect(onCleanup => {
 
 onMounted(async () => {
 	window.onerror = function (message, source, lineno, colno, error) {
-    if (logsStore) {
-      logsStore.error('[JavaScript Error]',message.toString())
-    }
+		if (logsStore) {
+			logsStore.error('[JavaScript Error]', message.toString());
+		}
 	};
-	window.addEventListener('unhandledrejection', function (event:PromiseRejectionEvent) {
-    if (logsStore) {
-      logsStore.error('[JavaScript Promise Error]',event.reason.toString())
-    }
+	window.addEventListener('unhandledrejection', function (event: PromiseRejectionEvent) {
+		if (logsStore) {
+			logsStore.error('[JavaScript Promise Error]', event.reason.toString());
+		}
 	});
 	await deviceStore.initDefault();
 	if (deviceStore.androidTargetSdk === 31) {
@@ -93,6 +93,22 @@ onMounted(async () => {
 			negativeText: '确定',
 		});
 	} else {
+		if (deviceStore.androidTargetSdk && deviceStore.androidTargetSdk <= 33 && !deviceStore.skipConfirm.lowWebviewVerion) {
+			modal.create({
+				title: '不兼容说明',
+				type: 'warning',
+				preset: 'dialog',
+				content: () => <p>Web UI 强依赖部分较新内核的JavaScript API实现，为了确保模块正常工作，Android 13/12的小米设备可能需要升级系统内置WebView版本，请通过Play商店升级！</p>,
+				positiveText: '复制下载链接到剪切板',
+				negativeText: '不再提醒',
+				onPositiveClick: () => {
+					navigator.clipboard.writeText(`https://play.google.com/store/apps/details?id=com.google.android.webview`)
+				},
+				onNegativeClick: () => {
+						deviceStore.skipConfirm.lowWebviewVerion = true;
+				},
+			});
+		}
 		embeddedStore.initDefault();
 		autoUIStore.initDefault();
 	}
