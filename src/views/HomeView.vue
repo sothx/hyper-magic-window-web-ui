@@ -350,7 +350,7 @@ const importShareRule = async () => {
 							<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
 								{renderApplicationName(
 									importRuleContent.name,
-									embeddedStore.applicationName[importRuleContent.name],
+									deviceStore.installedAppNameList[importRuleContent.name] || embeddedStore.applicationName[importRuleContent.name],
 								)}
 							</span>{' '}
 							的应用配置成功了OwO~如果应用更新后的规则不生效，可以尝试重启平板并且在{' '}
@@ -701,7 +701,7 @@ const openAddEmbeddedApp = async () => {
 							<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
 								{renderApplicationName(
 									addEmbeddedAppRes.name,
-									embeddedStore.applicationName[addEmbeddedAppRes.name],
+									deviceStore.installedAppNameList[addEmbeddedAppRes.name] || embeddedStore.applicationName[addEmbeddedAppRes.name],
 								)}
 							</span>{' '}
 							的应用配置添加成功了OwO~如果应用添加后的规则不生效，可以尝试重启平板并且在{' '}

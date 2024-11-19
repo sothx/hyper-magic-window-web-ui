@@ -35,14 +35,14 @@ import { FunnelIcon as FunnelSolidIcon } from '@heroicons/vue/24/solid';
 import { useLogsStore } from '@/stores/logs';
 import { useAutoUI } from '@/hooks/useAutoUI';
 import * as validateFun from '@/utils/validateFun';
-import AutoUIAppDrawer from '@/components/AutoUIAppDrawer.vue';
+import DotBlackListAppDrawer from '@/components/DotBlackListAppDrawer.vue';
 import { findBase64InString, renderApplicationName } from '@/utils/common';
 import { arrayBufferToBase64, base64ToArrayBuffer } from '@/utils/format';
 import pako from 'pako';
 import { useInstalledAppNames } from '@/hooks/useInstalledAppNames';
 import type DotBlackListMergeItem from '@/types/DotBlackListMergeItem';
 type SearchKeyWordInputInstance = InstanceType<typeof NInput>;
-type AutoUIAppDrawerInstance = InstanceType<typeof AutoUIAppDrawer>;
+type DotBlackListAppDrawerInstance = InstanceType<typeof DotBlackListAppDrawer>;
 const searchKeyWordInput = ref<SearchKeyWordInputInstance | null>(null);
 const columns = createColumns();
 const deviceStore = useDeviceStore();
@@ -58,8 +58,7 @@ const dotBlackListStore = useDotBlackListStore();
 const importShareRuleLoading = ref(false);
 const hotReloadLoading = ref(false);
 const autoUI = useAutoUI();
-const addAutoUIApp = ref<AutoUIAppDrawerInstance | null>(null);
-const updateAutoUIApp = ref<AutoUIAppDrawerInstance | null>(null);
+const addDotBlackListApp = ref<DotBlackListAppDrawerInstance | null>(null);
 const router = useRouter();
 const logsStore = useLogsStore();
 const route = useRoute();
@@ -79,11 +78,16 @@ const reloadPage = async () => {
 			title: '内测说明',
 			type: 'warning',
 			preset: 'dialog',
-			content: () => (
-				<p>
-					该功能尚处于内部开发阶段，未完工，请期待后续消息！
-				</p>
-			),
+			content: () => <p>该功能尚处于内部开发阶段，未完工，请期待后续消息！</p>,
+		});
+		return;
+	}
+	if (!dotBlackListStore.systemDotBlackList.length) {
+		modal.create({
+			title: '获取云控失败',
+			type: 'error',
+			preset: 'dialog',
+			content: () => <p>无法获取到HTML查看器的云控，请检查是否禁用云控或者清除HTML查看器的数据再重启平板尝试操作~</p>,
 		});
 		return;
 	}
@@ -123,11 +127,16 @@ const hotReloadApplicationData = async () => {
 			title: '内测说明',
 			type: 'warning',
 			preset: 'dialog',
-			content: () => (
-				<p>
-					该功能尚处于内部开发阶段，未完工，请期待后续消息！
-				</p>
-			),
+			content: () => <p>该功能尚处于内部开发阶段，未完工，请期待后续消息！</p>,
+		});
+		return;
+	}
+	if (!dotBlackListStore.systemDotBlackList.length) {
+		modal.create({
+			title: '获取云控失败',
+			type: 'error',
+			preset: 'dialog',
+			content: () => <p>无法获取到HTML查看器的云控，请检查是否禁用云控或者清除HTML查看器的数据再重启平板尝试操作~</p>,
 		});
 		return;
 	}
@@ -163,11 +172,16 @@ const importShareRule = async () => {
 			title: '内测说明',
 			type: 'warning',
 			preset: 'dialog',
-			content: () => (
-				<p>
-					该功能尚处于内部开发阶段，未完工，请期待后续消息！
-				</p>
-			),
+			content: () => <p>该功能尚处于内部开发阶段，未完工，请期待后续消息！</p>,
+		});
+		return;
+	}
+	if (!dotBlackListStore.systemDotBlackList.length) {
+		modal.create({
+			title: '获取云控失败',
+			type: 'error',
+			preset: 'dialog',
+			content: () => <p>无法获取到HTML查看器的云控，请检查是否禁用云控或者清除HTML查看器的数据再重启平板尝试操作~</p>,
 		});
 		return;
 	}
@@ -306,7 +320,8 @@ const importShareRule = async () => {
 							<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
 								{renderApplicationName(
 									importRuleContent.name,
-									autoUIStore.applicationName[importRuleContent.name],
+									deviceStore.installedAppNameList[importRuleContent.name] ||
+										autoUIStore.applicationName[importRuleContent.name],
 								)}
 							</span>{' '}
 							的应用配置成功了OwO~如果应用更新后的规则不生效，可以尝试重启平板再做尝试~
@@ -342,11 +357,16 @@ const handleCustomRuleDropdown = async (
 			title: '内测说明',
 			type: 'warning',
 			preset: 'dialog',
-			content: () => (
-				<p>
-					该功能尚处于内部开发阶段，未完工，请期待后续消息！
-				</p>
-			),
+			content: () => <p>该功能尚处于内部开发阶段，未完工，请期待后续消息！</p>,
+		});
+		return;
+	}
+	if (!dotBlackListStore.systemDotBlackList.length) {
+		modal.create({
+			title: '获取云控失败',
+			type: 'error',
+			preset: 'dialog',
+			content: () => <p>无法获取到HTML查看器的云控，请检查是否禁用云控或者清除HTML查看器的数据再重启平板尝试操作~</p>,
 		});
 		return;
 	}
@@ -357,24 +377,18 @@ const handleCustomRuleDropdown = async (
 			preset: 'dialog',
 			content: () => (
 				<p>
-					清除自定义规则后，你对{' '}
+					清除自定义规则后，将恢复{' '}
 					<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
 						{renderApplicationName(row.name, row.applicationName)}
 					</span>{' '}
-					所做的所有自定义配置将丢失，如果该应用同时还存在{' '}
-					<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-						模块规则
-					</span>{' '}
-					，将会还原回模块自身的适配规则。确定要继续吗？
+					的窗口控制器显示效果。确定要继续吗？
 				</p>
 			),
 			positiveText: '确定清除',
 			negativeText: '我再想想',
 			onPositiveClick: async () => {
 				cleanCustomModal.loading = true;
-				if (autoUIStore.customConfigAutoUIList[row.name]) {
-					delete autoUIStore.customConfigAutoUIList[row.name];
-				}
+
 				const [submitUpdateAutoUIAppErr, submitUpdateAutoUIAppRes] = await $to(
 					ksuApi.updateAutoUIApp({
 						customAutoUIListXML: xmlFormat.objectToXML(
@@ -514,130 +528,43 @@ const handleSystemRuleMode = (row: DotBlackListMergeItem, index: number) => {
 	});
 };
 
-const handleSwitchAction = async (row: AutoUIMergeRuleItem, index: number, value: boolean) => {
-	const switchCustomModal = modal.create({
-		title: `想${value ? '开启' : '关闭'}该应用的应用布局优化吗？`,
-		type: 'warning',
-		preset: 'dialog',
-		content: () => (
-			<p>
-				即将{value ? '开启' : '关闭'}
-				<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-					{renderApplicationName(row.name, row.applicationName)}
-				</span>{' '}
-				的应用布局优化适配规则。确定要继续吗？
-			</p>
-		),
-		positiveText: '确定',
-		negativeText: '我再想想',
-		onPositiveClick: async () => {
-			switchCustomModal.loading = true;
-			if (autoUIStore.autoUISettingConfig[row.name]) {
-				autoUIStore.autoUISettingConfig[row.name].enable = value;
-			} else {
-				autoUIStore.autoUISettingConfig[row.name] = {
-					name: row.name,
-					enable: value,
-				};
-			}
-			const [submitUpdateAutoUIAppErr, submitUpdateAutoUIAppRes] = await $to(
-				ksuApi.updateAutoUIApp({
-					customAutoUIListXML: xmlFormat.objectToXML(
-						autoUIStore.customConfigAutoUIList,
-						'package',
-						undefined,
-					),
-					settingConfigXML: xmlFormat.objectToXML(
-						autoUIStore.autoUISettingConfig,
-						'setting',
-						'setting_config',
-					),
-					reloadRuleAction: {
-						name: row.name,
-						action: value ? 'enable' : 'disable',
-					},
-				}),
-			);
-			if (submitUpdateAutoUIAppErr) {
-				modal.create({
-					title: '操作失败',
-					type: 'error',
-					preset: 'dialog',
-					content: () => (
-						<p>发生异常错误，更新失败了QwQ，该功能尚在测试阶段，尚不稳定，出现异常请及时反馈~</p>
-					),
-				});
-				switchCustomModal.loading = false;
-			} else {
-				modal.create({
-					title: '操作成功',
-					type: 'success',
-					preset: 'dialog',
-					content: () => <p>好耶w，操作成功了OwO~如果应用更新后的规则不生效，可以尝试重启平板再试试~</p>,
-				});
-				switchCustomModal.loading = false;
-				autoUIStore.updateMergeRuleList();
-			}
-		},
-	});
-};
-
 const openAddDrawer = async () => {
 	if (!deviceStore.ABTestInfo.Hyper_OS_DOT_BLACK_LIST_MANAGER) {
 		modal.create({
 			title: '内测说明',
 			type: 'warning',
 			preset: 'dialog',
-			content: () => (
-				<p>
-					该功能尚处于内部开发阶段，未完工，请期待后续消息！
-				</p>
-			),
+			content: () => <p>该功能尚处于内部开发阶段，未完工，请期待后续消息！</p>,
 		});
 		return;
 	}
-	if (addAutoUIApp.value) {
-		const [addAutoUiAppCancel, addAutoUiAppRes] = await $to(addAutoUIApp.value.openDrawer());
-		if (addAutoUiAppCancel) {
-			console.log('操作取消:', addAutoUiAppCancel);
+	if (!dotBlackListStore.systemDotBlackList.length) {
+		modal.create({
+			title: '获取云控失败',
+			type: 'error',
+			preset: 'dialog',
+			content: () => <p>无法获取到HTML查看器的云控，请检查是否禁用云控或者清除HTML查看器的数据再重启平板尝试操作~</p>,
+		});
+		return;
+	}
+	if (addDotBlackListApp.value) {
+		const [addDotBlackListAppCancel, addDotBlackListAppRes] = await $to(addDotBlackListApp.value.openDrawer());
+		if (addDotBlackListAppCancel) {
+			console.log('操作取消:', addDotBlackListAppCancel);
 		} else {
-			autoUIStore.customConfigAutoUIList[addAutoUiAppRes.name] = {
-				name: addAutoUiAppRes.name,
-				enable: true,
-				...(addAutoUiAppRes?.modePayload.skippedAppConfigChange ? { skippedAppConfigChange: true } : {}),
-				...(addAutoUiAppRes?.modePayload.optimizeWebView ? { optimizeWebView: true } : {}),
-				...(addAutoUiAppRes?.modePayload.hasOwnProperty('activityRule')
-					? { activityRule: addAutoUiAppRes?.modePayload.activityRule }
-					: {}),
-				...(addAutoUiAppRes?.modePayload.hasOwnProperty('skippedActivityRule')
-					? {
-							skippedActivityRule: addAutoUiAppRes?.modePayload.skippedActivityRule,
-						}
-					: {}),
-			};
-			autoUIStore.autoUISettingConfig[addAutoUiAppRes.name] = {
-				name: addAutoUiAppRes.name,
-				enable: true,
-			};
-			const [submitAddAutoUIAppErr, submitAddAutoUIAppRes] = await $to(
-				ksuApi.updateAutoUIApp({
-					customAutoUIListXML: xmlFormat.objectToXML(
-						autoUIStore.customConfigAutoUIList,
-						'package',
-						undefined,
-					),
-					settingConfigXML: xmlFormat.objectToXML(
-						autoUIStore.autoUISettingConfig,
-						'setting',
-						'setting_config',
-					),
-					reloadRuleAction: {
-						name: addAutoUiAppRes.name,
-						action: 'enable',
-					},
+			dotBlackListStore.customDotBlackList.push(addDotBlackListAppRes.name);
+			const currentDotBlackList = dotBlackListStore.mergeDotBlackList.map(item => {
+				return item.name;
+			});
+			console.log(currentDotBlackList, 'ttt');
+			const [submitAddDotBlackListAppErr, submitAddDotBlackListAppRes] = await $to(
+				ksuApi.updateDotBlackList({
+					dotBlackList: currentDotBlackList,
+					sourceDotBlackList: dotBlackListStore.sourceDotBlackList,
+					customDotBlackList: dotBlackListStore.customDotBlackList,
 				}),
 			);
-			if (submitAddAutoUIAppErr) {
+			if (submitAddDotBlackListAppErr) {
 				modal.create({
 					title: '应用添加失败',
 					type: 'error',
@@ -646,7 +573,7 @@ const openAddDrawer = async () => {
 						<p>发生异常错误，添加失败了QwQ，该功能尚在测试阶段，尚不稳定，出现异常请及时反馈~</p>
 					),
 				});
-				addAutoUiAppRes.loadingCallback && addAutoUiAppRes.loadingCallback();
+				addDotBlackListAppRes.loadingCallback && addDotBlackListAppRes.loadingCallback();
 			} else {
 				modal.create({
 					title: '应用添加成功',
@@ -654,20 +581,60 @@ const openAddDrawer = async () => {
 					preset: 'dialog',
 					content: () => (
 						<p>
-							好耶w，{' '}
+							好耶w，已经成功配置{' '}
 							<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
 								{renderApplicationName(
-									addAutoUiAppRes.name,
-									autoUIStore.applicationName[addAutoUiAppRes.name],
+									addDotBlackListAppRes.name,
+									deviceStore.installedAppNameList[addDotBlackListAppRes.name] ||
+										dotBlackListStore.applicationName[addDotBlackListAppRes.name],
 								)}
 							</span>{' '}
-							的应用配置添加成功了OwO~应用布局优化仅在应用全屏场景下生效，如果应用添加后的规则不生效，可以尝试重启平再做尝试~
+							的窗口控制器隐藏效果了OwO~实际生效还需要重启{' '}
+							<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+								系统界面
+							</span>{' '}
+							的作用域，确定要继续吗？
 						</p>
 					),
+					positiveText: '确定重启作用域',
+					negativeText: '稍后手动重启',
+					onPositiveClick() {
+						ksuApi
+							.killAndroidSystemUI()
+							.then(res => {
+								modal.create({
+									title: '重启作用域成功',
+									type: 'success',
+									preset: 'dialog',
+									content: () => (
+										<p>
+											已经成功为你重启系统界面的作用域，请手动结束{' '}
+											<span
+												class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+												{renderApplicationName(
+													addDotBlackListAppRes.name,
+													deviceStore.installedAppNameList[addDotBlackListAppRes.name] ||
+														dotBlackListStore.applicationName[addDotBlackListAppRes.name],
+												)}
+											</span>{' '}
+											的运行，再查看是否生效~
+										</p>
+									),
+								});
+							})
+							.catch(err => {
+								modal.create({
+									title: '重启作用域失败',
+									type: 'error',
+									preset: 'dialog',
+									content: () => <p>发生异常错误，重启系统界面作用域失败QwQ，详细错误请查看日志~</p>,
+								});
+							});
+					},
 				});
-				autoUIStore.updateMergeRuleList();
-				addAutoUiAppRes.loadingCallback && addAutoUiAppRes.loadingCallback();
-				addAutoUiAppRes.closeCallback && addAutoUiAppRes.closeCallback();
+				dotBlackListStore.initDefault();
+				addDotBlackListAppRes.loadingCallback && addDotBlackListAppRes.loadingCallback();
+				addDotBlackListAppRes.closeCallback && addDotBlackListAppRes.closeCallback();
 			}
 		}
 	}
@@ -748,32 +715,31 @@ function createColumns(): DataTableColumns<DotBlackListMergeItem> {
 			key: 'ruleMode',
 			render(row, index) {
 				if (row.ruleMode === 'custom') {
-				  const rule = [
-				    {
-				      label: '分享自定义规则',
-				      key: 'shareCustomRule',
-				      icon: renderIcon(ShareIcon),
-				    },
-				    {
-				      label: '清除自定义规则',
-				      key: 'cleanCustomRule',
-				      icon: renderIcon(TrashIcon),
-				    },
-				  ];
-				  return (
-				    <n-dropdown
-				      onSelect={(key: string | number, option: DropdownOption) =>
-				        handleCustomRuleDropdown(key, option, row, index)
-				      }
-				      size="large"
-				      trigger="click"
-				      options={rule}
-				    >
-				      <n-button size="small" dashed type="info">
-				        自定义规则
-				      </n-button>
-				    </n-dropdown>
-				  );
+					const rule = [
+						{
+							label: '分享自定义规则',
+							key: 'shareCustomRule',
+							icon: renderIcon(ShareIcon),
+						},
+						{
+							label: '清除自定义规则',
+							key: 'cleanCustomRule',
+							icon: renderIcon(TrashIcon),
+						},
+					];
+					return (
+						<n-dropdown
+							onSelect={(key: string | number, option: DropdownOption) =>
+								handleCustomRuleDropdown(key, option, row, index)
+							}
+							size='large'
+							trigger='click'
+							options={rule}>
+							<n-button size='small' dashed type='info'>
+								自定义规则
+							</n-button>
+						</n-dropdown>
+					);
 				}
 				return (
 					<n-button size='small' dashed type='error' onClick={() => handleSystemRuleMode(row, index)}>
@@ -795,7 +761,7 @@ function createColumns(): DataTableColumns<DotBlackListMergeItem> {
 			:line-height="16"
 			:width="384"
 			:height="384"
-      :z-index="9999"
+			:z-index="9999"
 			:x-offset="12"
 			:y-offset="60"
 			:rotate="-15" />
@@ -813,34 +779,32 @@ function createColumns(): DataTableColumns<DotBlackListMergeItem> {
 		</div>
 		<n-card title="操作区" size="small">
 			<div class="flex flex-wrap">
-        <n-button
-          class="mr-3 mb-3"
-          type="info"
-          :loading="deviceStore.loading || dotBlackListStore.loading"
-          @click="openAddDrawer"
-        >
-        <template #icon>
-            <n-icon>
-              <PlusIcon />
-            </n-icon>
-          </template>
-          添加应用
-        </n-button>
-        <n-button
-          class="mr-3 mb-3"
-          type="success"
-          :loading="deviceStore.loading || dotBlackListStore.loading"
-          @click="() => reloadPage()"
-        >
-        <template #icon>
-            <n-icon>
-              <ArrowPathIcon />
-            </n-icon>
-          </template>
-          刷新应用列表
-        </n-button>
-        <n-button
-					class="mr-3 mb-3"
+				<n-button
+					class="mb-3 mr-3"
+					type="info"
+					:loading="deviceStore.loading || dotBlackListStore.loading"
+					@click="openAddDrawer">
+					<template #icon>
+						<n-icon>
+							<PlusIcon />
+						</n-icon>
+					</template>
+					添加应用
+				</n-button>
+				<n-button
+					class="mb-3 mr-3"
+					type="success"
+					:loading="deviceStore.loading || dotBlackListStore.loading"
+					@click="() => reloadPage()">
+					<template #icon>
+						<n-icon>
+							<ArrowPathIcon />
+						</n-icon>
+					</template>
+					刷新应用列表
+				</n-button>
+				<n-button
+					class="mb-3 mr-3"
 					color="#8a2be2"
 					:loading="deviceStore.loading || dotBlackListStore.loading"
 					@click="() => hotReloadApplicationData()">
@@ -851,7 +815,7 @@ function createColumns(): DataTableColumns<DotBlackListMergeItem> {
 					</template>
 					热重载应用数据
 				</n-button>
-        <n-button
+				<n-button
 					class="mb-3 mr-3"
 					color="#69b2b6"
 					v-if="deviceStore.androidTargetSdk && deviceStore.androidTargetSdk > 33"
@@ -864,22 +828,19 @@ function createColumns(): DataTableColumns<DotBlackListMergeItem> {
 					</template>
 					获取已安装应用名称
 				</n-button>
-        <n-button
-          class="mr-3 mb-3"
-          type="warning"
-          :loading="
-            deviceStore.loading || dotBlackListStore.loading || importShareRuleLoading
-          "
-          @click="importShareRule()"
-        >
-        <template #icon>
-            <n-icon>
-              <ShareIcon />
-            </n-icon>
-          </template>
-          从分享口令导入
-        </n-button>
-      </div>
+				<n-button
+					class="mb-3 mr-3"
+					type="warning"
+					:loading="deviceStore.loading || dotBlackListStore.loading || importShareRuleLoading"
+					@click="importShareRule()">
+					<template #icon>
+						<n-icon>
+							<ShareIcon />
+						</n-icon>
+					</template>
+					从分享口令导入
+				</n-button>
+			</div>
 			<div class="flex flex-wrap">
 				<n-button
 					class="mb-3 mr-3"
@@ -943,7 +904,6 @@ function createColumns(): DataTableColumns<DotBlackListMergeItem> {
 			:columns="columns"
 			:data="dotBlackListStore.filterMergeDotBlackList"
 			:pagination="pagination" />
-		<AutoUIAppDrawer ref="addAutoUIApp" type="add" title="添加应用" />
-		<AutoUIAppDrawer ref="updateAutoUIApp" type="update" title="更新应用" />
+		<DotBlackListAppDrawer ref="addDotBlackListApp" type="add" title="添加应用" />
 	</main>
 </template>

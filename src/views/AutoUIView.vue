@@ -267,7 +267,7 @@ configProviderProps: configProviderPropsRef
               <p>
                 好耶w，{' '}
                 <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-                  {renderApplicationName(importRuleContent.name,autoUIStore.applicationName[importRuleContent.name])}
+                  {renderApplicationName(importRuleContent.name,deviceStore.installedAppNameList[importRuleContent.name] || autoUIStore.applicationName[importRuleContent.name])}
                 </span>{' '}
                 的应用配置成功了OwO~如果应用更新后的规则不生效，可以尝试重启平板再做尝试~
               </p>
@@ -597,7 +597,7 @@ configProviderProps: configProviderPropsRef
               <p>
                 好耶w，{' '}
                 <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-                  {renderApplicationName(addAutoUiAppRes.name,autoUIStore.applicationName[addAutoUiAppRes.name])}
+                  {renderApplicationName(addAutoUiAppRes.name,deviceStore.installedAppNameList[addAutoUiAppRes.name] || autoUIStore.applicationName[addAutoUiAppRes.name])}
                 </span>{' '}
                 的应用配置添加成功了OwO~应用布局优化仅在应用全屏场景下生效，如果应用添加后的规则不生效，可以尝试重启平再做尝试~
               </p>

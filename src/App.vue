@@ -23,7 +23,7 @@ const { message, modal } = createDiscreteApi(['message', 'modal'], {
 const embeddedStore = useEmbeddedStore();
 const fontStore = useFontStore();
 const autoUIStore = useAutoUIStore();
-const dotBlackListStore = useDotBlackListStore()
+const dotBlackListStore = useDotBlackListStore();
 const showErrorModal = ref(false);
 
 watch(
@@ -86,7 +86,7 @@ onMounted(async () => {
 		}
 	});
 	await deviceStore.initDefault();
-	if (deviceStore.androidTargetSdk === 31) {
+	if (deviceStore.androidTargetSdk && deviceStore.androidTargetSdk === 31) {
 		modal.create({
 			title: '不适配说明',
 			type: 'error',
@@ -111,11 +111,9 @@ onMounted(async () => {
 				},
 			});
 		}
-		embeddedStore.initDefault();
-		autoUIStore.initDefault();
-		if(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 1) {
-			dotBlackListStore.initDefault();
-		}
+		await embeddedStore.initDefault();
+		await autoUIStore.initDefault();
+		await dotBlackListStore.initDefault();
 	}
 });
 </script>

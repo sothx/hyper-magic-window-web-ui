@@ -113,13 +113,13 @@ export const useDotBlackListStore = defineStore(
 		// 错误存储
 		const errorLogging = reactive<ErrorLogging[]>([]);
 		//
-		// const allPackageName = computed(() => {
-		// 	const allPackages = new Set([
-		// 		...Object.keys(sourceAutoUIList.value),
-		// 		...Object.keys(customConfigAutoUIList.value),
-		// 	]);
-		// 	return allPackages;
-		// });
+		const allPackageName = computed(() => {
+			const allPackages = new Set([
+				...customDotBlackList.value,
+				...systemDotBlackList.value
+			]);
+			return allPackages;
+		});
 
 		async function initDefault() {
 			loading.value = true;
@@ -127,10 +127,6 @@ export const useDotBlackListStore = defineStore(
 			const applicationNameRes = await import('@/assets/applicationName.json');
 			const applicationNameData = applicationNameRes.default;
 			applicationName.value = applicationNameData;
-
-			if (!errorLogging.length) {
-				loading.value = false;
-			}
 
 			const [getDotBlackListErr, getDotBlackListRes] = await $to<DotBlackListItem[], string>(
 				ksuApi.getDotBlackList(),
@@ -151,14 +147,20 @@ export const useDotBlackListStore = defineStore(
 			}
 
 			if (getCustomDotBlackListRes) {
-				console.log(getCustomDotBlackListRes,'getCustomDotBlackListRes')
 				customDotBlackList.value = getCustomDotBlackListRes;
+			}
+
+			if (!errorLogging.length) {
+				loading.value = false;
 			}
 		}
 
 		return {
 			mergeRuleList,
+			allPackageName,
+			sourceDotBlackList,
 			systemDotBlackList,
+			customDotBlackList,
 			mergeDotBlackList,
 			filterMergeDotBlackList,
 			applicationName,
