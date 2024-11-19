@@ -15,6 +15,7 @@
     DocumentDuplicateIcon,
     PlayIcon,
     Squares2X2Icon,
+    SquaresPlusIcon,
     WindowIcon,
     XMarkIcon,
   } from '@heroicons/vue/24/outline'
@@ -163,6 +164,15 @@
         })
       },
       icon: DeviceTabletIcon
+    },
+    { 
+      name: '窗口控制器',
+      routeName: 'dot-black-list', 
+      href: '/dot-black-list', 
+      isShow() {
+        return deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 1
+      },
+      icon: SquaresPlusIcon 
     },
     { name: '日志记录', routeName: 'logs', href: '/logs', icon: DocumentDuplicateIcon },
     // { name: '开发路线图', routeName: 'project', href: '/project', icon: ChartPieIcon },

@@ -3,6 +3,8 @@ import axios from 'axios';
 import handlePromiseWithLogging from '@/utils/handlePromiseWithLogging';
 import $to from 'await-to-js';
 import { useDeviceStore } from '@/stores/device';
+import { useLogsStore } from '@/stores/logs';
+import type DotBlackListItem from '@/types/DotBlackListItem';
 
 export interface SmartFocusIOResult extends ExecResults {
 	stdout: 'on' | 'off';
@@ -32,7 +34,7 @@ export const getAndroidTargetSdk = (): Promise<number> => {
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
-				resolve(33);
+				resolve(35);
 			} else {
 				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
 				errno ? reject(stderr) : resolve(Number(stdout));
@@ -129,6 +131,118 @@ export const getMiuiAppCompatEnable = (): Promise<string> => {
 			}
 		}),
 		shellCommon,
+	);
+};
+
+export const getMiuiFreeformCloudDataIdList = (): Promise<string[]> => {
+	const sqlite3 = '/data/adb/modules/MIUI_MagicWindow+/common/utils/sqlite3'
+	const HTMLViewerCloudDataDataBase = `/data/user_de/0/com.android.htmlviewer/databases/cloud_all_data.db`
+	const shellCommon = `echo "$(${sqlite3} ${HTMLViewerCloudDataDataBase} "SELECT dataId FROM cloud_all_data WHERE moduleName='MiuiFreeform';")"`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(['1211629','1210869']);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = (await exec(shellCommon)) as unknown as ExecResults;
+				if (errno) {
+					reject(stderr)
+				}
+				if (stdout) {
+					try {
+						const ids = stdout.split('\n');
+						resolve(ids)
+					} catch (err) {
+						reject(err)
+					}
+				}
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const getCustomDotBlackList = (): Promise<string[]> => {
+	const shellCommon = `cat /data/adb/MIUI_MagicWindow+/config/dot_black_list.json`;
+	return handlePromiseWithLogging(new Promise(async (resolve, reject) => {
+	  if (import.meta.env.MODE === "development") {
+		const response = await axios.get(
+		  "/data/custom/dot_black_list.json"
+		);
+		const jsonText = response.data; // 这是 XML 内容
+		resolve(jsonText as unknown as string[]);
+	  } else {
+		const { errno, stdout, stderr }: ExecResults = await exec(
+		  shellCommon
+		);
+		if (errno) {
+			reject(stderr);
+		}
+
+		if (stdout) {
+			try {
+				resolve(JSON.parse(stdout))
+			} catch (err) {
+				reject(err)
+			}
+		}
+	  }
+	}), shellCommon);
+}
+
+export const getDotBlackList = (): Promise<DotBlackListItem[]> => {
+	const sqlite3 = '/data/adb/modules/MIUI_MagicWindow+/common/utils/sqlite3'
+	const HTMLViewerCloudDataBase = `/data/user_de/0/com.android.htmlviewer/databases/cloud_all_data.db`
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				const response = await axios.get('/data/system/dot_black_list.json');
+				resolve(response.data as unknown as DotBlackListItem[]);
+			} else {
+				const [,getMiuiFreeformCloudDataIdListRes] = await $to<string[],string>(getMiuiFreeformCloudDataIdList())
+				if (getMiuiFreeformCloudDataIdListRes) {
+					const fetchDataById = async (dataId:string):Promise<DotBlackListItem> => {
+						const shellCommon = `echo "$(${sqlite3} ${HTMLViewerCloudDataBase} "SELECT productData FROM cloud_all_data WHERE dataId='${dataId}';")"`;
+						return handlePromiseWithLogging(
+							new Promise(async (fetchDataByIdResolve,fetchDataByIdReject) => {
+								const { errno, stdout, stderr }: ExecResults = (await exec(shellCommon)) as unknown as ExecResults;
+								if (errno) {
+									fetchDataByIdReject(stderr)
+								}
+								if (stdout) {
+									try {
+										const cloudFeatucteData = JSON.parse(stdout)
+										if (cloudFeatucteData.dot_black_list) {
+											fetchDataByIdResolve({
+												dataId: Number(dataId),
+												productData: cloudFeatucteData || {},
+												dataList: cloudFeatucteData.dot_black_list || []
+											})
+										} else {
+											fetchDataByIdResolve({
+												dataId: Number(dataId),
+												productData: cloudFeatucteData || {},
+												dataList:[]
+											})
+										}
+									} catch (err) {
+										fetchDataByIdReject(err)
+									}
+								}
+							}),
+							shellCommon
+						)
+					}
+					const [getDotBlackListErr,getDotBlackListRes] = await $to(Promise.all(getMiuiFreeformCloudDataIdListRes.map(dataId => fetchDataById(dataId))))
+					if (getDotBlackListErr) {
+						reject(getDotBlackListErr)
+					}
+					if (getDotBlackListRes) {
+						resolve(getDotBlackListRes)
+					}
+				}
+			}
+		}),
+		'getDotBlackList',
 	);
 };
 
@@ -1065,24 +1179,6 @@ export const updateEmbeddedApp = (
 		}),
 	);
 };
-
-// export const getAndroidAppPackageList = (): Promise<string> => {
-//   const shellCommon = `cat /data/adb/modules/MIUI_MagicWindow+/common/temp/package_info.json`
-//   return handlePromiseWithLogging(new Promise(async (resolve, reject) => {
-//     if (import.meta.env.MODE === "development") {
-//       const response = await axios.get(
-//         "/data/origin/package_info.json"
-//       );
-//       const jsonText = response.data; // 这是 XML 内容
-//       resolve(jsonText);
-//     } else {
-//       const { errno, stdout, stderr }: ExecResults = await exec(
-//         shellCommon
-//       );
-//       errno ? reject(stderr) : resolve(stdout);
-//     }
-//   }), shellCommon);
-// };
 
 // export const reloadAndroidAppPackageList = (): Promise<string> => {
 //   const shellCommon = `(sh /data/adb/modules/MIUI_MagicWindow+/service.sh > /dev/null 2>&1 & echo $!)`

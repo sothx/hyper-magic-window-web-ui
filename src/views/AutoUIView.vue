@@ -1054,7 +1054,7 @@ configProviderProps: configProviderPropsRef
           clearable
           v-model:value="autoUIStore.searchKeyWord"
           ref="searchKeyWordInput"
-          placeholder="搜索应用包名"
+          placeholder="搜索应用名称/应用包名"
           autosize
           :style="{ width: '80%' }"
         />

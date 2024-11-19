@@ -4,6 +4,7 @@ import { computed, h, ref, type CSSProperties } from 'vue';
 import * as xmlFormat from '@/utils/xmlFormat';
 import { createDiscreteApi, darkTheme, lightTheme, NInput, type ConfigProviderProps } from 'naive-ui';
 import { useGameMode } from '@/hooks/useGameMode';
+import { useABTestActivation } from '@/hooks/useABTestActivation';
 import * as ksuApi from '@/apis/ksuApi';
 import $to from 'await-to-js';
 import { useEmbeddedStore } from '@/stores/embedded';
@@ -14,6 +15,7 @@ import { findBase64InString } from '@/utils/common';
 import { arrayBufferToBase64, base64ToArrayBuffer } from '@/utils/format';
 import pako from 'pako';
 const embeddedStore = useEmbeddedStore();
+const { activateABTest, loading: activateABTestLoading } = useABTestActivation();
 const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
 	theme: deviceStore.isDarkMode ? darkTheme : lightTheme,
 }));
@@ -21,7 +23,6 @@ const { message, modal } = createDiscreteApi(['message', 'modal'], {
 	configProviderProps: configProviderPropsRef,
 });
 const gameMode = useGameMode();
-const activateABTestLoading = ref(false);
 const fontStore = useFontStore();
 const handleSmartFocusIOChange = (value: boolean) => {
 	message.info('功能尚未上线，无任何实际效果，请等待后续更新！');
@@ -77,18 +78,19 @@ const handleSelectRhythmMode = (item: string) => {
 	}
 };
 const activateABTestTextarea = ref<string>('');
-const activateABTest = async () => {
-	const ABTestontent = {
-		OS2_PAD_EMBEDDED_APP_MANAGER: true
-	};
-	const jsonString = JSON.stringify(ABTestontent);
-	const deflate = pako.deflate(jsonString, {
-		level: 9,
-		memLevel: 9,
-		windowBits: 15,
-	});
-	const compressedData = new Uint8Array(deflate);
-	const base64String: string = arrayBufferToBase64(compressedData);
+const handleActivateABTest = async () => {
+	// const ABTestontent = {
+	// 	Hyper_OS_DOT_BLACK_LIST_MANAGER: true
+	// };
+	// const jsonString = JSON.stringify(ABTestontent);
+	// const deflate = pako.deflate(jsonString, {
+	// 	level: 9,
+	// 	memLevel: 9,
+	// 	windowBits: 15,
+	// });
+	// const compressedData = new Uint8Array(deflate);
+	// const base64String: string = arrayBufferToBase64(compressedData);
+	// console.log(base64String,'base64String')
 	activateABTestTextarea.value = '';
 	const [activateABTestTextareaModalErr, activateABTestTextareaModalRes] = await $to(
 		new Promise((resolve, reject) => {
@@ -135,47 +137,7 @@ const activateABTest = async () => {
 				to: 'string',
 			});
 			const activateABTestRuleContent = JSON.parse(inflate);
-			if (activateABTestRuleContent.OS2_PAD_EMBEDDED_APP_MANAGER) {
-				deviceStore.ABTestInfo.OS2_PAD_EMBEDDED_APP_MANAGER = true;
-				modal.create({
-					title: '操作成功',
-					type: 'success',
-					preset: 'dialog',
-					content: () => (
-						<div>
-							<p>
-								已成功参与OS2{' '}
-								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-									应用横屏配置 For Web UI
-								</span>{' '}
-								的Beta测试w。由于小米在OS2新开发的{' '}
-								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-									应用横屏布局
-								</span>{' '}
-								存在较多BUG，模块强制劫持了所有配置，仅能通过Web UI去调整应用横屏适配，在{' '}
-								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-									平板专区
-								</span>{' '}所做的相关修改会在重启后丢失。
-							</p>
-							<p>开发Hyper OS 2.0模块的Web
-								UI真的消耗了我大量的个人时间和精力QwQ(特别是在小米的BUG加持下)，如果对{' '}
-								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>完美横屏应用计划感到满意</span>{' '}，求个随缘打赏。(打赏入口在Web UI侧边栏)
-							</p>
-						</div>
-					),
-					negativeText: '确定',
-				});
-				activateABTestLoading.value = false;
-			} else {
-				modal.create({
-					title: '解析激活口令失败',
-					type: 'error',
-					preset: 'dialog',
-					content: () => <p>解析激活口令失败了QwQ，请检查激活口令是否有误</p>,
-					negativeText: '确定',
-				});
-				activateABTestLoading.value = false;
-			}
+			activateABTest(activateABTestRuleContent)
 		} catch (error) {
 			// 解析失败，处理错误
 			modal.create({
@@ -252,7 +214,7 @@ const changePatchMode = async (value: boolean) => {
 				},
 				onNegativeClick: () => {
 					reject('negativeClick');
-				}
+				},
 			});
 		}),
 	);
@@ -303,9 +265,9 @@ const changePatchMode = async (value: boolean) => {
 					'package_config',
 				),
 				patchEmbeddedSettingConfigXML: xmlFormat.objectToXML(
-						embeddedStore.patchEmbeddedSettingConfig,
-						'setting',
-						'setting_rule',
+					embeddedStore.patchEmbeddedSettingConfig,
+					'setting',
+					'setting_rule',
 				),
 				customEmbeddedRulesListXML: xmlFormat.objectToXML(
 					embeddedStore.customConfigEmbeddedRulesList,
@@ -746,7 +708,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 								size="small"
 								type="warning"
 								:loading="deviceStore.loading || embeddedStore.loading || activateABTestLoading"
-								@click="activateABTest()">
+								@click="handleActivateABTest()">
 								导入激活口令
 							</n-button>
 						</dd>
@@ -826,7 +788,9 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							{{ deviceStore.deviceSocName || '获取失败' }}
 						</dd>
 					</div>
-					<div v-if="deviceStore.batteryInfo.chargeFullDesign" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+					<div
+						v-if="deviceStore.batteryInfo.chargeFullDesign"
+						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
 							电池出厂设计容量
@@ -836,7 +800,9 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							<p>{{ `${deviceStore.batteryInfo.chargeFullDesign / 1000} mAh` }}</p>
 						</dd>
 					</div>
-					<div v-if="deviceStore.batteryInfo.chargeFull" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+					<div
+						v-if="deviceStore.batteryInfo.chargeFull"
+						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
 							电池当前预估容量
@@ -846,7 +812,9 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							<p>{{ `${deviceStore.batteryInfo.chargeFull / 1000} mAh` }}</p>
 						</dd>
 					</div>
-					<div v-if="deviceStore.batteryInfo.cycleCount" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+					<div
+						v-if="deviceStore.batteryInfo.cycleCount"
+						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
 							电池循环充电次数
@@ -856,17 +824,23 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							<p>{{ `${deviceStore.batteryInfo.cycleCount} 次` }}</p>
 						</dd>
 					</div>
-					<div v-if="deviceStore.batteryInfo.chargeFullDesign && deviceStore.batteryInfo.chargeFull" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+					<div
+						v-if="deviceStore.batteryInfo.chargeFullDesign && deviceStore.batteryInfo.chargeFull"
+						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
 							电池预估健康度
 						</dt>
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							<p>{{ `${((deviceStore.batteryInfo.chargeFull / deviceStore.batteryInfo.chargeFullDesign) * 100).toFixed(2)} %` }}</p>
+							<p>{{
+								`${((deviceStore.batteryInfo.chargeFull / deviceStore.batteryInfo.chargeFullDesign) * 100).toFixed(2)} %`
+							}}</p>
 						</dd>
 					</div>
-					<div v-if="deviceStore.batteryInfo.sohQcom" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+					<div
+						v-if="deviceStore.batteryInfo.sohQcom"
+						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
 							电池售后健康度(高通)
@@ -877,7 +851,9 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							<p>(Tips:在设备保修期内健康度低于80%可以申请电池质保)</p>
 						</dd>
 					</div>
-					<div v-if="deviceStore.batteryInfo.sohMTK" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+					<div
+						v-if="deviceStore.batteryInfo.sohMTK"
+						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
 							电池售后健康度(联发科)

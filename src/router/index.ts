@@ -52,6 +52,11 @@ const router = createRouter({
       name: 'game-turbo-config',
       component: () => import('../views/GameTurboConfig.vue'),
     },
+    {
+      path: '/dot-black-list',
+      name: 'dot-black-list',
+      component: () => import('../views/DotBlackListView.vue'),
+    },
   ],
   scrollBehavior(to, from, next) {
     return {

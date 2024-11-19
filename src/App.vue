@@ -8,6 +8,7 @@ import { useDeviceStore } from '@/stores/device';
 import { createDiscreteApi, darkTheme, lightTheme, type ConfigProviderProps } from 'naive-ui';
 import { useEmbeddedStore } from '@/stores/embedded';
 import { useFontStore } from '@/stores/font';
+import { useDotBlackListStore } from '@/stores/dotBlackList';
 import { useLogsStore } from '@/stores/logs';
 import { useAutoUIStore } from '@/stores/autoui';
 const deviceStore = useDeviceStore();
@@ -22,6 +23,7 @@ const { message, modal } = createDiscreteApi(['message', 'modal'], {
 const embeddedStore = useEmbeddedStore();
 const fontStore = useFontStore();
 const autoUIStore = useAutoUIStore();
+const dotBlackListStore = useDotBlackListStore()
 const showErrorModal = ref(false);
 
 watch(
@@ -111,6 +113,9 @@ onMounted(async () => {
 		}
 		embeddedStore.initDefault();
 		autoUIStore.initDefault();
+		if(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 1) {
+			dotBlackListStore.initDefault();
+		}
 	}
 });
 </script>
