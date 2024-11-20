@@ -740,6 +740,7 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 		return;
 	}
 	if (updateEmbeddedApp.value) {
+		logsStore.info(JSON.stringify(row),'rowww')
 		const [updateEmbeddedAppCancel, updateEmbeddedAppRes] = await $to(updateEmbeddedApp.value.openDrawer(row));
 		if (updateEmbeddedAppCancel) {
 			console.log('操作取消:', updateEmbeddedAppCancel);
@@ -1419,44 +1420,6 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 				);
 			},
 		},
-		// {
-		// 	title: '支持的规则',
-		// 	key: 'ruleMode',
-		// 	minWidth: 200,
-		// 	render(row, index) {
-		// 		const rowIsSupportEmbedded = row.isSupportEmbedded;
-		// 		const rowIsSupportFullScreen =
-		// 			(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && row.isSupportFullScreen) ||
-		// 			(deviceStore.MIOSVersion && deviceStore.MIOSVersion === 1) ||
-		// 			(!deviceStore.loading && !deviceStore.MIOSVersion);
-		// 		const rowIsSupportFixedOrientation =
-		// 			(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && row.isSupportFixedOrientation) ||
-		// 			(deviceStore.MIOSVersion && deviceStore.MIOSVersion === 1) ||
-		// 			(!deviceStore.loading && !deviceStore.MIOSVersion);
-		// 		return (
-		// 			<div>
-		// 				{rowIsSupportEmbedded && (
-		// 					<n-tag type='success' bordered={false} class='my-1 mr-2'>
-		// 						平行窗口
-		// 					</n-tag>
-		// 				)}
-		// 				{rowIsSupportFullScreen && (
-		// 					<n-tag type='info' bordered={false} class='my-1 mr-2'>
-		// 						全屏
-		// 					</n-tag>
-		// 				)}
-		// 				{rowIsSupportFixedOrientation && (
-		// 					<n-tag type='warning' bordered={false} class='my-1 mr-2'>
-		// 						居中布局
-		// 					</n-tag>
-		// 				)}
-		// 				<n-tag type='error' bordered={false} class='my-1'>
-		// 					原始布局
-		// 				</n-tag>
-		// 			</div>
-		// 		);
-		// 	},
-		// },
 		{
 			title: '规则来源',
 			minWidth: 100,
@@ -1518,7 +1481,7 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 						positiveText: '确定重置',
 						negativeText: '我再想想',
 						onPositiveClick: async () => {
-							const [resetCompatErr, resetCompatRes] = await $to(deviceApi.resetApplicationCompat(row.name));
+							const [resetCompatErr, resetCompatRes] = await $to(embeddedApi.resetApplicationCompat(row.name));
 							if (resetCompatErr) {
 								modal.create({
 									title: '重置应用兼容性失败',

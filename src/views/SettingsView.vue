@@ -13,6 +13,7 @@ const deviceStore = useDeviceStore();
 import { useFontStore } from '@/stores/font';
 import { findBase64InString } from '@/utils/common';
 import { arrayBufferToBase64, base64ToArrayBuffer } from '@/utils/format';
+import * as embeddedApi from '@/apis/embeddedApi';
 import pako from 'pako';
 const embeddedStore = useEmbeddedStore();
 const { activateABTest, loading: activateABTestLoading } = useABTestActivation();
@@ -252,7 +253,7 @@ const changePatchMode = async (value: boolean) => {
 		}
 		await deviceStore.getAndroidApplicationPackageNameList();
 		const [submitUpdateEmbeddedAppErr, submitUpdateEmbeddedAppRes] = await $to(
-			deviceApi.updateEmbeddedApp({
+			embeddedApi.updateEmbeddedApp({
 				isPatchMode: embeddedStore.isPatchMode,
 				patchEmbeddedRulesListXML: xmlFormat.objectToXML(
 					embeddedStore.patchEmbeddedRulesList,

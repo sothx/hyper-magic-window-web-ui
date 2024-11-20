@@ -82,6 +82,7 @@ const fullScreenRuleOptions = computed<fullScreenRuleOptions[]>(() => {
 		{
 			label: '默认横屏规则',
 			key: 'fullScreen_default',
+			rule: ''
 		},
 	];
 
@@ -210,17 +211,6 @@ const embeddedAppDrawer = ref({
 				} else {
 					currentFixedOrientationRelaunch.value = true;
 				}
-				// const initialSupportModes: EmbeddedMergeRuleItem['settingMode'][] = ['disabled'];
-				// if (initialParams.fixedOrientationRule?.supportModes?.includes('fo')) {
-				// 	initialSupportModes.unshift('fixedOrientation');
-				// }
-				// if (initialParams.fixedOrientationRule?.supportModes?.includes('full')) {
-				// 	initialSupportModes.unshift('fullScreen');
-				// }
-				// if (isSupportEmbedded.value) {
-				// 	initialSupportModes.unshift('embedded');
-				// }
-				// currentSupportModes.value = initialSupportModes;
 				currentSettingMode.value = initialParams.settingMode;
 				currentSkipSelfAdaptive.value = initialParams.fixedOrientationRule?.disable ?? false;
 				currentIsShowDivider.value = initialParams.fixedOrientationRule?.isShowDivider ?? false;
@@ -242,9 +232,9 @@ const embeddedAppDrawer = ref({
 							? fullScreenRuleOptions.value[0]
 							: fullScreenRuleOptions.value[1];
 				} else if (currentFullRule.value === '*') {
-					currentFullScreenRuleOptions.value = fullScreenRuleOptions.value[2];
+					currentFullScreenRuleOptions.value = deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 ? fullScreenRuleOptions.value[2] : fullScreenRuleOptions.value[1];
 				} else {
-					currentFullScreenRuleOptions.value = fullScreenRuleOptions.value[3];
+					currentFullScreenRuleOptions.value = deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 ? fullScreenRuleOptions.value[3] : fullScreenRuleOptions.value[2];
 				}
 				currentSupportFullSize.value = initialParams.embeddedRules?.supportFullSize ?? false;
 				if (
@@ -530,20 +520,6 @@ const handleCurrentSupportModes = (value: EmbeddedMergeRuleItem['settingMode'][]
 	// message.info(JSON.stringify(value))
 };
 
-const isShowTabs = ref<boolean>(true);
-
-watch(
-	() => currentSupportModes.value,
-	newValue => {
-		if (newValue) {
-			isShowTabs.value = false;
-			setTimeout(() => {
-				isShowTabs.value = true;
-			}, 0);
-		}
-	},
-);
-
 defineExpose({
 	openDrawer: embeddedAppDrawer.value.openDrawer, // 传递 openDrawer 方法
 });
@@ -573,32 +549,7 @@ defineExpose({
 				<n-tag :bordered="false" type="info">自定义规则</n-tag>
 				。
 			</n-alert>
-			<!-- <n-card
-				:bordered="false"
-				title="支持的规则"
-				size="small"
-				v-if="deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2">
-				<n-checkbox-group
-					size="large"
-					v-model:value="currentSupportModes"
-					@update:value="handleCurrentSupportModes">
-					<n-grid :y-gap="8" :cols="2">
-						<n-gi v-if="currentType === 'update'">
-							<n-checkbox :disabled="true" checked-value="embedded" value="embedded" label="平行窗口" />
-						</n-gi>
-						<n-gi>
-							<n-checkbox value="fullScreen" label="全屏" />
-						</n-gi>
-						<n-gi>
-							<n-checkbox value="fixedOrientation" label="居中布局" />
-						</n-gi>
-						<n-gi>
-							<n-checkbox :disabled="true" checked-value="disabled" value="disabled" label="原始布局" />
-						</n-gi>
-					</n-grid>
-				</n-checkbox-group>
-			</n-card> -->
-			<n-tabs class="my-5" type="segment" v-if="isShowTabs" animated v-model:value="currentSettingMode">
+			<n-tabs class="my-5" type="segment" animated v-model:value="currentSettingMode">
 				<n-tab-pane name="embedded" tab="平行窗口" v-if="props.type === 'update' && isSupportEmbedded">
 					<n-alert :show-icon="false" :bordered="false" title="应用分屏显示" type="success">
 						开启后，未适配横屏应用界面将通过平行窗口显示

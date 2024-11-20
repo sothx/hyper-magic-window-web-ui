@@ -265,67 +265,6 @@ export const mergeEmbeddedRule = (
       }
     }
 
-    // if (settingConfig && settingConfig.hasOwnProperty('embeddedEnable')) {
-    //   if (settingConfig.embeddedEnable) {
-    //     if (embeddedConfig) {
-    //       if (embeddedConfig.hasOwnProperty('fullRule')) {
-    //         if (embeddedConfig.fullRule) {
-    //           settingMode = 'fullScreen'
-    //         } else {
-    //           settingMode = 'embedded'
-    //         }
-    //       } else {
-    //         settingMode = 'embedded'
-    //       }
-    //     }
-    //   } else {      
-    //     if (fixedOrientationConfig) {
-    //       if (fixedOrientationConfig.hasOwnProperty('disable')) {
-    //         if (!fixedOrientationConfig.disable) {
-    //           settingMode = "fixedOrientation";
-    //         }
-    //       } else {
-    //         settingMode = "fixedOrientation";
-    //       }
-    //     }  
-    //   }
-    // } else {
-    //   if (fixedOrientationConfig) {
-    //     if (fixedOrientationConfig.hasOwnProperty('disable')) {
-    //       if (!fixedOrientationConfig.disable) {
-    //         settingMode = "fixedOrientation";
-    //       }
-    //     } else {
-    //       settingMode = "fixedOrientation";
-    //     }
-    //   }
-    //   if (embeddedConfig) {
-    //     if(embeddedConfig.hasOwnProperty('defaultSettings')) {
-    //       if (embeddedConfig.defaultSettings) {
-    //         if (embeddedConfig.hasOwnProperty('fullRule')) {
-    //           if (embeddedConfig.fullRule) {
-    //             settingMode = 'fullScreen'
-    //           } else {
-    //             settingMode = 'embedded'
-    //           }
-    //         } else {
-    //           settingMode = 'embedded'
-    //         }
-    //       }
-    //     } else {
-    //       if (embeddedConfig.hasOwnProperty('fullRule')) {
-    //         if (embeddedConfig.fullRule) {
-    //           settingMode = 'fullScreen'
-    //         } else {
-    //           settingMode = 'embedded'
-    //         }
-    //       } else {
-    //         settingMode = 'embedded'
-    //       }
-    //     }
-    //   }
-    // }
-
 
     const omitEmbeddedConfig = omitName(embeddedConfig)
 
