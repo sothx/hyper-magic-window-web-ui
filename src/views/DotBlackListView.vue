@@ -78,7 +78,11 @@ const reloadPage = async () => {
 			title: '内测说明',
 			type: 'warning',
 			preset: 'dialog',
-			content: () => <p>该功能尚处于测试阶段，预估最快2024-12-21后正式上线，可能存在较多不稳定性，需要有一定的玩机知识和问题解决能力，如需参与测试请通过做梦书的酷安动态获取新功能内测的激活口令！(动态内容就有，无需私信，新功能不同口令也不相同)</p>,
+			content: () => (
+				<p>
+					该功能尚处于测试阶段，预估最快2024-12-21后正式上线，可能存在较多不稳定性，需要有一定的玩机知识和问题解决能力，如需参与测试请通过做梦书的酷安动态获取新功能内测的激活口令！(动态内容就有，无需私信，新功能不同口令也不相同)
+				</p>
+			),
 		});
 		return;
 	}
@@ -129,7 +133,11 @@ const hotReloadApplicationData = async () => {
 			title: '内测说明',
 			type: 'warning',
 			preset: 'dialog',
-			content: () => <p>该功能尚处于测试阶段，预估最快2024-12-21后正式上线，可能存在较多不稳定性，需要有一定的玩机知识和问题解决能力，如需参与测试请通过做梦书的酷安动态获取新功能内测的激活口令！(动态内容就有，无需私信，新功能不同口令也不相同)</p>,
+			content: () => (
+				<p>
+					该功能尚处于测试阶段，预估最快2024-12-21后正式上线，可能存在较多不稳定性，需要有一定的玩机知识和问题解决能力，如需参与测试请通过做梦书的酷安动态获取新功能内测的激活口令！(动态内容就有，无需私信，新功能不同口令也不相同)
+				</p>
+			),
 		});
 		return;
 	}
@@ -187,12 +195,16 @@ const hotReloadApplicationData = async () => {
 				deviceApi
 					.killAndroidSystemUI()
 					.then(async res => {
-						await reloadPage()
+						await reloadPage();
 						modal.create({
 							title: '重启作用域成功',
 							type: 'success',
 							preset: 'dialog',
-							content: () => <p>已经成功为你重启系统界面的作用域，请查看是否生效，如不生效请手动重启平板再查看效果~</p>,
+							content: () => (
+								<p>
+									已经成功为你重启系统界面的作用域，请查看是否生效，如不生效请手动重启平板再查看效果~
+								</p>
+							),
 						});
 					})
 					.catch(err => {
@@ -215,7 +227,11 @@ const importShareRule = async () => {
 			title: '内测说明',
 			type: 'warning',
 			preset: 'dialog',
-			content: () => <p>该功能尚处于测试阶段，预估最快2024-12-21后正式上线，可能存在较多不稳定性，需要有一定的玩机知识和问题解决能力，如需参与测试请通过做梦书的酷安动态获取新功能内测的激活口令！(动态内容就有，无需私信，新功能不同口令也不相同)</p>,
+			content: () => (
+				<p>
+					该功能尚处于测试阶段，预估最快2024-12-21后正式上线，可能存在较多不稳定性，需要有一定的玩机知识和问题解决能力，如需参与测试请通过做梦书的酷安动态获取新功能内测的激活口令！(动态内容就有，无需私信，新功能不同口令也不相同)
+				</p>
+			),
 		});
 		return;
 	}
@@ -317,8 +333,18 @@ const importShareRule = async () => {
 				importShareRuleLoading.value = false;
 				return;
 			}
-			!dotBlackListStore.customDotBlackList.includes(importRuleContent.name) &&
-				dotBlackListStore.customDotBlackList.push(importRuleContent.name);
+			if (dotBlackListStore.allPackageName.has(importRuleContent.name)) {
+				modal.create({
+					title: '应用包名已存在',
+					type: 'error',
+					preset: 'dialog',
+					content: () => <p>这个应用包名已经存在列表中了,导入分享规则失败了！（敲</p>,
+				});
+				importShareRuleLoading.value = false;
+				return;
+			}
+
+			dotBlackListStore.customDotBlackList.push(importRuleContent.name);
 			const currentDotBlackList = dotBlackListStore.mergeDotBlackList.map(item => {
 				return item.name;
 			});
@@ -368,12 +394,16 @@ const importShareRule = async () => {
 						deviceApi
 							.killAndroidSystemUI()
 							.then(async res => {
-								await reloadPage()
+								await reloadPage();
 								modal.create({
 									title: '重启作用域成功',
 									type: 'success',
 									preset: 'dialog',
-									content: () => <p>已经成功为你重启系统界面的作用域，请查看是否生效，如不生效请手动重启平板再查看效果~</p>,
+									content: () => (
+										<p>
+											已经成功为你重启系统界面的作用域，请查看是否生效，如不生效请手动重启平板再查看效果~
+										</p>
+									),
 								});
 							})
 							.catch(err => {
@@ -414,7 +444,11 @@ const handleCustomRuleDropdown = async (
 			title: '内测说明',
 			type: 'warning',
 			preset: 'dialog',
-			content: () => <p>该功能尚处于测试阶段，预估最快2024-12-21后正式上线，可能存在较多不稳定性，需要有一定的玩机知识和问题解决能力，如需参与测试请通过做梦书的酷安动态获取新功能内测的激活口令！(动态内容就有，无需私信，新功能不同口令也不相同)</p>,
+			content: () => (
+				<p>
+					该功能尚处于测试阶段，预估最快2024-12-21后正式上线，可能存在较多不稳定性，需要有一定的玩机知识和问题解决能力，如需参与测试请通过做梦书的酷安动态获取新功能内测的激活口令！(动态内容就有，无需私信，新功能不同口令也不相同)
+				</p>
+			),
 		});
 		return;
 	}
@@ -450,12 +484,10 @@ const handleCustomRuleDropdown = async (
 				dotBlackListStore.customDotBlackList = dotBlackListStore.customDotBlackList.filter(
 					item => item !== row.name,
 				);
-				dotBlackListStore.sourceDotBlackList = dotBlackListStore.sourceDotBlackList.map((item) => {
-					item.dataList = item.dataList.filter(
-						(item:string) => item !== row.name
-					)
+				dotBlackListStore.sourceDotBlackList = dotBlackListStore.sourceDotBlackList.map(item => {
+					item.dataList = item.dataList.filter((item: string) => item !== row.name);
 					return item;
-				})
+				});
 				const currentDotBlackList = dotBlackListStore.mergeDotBlackList.map(item => {
 					return item.name;
 				});
@@ -495,12 +527,16 @@ const handleCustomRuleDropdown = async (
 							deviceApi
 								.killAndroidSystemUI()
 								.then(async res => {
-									await reloadPage()
+									await reloadPage();
 									modal.create({
 										title: '重启作用域成功',
 										type: 'success',
 										preset: 'dialog',
-										content: () => <p>已经成功为你重启系统界面的作用域，请查看是否生效，如不生效请手动重启平板再查看效果~</p>,
+										content: () => (
+											<p>
+												已经成功为你重启系统界面的作用域，请查看是否生效，如不生效请手动重启平板再查看效果~
+											</p>
+										),
 									});
 								})
 								.catch(err => {
@@ -516,7 +552,7 @@ const handleCustomRuleDropdown = async (
 						},
 					});
 					cleanCustomModal.loading = false;
-					await reloadPage()
+					await reloadPage();
 				}
 			},
 		});
@@ -624,7 +660,11 @@ const openAddDrawer = async () => {
 			title: '内测说明',
 			type: 'warning',
 			preset: 'dialog',
-			content: () => <p>该功能尚处于测试阶段，预估最快2024-12-21后正式上线，可能存在较多不稳定性，需要有一定的玩机知识和问题解决能力，如需参与测试请通过做梦书的酷安动态获取新功能内测的激活口令！(动态内容就有，无需私信，新功能不同口令也不相同)</p>,
+			content: () => (
+				<p>
+					该功能尚处于测试阶段，预估最快2024-12-21后正式上线，可能存在较多不稳定性，需要有一定的玩机知识和问题解决能力，如需参与测试请通过做梦书的酷安动态获取新功能内测的激活口令！(动态内容就有，无需私信，新功能不同口令也不相同)
+				</p>
+			),
 		});
 		return;
 	}
@@ -691,12 +731,16 @@ const openAddDrawer = async () => {
 						deviceApi
 							.killAndroidSystemUI()
 							.then(async res => {
-								await reloadPage()
+								await reloadPage();
 								modal.create({
 									title: '重启作用域成功',
 									type: 'success',
 									preset: 'dialog',
-									content: () => <p>已经成功为你重启系统界面的作用域，请查看是否生效，如不生效请手动重启平板再查看效果~</p>,
+									content: () => (
+										<p>
+											已经成功为你重启系统界面的作用域，请查看是否生效，如不生效请手动重启平板再查看效果~
+										</p>
+									),
 								});
 							})
 							.catch(err => {
@@ -709,7 +753,7 @@ const openAddDrawer = async () => {
 							});
 					},
 				});
-				await reloadPage()
+				await reloadPage();
 				addDotBlackListAppRes.loadingCallback && addDotBlackListAppRes.loadingCallback();
 				addDotBlackListAppRes.closeCallback && addDotBlackListAppRes.closeCallback();
 			}
