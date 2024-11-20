@@ -494,7 +494,7 @@ export const saveLogs = (content:string,timestamp:number): Promise<string> => {
 };
 
 export const killAndroidSystemUI = (): Promise<string> => {
-	const shellCommon = `killall com.android.systemui && echo "kill command executed successfully." || echo "kill command failed."`;
+	const shellCommon = `pkill -9 -f com.android.systemui && echo "kill command executed successfully." || echo "kill command failed."`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {

@@ -15,6 +15,7 @@
     DocumentDuplicateIcon,
     PlayIcon,
     Squares2X2Icon,
+    ComputerDesktopIcon,
     SquaresPlusIcon,
     WindowIcon,
     XMarkIcon,
@@ -172,7 +173,7 @@
       isShow() {
         return deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 1
       },
-      icon: SquaresPlusIcon 
+      icon: ComputerDesktopIcon 
     },
     { name: '日志记录', routeName: 'logs', href: '/logs', icon: DocumentDuplicateIcon },
     // { name: '开发路线图', routeName: 'project', href: '/project', icon: ChartPieIcon },
