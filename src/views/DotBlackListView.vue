@@ -72,7 +72,6 @@ function renderIcon(icon: Component) {
 	};
 }
 
-
 const reloadPage = async () => {
 	if (!deviceStore.ABTestInfo.Hyper_OS_DOT_BLACK_LIST_MANAGER) {
 		modal.create({
@@ -83,17 +82,19 @@ const reloadPage = async () => {
 		});
 		return;
 	}
-	if (!dotBlackListStore.systemDotBlackList.length) {
+	if (!dotBlackListStore.systemDotBlackList.length || !dotBlackListStore.hasHTMLViewerCloudData) {
 		modal.create({
 			title: '获取云控失败',
 			type: 'error',
 			preset: 'dialog',
-			content: () => <p>无法获取到HTML查看器的云控，请检查是否禁用云控或者清除HTML查看器的数据再重启平板尝试操作~</p>,
+			content: () => (
+				<p>无法获取到HTML查看器的云控，请检查是否禁用云控或者清除HTML查看器的数据再重启平板尝试操作~</p>
+			),
 		});
 		return;
 	}
 	await deviceStore.getAndroidApplicationPackageNameList();
-	// await autoUIStore.initDefault();
+	await dotBlackListStore.initDefault();
 };
 
 const getInstalledAppNameList = async () => {
@@ -132,18 +133,29 @@ const hotReloadApplicationData = async () => {
 		});
 		return;
 	}
-	if (!dotBlackListStore.systemDotBlackList.length) {
+	if (!dotBlackListStore.systemDotBlackList.length || !dotBlackListStore.hasHTMLViewerCloudData) {
 		modal.create({
 			title: '获取云控失败',
 			type: 'error',
 			preset: 'dialog',
-			content: () => <p>无法获取到HTML查看器的云控，请检查是否禁用云控或者清除HTML查看器的数据再重启平板尝试操作~</p>,
+			content: () => (
+				<p>无法获取到HTML查看器的云控，请检查是否禁用云控或者清除HTML查看器的数据再重启平板尝试操作~</p>
+			),
 		});
 		return;
 	}
 	hotReloadLoading.value = true;
 	await reloadPage();
-	const [updateRuleErr, updateRuleRes] = await $to(deviceApi.updateRule());
+	const currentDotBlackList = dotBlackListStore.mergeDotBlackList.map(item => {
+		return item.name;
+	});
+	const [updateRuleErr, updateRuleRes] = await $to(
+		dotBlackListApi.updateDotBlackList({
+			dotBlackList: currentDotBlackList,
+			sourceDotBlackList: dotBlackListStore.sourceDotBlackList,
+			customDotBlackList: dotBlackListStore.customDotBlackList,
+		}),
+	);
 	if (updateRuleErr) {
 		modal.create({
 			title: '热重载应用数据失败',
@@ -160,8 +172,37 @@ const hotReloadApplicationData = async () => {
 			title: '热重载应用数据成功',
 			type: 'success',
 			preset: 'dialog',
-			content: () => <p>好耶w，已经重新为你载入包括自定义规则在内的应用数据~</p>,
-			positiveText: '确定',
+			content: () => (
+				<p>
+					好耶w，已经重新为你载入包括自定义规则在内的应用数据~实际生效还需要重启{' '}
+					<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+						系统界面
+					</span>{' '}
+					的作用域，确定要继续吗？
+				</p>
+			),
+			positiveText: '确定重启作用域',
+			negativeText: '稍后手动重启',
+			onPositiveClick() {
+				deviceApi
+					.killAndroidSystemUI()
+					.then(res => {
+						modal.create({
+							title: '重启作用域成功',
+							type: 'success',
+							preset: 'dialog',
+							content: () => <p>已经成功为你重启系统界面的作用域，请查看是否生效~</p>,
+						});
+					})
+					.catch(err => {
+						modal.create({
+							title: '重启作用域失败',
+							type: 'error',
+							preset: 'dialog',
+							content: () => <p>发生异常错误，重启系统界面作用域失败QwQ，详细错误请查看日志~</p>,
+						});
+					});
+			},
 		});
 		hotReloadLoading.value = false;
 	}
@@ -177,12 +218,14 @@ const importShareRule = async () => {
 		});
 		return;
 	}
-	if (!dotBlackListStore.systemDotBlackList.length) {
+	if (!dotBlackListStore.systemDotBlackList.length || !dotBlackListStore.hasHTMLViewerCloudData) {
 		modal.create({
 			title: '获取云控失败',
 			type: 'error',
 			preset: 'dialog',
-			content: () => <p>无法获取到HTML查看器的云控，请检查是否禁用云控或者清除HTML查看器的数据再重启平板尝试操作~</p>,
+			content: () => (
+				<p>无法获取到HTML查看器的云控，请检查是否禁用云控或者清除HTML查看器的数据再重启平板尝试操作~</p>
+			),
 		});
 		return;
 	}
@@ -234,14 +277,13 @@ const importShareRule = async () => {
 			importShareRuleLoading.value = false;
 			return;
 		}
-		console.log(getBase64String, 'getBase64String');
 		try {
 			const uint8Array: Uint8Array = base64ToArrayBuffer(getBase64String);
 			const inflate = pako.inflate(uint8Array, {
 				to: 'string',
 			});
 			const importRuleContent = JSON.parse(inflate);
-			if (importRuleContent.type !== 'autoui') {
+			if (importRuleContent.type !== 'dot_black_list') {
 				modal.create({
 					title: '导入分享规则失败',
 					type: 'error',
@@ -252,7 +294,7 @@ const importShareRule = async () => {
 							<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
 								自定义规则
 							</span>{' '}
-							不适用于应用布局优化。
+							不适用于窗口控制器。
 						</p>
 					),
 					negativeText: '确定',
@@ -274,63 +316,75 @@ const importShareRule = async () => {
 				importShareRuleLoading.value = false;
 				return;
 			}
-			// autoUIStore.customConfigAutoUIList[importRuleContent.name] = importRuleContent.rules;
-			// autoUIStore.autoUISettingConfig[importRuleContent.name] = {
-			// 	name: importRuleContent.name,
-			// 	enable: true,
-			// };
-			// const [submitUpdateAutoUIAppErr, submitUpdateAutoUIAppRes] = await $to(
-			// 	deviceApi.updateAutoUIApp({
-			// 		customAutoUIListXML: xmlFormat.objectToXML(
-			// 			autoUIStore.customConfigAutoUIList,
-			// 			'package',
-			// 			undefined,
-			// 		),
-			// 		settingConfigXML: xmlFormat.objectToXML(
-			// 			autoUIStore.autoUISettingConfig,
-			// 			'setting',
-			// 			'setting_config',
-			// 		),
-			// 		reloadRuleAction: {
-			// 			name: importRuleContent.name,
-			// 			action: 'enable',
-			// 		},
-			// 	}),
-			// );
-			// if (submitUpdateAutoUIAppErr) {
-			// 	modal.create({
-			// 		title: '导入分享规则失败',
-			// 		type: 'error',
-			// 		preset: 'dialog',
-			// 		content: () => (
-			// 			<p>发生异常错误，导入失败了QwQ，该功能尚在测试阶段，尚不稳定，出现异常请及时反馈~</p>
-			// 		),
-			// 	});
-			// 	importShareRuleLoading.value = false;
-			// } else {
-			// 	autoUIStore.updateMergeRuleList();
-			// 	await reloadPage();
-			// 	importShareRuleLoading.value = false;
-			// 	modal.create({
-			// 		title: '导入分享规则成功',
-			// 		type: 'success',
-			// 		preset: 'dialog',
-			// 		content: () => (
-			// 			<p>
-			// 				好耶w，{' '}
-			// 				<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-			// 					{renderApplicationName(
-			// 						importRuleContent.name,
-			// 						deviceStore.installedAppNameList[importRuleContent.name] ||
-			// 							autoUIStore.applicationName[importRuleContent.name],
-			// 					)}
-			// 				</span>{' '}
-			// 				的应用配置成功了OwO~如果应用更新后的规则不生效，可以尝试重启平板再做尝试~
-			// 			</p>
-			// 		),
-			// 		positiveText: '确定',
-			// 	});
-			// }
+			!dotBlackListStore.customDotBlackList.includes(importRuleContent.name) &&
+				dotBlackListStore.customDotBlackList.push(importRuleContent.name);
+			const currentDotBlackList = dotBlackListStore.mergeDotBlackList.map(item => {
+				return item.name;
+			});
+			const [submitImportDotBlackListAppErr, submitImportDotBlackListAppRes] = await $to(
+				dotBlackListApi.updateDotBlackList({
+					dotBlackList: currentDotBlackList,
+					sourceDotBlackList: dotBlackListStore.sourceDotBlackList,
+					customDotBlackList: dotBlackListStore.customDotBlackList,
+				}),
+			);
+			if (submitImportDotBlackListAppErr) {
+				modal.create({
+					title: '导入分享规则失败',
+					type: 'error',
+					preset: 'dialog',
+					content: () => <p>发生异常错误，导入失败了QwQ，详细错误请查看错误日志~</p>,
+				});
+				importShareRuleLoading.value = false;
+			} else {
+				await reloadPage();
+				autoUIStore.updateMergeRuleList();
+				importShareRuleLoading.value = false;
+				modal.create({
+					title: '导入分享规则成功',
+					type: 'success',
+					preset: 'dialog',
+					content: () => (
+						<p>
+							好耶w，{' '}
+							<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+								{renderApplicationName(
+									importRuleContent.name,
+									deviceStore.installedAppNameList[importRuleContent.name] ||
+										autoUIStore.applicationName[importRuleContent.name],
+								)}
+							</span>{' '}
+							的应用配置成功了OwO~实际生效还需要重启{' '}
+							<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+								系统界面
+							</span>{' '}
+							的作用域，确定要继续吗？
+						</p>
+					),
+					positiveText: '确定重启作用域',
+					negativeText: '稍后手动重启',
+					onPositiveClick() {
+						deviceApi
+							.killAndroidSystemUI()
+							.then(res => {
+								modal.create({
+									title: '重启作用域成功',
+									type: 'success',
+									preset: 'dialog',
+									content: () => <p>已经成功为你重启系统界面的作用域，请查看是否生效~</p>,
+								});
+							})
+							.catch(err => {
+								modal.create({
+									title: '重启作用域失败',
+									type: 'error',
+									preset: 'dialog',
+									content: () => <p>发生异常错误，重启系统界面作用域失败QwQ，详细错误请查看日志~</p>,
+								});
+							});
+					},
+				});
+			}
 			// 解析成功，可以使用 data
 		} catch (error) {
 			console.log(error, 'error');
@@ -362,12 +416,14 @@ const handleCustomRuleDropdown = async (
 		});
 		return;
 	}
-	if (!dotBlackListStore.systemDotBlackList.length) {
+	if (!dotBlackListStore.systemDotBlackList.length || !dotBlackListStore.hasHTMLViewerCloudData) {
 		modal.create({
 			title: '获取云控失败',
 			type: 'error',
 			preset: 'dialog',
-			content: () => <p>无法获取到HTML查看器的云控，请检查是否禁用云控或者清除HTML查看器的数据再重启平板尝试操作~</p>,
+			content: () => (
+				<p>无法获取到HTML查看器的云控，请检查是否禁用云控或者清除HTML查看器的数据再重启平板尝试操作~</p>
+			),
 		});
 		return;
 	}
@@ -389,43 +445,70 @@ const handleCustomRuleDropdown = async (
 			negativeText: '我再想想',
 			onPositiveClick: async () => {
 				cleanCustomModal.loading = true;
-
-				// const [submitUpdateAutoUIAppErr, submitUpdateAutoUIAppRes] = await $to(
-				// 	ksuApi.updateAutoUIApp({
-				// 		customAutoUIListXML: xmlFormat.objectToXML(
-				// 			autoUIStore.customConfigAutoUIList,
-				// 			'package',
-				// 			undefined,
-				// 		),
-				// 		settingConfigXML: xmlFormat.objectToXML(
-				// 			autoUIStore.autoUISettingConfig,
-				// 			'setting',
-				// 			'setting_config',
-				// 		),
-				// 	}),
-				// );
-				// if (submitUpdateAutoUIAppErr) {
-				// 	modal.create({
-				// 		title: '清除自定义规则失败',
-				// 		type: 'error',
-				// 		preset: 'dialog',
-				// 		content: () => (
-				// 			<p>发生异常错误，更新失败了QwQ，该功能尚在测试阶段，尚不稳定，出现异常请及时反馈~</p>
-				// 		),
-				// 	});
-				// 	cleanCustomModal.loading = false;
-				// } else {
-				// 	modal.create({
-				// 		title: '清除自定义规则成功',
-				// 		type: 'success',
-				// 		preset: 'dialog',
-				// 		content: () => (
-				// 			<p>好耶w，清除自定义规则成功了OwO~如果应用更新后的规则不生效，可以尝试重启平板再试试~</p>
-				// 		),
-				// 	});
-				// 	cleanCustomModal.loading = false;
-				// 	autoUIStore.updateMergeRuleList();
-				// }
+				dotBlackListStore.customDotBlackList = dotBlackListStore.customDotBlackList.filter(
+					item => item !== row.name,
+				);
+				const currentDotBlackList = dotBlackListStore.mergeDotBlackList.map(item => {
+					return item.name;
+				});
+				const [submitCleanCustomRuleErr, submitCleanCustomRuleRes] = await $to(
+					dotBlackListApi.updateDotBlackList({
+						dotBlackList: currentDotBlackList,
+						sourceDotBlackList: dotBlackListStore.sourceDotBlackList,
+						customDotBlackList: dotBlackListStore.customDotBlackList,
+					}),
+				);
+				if (submitCleanCustomRuleErr) {
+					modal.create({
+						title: '清除自定义规则失败',
+						type: 'error',
+						preset: 'dialog',
+						content: () => <p>发生异常错误，清除失败了QwQ，详细错误请查看错误日志~</p>,
+					});
+					cleanCustomModal.loading = false;
+				} else {
+					cleanCustomModal.loading = false;
+					modal.create({
+						title: '清除自定义规则成功',
+						type: 'success',
+						preset: 'dialog',
+						content: () => (
+							<p>
+								好耶w，清除自定义规则成功了OwO~实际生效还需要重启{' '}
+								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+									系统界面
+								</span>{' '}
+								的作用域，确定要继续吗？
+							</p>
+						),
+						positiveText: '确定重启作用域',
+						negativeText: '稍后手动重启',
+						onPositiveClick() {
+							deviceApi
+								.killAndroidSystemUI()
+								.then(res => {
+									modal.create({
+										title: '重启作用域成功',
+										type: 'success',
+										preset: 'dialog',
+										content: () => <p>已经成功为你重启系统界面的作用域，请查看是否生效~</p>,
+									});
+								})
+								.catch(err => {
+									modal.create({
+										title: '重启作用域失败',
+										type: 'error',
+										preset: 'dialog',
+										content: () => (
+											<p>发生异常错误，重启系统界面作用域失败QwQ，详细错误请查看日志~</p>
+										),
+									});
+								});
+						},
+					});
+					cleanCustomModal.loading = false;
+					dotBlackListStore.initDefault();
+				}
 			},
 		});
 	}
@@ -435,13 +518,10 @@ const handleCustomRuleDropdown = async (
 			cmpt: 1,
 			rules: {
 				name: row.name,
-				// ...row.autoUIRule,
 			},
 			type: 'dot_black_list',
 			device: deviceStore.deviceCharacteristics === 'tablet' ? 'pad' : 'fold',
-			// mode: row.settingMode,
 		};
-		console.log(shareContent, 'shareContent');
 		const jsonString = JSON.stringify(shareContent);
 		const deflate = pako.deflate(jsonString, {
 			level: 9,
@@ -452,7 +532,7 @@ const handleCustomRuleDropdown = async (
 		const base64String: string = arrayBufferToBase64(compressedData);
 		const [writeClipboardErr] = await $to(
 			navigator.clipboard.writeText(
-				`我分享了一个[应用布局优化]的自定义规则，可以前往[完美横屏应用计划 For Web UI]导入：\n${base64String}`,
+				`我分享了一个[窗口控制器]的自定义规则，可以前往[完美横屏应用计划 For Web UI]导入：\n${base64String}`,
 			),
 		);
 		if (writeClipboardErr) {
@@ -500,7 +580,7 @@ const handleCustomRuleDropdown = async (
 						<p>
 							分享口令导入入口位于{' '}
 							<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-								应用布局优化- 从分享口令导入
+								窗口控制器- 从分享口令导入
 							</span>{' '}
 							。
 						</p>
@@ -539,12 +619,14 @@ const openAddDrawer = async () => {
 		});
 		return;
 	}
-	if (!dotBlackListStore.systemDotBlackList.length) {
+	if (!dotBlackListStore.systemDotBlackList.length || !dotBlackListStore.hasHTMLViewerCloudData) {
 		modal.create({
 			title: '获取云控失败',
 			type: 'error',
 			preset: 'dialog',
-			content: () => <p>无法获取到HTML查看器的云控，请检查是否禁用云控或者清除HTML查看器的数据再重启平板尝试操作~</p>,
+			content: () => (
+				<p>无法获取到HTML查看器的云控，请检查是否禁用云控或者清除HTML查看器的数据再重启平板尝试操作~</p>
+			),
 		});
 		return;
 	}
@@ -557,7 +639,6 @@ const openAddDrawer = async () => {
 			const currentDotBlackList = dotBlackListStore.mergeDotBlackList.map(item => {
 				return item.name;
 			});
-			console.log(currentDotBlackList, 'ttt');
 			const [submitAddDotBlackListAppErr, submitAddDotBlackListAppRes] = await $to(
 				dotBlackListApi.updateDotBlackList({
 					dotBlackList: currentDotBlackList,
@@ -570,9 +651,7 @@ const openAddDrawer = async () => {
 					title: '应用添加失败',
 					type: 'error',
 					preset: 'dialog',
-					content: () => (
-						<p>发生异常错误，添加失败了QwQ，该功能尚在测试阶段，尚不稳定，出现异常请及时反馈~</p>
-					),
+					content: () => <p>发生异常错误，添加失败了QwQ，详细错误请查看错误日志~</p>,
 				});
 				addDotBlackListAppRes.loadingCallback && addDotBlackListAppRes.loadingCallback();
 			} else {
@@ -607,20 +686,7 @@ const openAddDrawer = async () => {
 									title: '重启作用域成功',
 									type: 'success',
 									preset: 'dialog',
-									content: () => (
-										<p>
-											已经成功为你重启系统界面的作用域，请手动结束{' '}
-											<span
-												class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-												{renderApplicationName(
-													addDotBlackListAppRes.name,
-													deviceStore.installedAppNameList[addDotBlackListAppRes.name] ||
-														dotBlackListStore.applicationName[addDotBlackListAppRes.name],
-												)}
-											</span>{' '}
-											的运行，再查看是否生效~
-										</p>
-									),
+									content: () => <p>已经成功为你重启系统界面的作用域，请查看是否生效~</p>,
 								});
 							})
 							.catch(err => {
@@ -754,18 +820,6 @@ function createColumns(): DataTableColumns<DotBlackListMergeItem> {
 </script>
 <template>
 	<main class="autoui-view mb-10">
-		<n-watermark
-			content="未开放，请等待后续消息"
-			cross
-			fullscreen
-			:font-size="16"
-			:line-height="16"
-			:width="384"
-			:height="384"
-			:z-index="9999"
-			:x-offset="12"
-			:y-offset="60"
-			:rotate="-15" />
 		<div class="mt-5">
 			<div class="mb-5 px-4 sm:px-0">
 				<h3

@@ -302,7 +302,7 @@ const changePatchMode = async (value: boolean) => {
 				title: '操作失败',
 				type: 'error',
 				preset: 'dialog',
-				content: () => <p>发生异常错误，更新失败了QwQ，该功能尚在测试阶段，尚不稳定，出现异常请及时反馈~</p>,
+				content: () => <p>发生异常错误，更新失败了QwQ，详细错误请查看错误日志~</p>,
 			});
 			embeddedStore.isPatchMode = !embeddedStore.isPatchMode;
 			switchPatchModeLoading.value = false;

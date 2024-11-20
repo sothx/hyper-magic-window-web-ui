@@ -109,6 +109,8 @@ export const useDotBlackListStore = defineStore(
 		const searchKeyWord = ref<string>('');
 		// 加载状态
 		const loading = ref<boolean>(true);
+		// 云控数据库记录
+		const hasHTMLViewerCloudData = ref<boolean>(false);
 		// 错误存储
 		const errorLogging = reactive<ErrorLogging[]>([]);
 		//
@@ -128,6 +130,15 @@ export const useDotBlackListStore = defineStore(
 			applicationName.value = applicationNameData;
 
 			
+			const [getHasHTMLViewerCloudDataBaseErr, getHasHTMLViewerCloudDataBaseRes] = await $to<string>(dotBlackListApi.getHasHTMLViewerCloudDataBase())
+
+			if (getHasHTMLViewerCloudDataBaseErr) {
+				hasHTMLViewerCloudData.value = false;
+			}
+
+			if (getHasHTMLViewerCloudDataBaseRes) {
+				hasHTMLViewerCloudData.value = true;
+			}
 
 			const [getDotBlackListErr, getDotBlackListRes] = await $to<DotBlackListItem[], string>(
 				dotBlackListApi.getDotBlackList(),
@@ -160,6 +171,7 @@ export const useDotBlackListStore = defineStore(
 			mergeRuleList,
 			allPackageName,
 			sourceDotBlackList,
+			hasHTMLViewerCloudData,
 			systemDotBlackList,
 			customDotBlackList,
 			mergeDotBlackList,

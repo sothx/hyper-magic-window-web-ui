@@ -333,7 +333,7 @@ const importShareRule = async () => {
 					type: 'error',
 					preset: 'dialog',
 					content: () => (
-						<p>发生异常错误，导入失败了QwQ，该功能尚在测试阶段，尚不稳定，出现异常请及时反馈~</p>
+						<p>发生异常错误，导入失败了QwQ，详细错误请查看错误日志~</p>
 					),
 				});
 				importShareRuleLoading.value = false;
@@ -478,7 +478,7 @@ const reloadPatchModeConfigList = async () => {
 			title: '操作失败',
 			type: 'error',
 			preset: 'dialog',
-			content: () => <p>发生异常错误，更新失败了QwQ，该功能尚在测试阶段，尚不稳定，出现异常请及时反馈~</p>,
+			content: () => <p>发生异常错误，更新失败了QwQ，详细错误请查看错误日志~</p>,
 		});
 		reloadPatchModeConfigLoading.value = false;
 	} else {
@@ -687,7 +687,7 @@ const openAddEmbeddedApp = async () => {
 					type: 'error',
 					preset: 'dialog',
 					content: () => (
-						<p>发生异常错误，更新失败了QwQ，该功能尚在测试阶段，尚不稳定，出现异常请及时反馈~</p>
+						<p>发生异常错误，更新失败了QwQ，详细错误请查看错误日志~</p>
 					),
 				});
 				addEmbeddedAppRes.loadingCallback && addEmbeddedAppRes.loadingCallback();
@@ -1102,7 +1102,7 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 					type: 'error',
 					preset: 'dialog',
 					content: () => (
-						<p>发生异常错误，更新失败了QwQ，该功能尚在测试阶段，尚不稳定，出现异常请及时反馈~</p>
+						<p>发生异常错误，更新失败了QwQ，详细错误请查看错误日志~</p>
 					),
 				});
 				updateEmbeddedAppRes.loadingCallback && updateEmbeddedAppRes.loadingCallback();
@@ -1268,7 +1268,7 @@ const handleCustomRuleDropdown = async (
 						type: 'error',
 						preset: 'dialog',
 						content: () => (
-							<p>发生异常错误，更新失败了QwQ，该功能尚在测试阶段，尚不稳定，出现异常请及时反馈~</p>
+							<p>发生异常错误，更新失败了QwQ，详细错误请查看错误日志~</p>
 						),
 					});
 					cleanCustomModal.loading = false;
@@ -1489,7 +1489,7 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 									preset: 'dialog',
 									content: () => (
 										<p>
-											发生异常错误，重置应用兼容性失败了QwQ，该功能尚在测试阶段，尚不稳定，出现异常请及时反馈~
+											发生异常错误，重置应用兼容性失败了QwQ，详细错误请查看错误日志~
 										</p>
 									),
 								});

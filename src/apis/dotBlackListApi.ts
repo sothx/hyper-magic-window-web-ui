@@ -149,6 +149,21 @@ export interface updateDotBlackListAppParams {
 	customDotBlackList: string[];
 }
 
+export const getHasHTMLViewerCloudDataBase = (): Promise<string> => {
+	const shellCommon = `test -f /data/user_de/0/com.android.htmlviewer/databases/cloud_all_data.db && echo "exists" || echo "not exists"`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`exists`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : stdout === 'exists' ? resolve(stdout) : reject(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
 export const updateDotBlackList = (
 	params: updateDotBlackListAppParams,
 ): Promise<{
