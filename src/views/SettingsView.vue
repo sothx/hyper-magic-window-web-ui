@@ -167,6 +167,45 @@ const changeShowRotationSuggestions = async (value: boolean) => {
 	}
 	deviceStore.showRotationSuggestions = value;
 };
+const changeShamikoMode = async (value: boolean) => {
+	deviceApi.putShamikoMode(value ? 'whitelist' : 'blacklist').then((res) => {
+		deviceStore.shamikoInfo.mode =  value ? 'whitelist' : 'blacklist'
+		modal.create({
+				title: '操作成功',
+				type: 'success',
+				preset: 'dialog',
+				content: () => (
+					<div>
+						{value && (
+							<p>
+								好耶w，Shamiko的工作模式已成功切换为{' '}
+								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+									白名单模式
+								</span>{' '}
+							</p>
+						)}
+						{!value && (
+							<p>
+								好耶w，Shamiko的工作模式已成功切换为{' '}
+								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+									黑名单模式
+								</span>{' '}
+							</p>
+						)}
+					</div>
+				),
+				negativeText: '确定',
+			});
+	}).catch((err) => {
+		modal.create({
+				title: '操作失败',
+				type: 'error',
+				preset: 'dialog',
+				content: () => <p>无法切换Shamiko的工作模式，详情请查看日志记录~</p>,
+				negativeText: '确定',
+		});
+	})
+}
 const changePatchMode = async (value: boolean) => {
 	const [negativeRes, positiveRes] = await $to(
 		new Promise((resolve, reject) => {
@@ -568,6 +607,23 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
 							{{ deviceStore.rootManagerInfo.MAGISK_VER_CODE || '获取失败' }}
+						</dd>
+					</div>
+					<div v-if="deviceStore.shamikoInfo.installed" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+						<dt
+							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
+							Shamiko工作模式
+						</dt>
+						<dd
+							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
+							<n-switch
+								@update:value="(value: boolean) => changeShamikoMode(value)"
+								:rail-style="railStyle"
+								:value="deviceStore.shamikoInfo.mode === 'whitelist' ? true: false"
+								:loading="deviceStore.loading">
+								<template #checked>白名单</template>
+								<template #unchecked>黑名单</template>
+							</n-switch>
 						</dd>
 					</div>
 					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">

@@ -550,3 +550,49 @@ export const updateRule = (): Promise<string> => {
 		'updateMiuiEmbeddingWindowRule',
 	);
 };
+
+
+export const getShamikoHasInstalled = (): Promise<string> => {
+	const shellCommon = `test -d /data/adb/shamiko/ && echo "exists" || echo "not exists"`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`exists`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : stdout === 'exists' ? resolve(stdout) : reject(stdout);
+			}
+		}),
+		shellCommon,
+	);
+}
+
+export const getShamikoMode = (): Promise<string> => {
+	const shellCommon = `test -f /data/adb/shamiko/whitelist && echo "whitelist" || echo "blacklist"`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`whitelist`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+}
+
+export const putShamikoMode = (mode: 'whitelist' | 'blacklist'): Promise<string> => {
+	const shellCommon = mode === 'whitelist' ? `touch /data/adb/shamiko/whitelist` : 'rm -rf /data/adb/shamiko/whitelist'
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`success`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+}

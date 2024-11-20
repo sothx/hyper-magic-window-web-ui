@@ -48,6 +48,11 @@ export interface BatteryInfo {
 	cycleCount: number
 }
 
+export interface ShamikoInfo {
+	installed: boolean;
+	mode?: 'whitelist' | 'blacklist';
+}
+
 export type ROOT_MANAGER_TYPE = 'Magisk' | 'APatch' | 'KernelSU';
 
 export const useDeviceStore = defineStore(
@@ -67,6 +72,10 @@ export const useDeviceStore = defineStore(
 		const systemVersion = ref<string>('');
 		const systemPreVersion = ref<string>('');
 		const currentRootManager = ref<ROOT_MANAGER_TYPE>('Magisk');
+		const shamikoInfo =  reactive<ShamikoInfo>({
+			installed: false,
+			mode: undefined
+		})
 		const moduleProp = reactive<ModuleProp>({
 			id: '',
 			name: '',
@@ -152,6 +161,8 @@ export const useDeviceStore = defineStore(
 				$to<string, string>(deviceApi.getDeviceName()),
 				// ROOT管理器信息 *弱校验
 				$to<string, string>(deviceApi.getRootManagerInfo()),
+				// Shamiko安装状态 *弱校验
+				$to<string, string>(deviceApi.getShamikoHasInstalled()),
 				// 系统版本
 				$to<string, string>(deviceApi.getSystemVersion()),
 				// 上个系统版本
@@ -172,6 +183,7 @@ export const useDeviceStore = defineStore(
 				[, getModuleInfoRes],
 				[, getDeviceNameRes],
 				[, getRootManagerInfo],
+				[,getShamikoHasInstalledRes],
 				[, getSystemVersionRes],
 				[, getPreSystemVersionRes],
 				[, getBatterySohQcomRes],
@@ -218,6 +230,10 @@ export const useDeviceStore = defineStore(
 				} else {
 					currentRootManager.value = 'Magisk';
 				}
+			}
+			// Shamiko控制
+			if (getShamikoHasInstalledRes) {
+				shamikoInfo.installed = true;
 			}
 			// 售后电池健康度
 			batteryInfo.sohQcom = Number(getBatterySohQcomRes)
@@ -327,6 +343,7 @@ export const useDeviceStore = defineStore(
 			deviceCode,
 			moduleDir,
 			moduleID,
+			shamikoInfo,
 			systemVersion,
 			systemPreVersion,
 			deviceName,
