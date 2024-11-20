@@ -186,12 +186,13 @@ const hotReloadApplicationData = async () => {
 			onPositiveClick() {
 				deviceApi
 					.killAndroidSystemUI()
-					.then(res => {
+					.then(async res => {
+						await reloadPage()
 						modal.create({
 							title: '重启作用域成功',
 							type: 'success',
 							preset: 'dialog',
-							content: () => <p>已经成功为你重启系统界面的作用域，请查看是否生效~</p>,
+							content: () => <p>已经成功为你重启系统界面的作用域，请查看是否生效，如不生效请手动重启平板再查看效果~</p>,
 						});
 					})
 					.catch(err => {
@@ -366,12 +367,13 @@ const importShareRule = async () => {
 					onPositiveClick() {
 						deviceApi
 							.killAndroidSystemUI()
-							.then(res => {
+							.then(async res => {
+								await reloadPage()
 								modal.create({
 									title: '重启作用域成功',
 									type: 'success',
 									preset: 'dialog',
-									content: () => <p>已经成功为你重启系统界面的作用域，请查看是否生效~</p>,
+									content: () => <p>已经成功为你重启系统界面的作用域，请查看是否生效，如不生效请手动重启平板再查看效果~</p>,
 								});
 							})
 							.catch(err => {
@@ -448,6 +450,12 @@ const handleCustomRuleDropdown = async (
 				dotBlackListStore.customDotBlackList = dotBlackListStore.customDotBlackList.filter(
 					item => item !== row.name,
 				);
+				dotBlackListStore.sourceDotBlackList = dotBlackListStore.sourceDotBlackList.map((item) => {
+					item.dataList = item.dataList.filter(
+						(item:string) => item !== row.name
+					)
+					return item;
+				})
 				const currentDotBlackList = dotBlackListStore.mergeDotBlackList.map(item => {
 					return item.name;
 				});
@@ -486,12 +494,13 @@ const handleCustomRuleDropdown = async (
 						onPositiveClick() {
 							deviceApi
 								.killAndroidSystemUI()
-								.then(res => {
+								.then(async res => {
+									await reloadPage()
 									modal.create({
 										title: '重启作用域成功',
 										type: 'success',
 										preset: 'dialog',
-										content: () => <p>已经成功为你重启系统界面的作用域，请查看是否生效~</p>,
+										content: () => <p>已经成功为你重启系统界面的作用域，请查看是否生效，如不生效请手动重启平板再查看效果~</p>,
 									});
 								})
 								.catch(err => {
@@ -507,7 +516,7 @@ const handleCustomRuleDropdown = async (
 						},
 					});
 					cleanCustomModal.loading = false;
-					dotBlackListStore.initDefault();
+					await reloadPage()
 				}
 			},
 		});
@@ -681,12 +690,13 @@ const openAddDrawer = async () => {
 					onPositiveClick() {
 						deviceApi
 							.killAndroidSystemUI()
-							.then(res => {
+							.then(async res => {
+								await reloadPage()
 								modal.create({
 									title: '重启作用域成功',
 									type: 'success',
 									preset: 'dialog',
-									content: () => <p>已经成功为你重启系统界面的作用域，请查看是否生效~</p>,
+									content: () => <p>已经成功为你重启系统界面的作用域，请查看是否生效，如不生效请手动重启平板再查看效果~</p>,
 								});
 							})
 							.catch(err => {
@@ -699,7 +709,7 @@ const openAddDrawer = async () => {
 							});
 					},
 				});
-				dotBlackListStore.initDefault();
+				await reloadPage()
 				addDotBlackListAppRes.loadingCallback && addDotBlackListAppRes.loadingCallback();
 				addDotBlackListAppRes.closeCallback && addDotBlackListAppRes.closeCallback();
 			}

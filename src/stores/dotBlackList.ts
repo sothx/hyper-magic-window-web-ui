@@ -19,13 +19,25 @@ export const useDotBlackListStore = defineStore(
 		const filterInstalledApps = ref<boolean>(false);
 		// 窗口控制器
 		const sourceDotBlackList = ref<DotBlackListItem[]>([]);
-		const systemDotBlackList = computed(() => {
-			return Array.from(
-				sourceDotBlackList.value.reduce((acc: Set<string>, item: DotBlackListItem) => {
-					item.dataList.forEach(packageName => acc.add(packageName));
-					return acc;
-				}, new Set<string>()),
-			);
+		const systemDotBlackList = computed<string[]>(() => {
+			if (sourceDotBlackList.value.length === 0) return [];
+		
+			// 初始化为第一个 dataList 的顺序
+			const firstList = sourceDotBlackList.value[0].dataList;
+			const intersectionSet = new Set(firstList);
+		
+			// 遍历剩余的 dataList，更新交集
+			sourceDotBlackList.value.slice(1).forEach(item => {
+				const currentSet = new Set(item.dataList);
+				for (const packageName of intersectionSet) {
+					if (!currentSet.has(packageName)) {
+						intersectionSet.delete(packageName); // 不在交集中的移除
+					}
+				}
+			});
+		
+			// 保持返回顺序与第一个 dataList 的顺序一致
+			return firstList.filter((packageName: string) => intersectionSet.has(packageName));
 		});
 		const customDotBlackList = ref<string[]>([]);
 		const mergeDotBlackList: ComputedRef<DotBlackListMergeItem[]> = computed(() => {

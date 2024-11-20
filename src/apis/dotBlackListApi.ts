@@ -5,6 +5,7 @@ import $to from 'await-to-js';
 import { useDeviceStore } from '@/stores/device';
 import { useLogsStore } from '@/stores/logs';
 import type DotBlackListItem from '@/types/DotBlackListItem';
+import { cloneDeep } from 'lodash-es';
 
 export interface SmartFocusIOResult extends ExecResults {
 	stdout: 'on' | 'off';
@@ -18,27 +19,24 @@ export const getMiuiFreeformCloudDataIdList = (): Promise<string[]> => {
 	const sqlite3 = '/data/adb/modules/MIUI_MagicWindow+/common/utils/sqlite3';
 	const HTMLViewerCloudDataDataBase = `/data/user_de/0/com.android.htmlviewer/databases/cloud_all_data.db`;
 	const shellCommon = `echo "$(${sqlite3} ${HTMLViewerCloudDataDataBase} "SELECT dataId FROM cloud_all_data WHERE moduleName='MiuiFreeform';")"`;
-	return handlePromiseWithLogging(
-		new Promise(async (resolve, reject) => {
-			if (import.meta.env.MODE === 'development') {
-				resolve(['1211629', '1210869']);
-			} else {
-				const { errno, stdout, stderr }: ExecResults = (await exec(shellCommon)) as unknown as ExecResults;
-				if (errno) {
-					reject(stderr);
-				}
-				if (stdout) {
-					try {
-						const ids = stdout.split('\n');
-						resolve(ids);
-					} catch (err) {
-						reject(err);
-					}
+	return new Promise(async (resolve, reject) => {
+		if (import.meta.env.MODE === 'development') {
+			resolve(['1211629', '1210869']);
+		} else {
+			const { errno, stdout, stderr }: ExecResults = (await exec(shellCommon)) as unknown as ExecResults;
+			if (errno) {
+				reject(stderr);
+			}
+			if (stdout) {
+				try {
+					const ids = stdout.split('\n');
+					resolve(ids);
+				} catch (err) {
+					reject(err);
 				}
 			}
-		}),
-		shellCommon,
-	);
+		}
+	})
 };
 
 export const getCustomDotBlackList = (): Promise<string[]> => {
@@ -71,8 +69,7 @@ export const getCustomDotBlackList = (): Promise<string[]> => {
 export const getDotBlackList = (): Promise<DotBlackListItem[]> => {
 	const sqlite3 = '/data/adb/modules/MIUI_MagicWindow+/common/utils/sqlite3';
 	const HTMLViewerCloudDataBase = `/data/user_de/0/com.android.htmlviewer/databases/cloud_all_data.db`;
-	return handlePromiseWithLogging(
-		new Promise(async (resolve, reject) => {
+		return new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
 				const response = await axios.get('/data/system/dot_black_list.json');
 				resolve(response.data as unknown as DotBlackListItem[]);
@@ -126,9 +123,7 @@ export const getDotBlackList = (): Promise<DotBlackListItem[]> => {
 					}
 				}
 			}
-		}),
-		'getDotBlackList',
-	);
+		})
 };
 
 export interface updateDotBlackListAppErrorLoggingItem {
@@ -187,7 +182,6 @@ export const updateDotBlackList = (
 				});
 			} else {
 				const uniqueCustomDotBlackList = Array.from(new Set(params.customDotBlackList));
-				console.log(uniqueCustomDotBlackList, 'uniqueCustomDotBlackList');
 				const fetchCustomList = async (dotBlackList: string[]): Promise<string> => {
 					const shellCommon = `echo '${JSON.stringify(dotBlackList)}' > /data/adb/MIUI_MagicWindow+/config/dot_black_list.json`;
 					return handlePromiseWithLogging(
@@ -221,14 +215,11 @@ export const updateDotBlackList = (
 					reject(updateCustomDotBlackListErr);
 				} else {
 					const featchDataList = params.sourceDotBlackList.map(item => {
+						const cloneDeepProductData = cloneDeep(item.productData)
+						cloneDeepProductData.dot_black_list = params.dotBlackList;
 						return {
 							dataId: item.dataId,
-							productData: {
-								...item.productData,
-								...{
-									dot_black_list: params.dotBlackList,
-								},
-							},
+							productData: cloneDeepProductData
 						};
 					});
 					const fetchDataById = async (dataId: number, productData: any): Promise<string> => {

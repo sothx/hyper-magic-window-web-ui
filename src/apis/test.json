@@ -265,9 +265,7 @@
 		"com.miui.securitycore/com.miui.xspace.ui.activity.XSpaceResolveActivity",
 		"com.baidu.BaiduMap"
 	],
-	"small_window_application_lock_blacklist": [
-		"com.android.settings/.PrivacyPasswordConfirmLockPattern"
-	],
+	"small_window_application_lock_blacklist": ["com.android.settings/.PrivacyPasswordConfirmLockPattern"],
 	"freeform_caption_insets_height_to_zero_list": [
 		"com.ss.android.article.news",
 		"com.ss.android.article.lite",
@@ -1341,12 +1339,7 @@
 		"com.xiaomi.smarthome",
 		"com.ss.android.lark.kami"
 	],
-	"sensor_disable_whitelist": [
-		"com.tencent.mm",
-		"com.android.incallui",
-		"android",
-		"com.duowan.kiwi"
-	],
+	"sensor_disable_whitelist": ["com.tencent.mm", "com.android.incallui", "android", "com.duowan.kiwi"],
 	"sensor_disable_list": [
 		"tv.danmaku.bili",
 		"com.tencent.qqlive",
@@ -1377,12 +1370,8 @@
 		"com.tencent.mtt/.backstageopen.BackstageTaskActivity",
 		"com.tencent.mobileqq/com.tencent.av.ui.VChatActivity"
 	],
-	"hide_self_if_new_freeform_task_white_list_activity": [
-		"com.qzonex.app.tab.QZoneTabActivity"
-	],
-	"show_hidden_task_if_finished_white_list_activity": [
-		"com.qzonex.component.outbox.OutboxActivity"
-	],
+	"hide_self_if_new_freeform_task_white_list_activity": ["com.qzonex.app.tab.QZoneTabActivity"],
+	"show_hidden_task_if_finished_white_list_activity": ["com.qzonex.component.outbox.OutboxActivity"],
 	"list_disable_overlay_with_app_content": [
 		"com.ss.android.live.host.livehostimpl.LivePlayerTransActivity",
 		"com.ss.android.xigualongvideo.detail.LongVideoDetailActivity",
@@ -1423,8 +1412,7 @@
 		"com.android.browser",
 		"com.alibaba.android.rimet",
 		"com.miui.gallery",
-		"com.android.settings",
-		"com.tencent.letsgo"
+		"com.android.settings"
 	],
 	"pad_small_window_blacklist": [
 		"com.miui.securitycenter",
@@ -1625,10 +1613,7 @@
 	],
 	"foreground_pin_app_white_list": [],
 	"foreground_pin_app_black_list": [],
-	"list_about_freeform_recommend_map_application": [
-		"com.autonavi.minimap",
-		"com.baidu.BaiduMap"
-	],
+	"list_about_freeform_recommend_map_application": ["com.autonavi.minimap", "com.baidu.BaiduMap"],
 	"list_about_freeform_recommend_waiting_application": [
 		"com.tencent.tmgp.pubgmhd",
 		"com.tencent.tmgp.cod",
@@ -1668,17 +1653,14 @@
 		"com.youdao.dict",
 		"com.xiaomi.mirror"
 	],
-	"additional_freeform_aspect_ratio_1_packages": [
-		"com.tencent.qqlive",
-		"com.youdao.dict"
-	],
+	"additional_freeform_aspect_ratio_1_packages": ["com.tencent.qqlive", "com.youdao.dict"],
 	"additional_freeform_aspect_ratio_2_packages": [],
 	"list_about_dkt_mode_launch_fullscreen_app": [
 		"com.android.camera",
 		"com.xiaomi.scanner",
 		"com.xiaomi.misettings/.usagestats.focusmode.land.FocusModeTimingLandActivity",
 		"com.miui.huanji",
-		"com.android.settings/.Settings$UsbDetailsActivity",
+		"com.android.settings/.Settings",
 		"com.miui.voiceassist/com.xiaomi.voiceassistant.powerkey.PowerKeyGuideActivity",
 		"com.milink.service/com.miui.circulate.world.CirculateWorldActivity",
 		"com.milink.service/com.xiaomi.miplay.client.permission.PermissionActivity",
@@ -1739,9 +1721,7 @@
 		"com.xiaomi.mipush.sdk.NotificationClickedActivity",
 		"com.miui.video"
 	],
-	"unsupported_apps_in_dkt": [
-		"com.miui.personalassistant"
-	],
+	"unsupported_apps_in_dkt": ["com.miui.personalassistant"],
 	"list_about_lock_mode_activity": [
 		"co.sitic.pp/co.sitic.pp.aBloqueo",
 		"jp.softbank.mb.parentalcontrols/jp.co.daj.consumer.ifilter.blocker.BlockActivity",
@@ -1752,6 +1732,11 @@
 		"com.xiaomi.mihomemanager",
 		"com.miui.aod",
 		"com.android.systemui",
+		"mark.via",
+		"com.sina.weibo",
+		"bin.mt.plus",
+		"cn.com.langeasy.LangEasyLexis",
+		"com.ruanmei.ithome",
 		"com.xiaomi.misettings",
 		"com.miui.carlink",
 		"com.xiaomi.ucar.minimap",
@@ -1769,14 +1754,5 @@
 		"com.tencent.ttpic",
 		"com.cubic.autohome"
 	],
-	"bottom_caption_insets_black_list": [
-		"cn.wps.moffice_eng",
-		"com.ss.android.article.news"
-	],
-	"activity_bottom_caption_black_list": [
-		"com.cmcc.cmvideo/com.cmcc.migusso.sdk.activity.QRCodeScanActivity"
-	],
-	"not_start_browser_in_freeform_apps": [
-		"com.blizzard.wtcg.hearthstone"
-	]
+	"bottom_caption_insets_black_list": ["cn.wps.moffice_eng"]
 }
