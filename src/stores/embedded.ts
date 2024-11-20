@@ -5,7 +5,8 @@ import type FixedOrientationRuleItem from '@/types/FixedOrientationRuleItem';
 import type EmbeddedSettingRuleItem from '@/types/EmbeddedSettingRuleItem';
 import type EmbeddedMergeRuleItem from '@/types/EmbeddedMergeRuleItem';
 import $to from 'await-to-js';
-import * as ksuApi from '@/apis/ksuApi';
+import * as deviceApi from '@/apis/deviceApi';
+import * as embeddedApi from '@/apis/embeddedApi';
 import * as xmlFormat from '@/utils/xmlFormat';
 import type { ErrorLogging } from '@/types/ErrorLogging';
 import whitelistApplications from '@/config/whitelistApplications';
@@ -222,7 +223,7 @@ export const useEmbeddedStore = defineStore(
 			const applicationNameData = applicationNameRes.default;
 			applicationName.value = applicationNameData;
 			// 获取补丁模式
-			const [getIsPatchModeErr, getIsPatchModeRes] = await $to<string, string>(ksuApi.getIsPatchMode());
+			const [getIsPatchModeErr, getIsPatchModeRes] = await $to<string, string>(deviceApi.getIsPatchMode());
 			if (getIsPatchModeErr) {
 				errorLogging.push({
 					type: 'getIsPatchModeErr',
@@ -238,15 +239,15 @@ export const useEmbeddedStore = defineStore(
 			}
 
 			const seriesRequests = [
-				ksuApi.getSourceEmbeddedRulesList(),
-				ksuApi.getSystemEmbeddedRulesList(),
-				ksuApi.getCustomConfigEmbeddedRulesList(),
-				ksuApi.getSourceFixedOrientationList(),
-				ksuApi.getSystemFixedOrientationList(),
-				ksuApi.getCustomConfigFixedOrientationList(),
-				ksuApi.getSourceEmbeddedSettingConfig(),
-				ksuApi.getSystemEmbeddedSettingConfig(),
-				ksuApi.getCustomConfigEmbeddedSettingConfig(),
+				embeddedApi.getSourceEmbeddedRulesList(),
+				embeddedApi.getSystemEmbeddedRulesList(),
+				embeddedApi.getCustomConfigEmbeddedRulesList(),
+				embeddedApi.getSourceFixedOrientationList(),
+				embeddedApi.getSystemFixedOrientationList(),
+				embeddedApi.getCustomConfigFixedOrientationList(),
+				embeddedApi.getSourceEmbeddedSettingConfig(),
+				embeddedApi.getSystemEmbeddedSettingConfig(),
+				embeddedApi.getCustomConfigEmbeddedSettingConfig(),
 			];
 
 			const [

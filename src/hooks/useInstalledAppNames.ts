@@ -1,6 +1,6 @@
 import { ref, computed, onMounted } from 'vue';
 import { useDeviceStore } from '@/stores/device'
-import * as ksuApi from "@/apis/ksuApi";
+import * as deviceApi from '@/apis/deviceApi';
 import $to from 'await-to-js'
 export type InstallAppNameListDictionary = Record<string, string>;
   
@@ -16,7 +16,7 @@ export function useInstalledAppNames() {
                 reject('已经有存在的任务了！')
             } else {
                 loading.value = true;
-                const [getListErr,getListRes] = await $to(ksuApi.getInstalledAppNameList())
+                const [getListErr,getListRes] = await $to(deviceApi.getInstalledAppNameList())
                 if (getListErr) {
                     reject(getListErr)
                     loading.value = false;

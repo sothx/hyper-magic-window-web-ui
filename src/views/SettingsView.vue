@@ -5,7 +5,7 @@ import * as xmlFormat from '@/utils/xmlFormat';
 import { createDiscreteApi, darkTheme, lightTheme, NInput, type ConfigProviderProps } from 'naive-ui';
 import { useGameMode } from '@/hooks/useGameMode';
 import { useABTestActivation } from '@/hooks/useABTestActivation';
-import * as ksuApi from '@/apis/ksuApi';
+import * as deviceApi from '@/apis/deviceApi';
 import $to from 'await-to-js';
 import { useEmbeddedStore } from '@/stores/embedded';
 import { keyBy } from 'lodash-es';
@@ -153,7 +153,7 @@ const handleActivateABTest = async () => {
 };
 const switchPatchModeLoading = ref<boolean>(false);
 const changeShowRotationSuggestions = async (value: boolean) => {
-	const [setRotationSuggestionsErr] = await $to(ksuApi.setRotationSuggestions(value ? 1 : 0));
+	const [setRotationSuggestionsErr] = await $to(deviceApi.setRotationSuggestions(value ? 1 : 0));
 	if (setRotationSuggestionsErr) {
 		modal.create({
 			title: '操作失败',
@@ -220,7 +220,7 @@ const changePatchMode = async (value: boolean) => {
 	);
 	if (positiveRes) {
 		switchPatchModeLoading.value = true;
-		const [removeIsPatchModeErr] = await $to(ksuApi.removeIsPatchMode());
+		const [removeIsPatchModeErr] = await $to(deviceApi.removeIsPatchMode());
 		if (removeIsPatchModeErr) {
 			modal.create({
 				title: '操作失败',
@@ -233,7 +233,7 @@ const changePatchMode = async (value: boolean) => {
 			return;
 		}
 		if (value) {
-			const [addIsPatchModeErr] = await $to(ksuApi.addIsPatchMode());
+			const [addIsPatchModeErr] = await $to(deviceApi.addIsPatchMode());
 			if (addIsPatchModeErr) {
 				modal.create({
 					title: '操作失败',
@@ -252,7 +252,7 @@ const changePatchMode = async (value: boolean) => {
 		}
 		await deviceStore.getAndroidApplicationPackageNameList();
 		const [submitUpdateEmbeddedAppErr, submitUpdateEmbeddedAppRes] = await $to(
-			ksuApi.updateEmbeddedApp({
+			deviceApi.updateEmbeddedApp({
 				isPatchMode: embeddedStore.isPatchMode,
 				patchEmbeddedRulesListXML: xmlFormat.objectToXML(
 					embeddedStore.patchEmbeddedRulesList,
@@ -395,7 +395,7 @@ const changeGameMode = async (value: boolean) => {
 		}),
 	);
 
-	const [deleteGameModeErr] = await $to(ksuApi.deleteGameMode());
+	const [deleteGameModeErr] = await $to(deviceApi.deleteGameMode());
 	if (deleteGameModeErr) {
 		modal.create({
 			title: '操作失败',
@@ -407,7 +407,7 @@ const changeGameMode = async (value: boolean) => {
 		return;
 	}
 	if (value) {
-		const [addGameModeErr] = await $to(ksuApi.addGameMode());
+		const [addGameModeErr] = await $to(deviceApi.addGameMode());
 		if (addGameModeErr) {
 			modal.create({
 				title: '操作失败',
@@ -420,7 +420,7 @@ const changeGameMode = async (value: boolean) => {
 		}
 	}
 	if (positiveRes) {
-		const [rebootDeviceErr] = await $to(ksuApi.rebootDevice());
+		const [rebootDeviceErr] = await $to(deviceApi.rebootDevice());
 		if (rebootDeviceErr) {
 			modal.create({
 				title: '操作失败',

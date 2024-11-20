@@ -1,7 +1,7 @@
 import { ref, reactive, computed, watchEffect } from 'vue';
 import { defineStore } from 'pinia';
 import $to from 'await-to-js';
-import * as ksuApi from '@/apis/ksuApi';
+import * as deviceApi from '@/apis/deviceApi';
 import type { ErrorLogging } from '@/types/ErrorLogging';
 import type { InstallAppNameListDictionary } from '@/hooks/useInstalledAppNames';
 
@@ -104,7 +104,7 @@ export const useDeviceStore = defineStore(
 			OS2_PAD_EMBEDDED_APP_MANAGER: false,
 			Hyper_OS_DOT_BLACK_LIST_MANAGER: false
 		})
-		const smartFocusIO = ref<ksuApi.SmartFocusIOResult['stdout']>();
+		const smartFocusIO = ref<deviceApi.SmartFocusIOResult['stdout']>();
 		const miuiCompatEnable = ref<boolean>(false);
 		const miuiAppCompatEnable = ref<boolean>(false);
 		const showRotationSuggestions = ref<boolean>(false);
@@ -126,7 +126,7 @@ export const useDeviceStore = defineStore(
 				const [getAndroidApplicationPackageNameListErr, getAndroidApplicationPackageNameListRes] = await $to<
 					string,
 					string
-				>(ksuApi.getAndroidApplicationPackageNameList());
+				>(deviceApi.getAndroidApplicationPackageNameList());
 				if (getAndroidApplicationPackageNameListErr) {
 					errorLogging.push({
 						type: 'getAndroidApplicationPackageNameListErr',
@@ -147,24 +147,24 @@ export const useDeviceStore = defineStore(
 		async function initDefault() {
 			const executeWithoutWaiting = [
 				// 模块信息 *弱校验
-				$to<string, string>(ksuApi.getModuleInfo()),
+				$to<string, string>(deviceApi.getModuleInfo()),
 				// 设备名称
-				$to<string, string>(ksuApi.getDeviceName()),
+				$to<string, string>(deviceApi.getDeviceName()),
 				// ROOT管理器信息 *弱校验
-				$to<string, string>(ksuApi.getRootManagerInfo()),
+				$to<string, string>(deviceApi.getRootManagerInfo()),
 				// 系统版本
-				$to<string, string>(ksuApi.getSystemVersion()),
+				$to<string, string>(deviceApi.getSystemVersion()),
 				// 上个系统版本
-				$to<string, string>(ksuApi.getPreSystemVersion()),
+				$to<string, string>(deviceApi.getPreSystemVersion()),
 				// 售后电池健康度
-				$to<string, string>(ksuApi.getBatterySohQcom()),
-				$to<string, string>(ksuApi.getBatterySohMTK()),
+				$to<string, string>(deviceApi.getBatterySohQcom()),
+				$to<string, string>(deviceApi.getBatterySohMTK()),
 				// 电池设计容量
-				$to<string, string>(ksuApi.getBatteryChargeFullDesign()),
+				$to<string, string>(deviceApi.getBatteryChargeFullDesign()),
 				// 当前电池容量
-				$to<string, string>(ksuApi.getBatteryChargeFull()),
+				$to<string, string>(deviceApi.getBatteryChargeFull()),
 				// 电池循环次数
-				$to<string, string>(ksuApi.getBatteryCycleCount()),
+				$to<string, string>(deviceApi.getBatteryCycleCount()),
 			];
 			// 等待所有 promises 完成
 			const executeWithoutWaitingResults = await Promise.all(executeWithoutWaiting);
@@ -232,7 +232,7 @@ export const useDeviceStore = defineStore(
 			await getAndroidApplicationPackageNameList();
 			// 设备类型 *强校验
 			const [getDeviceCharacteristicsErr, getDeviceCharacteristicsRes] = await $to<string, string>(
-				ksuApi.getDeviceCharacteristics(),
+				deviceApi.getDeviceCharacteristics(),
 			);
 			if (getDeviceCharacteristicsErr) {
 				errorLogging.push({
@@ -245,7 +245,7 @@ export const useDeviceStore = defineStore(
 			}
 			// 旋转建议提示按钮 *强校验
 			const [getRotationSuggestionsErr, getRotationSuggestionsRes] = await $to<string, string>(
-				ksuApi.getRotationSuggestions(),
+				deviceApi.getRotationSuggestions(),
 			);
 			if (getRotationSuggestionsErr) {
 				errorLogging.push({
@@ -258,7 +258,7 @@ export const useDeviceStore = defineStore(
 			}
 			// Android Target SDK Version *强校验
 			const [getAndroidTargetSdkErr, getAndroidTargetSdkRes] = await $to<number, string>(
-				ksuApi.getAndroidTargetSdk(),
+				deviceApi.getAndroidTargetSdk(),
 			);
 			if (getAndroidTargetSdkErr) {
 				errorLogging.push({
@@ -270,7 +270,7 @@ export const useDeviceStore = defineStore(
 				androidTargetSdk.value = getAndroidTargetSdkRes;
 			}
 			// 设备Soc类型 *强校验
-			const [getDeviceSocModelErr, getDeviceSocModelRes] = await $to<string, string>(ksuApi.getDeviceSocModel());
+			const [getDeviceSocModelErr, getDeviceSocModelRes] = await $to<string, string>(deviceApi.getDeviceSocModel());
 			if (getDeviceSocModelErr) {
 				errorLogging.push({
 					type: 'deviceSocModel',
@@ -281,7 +281,7 @@ export const useDeviceStore = defineStore(
 				deviceSocModel.value = getDeviceSocModelRes;
 			}
 			// 设备Soc名称 *强校验
-			const [getDeviceSocNameErr, getDeviceSocNameRes] = await $to<string, string>(ksuApi.getDeviceSocName());
+			const [getDeviceSocNameErr, getDeviceSocNameRes] = await $to<string, string>(deviceApi.getDeviceSocName());
 			if (getDeviceSocNameErr) {
 				errorLogging.push({
 					type: 'deviceSocName',
@@ -292,23 +292,23 @@ export const useDeviceStore = defineStore(
 				deviceSocName.value = getDeviceSocNameRes;
 			}
 			// 游戏显示布局 *弱校验
-			const [, getMiuiCompatEnableRes] = await $to(ksuApi.getMiuiCompatEnable());
+			const [, getMiuiCompatEnableRes] = await $to(deviceApi.getMiuiCompatEnable());
 			if (getMiuiCompatEnableRes && getMiuiCompatEnableRes === 'true') {
 				miuiCompatEnable.value = true;
 			}
-			const [, getMiuiAppCompatEnableRes] = await $to(ksuApi.getMiuiAppCompatEnable());
+			const [, getMiuiAppCompatEnableRes] = await $to(deviceApi.getMiuiAppCompatEnable());
 			if (getMiuiAppCompatEnableRes && getMiuiCompatEnableRes === 'true') {
 				miuiAppCompatEnable.value = true;
 			}
 			// Xiaomi Hyper OS 版本号 *弱校验
-			const [, getMIOSVersionRes] = await $to<number, string>(ksuApi.getMIOSVersion());
+			const [, getMIOSVersionRes] = await $to<number, string>(deviceApi.getMIOSVersion());
 			if (getMIOSVersionRes) {
 				MIOSVersion.value = getMIOSVersionRes;
 			}
 
 			// 智能IO调度 *弱校验
-			const [, getSmartFocusIO] = await $to<ksuApi.SmartFocusIOResult['stdout'], string>(
-				ksuApi.getSmartFocusIO(),
+			const [, getSmartFocusIO] = await $to<deviceApi.SmartFocusIOResult['stdout'], string>(
+				deviceApi.getSmartFocusIO(),
 			);
 			if (getSmartFocusIO) {
 				smartFocusIO.value = getSmartFocusIO;

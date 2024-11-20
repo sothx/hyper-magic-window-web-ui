@@ -1,6 +1,6 @@
 import { ref, computed, onMounted } from 'vue';
 import { useDeviceStore } from '@/stores/device'
-import * as ksuApi from "@/apis/ksuApi";
+import * as deviceApi from '@/apis/deviceApi';
 
 export function useMIUIContentExtension() {
 
@@ -9,7 +9,7 @@ export function useMIUIContentExtension() {
 
 
     onMounted(() => {
-        ksuApi.getHasInstalledMIUIContentExtension().then((res) => {
+        deviceApi.getHasInstalledMIUIContentExtension().then((res) => {
             if (res === 'exists') {
                 isInstallMIUIContentExtension.value = true
             }

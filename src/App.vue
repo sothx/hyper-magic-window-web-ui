@@ -86,7 +86,7 @@ onMounted(async () => {
 		}
 	});
 	await deviceStore.initDefault();
-	if (deviceStore.androidTargetSdk && deviceStore.androidTargetSdk === 31) {
+	if (deviceStore.androidTargetSdk && deviceStore.androidTargetSdk === 30) {
 		modal.create({
 			title: '不适配说明',
 			type: 'error',
@@ -111,9 +111,11 @@ onMounted(async () => {
 				},
 			});
 		}
-		await embeddedStore.initDefault();
-		await autoUIStore.initDefault();
-		await dotBlackListStore.initDefault();
+		embeddedStore.initDefault();
+		autoUIStore.initDefault();
+		if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 1) {
+			dotBlackListStore.initDefault();
+		}
 	}
 });
 </script>

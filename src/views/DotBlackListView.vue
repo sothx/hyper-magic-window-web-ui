@@ -1,12 +1,12 @@
 <script setup lang="tsx">
-import { ref, reactive, watch, type CSSProperties, h, type Component, computed } from 'vue';
-import { useAutoUIStore } from '@/stores/autoui';
+import { ref, reactive, watch, type CSSProperties, h, type Component, computed, onMounted } from 'vue';
 import { useDotBlackListStore } from '@/stores/dotBlackList';
-import * as ksuApi from '@/apis/ksuApi';
+import * as deviceApi from '@/apis/deviceApi';
+import * as dotBlackListApi from '@/apis/dotBlackListApi';
+import { useAutoUIStore } from '@/stores/autoui';
 import * as xmlFormat from '@/utils/xmlFormat';
 import { useDeviceStore } from '@/stores/device';
 import $to from 'await-to-js';
-import * as autoUIFun from '@/utils/autoUIFun';
 import {
 	NButton,
 	NIcon,
@@ -46,6 +46,7 @@ type DotBlackListAppDrawerInstance = InstanceType<typeof DotBlackListAppDrawer>;
 const searchKeyWordInput = ref<SearchKeyWordInputInstance | null>(null);
 const columns = createColumns();
 const deviceStore = useDeviceStore();
+const autoUIStore = useAutoUIStore();
 const installedAppNames = useInstalledAppNames();
 const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
 	theme: deviceStore.isDarkMode ? darkTheme : lightTheme,
@@ -53,7 +54,6 @@ const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
 const { message, modal, notification } = createDiscreteApi(['message', 'modal', 'notification'], {
 	configProviderProps: configProviderPropsRef,
 });
-const autoUIStore = useAutoUIStore();
 const dotBlackListStore = useDotBlackListStore();
 const importShareRuleLoading = ref(false);
 const hotReloadLoading = ref(false);
@@ -71,6 +71,7 @@ function renderIcon(icon: Component) {
 		});
 	};
 }
+
 
 const reloadPage = async () => {
 	if (!deviceStore.ABTestInfo.Hyper_OS_DOT_BLACK_LIST_MANAGER) {
@@ -92,7 +93,7 @@ const reloadPage = async () => {
 		return;
 	}
 	await deviceStore.getAndroidApplicationPackageNameList();
-	await autoUIStore.initDefault();
+	// await autoUIStore.initDefault();
 };
 
 const getInstalledAppNameList = async () => {
@@ -142,7 +143,7 @@ const hotReloadApplicationData = async () => {
 	}
 	hotReloadLoading.value = true;
 	await reloadPage();
-	const [updateRuleErr, updateRuleRes] = await $to(ksuApi.updateRule());
+	const [updateRuleErr, updateRuleRes] = await $to(deviceApi.updateRule());
 	if (updateRuleErr) {
 		modal.create({
 			title: '热重载应用数据失败',
@@ -273,63 +274,63 @@ const importShareRule = async () => {
 				importShareRuleLoading.value = false;
 				return;
 			}
-			autoUIStore.customConfigAutoUIList[importRuleContent.name] = importRuleContent.rules;
-			autoUIStore.autoUISettingConfig[importRuleContent.name] = {
-				name: importRuleContent.name,
-				enable: true,
-			};
-			const [submitUpdateAutoUIAppErr, submitUpdateAutoUIAppRes] = await $to(
-				ksuApi.updateAutoUIApp({
-					customAutoUIListXML: xmlFormat.objectToXML(
-						autoUIStore.customConfigAutoUIList,
-						'package',
-						undefined,
-					),
-					settingConfigXML: xmlFormat.objectToXML(
-						autoUIStore.autoUISettingConfig,
-						'setting',
-						'setting_config',
-					),
-					reloadRuleAction: {
-						name: importRuleContent.name,
-						action: 'enable',
-					},
-				}),
-			);
-			if (submitUpdateAutoUIAppErr) {
-				modal.create({
-					title: '导入分享规则失败',
-					type: 'error',
-					preset: 'dialog',
-					content: () => (
-						<p>发生异常错误，导入失败了QwQ，该功能尚在测试阶段，尚不稳定，出现异常请及时反馈~</p>
-					),
-				});
-				importShareRuleLoading.value = false;
-			} else {
-				autoUIStore.updateMergeRuleList();
-				await reloadPage();
-				importShareRuleLoading.value = false;
-				modal.create({
-					title: '导入分享规则成功',
-					type: 'success',
-					preset: 'dialog',
-					content: () => (
-						<p>
-							好耶w，{' '}
-							<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-								{renderApplicationName(
-									importRuleContent.name,
-									deviceStore.installedAppNameList[importRuleContent.name] ||
-										autoUIStore.applicationName[importRuleContent.name],
-								)}
-							</span>{' '}
-							的应用配置成功了OwO~如果应用更新后的规则不生效，可以尝试重启平板再做尝试~
-						</p>
-					),
-					positiveText: '确定',
-				});
-			}
+			// autoUIStore.customConfigAutoUIList[importRuleContent.name] = importRuleContent.rules;
+			// autoUIStore.autoUISettingConfig[importRuleContent.name] = {
+			// 	name: importRuleContent.name,
+			// 	enable: true,
+			// };
+			// const [submitUpdateAutoUIAppErr, submitUpdateAutoUIAppRes] = await $to(
+			// 	deviceApi.updateAutoUIApp({
+			// 		customAutoUIListXML: xmlFormat.objectToXML(
+			// 			autoUIStore.customConfigAutoUIList,
+			// 			'package',
+			// 			undefined,
+			// 		),
+			// 		settingConfigXML: xmlFormat.objectToXML(
+			// 			autoUIStore.autoUISettingConfig,
+			// 			'setting',
+			// 			'setting_config',
+			// 		),
+			// 		reloadRuleAction: {
+			// 			name: importRuleContent.name,
+			// 			action: 'enable',
+			// 		},
+			// 	}),
+			// );
+			// if (submitUpdateAutoUIAppErr) {
+			// 	modal.create({
+			// 		title: '导入分享规则失败',
+			// 		type: 'error',
+			// 		preset: 'dialog',
+			// 		content: () => (
+			// 			<p>发生异常错误，导入失败了QwQ，该功能尚在测试阶段，尚不稳定，出现异常请及时反馈~</p>
+			// 		),
+			// 	});
+			// 	importShareRuleLoading.value = false;
+			// } else {
+			// 	autoUIStore.updateMergeRuleList();
+			// 	await reloadPage();
+			// 	importShareRuleLoading.value = false;
+			// 	modal.create({
+			// 		title: '导入分享规则成功',
+			// 		type: 'success',
+			// 		preset: 'dialog',
+			// 		content: () => (
+			// 			<p>
+			// 				好耶w，{' '}
+			// 				<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+			// 					{renderApplicationName(
+			// 						importRuleContent.name,
+			// 						deviceStore.installedAppNameList[importRuleContent.name] ||
+			// 							autoUIStore.applicationName[importRuleContent.name],
+			// 					)}
+			// 				</span>{' '}
+			// 				的应用配置成功了OwO~如果应用更新后的规则不生效，可以尝试重启平板再做尝试~
+			// 			</p>
+			// 		),
+			// 		positiveText: '确定',
+			// 	});
+			// }
 			// 解析成功，可以使用 data
 		} catch (error) {
 			console.log(error, 'error');
@@ -389,42 +390,42 @@ const handleCustomRuleDropdown = async (
 			onPositiveClick: async () => {
 				cleanCustomModal.loading = true;
 
-				const [submitUpdateAutoUIAppErr, submitUpdateAutoUIAppRes] = await $to(
-					ksuApi.updateAutoUIApp({
-						customAutoUIListXML: xmlFormat.objectToXML(
-							autoUIStore.customConfigAutoUIList,
-							'package',
-							undefined,
-						),
-						settingConfigXML: xmlFormat.objectToXML(
-							autoUIStore.autoUISettingConfig,
-							'setting',
-							'setting_config',
-						),
-					}),
-				);
-				if (submitUpdateAutoUIAppErr) {
-					modal.create({
-						title: '清除自定义规则失败',
-						type: 'error',
-						preset: 'dialog',
-						content: () => (
-							<p>发生异常错误，更新失败了QwQ，该功能尚在测试阶段，尚不稳定，出现异常请及时反馈~</p>
-						),
-					});
-					cleanCustomModal.loading = false;
-				} else {
-					modal.create({
-						title: '清除自定义规则成功',
-						type: 'success',
-						preset: 'dialog',
-						content: () => (
-							<p>好耶w，清除自定义规则成功了OwO~如果应用更新后的规则不生效，可以尝试重启平板再试试~</p>
-						),
-					});
-					cleanCustomModal.loading = false;
-					autoUIStore.updateMergeRuleList();
-				}
+				// const [submitUpdateAutoUIAppErr, submitUpdateAutoUIAppRes] = await $to(
+				// 	ksuApi.updateAutoUIApp({
+				// 		customAutoUIListXML: xmlFormat.objectToXML(
+				// 			autoUIStore.customConfigAutoUIList,
+				// 			'package',
+				// 			undefined,
+				// 		),
+				// 		settingConfigXML: xmlFormat.objectToXML(
+				// 			autoUIStore.autoUISettingConfig,
+				// 			'setting',
+				// 			'setting_config',
+				// 		),
+				// 	}),
+				// );
+				// if (submitUpdateAutoUIAppErr) {
+				// 	modal.create({
+				// 		title: '清除自定义规则失败',
+				// 		type: 'error',
+				// 		preset: 'dialog',
+				// 		content: () => (
+				// 			<p>发生异常错误，更新失败了QwQ，该功能尚在测试阶段，尚不稳定，出现异常请及时反馈~</p>
+				// 		),
+				// 	});
+				// 	cleanCustomModal.loading = false;
+				// } else {
+				// 	modal.create({
+				// 		title: '清除自定义规则成功',
+				// 		type: 'success',
+				// 		preset: 'dialog',
+				// 		content: () => (
+				// 			<p>好耶w，清除自定义规则成功了OwO~如果应用更新后的规则不生效，可以尝试重启平板再试试~</p>
+				// 		),
+				// 	});
+				// 	cleanCustomModal.loading = false;
+				// 	autoUIStore.updateMergeRuleList();
+				// }
 			},
 		});
 	}
@@ -558,7 +559,7 @@ const openAddDrawer = async () => {
 			});
 			console.log(currentDotBlackList, 'ttt');
 			const [submitAddDotBlackListAppErr, submitAddDotBlackListAppRes] = await $to(
-				ksuApi.updateDotBlackList({
+				dotBlackListApi.updateDotBlackList({
 					dotBlackList: currentDotBlackList,
 					sourceDotBlackList: dotBlackListStore.sourceDotBlackList,
 					customDotBlackList: dotBlackListStore.customDotBlackList,
@@ -599,7 +600,7 @@ const openAddDrawer = async () => {
 					positiveText: '确定重启作用域',
 					negativeText: '稍后手动重启',
 					onPositiveClick() {
-						ksuApi
+						deviceApi
 							.killAndroidSystemUI()
 							.then(res => {
 								modal.create({
@@ -887,7 +888,7 @@ function createColumns(): DataTableColumns<DotBlackListMergeItem> {
 					bordered
 					@click="
 						() => {
-							autoUIStore.searchKeyWord = '';
+							dotBlackListStore.searchKeyWord = '';
 						}
 					">
 					<template #icon>

@@ -4,7 +4,8 @@ import type AutoUIItem from '@/types/AutoUIItem';
 import type AutoUISettingRuleItem from '@/types/AutoUISettingRuleItem';
 import type AutoUIMergeRuleItem from '@/types/AutoUIMergeRuleItem';
 import $to from 'await-to-js';
-import * as ksuApi from '@/apis/ksuApi';
+import * as deviceApi from '@/apis/deviceApi';
+import * as autouiApi from '@/apis/autouiApi';
 import * as xmlFormat from '@/utils/xmlFormat';
 import type { ErrorLogging } from '@/types/ErrorLogging';
 type ApplicationName = Record<string, string>;
@@ -101,7 +102,7 @@ export const useAutoUIStore = defineStore(
 			applicationName.value = applicationNameData;
 			// 获取源应用布局优化列表
 			const [getSourceAutoUIListErr, getSourceAutoUIListRes] = await $to<string, string>(
-				ksuApi.getSourceAutoUIList(),
+				autouiApi.getSourceAutoUIList(),
 			);
 			if (getSourceAutoUIListErr) {
 				errorLogging.push({
@@ -121,7 +122,7 @@ export const useAutoUIStore = defineStore(
 
 			// 获取自定义配置嵌入规则列表
 			const [getCustomConfigAutoUIListErr, getCustomConfigAutoUIListRes] = await $to(
-				ksuApi.getCustomConfigAutoUIList(),
+				autouiApi.getCustomConfigAutoUIList(),
 			);
 			if (!getCustomConfigAutoUIListErr) {
 				customConfigAutoUIList.value = xmlFormat.parseXMLToObject<AutoUIItem>(
@@ -134,7 +135,7 @@ export const useAutoUIStore = defineStore(
 
 			// 获取设置配置
 			const [getAutoUISettingConfigErr, getAutoUISettingConfigRes] = await $to<string, string>(
-				ksuApi.getAutoUISettingConfig(),
+				autouiApi.getAutoUISettingConfig(),
 			);
 			if (getAutoUISettingConfigErr) {
 				autoUISettingConfig.value = {};

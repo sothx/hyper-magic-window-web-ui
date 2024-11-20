@@ -20,7 +20,8 @@ import {
 	type DataTableColumns,
 	type DropdownOption,
 } from 'naive-ui';
-import * as ksuApi from '@/apis/ksuApi';
+import * as deviceApi from '@/apis/deviceApi';
+import * as embeddedApi from '@/apis/embeddedApi';
 import { useDeviceStore } from '@/stores/device';
 import * as xmlFormat from '@/utils/xmlFormat';
 import { useEmbeddedStore } from '@/stores/embedded';
@@ -267,7 +268,7 @@ const importShareRule = async () => {
 				};
 			}
 			const [submitUpdateEmbeddedAppErr, submitUpdateEmbeddedAppRes] = await $to(
-				ksuApi.updateEmbeddedApp({
+				embeddedApi.updateEmbeddedApp({
 					isPatchMode: embeddedStore.isPatchMode,
 					patchEmbeddedRulesListXML: xmlFormat.objectToXML(
 						embeddedStore.patchEmbeddedRulesList,
@@ -400,7 +401,7 @@ const reloadPatchModeConfigLoading = ref<boolean>(false);
 const hotReloadApplicationData = async () => {
 	hotReloadLoading.value = true;
 	await reloadPage();
-	const [updateRuleErr, updateRuleRes] = await $to(ksuApi.updateRule());
+	const [updateRuleErr, updateRuleRes] = await $to(deviceApi.updateRule());
 	if (updateRuleErr) {
 		modal.create({
 			title: '热重载应用数据失败',
@@ -428,7 +429,7 @@ const reloadPatchModeConfigList = async () => {
 	await deviceStore.getAndroidApplicationPackageNameList();
 	reloadPatchModeConfigLoading.value = true;
 	const [submitUpdateEmbeddedAppErr, submitUpdateEmbeddedAppRes] = await $to(
-		ksuApi.updateEmbeddedApp({
+		embeddedApi.updateEmbeddedApp({
 			isPatchMode: embeddedStore.isPatchMode,
 			patchEmbeddedRulesListXML: xmlFormat.objectToXML(
 				embeddedStore.patchEmbeddedRulesList,
@@ -621,7 +622,7 @@ const openAddEmbeddedApp = async () => {
 				};
 			}
 			const [submitAddEmbeddedAppErr, submitAddEmbeddedAppRes] = await $to(
-				ksuApi.updateEmbeddedApp({
+				embeddedApi.updateEmbeddedApp({
 					isPatchMode: embeddedStore.isPatchMode,
 					patchEmbeddedRulesListXML: xmlFormat.objectToXML(
 						embeddedStore.patchEmbeddedRulesList,
@@ -1035,7 +1036,7 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 				};
 			}
 			const [submitUpdateEmbeddedAppErr, submitUpdateEmbeddedAppRes] = await $to(
-				ksuApi.updateEmbeddedApp({
+				embeddedApi.updateEmbeddedApp({
 					isPatchMode: embeddedStore.isPatchMode,
 					patchEmbeddedRulesListXML: xmlFormat.objectToXML(
 						embeddedStore.patchEmbeddedRulesList,
@@ -1188,7 +1189,7 @@ const handleCustomRuleDropdown = async (
 					delete embeddedStore.customConfigEmbeddedSettingConfig[row.name];
 				}
 				const [submitUpdateEmbeddedAppErr, submitUpdateEmbeddedAppRes] = await $to(
-					ksuApi.updateEmbeddedApp({
+					embeddedApi.updateEmbeddedApp({
 						isPatchMode: embeddedStore.isPatchMode,
 						patchEmbeddedRulesListXML: xmlFormat.objectToXML(
 							embeddedStore.patchEmbeddedRulesList,
@@ -1517,7 +1518,7 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 						positiveText: '确定重置',
 						negativeText: '我再想想',
 						onPositiveClick: async () => {
-							const [resetCompatErr, resetCompatRes] = await $to(ksuApi.resetApplicationCompat(row.name));
+							const [resetCompatErr, resetCompatRes] = await $to(deviceApi.resetApplicationCompat(row.name));
 							if (resetCompatErr) {
 								modal.create({
 									title: '重置应用兼容性失败',

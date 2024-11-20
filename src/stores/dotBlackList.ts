@@ -4,7 +4,8 @@ import type AutoUIItem from '@/types/AutoUIItem';
 import type AutoUISettingRuleItem from '@/types/AutoUISettingRuleItem';
 import type AutoUIMergeRuleItem from '@/types/AutoUIMergeRuleItem';
 import $to from 'await-to-js';
-import * as ksuApi from '@/apis/ksuApi';
+import * as deviceApi from '@/apis/deviceApi';
+import * as dotBlackListApi from '@/apis/dotBlackListApi';
 import * as xmlFormat from '@/utils/xmlFormat';
 import type { ErrorLogging } from '@/types/ErrorLogging';
 type ApplicationName = Record<string, string>;
@@ -97,8 +98,6 @@ export const useDotBlackListStore = defineStore(
 			});
 		})
 		const applicationName = ref<ApplicationName>({});
-		// 配置文件
-		const autoUISettingConfig = ref<Record<string, AutoUISettingRuleItem>>({});
 		// 合并后的配置
 		const mergeRuleList = ref<AutoUIMergeRuleItem[]>([]);
 		// 搜索后的配置列表
@@ -128,8 +127,10 @@ export const useDotBlackListStore = defineStore(
 			const applicationNameData = applicationNameRes.default;
 			applicationName.value = applicationNameData;
 
+			
+
 			const [getDotBlackListErr, getDotBlackListRes] = await $to<DotBlackListItem[], string>(
-				ksuApi.getDotBlackList(),
+				dotBlackListApi.getDotBlackList(),
 			);
 			if (getDotBlackListErr) {
 				sourceDotBlackList.value = [];
@@ -140,7 +141,7 @@ export const useDotBlackListStore = defineStore(
 			}
 
 			const [getCustomDotBlackListErr, getCustomDotBlackListRes] = await $to<string[], string>(
-				ksuApi.getCustomDotBlackList(),
+				dotBlackListApi.getCustomDotBlackList(),
 			);
 			if (getCustomDotBlackListErr) {
 				customDotBlackList.value = [];

@@ -9,7 +9,8 @@
     computed,
   } from 'vue';
   import { useAutoUIStore } from '@/stores/autoui';
-  import * as ksuApi from '@/apis/ksuApi';
+  import * as deviceApi from '@/apis/deviceApi';
+  import * as autouiApi from '@/apis/autouiApi';
   import * as xmlFormat from '@/utils/xmlFormat';
   import { useDeviceStore } from '@/stores/device';
   import $to from 'await-to-js';
@@ -102,7 +103,7 @@ configProviderProps: configProviderPropsRef
   const hotReloadApplicationData = async () => {
 		hotReloadLoading.value = true;
 		await reloadPage();
-		const [updateRuleErr, updateRuleRes] = await $to(ksuApi.updateRule())
+		const [updateRuleErr, updateRuleRes] = await $to(deviceApi.updateRule())
 		if (updateRuleErr) {
 			modal.create({
 					title: '热重载应用数据失败',
@@ -226,7 +227,7 @@ configProviderProps: configProviderPropsRef
           enable: true,
         };
         const [submitUpdateAutoUIAppErr, submitUpdateAutoUIAppRes] = await $to(
-          ksuApi.updateAutoUIApp({
+          autouiApi.updateAutoUIApp({
             customAutoUIListXML: xmlFormat.objectToXML(
               autoUIStore.customConfigAutoUIList,
               'package',
@@ -320,7 +321,7 @@ configProviderProps: configProviderPropsRef
           }
           const [submitUpdateAutoUIAppErr, submitUpdateAutoUIAppRes] =
             await $to(
-              ksuApi.updateAutoUIApp({
+              autouiApi.updateAutoUIApp({
                 customAutoUIListXML: xmlFormat.objectToXML(
                   autoUIStore.customConfigAutoUIList,
                   'package',
@@ -480,7 +481,7 @@ configProviderProps: configProviderPropsRef
           };
         }
         const [submitUpdateAutoUIAppErr, submitUpdateAutoUIAppRes] = await $to(
-          ksuApi.updateAutoUIApp({
+          autouiApi.updateAutoUIApp({
             customAutoUIListXML: xmlFormat.objectToXML(
               autoUIStore.customConfigAutoUIList,
               'package',
@@ -559,7 +560,7 @@ configProviderProps: configProviderPropsRef
           enable: true,
         };
         const [submitAddAutoUIAppErr, submitAddAutoUIAppRes] = await $to(
-          ksuApi.updateAutoUIApp({
+          autouiApi.updateAutoUIApp({
             customAutoUIListXML: xmlFormat.objectToXML(
               autoUIStore.customConfigAutoUIList,
               'package',
@@ -683,7 +684,7 @@ configProviderProps: configProviderPropsRef
         }
         console.log('loadingCallback:', updateAutoUiAppRes.loadingCallback);
         const [submitUpdateAutoUIAppErr, submitUpdateAutoUIAppRes] = await $to(
-          ksuApi.updateAutoUIApp({
+          autouiApi.updateAutoUIApp({
             customAutoUIListXML: xmlFormat.objectToXML(
               autoUIStore.customConfigAutoUIList,
               'package',

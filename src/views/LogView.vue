@@ -2,11 +2,11 @@
 import { useDeviceStore } from '@/stores/device';
 import { nextTick, onMounted, watchEffect, ref, type CSSProperties, computed } from 'vue';
 import hljs from 'highlight.js/lib/core';
-import * as ksuApi from '@/apis/ksuApi';
+import * as deviceApi from '@/apis/deviceApi';
 import { useLogsStore } from '@/stores/logs';
 import { createDiscreteApi, darkTheme, lightTheme, type ConfigProviderProps, type LogInst } from 'naive-ui';
-const logsStore = useLogsStore();
 import { ArrowUpCircleIcon, ArrowDownCircleIcon, TrashIcon, FolderIcon } from '@heroicons/vue/24/outline';
+const logsStore = useLogsStore();
 const deviceStore = useDeviceStore();
 const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
 	theme: deviceStore.isDarkMode ? darkTheme : lightTheme,
@@ -60,23 +60,26 @@ const cleanLogs = () => {
 
 const saveLogs = () => {
 	const currentTimestamp = new Date().getTime();
-	ksuApi.saveLogs(logsStore.content, currentTimestamp).then(res => {
-		modal.create({
-			title: '保存成功',
-			type: 'success',
-			preset: 'dialog',
-			content: () => <p>日志保存成功，日志保存在/data/adb/MIUI_MagicWindow+/logs-{currentTimestamp}.txt</p>,
-			negativeText: '确定',
+	deviceApi
+		.saveLogs(logsStore.content, currentTimestamp)
+		.then(res => {
+			modal.create({
+				title: '保存成功',
+				type: 'success',
+				preset: 'dialog',
+				content: () => <p>日志保存成功，日志保存在/data/adb/MIUI_MagicWindow+/logs-{currentTimestamp}.txt</p>,
+				negativeText: '确定',
+			});
+		})
+		.catch(err => {
+			modal.create({
+				title: '保存失败',
+				type: 'error',
+				preset: 'dialog',
+				content: () => <p>日志保存失败，可能目录没有写入权限，请检查~</p>,
+				negativeText: '确定',
+			});
 		});
-	}).catch((err) => {
-    modal.create({
-			title: '保存失败',
-			type: 'error',
-			preset: 'dialog',
-			content: () => <p>日志保存失败，可能目录没有写入权限，请检查~</p>,
-			negativeText: '确定',
-		});
-  });
 };
 
 onMounted(() => {

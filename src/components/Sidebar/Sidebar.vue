@@ -25,7 +25,7 @@
   import { useGameMode } from '@/hooks/useGameMode';
   import { useDeviceStore } from '@/stores/device';
   import handlePromiseWithLogging from "@/utils/handlePromiseWithLogging";
-  import * as ksuApi from "@/apis/ksuApi";
+  import * as deviceApi from '@/apis/deviceApi';
   import { useMIUIContentExtension } from '@/hooks/useMIUIContentExtension';
   const route = useRoute();
   const gameMode = useGameMode();
@@ -70,7 +70,7 @@
             positiveText: '确定打开',
             negativeText: '我再想想',
             onPositiveClick: async () => {
-              ksuApi.openGameModeManager().then((res) => {
+              deviceApi.openGameModeManager().then((res) => {
                 modal.create({
                   title: '已开启',
                   type: 'success',
@@ -140,7 +140,7 @@
           positiveText: '确定打开',
           negativeText: '我再想想',
           onPositiveClick: async () => {
-            ksuApi.openMIUIContentExtension().then((res) => {
+            deviceApi.openMIUIContentExtension().then((res) => {
               modal.create({
                 title: '已开启',
                 type: 'success',
@@ -225,7 +225,7 @@
                     <li>
                       <ul role="list" class="-mx-2 space-y-1">
                         <li v-for="item in navigation" :key="item.name">
-                          <component v-if="item.isShow ? item.isShow() : true"
+                          <component v-show="item.isShow ? item.isShow() : true"
                             :is="item.href && item.routeName ? 'RouterLink' : 'a'"
                             v-bind="item.href && item.routeName ? { to: item.href } : { href: 'javascript:void(0)' }"
                             @click="item.click && item.click()"
