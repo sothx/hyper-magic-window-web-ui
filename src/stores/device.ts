@@ -70,6 +70,7 @@ export const useDeviceStore = defineStore(
 		const hasPenUpdateControl = ref<boolean>(false);
 		const hasPenEnableControl = ref<boolean>(false);
 		const hasKeyboardControl = ref<boolean>(false);
+		const enabledMiuiDesktopMode = ref<boolean>(false);
 		const deviceName = ref<string>('');
 		const installedAndroidApplicationPackageNameList = ref<string[]>([]);
 		const installedAppNameList = ref<InstallAppNameListDictionary>({});
@@ -185,6 +186,8 @@ export const useDeviceStore = defineStore(
 				$to<string, string>(deviceApi.getHasPenEnableControl()),
 				// 键盘控制(水龙)
 				$to<string, string>(deviceApi.getHasKeyboardControl()),
+				// 工作台模式判断
+				$to<string,string>(deviceApi.getMiuiDesktopModeEnabled()),
 			];
 			// 等待所有 promises 完成
 			const executeWithoutWaitingResults = await Promise.all(executeWithoutWaiting);
@@ -203,6 +206,7 @@ export const useDeviceStore = defineStore(
 				[, getHasPenUpdateControlRes],
 				[, getHasPenEnableControlRes],
 				[, getHasKeyboardControlRes],
+				[, getMiuiDesktopModeEnabledRes],
 			] = executeWithoutWaitingResults;
 			// 模块信息 *弱校验
 			if (!getModuleInfoRes?.length) {
@@ -267,6 +271,9 @@ export const useDeviceStore = defineStore(
 			}
 			if (getHasKeyboardControlRes) {
 				hasKeyboardControl.value = true;
+			}
+			if (getMiuiDesktopModeEnabledRes) {
+				enabledMiuiDesktopMode.value = true;
 			}
 			// 售后电池健康度
 			batteryInfo.sohQcom = Number(getBatterySohQcomRes)
@@ -401,7 +408,8 @@ export const useDeviceStore = defineStore(
 			ABTestInfo,
 			hasPenUpdateControl,
 			hasPenEnableControl,
-			hasKeyboardControl
+			hasKeyboardControl,
+			enabledMiuiDesktopMode
 		};
 	},
 	{

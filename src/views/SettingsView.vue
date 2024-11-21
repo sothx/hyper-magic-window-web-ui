@@ -15,8 +15,10 @@ import { arrayBufferToBase64, base64ToArrayBuffer } from '@/utils/format';
 import * as embeddedApi from '@/apis/embeddedApi';
 import pako from 'pako';
 import { useAmktiao, type KeyboardModeOptions } from '@/hooks/useAmktiao';
+import { useMiuiDesktopMode } from '@/hooks/useMiuiDesktopMode';
 const deviceStore = useDeviceStore();
 const embeddedStore = useEmbeddedStore();
+const miuiDesktopModeHook = useMiuiDesktopMode();
 const { activateABTest, loading: activateABTestLoading } = useABTestActivation();
 const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
 	theme: deviceStore.isDarkMode ? darkTheme : lightTheme,
@@ -628,6 +630,23 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							</n-switch>
 						</dd>
 					</div>
+					<div v-if="deviceStore.enabledMiuiDesktopMode" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+						<dt
+							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
+							工作台模式
+						</dt>
+						<dd
+							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
+							<n-switch
+								@update:value="(value: boolean) => miuiDesktopModeHook.changeMiuiDktMode(value)"
+								:rail-style="railStyle"
+								:value="miuiDesktopModeHook.currentMiuiDktMode"
+								:loading="deviceStore.loading">
+								<template #checked>工作台模式</template>
+								<template #unchecked>默认桌面模式</template>
+							</n-switch>
+						</dd>
+					</div>
 					<div v-if="deviceStore.hasPenEnableControl" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
@@ -662,7 +681,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							</n-switch>
 						</dd>
 					</div>
-					<div v-if="deviceStore.hasKeyboardControl && amktiaoHook.currentKeyboardModeSelect.value" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+					<div v-if="deviceStore.hasKeyboardControl" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
 							键盘连接器管理（水龙）

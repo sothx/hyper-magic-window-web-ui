@@ -786,3 +786,50 @@ export const putCurrentKeyboardMode = (mode:KeyboardMode): Promise<string> => {
 		shellCommon,
 	);
 };
+
+export const getMiuiDesktopModeEnabled = (): Promise<string> => {
+	const shellCommon = `getprop ro.config.miui_desktop_mode_enabled`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`true`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const getCurrentMiuiDktMode = (): Promise<string> => {
+	const shellCommon = `settings get system miui_dkt_mode`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`1`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export type MiuiDKTMode = 1 | 'null'
+
+export const putCurrentMiuiDktMode = (mode:MiuiDKTMode): Promise<string> => {
+	const shellCommon = `settings put system miui_dkt_mode ${mode}`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`success`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
