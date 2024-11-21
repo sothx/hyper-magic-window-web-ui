@@ -94,7 +94,15 @@ const reloadPage = async () => {
 			type: 'error',
 			preset: 'dialog',
 			content: () => (
-				<p>无法获取到HTML查看器的云控，请检查是否禁用云控或者清除HTML查看器的数据再重启平板尝试操作~</p>
+				<div>
+					<p>无法获取到HTML查看器的云控，请检查是否禁用云控或者清除HTML查看器的数据再重启平板尝试操作~</p>
+					{deviceStore.currentRootManager !== 'Magisk' && (
+						<p>
+							部分{deviceStore.currentRootManager}版本内置的Web
+							UI存在异常，如仍然无法正常获取云控数据库，请单独安装模块网盘内提供的KsuWebUI。
+						</p>
+					)}
+				</div>
 			),
 		});
 		return;
@@ -107,11 +115,11 @@ const getInstalledAppNameList = async () => {
 	const [getListErr, getListRes] = await $to(installedAppNames.getList());
 	if (getListErr) {
 		modal.create({
-			title: '获取失败',
-			type: 'error',
-			preset: 'dialog',
-			content: () => <p>获取已安装应用名称发生错误，详细错误请查看日志列表~</p>,
-			negativeText: '确定',
+					title: '获取失败',
+					type: 'warning',
+					preset: 'dialog',
+					content: () => <p>您的系统环境暂不支持该功能，获取失败~</p>,
+					negativeText: '确定',
 		});
 	}
 	if (getListRes) {
@@ -149,7 +157,15 @@ const hotReloadApplicationData = async () => {
 			type: 'error',
 			preset: 'dialog',
 			content: () => (
-				<p>无法获取到HTML查看器的云控，请检查是否禁用云控或者清除HTML查看器的数据再重启平板尝试操作~</p>
+				<div>
+					<p>无法获取到HTML查看器的云控，请检查是否禁用云控或者清除HTML查看器的数据再重启平板尝试操作~</p>
+					{deviceStore.currentRootManager !== 'Magisk' && (
+						<p>
+							部分{deviceStore.currentRootManager}版本内置的Web
+							UI存在异常，如仍然无法正常获取云控数据库，请单独安装模块网盘内提供的KsuWebUI。
+						</p>
+					)}
+				</div>
 			),
 		});
 		return;
@@ -259,7 +275,7 @@ const rebootDevice = async () => {
 			return;
 		}
 	}
-}
+};
 
 const importShareRule = async () => {
 	if (!deviceStore.ABTestInfo.Hyper_OS_DOT_BLACK_LIST_MANAGER) {
@@ -281,7 +297,15 @@ const importShareRule = async () => {
 			type: 'error',
 			preset: 'dialog',
 			content: () => (
-				<p>无法获取到HTML查看器的云控，请检查是否禁用云控或者清除HTML查看器的数据再重启平板尝试操作~</p>
+				<div>
+					<p>无法获取到HTML查看器的云控，请检查是否禁用云控或者清除HTML查看器的数据再重启平板尝试操作~</p>
+					{deviceStore.currentRootManager !== 'Magisk' && (
+						<p>
+							部分{deviceStore.currentRootManager}版本内置的Web
+							UI存在异常，如仍然无法正常获取云控数据库，请单独安装模块网盘内提供的KsuWebUI。
+						</p>
+					)}
+				</div>
 			),
 		});
 		return;
@@ -498,7 +522,15 @@ const handleCustomRuleDropdown = async (
 			type: 'error',
 			preset: 'dialog',
 			content: () => (
-				<p>无法获取到HTML查看器的云控，请检查是否禁用云控或者清除HTML查看器的数据再重启平板尝试操作~</p>
+				<div>
+					<p>无法获取到HTML查看器的云控，请检查是否禁用云控或者清除HTML查看器的数据再重启平板尝试操作~</p>
+					{deviceStore.currentRootManager !== 'Magisk' && (
+						<p>
+							部分{deviceStore.currentRootManager}版本内置的Web
+							UI存在异常，如仍然无法正常获取云控数据库，请单独安装模块网盘内提供的KsuWebUI。
+						</p>
+					)}
+				</div>
 			),
 		});
 		return;
@@ -708,13 +740,21 @@ const openAddDrawer = async () => {
 		});
 		return;
 	}
-	if (!dotBlackListStore.systemDotBlackList.length || !dotBlackListStore.hasHTMLViewerCloudData) {
+	if (!dotBlackListStore.systemDotBlackList.length || dotBlackListStore.hasHTMLViewerCloudData) {
 		modal.create({
 			title: '获取云控失败',
 			type: 'error',
 			preset: 'dialog',
 			content: () => (
-				<p>无法获取到HTML查看器的云控，请检查是否禁用云控或者清除HTML查看器的数据再重启平板尝试操作~</p>
+				<div>
+					<p>无法获取到HTML查看器的云控，请检查是否禁用云控或者清除HTML查看器的数据再重启平板尝试操作~</p>
+					{deviceStore.currentRootManager !== 'Magisk' && (
+						<p>
+							部分{deviceStore.currentRootManager}版本内置的Web
+							UI存在异常，如仍然无法正常获取云控数据库，请单独安装模块网盘内提供的KsuWebUI。
+						</p>
+					)}
+				</div>
 			),
 		});
 		return;

@@ -16,9 +16,11 @@ import * as embeddedApi from '@/apis/embeddedApi';
 import pako from 'pako';
 import { useAmktiao, type KeyboardModeOptions } from '@/hooks/useAmktiao';
 import { useMiuiDesktopMode } from '@/hooks/useMiuiDesktopMode';
+import { useShowNotificationIcon } from '@/hooks/useShowNotificationIconNum';
 const deviceStore = useDeviceStore();
 const embeddedStore = useEmbeddedStore();
 const miuiDesktopModeHook = useMiuiDesktopMode();
+const showNotificationIconHook = useShowNotificationIcon();
 const { activateABTest, loading: activateABTestLoading } = useABTestActivation();
 const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
 	theme: deviceStore.isDarkMode ? darkTheme : lightTheme,
@@ -142,7 +144,7 @@ const handleActivateABTest = async () => {
 				to: 'string',
 			});
 			const activateABTestRuleContent = JSON.parse(inflate);
-			activateABTest(activateABTestRuleContent)
+			activateABTest(activateABTestRuleContent);
 		} catch (error) {
 			// 解析失败，处理错误
 			modal.create({
@@ -172,9 +174,11 @@ const changeShowRotationSuggestions = async (value: boolean) => {
 	deviceStore.showRotationSuggestions = value;
 };
 const changeShamikoMode = async (value: boolean) => {
-	deviceApi.putShamikoMode(value ? 'whitelist' : 'blacklist').then((res) => {
-		deviceStore.shamikoInfo.mode =  value ? 'whitelist' : 'blacklist'
-		modal.create({
+	deviceApi
+		.putShamikoMode(value ? 'whitelist' : 'blacklist')
+		.then(res => {
+			deviceStore.shamikoInfo.mode = value ? 'whitelist' : 'blacklist';
+			modal.create({
 				title: '操作成功',
 				type: 'success',
 				preset: 'dialog',
@@ -200,16 +204,17 @@ const changeShamikoMode = async (value: boolean) => {
 				),
 				negativeText: '确定',
 			});
-	}).catch((err) => {
-		modal.create({
+		})
+		.catch(err => {
+			modal.create({
 				title: '操作失败',
 				type: 'error',
 				preset: 'dialog',
 				content: () => <p>无法切换Shamiko的工作模式，详情请查看日志记录~</p>,
 				negativeText: '确定',
+			});
 		});
-	})
-}
+};
 const changePatchMode = async (value: boolean) => {
 	const [negativeRes, positiveRes] = await $to(
 		new Promise((resolve, reject) => {
@@ -613,7 +618,9 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							{{ deviceStore.rootManagerInfo.MAGISK_VER_CODE || '获取失败' }}
 						</dd>
 					</div>
-					<div v-if="deviceStore.shamikoInfo.installed" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+					<div
+						v-if="deviceStore.shamikoInfo.installed"
+						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
 							Shamiko 工作模式
@@ -623,14 +630,16 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							<n-switch
 								@update:value="(value: boolean) => changeShamikoMode(value)"
 								:rail-style="railStyle"
-								:value="deviceStore.shamikoInfo.mode === 'whitelist' ? true: false"
+								:value="deviceStore.shamikoInfo.mode === 'whitelist' ? true : false"
 								:loading="deviceStore.loading">
 								<template #checked>白名单模式</template>
 								<template #unchecked>黑名单模式</template>
 							</n-switch>
 						</dd>
 					</div>
-					<div v-if="deviceStore.enabledMiuiDesktopMode" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+					<div
+						v-if="deviceStore.enabledMiuiDesktopMode"
+						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
 							工作台模式
@@ -647,7 +656,45 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							</n-switch>
 						</dd>
 					</div>
-					<div v-if="deviceStore.hasPenEnableControl" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+					<!-- <div
+						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+						<dt
+							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
+							通知图标显示个数
+						</dt>
+						<dd
+							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
+							<n-switch
+								@update:value="(value: boolean) => showNotificationIconHook.changeEnableMode(value)"
+								:rail-style="railStyle"
+								:value="deviceStore.isEnableShowNotificationIconNum"
+								:loading="deviceStore.loading">
+								<template #checked>自定义</template>
+								<template #unchecked>系统默认</template>
+							</n-switch>
+							<div class="mt-3" v-if="deviceStore.isEnableShowNotificationIconNum">
+								<n-slider
+									v-model:value="showNotificationIconHook.currentNum.value"
+									size="small"
+									:min="0"
+									@update:value="(num:number) => showNotificationIconHook.changeNum(num)"
+									:max="25"
+									:step="1" />
+								<n-input-number
+									:show-button="false"
+									class="pt-3"
+									readonly
+									placeholder="请输入显示图标数量"
+									v-model:value="showNotificationIconHook.currentNum.value"
+									:min="0"
+									:max="25"
+									:step="1" />
+							</div>
+						</dd>
+					</div> -->
+					<div
+						v-if="deviceStore.hasPenEnableControl"
+						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
 							第三方触控笔管理（水龙）
@@ -657,14 +704,16 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							<n-switch
 								@update:value="(value: boolean) => amktiaoHook.changePenEnableMode(value)"
 								:rail-style="railStyle"
-								:value="amktiaoHook.currentPenEnable.value ? true: false"
+								:value="amktiaoHook.currentPenEnable.value ? true : false"
 								:loading="deviceStore.loading">
 								<template #checked>已启用</template>
 								<template #unchecked>未启用</template>
 							</n-switch>
 						</dd>
 					</div>
-					<div v-if="deviceStore.hasPenUpdateControl" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+					<div
+						v-if="deviceStore.hasPenUpdateControl"
+						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
 							手写笔驱动管理（水龙）
@@ -674,14 +723,16 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							<n-switch
 								@update:value="(value: boolean) => amktiaoHook.changePenUpdateMode(value)"
 								:rail-style="railStyle"
-								:value="amktiaoHook.currentPenUpdate.value ? true: false"
+								:value="amktiaoHook.currentPenUpdate.value ? true : false"
 								:loading="deviceStore.loading">
 								<template #checked>二代笔驱动</template>
 								<template #unchecked>一代笔驱动</template>
 							</n-switch>
 						</dd>
 					</div>
-					<div v-if="deviceStore.hasKeyboardControl" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+					<div
+						v-if="deviceStore.hasKeyboardControl"
+						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
 							键盘连接器管理（水龙）
@@ -694,7 +745,11 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 								trigger="click"
 								:options="amktiaoHook.keyboardModeOptions.value"
 								@select="amktiaoHook.changeKeyboardMode">
-								<n-button strong secondary size="small" :type="amktiaoHook.currentKeyboardModeSelect.value.type">
+								<n-button
+									strong
+									secondary
+									size="small"
+									:type="amktiaoHook.currentKeyboardModeSelect.value.type">
 									{{ amktiaoHook.currentKeyboardModeSelect.value.label }}
 								</n-button>
 							</n-dropdown>

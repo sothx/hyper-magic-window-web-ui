@@ -637,6 +637,21 @@ export const getHasKeyboardControl = (): Promise<string> => {
 	);
 };
 
+export const getWhichSu = (): Promise<string> => {
+	const shellCommon = `which test`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`exists`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout)
+			}
+		}),
+		shellCommon,
+	);
+};
+
 export const getCurrentPenUpdate = (): Promise<string> => {
 	const shellCommon = `cat /sys/touchpanel/pen_update`;
 	return handlePromiseWithLogging(
@@ -821,6 +836,126 @@ export type MiuiDKTMode = 1 | 'null'
 
 export const putCurrentMiuiDktMode = (mode:MiuiDKTMode): Promise<string> => {
 	const shellCommon = `settings put system miui_dkt_mode ${mode}`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`success`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const addIsEnableShowNotificationIconNum = (): Promise<string> => {
+	const shellCommon = `grep -q '^is_enable_show_notification_icon_num=' /data/adb/MIUI_MagicWindow+/config.prop || (echo "is_enable_show_notification_icon_num=true" | tee -a /data/adb/MIUI_MagicWindow+/config.prop > /dev/null && echo "Command executed successfully." || echo "Command failed.")`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`Command executed successfully.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : stdout === 'Command executed successfully.' ? resolve(stdout) : reject(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const removeIsEnableShowNotificationIconNum = (): Promise<string> => {
+	const shellCommon = `sed -i '/^is_enable_show_notification_icon_num=/d' //data/adb/MIUI_MagicWindow+/config.prop && echo "Remove is_enable_show_notification_icon_num successfully." || echo "Remove is_enable_show_notification_icon_num failed."`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`Remove is_enable_show_notification_icon_num successfully.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const getIsEnableShowNotificationIconNum = (): Promise<string> => {
+	const shellCommon = `grep 'is_enable_show_notification_icon_num=' /data/adb/MIUI_MagicWindow+/config.prop | awk -F'=' '{print $2}'`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`true`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const getShowNotificationIconNum = (): Promise<string> => {
+	const shellCommon = `grep 'show_notification_icon_num=' /data/adb/MIUI_MagicWindow+/config.prop | awk -F'=' '{print $2}'`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`3`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const removeShowNotificationIconNum = (): Promise<string> => {
+	const shellCommon = `sed -i '/^show_notification_icon_num=/d' //data/adb/MIUI_MagicWindow+/config.prop && echo "Remove show_notification_icon_num successfully." || echo "Remove show_notification_icon_num failed."`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`Remove show_notification_icon_num successfully.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const addShowNotificationIconNum = (num:number): Promise<string> => {
+	const shellCommon = `grep -q '^show_notification_icon_num=' /data/adb/MIUI_MagicWindow+/config.prop || (echo "show_notification_icon_num=${num}" | tee -a /data/adb/MIUI_MagicWindow+/config.prop > /dev/null && echo "Command executed successfully." || echo "Command failed.")`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`Command executed successfully.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : stdout === 'Command executed successfully.' ? resolve(stdout) : reject(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const getCurrentStatusBarShowNotificationIcon = (): Promise<string> => {
+	const shellCommon = `settings get system status_bar_show_notification_icon`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`3`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const putCurrentStatusBarShowNotificationIcon = (num:number): Promise<string> => {
+	const shellCommon = `settings put system status_bar_show_notification_icon ${num}`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {

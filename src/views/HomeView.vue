@@ -85,9 +85,9 @@ const getInstalledAppNameList = async () => {
 	if (getListErr) {
 		modal.create({
 			title: '获取失败',
-			type: 'error',
+			type: 'warning',
 			preset: 'dialog',
-			content: () => <p>获取已安装应用名称发生错误，详细错误请查看日志列表~</p>,
+			content: () => <p>您的系统环境暂不支持该功能，获取失败~</p>,
 			negativeText: '确定',
 		});
 	}
@@ -332,9 +332,7 @@ const importShareRule = async () => {
 					title: '导入分享规则失败',
 					type: 'error',
 					preset: 'dialog',
-					content: () => (
-						<p>发生异常错误，导入失败了QwQ，详细错误请查看错误日志~</p>
-					),
+					content: () => <p>发生异常错误，导入失败了QwQ，详细错误请查看错误日志~</p>,
 				});
 				importShareRuleLoading.value = false;
 			} else {
@@ -351,7 +349,8 @@ const importShareRule = async () => {
 							<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
 								{renderApplicationName(
 									importRuleContent.name,
-									deviceStore.installedAppNameList[importRuleContent.name] || embeddedStore.applicationName[importRuleContent.name],
+									deviceStore.installedAppNameList[importRuleContent.name] ||
+										embeddedStore.applicationName[importRuleContent.name],
 								)}
 							</span>{' '}
 							的应用配置成功了OwO~如果应用更新后的规则不生效，可以尝试重启平板并且在{' '}
@@ -686,9 +685,7 @@ const openAddEmbeddedApp = async () => {
 					title: '应用添加失败',
 					type: 'error',
 					preset: 'dialog',
-					content: () => (
-						<p>发生异常错误，更新失败了QwQ，详细错误请查看错误日志~</p>
-					),
+					content: () => <p>发生异常错误，更新失败了QwQ，详细错误请查看错误日志~</p>,
 				});
 				addEmbeddedAppRes.loadingCallback && addEmbeddedAppRes.loadingCallback();
 			} else {
@@ -702,7 +699,8 @@ const openAddEmbeddedApp = async () => {
 							<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
 								{renderApplicationName(
 									addEmbeddedAppRes.name,
-									deviceStore.installedAppNameList[addEmbeddedAppRes.name] || embeddedStore.applicationName[addEmbeddedAppRes.name],
+									deviceStore.installedAppNameList[addEmbeddedAppRes.name] ||
+										embeddedStore.applicationName[addEmbeddedAppRes.name],
 								)}
 							</span>{' '}
 							的应用配置添加成功了OwO~如果应用添加后的规则不生效，可以尝试重启平板并且在{' '}
@@ -740,7 +738,7 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 		return;
 	}
 	if (updateEmbeddedApp.value) {
-		logsStore.info(JSON.stringify(row),'rowww')
+		logsStore.info(JSON.stringify(row), 'rowww');
 		const [updateEmbeddedAppCancel, updateEmbeddedAppRes] = await $to(updateEmbeddedApp.value.openDrawer(row));
 		if (updateEmbeddedAppCancel) {
 			console.log('操作取消:', updateEmbeddedAppCancel);
@@ -807,8 +805,8 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 					if (!isEqual(moduleFixedOrientation.value, currentFixedOrientation.value)) {
 						embeddedStore.customConfigFixedOrientationList[row.name] = {
 							...{ name: row.name },
-							...currentFixedOrientation.value
-						}
+							...currentFixedOrientation.value,
+						};
 					}
 				} else {
 					embeddedStore.customConfigFixedOrientationList[row.name] = {
@@ -873,8 +871,8 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 					if (!isEqual(moduleFixedOrientation.value, currentFixedOrientation.value)) {
 						embeddedStore.customConfigFixedOrientationList[row.name] = {
 							...{ name: row.name },
-							...currentFixedOrientation.value
-						}
+							...currentFixedOrientation.value,
+						};
 					}
 				} else {
 					embeddedStore.customConfigFixedOrientationList[row.name] = {
@@ -918,8 +916,8 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 					if (!isEqual(moduleFixedOrientation.value, currentFixedOrientation.value)) {
 						embeddedStore.customConfigFixedOrientationList[row.name] = {
 							...{ name: row.name },
-							...currentFixedOrientation.value
-						}
+							...currentFixedOrientation.value,
+						};
 					}
 				} else {
 					embeddedStore.customConfigFixedOrientationList[row.name] = {
@@ -1003,14 +1001,14 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 					if (!isEqual(moduleEmbeddedRules.value, currentEmbeddedRules.value)) {
 						embeddedStore.customConfigFixedOrientationList[row.name] = {
 							...{ name: row.name },
-							...currentFixedOrientation.value
-						}
+							...currentFixedOrientation.value,
+						};
 					}
 					if (!isEqual(moduleFixedOrientation.value, currentFixedOrientation.value)) {
 						embeddedStore.customConfigEmbeddedRulesList[row.name] = {
-							...{name: row.name},
-							...currentEmbeddedRules.value
-						}
+							...{ name: row.name },
+							...currentEmbeddedRules.value,
+						};
 					}
 				}
 			}
@@ -1101,9 +1099,7 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 					title: '应用更新失败',
 					type: 'error',
 					preset: 'dialog',
-					content: () => (
-						<p>发生异常错误，更新失败了QwQ，详细错误请查看错误日志~</p>
-					),
+					content: () => <p>发生异常错误，更新失败了QwQ，详细错误请查看错误日志~</p>,
 				});
 				updateEmbeddedAppRes.loadingCallback && updateEmbeddedAppRes.loadingCallback();
 			} else {
@@ -1267,9 +1263,7 @@ const handleCustomRuleDropdown = async (
 						title: '清除自定义规则失败',
 						type: 'error',
 						preset: 'dialog',
-						content: () => (
-							<p>发生异常错误，更新失败了QwQ，详细错误请查看错误日志~</p>
-						),
+						content: () => <p>发生异常错误，更新失败了QwQ，详细错误请查看错误日志~</p>,
 					});
 					cleanCustomModal.loading = false;
 				} else {
@@ -1481,16 +1475,16 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 						positiveText: '确定重置',
 						negativeText: '我再想想',
 						onPositiveClick: async () => {
-							const [resetCompatErr, resetCompatRes] = await $to(embeddedApi.resetApplicationCompat(row.name));
+							const [resetCompatErr, resetCompatRes] = await $to(
+								embeddedApi.resetApplicationCompat(row.name),
+							);
 							if (resetCompatErr) {
 								modal.create({
 									title: '重置应用兼容性失败',
 									type: 'error',
 									preset: 'dialog',
 									content: () => (
-										<p>
-											发生异常错误，重置应用兼容性失败了QwQ，详细错误请查看错误日志~
-										</p>
+										<p>发生异常错误，重置应用兼容性失败了QwQ，详细错误请查看错误日志~</p>
 									),
 								});
 							} else {

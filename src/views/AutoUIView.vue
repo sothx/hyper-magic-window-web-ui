@@ -79,11 +79,11 @@ configProviderProps: configProviderPropsRef
 	if (getListErr) {
     modal.create({
 					title: '获取失败',
-					type: 'error',
+					type: 'warning',
 					preset: 'dialog',
-					content: () => <p>获取已安装应用名称发生错误，详细错误请查看日志列表~</p>,
+					content: () => <p>您的系统环境暂不支持该功能，获取失败~</p>,
 					negativeText: '确定',
-				});
+		});
 	}
 	if (getListRes) {
     modal.create({

@@ -71,6 +71,7 @@ export const useDeviceStore = defineStore(
 		const hasPenEnableControl = ref<boolean>(false);
 		const hasKeyboardControl = ref<boolean>(false);
 		const enabledMiuiDesktopMode = ref<boolean>(false);
+		const isEnableShowNotificationIconNum = ref<boolean>(false);
 		const deviceName = ref<string>('');
 		const installedAndroidApplicationPackageNameList = ref<string[]>([]);
 		const installedAppNameList = ref<InstallAppNameListDictionary>({});
@@ -409,7 +410,8 @@ export const useDeviceStore = defineStore(
 			hasPenUpdateControl,
 			hasPenEnableControl,
 			hasKeyboardControl,
-			enabledMiuiDesktopMode
+			enabledMiuiDesktopMode,
+			isEnableShowNotificationIconNum
 		};
 	},
 	{

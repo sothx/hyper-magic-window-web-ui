@@ -144,34 +144,36 @@ export const useDotBlackListStore = defineStore(
 			
 			const [getHasHTMLViewerCloudDataBaseErr, getHasHTMLViewerCloudDataBaseRes] = await $to<string>(dotBlackListApi.getHasHTMLViewerCloudDataBase())
 
+			await $to<string>(deviceApi.getWhichSu())
+
 			if (getHasHTMLViewerCloudDataBaseErr) {
+				loading.value = false;
 				hasHTMLViewerCloudData.value = false;
 			}
 
 			if (getHasHTMLViewerCloudDataBaseRes) {
 				hasHTMLViewerCloudData.value = true;
-			}
-
-			const [getDotBlackListErr, getDotBlackListRes] = await $to<DotBlackListItem[], string>(
-				dotBlackListApi.getDotBlackList(),
-			);
-			if (getDotBlackListErr) {
-				sourceDotBlackList.value = [];
-			}
-
-			if (getDotBlackListRes) {
-				sourceDotBlackList.value = getDotBlackListRes;
-			}
-
-			const [getCustomDotBlackListErr, getCustomDotBlackListRes] = await $to<string[], string>(
-				dotBlackListApi.getCustomDotBlackList(),
-			);
-			if (getCustomDotBlackListErr) {
-				customDotBlackList.value = [];
-			}
-
-			if (getCustomDotBlackListRes) {
-				customDotBlackList.value = getCustomDotBlackListRes;
+				const [getDotBlackListErr, getDotBlackListRes] = await $to<DotBlackListItem[], string>(
+					dotBlackListApi.getDotBlackList(),
+				);
+				if (getDotBlackListErr) {
+					sourceDotBlackList.value = [];
+				}
+	
+				if (getDotBlackListRes) {
+					sourceDotBlackList.value = getDotBlackListRes;
+				}
+	
+				const [getCustomDotBlackListErr, getCustomDotBlackListRes] = await $to<string[], string>(
+					dotBlackListApi.getCustomDotBlackList(),
+				);
+				if (getCustomDotBlackListErr) {
+					customDotBlackList.value = [];
+				}
+	
+				if (getCustomDotBlackListRes) {
+					customDotBlackList.value = getCustomDotBlackListRes;
+				}
 			}
 
 			if (!errorLogging.length) {
