@@ -4,7 +4,7 @@ import $to from 'await-to-js';
 import * as deviceApi from '@/apis/deviceApi';
 import type { ErrorLogging } from '@/types/ErrorLogging';
 import type { InstallAppNameListDictionary } from '@/hooks/useInstalledAppNames';
-import { useAmktiao, type KeyboardModeOptions } from '@/hooks/useAmktiao';
+import { useAmktiao, type KeyboardMode, type KeyboardModeOptions } from '@/hooks/useAmktiao';
 
 
 export interface ModuleInfo {
@@ -284,7 +284,9 @@ export const useDeviceStore = defineStore(
 				);
 
 				if (getCurrentKeyboardModeResolve) {
-					amktiaoHook.currentPenUpdate.value = 1;
+					const mode:KeyboardMode = Number(getCurrentKeyboardModeResolve) as KeyboardMode
+					amktiaoHook.currentKeyboardMode.value = mode;
+					amktiaoHook.currentKeyboardModeSelect.value = amktiaoHook.keyboardModeOptions.value[mode]
 				}
 			}
 			// 售后电池健康度
