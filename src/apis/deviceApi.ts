@@ -5,6 +5,7 @@ import $to from 'await-to-js';
 import { useDeviceStore } from '@/stores/device';
 import { useLogsStore } from '@/stores/logs';
 import type DotBlackListItem from '@/types/DotBlackListItem';
+import type { KeyboardMode, PenEnable, PenUpdate } from '@/hooks/useAmktiao';
 
 export interface SmartFocusIOResult extends ExecResults {
 	stdout: 'on' | 'off';
@@ -376,7 +377,6 @@ export const getRootManagerInfo = (): Promise<string> => {
 	);
 };
 
-
 export const getAndroidApplicationPackageNameList = (): Promise<string> => {
 	const shellCommon = `pm list packages -a | awk -F':' '{print $2}' | tr '\n' ',' | sed 's/,$/\n/'`;
 	return handlePromiseWithLogging(
@@ -392,7 +392,6 @@ export const getAndroidApplicationPackageNameList = (): Promise<string> => {
 		shellCommon,
 	);
 };
-
 
 export const getInstalledAppNameList = (): Promise<string> => {
 	const shellCommon = `CLASSPATH="/data/adb/modules/MIUI_MagicWindow+/common/utils/classes.dex" app_process /system/bin com.xayah.dex.HiddenApiUtil getInstalledPackagesAsUser 0 "user" "pkgName|label"`;
@@ -425,8 +424,6 @@ export const getHasInstalledMIUIContentExtension = (): Promise<string> => {
 		shellCommon,
 	);
 };
-
-
 
 export const openGameModeManager = (): Promise<string> => {
 	const shellCommon = `am start -n com.miui.securitycenter/com.miui.gamebooster.gamemode.GameModeSettingsActivity`;
@@ -479,18 +476,16 @@ export const rebootDevice = (): Promise<string> => {
 	);
 };
 
-export const saveLogs = (content:string,timestamp:number): Promise<string> => {
+export const saveLogs = (content: string, timestamp: number): Promise<string> => {
 	const shellCommon = `echo "${content.replace(/"/g, '\\"')}" > /data/adb/MIUI_MagicWindow+/logs-${timestamp}.txt`;
 	return new Promise(async (resolve, reject) => {
 		if (import.meta.env.MODE === 'development') {
 			resolve(`save command executed successfully.`);
 		} else {
 			const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
-			errno
-				? reject(stderr)
-				: resolve(`save command executed successfully.`)
+			errno ? reject(stderr) : resolve(`save command executed successfully.`);
 		}
-	})
+	});
 };
 
 export const killAndroidSystemUI = (): Promise<string> => {
@@ -551,7 +546,6 @@ export const updateRule = (): Promise<string> => {
 	);
 };
 
-
 export const getShamikoHasInstalled = (): Promise<string> => {
 	const shellCommon = `test -d /data/adb/shamiko/ && echo "exists" || echo "not exists"`;
 	return handlePromiseWithLogging(
@@ -565,7 +559,7 @@ export const getShamikoHasInstalled = (): Promise<string> => {
 		}),
 		shellCommon,
 	);
-}
+};
 
 export const getShamikoMode = (): Promise<string> => {
 	const shellCommon = `test -f /data/adb/shamiko/whitelist && echo "whitelist" || echo "blacklist"`;
@@ -580,10 +574,11 @@ export const getShamikoMode = (): Promise<string> => {
 		}),
 		shellCommon,
 	);
-}
+};
 
 export const putShamikoMode = (mode: 'whitelist' | 'blacklist'): Promise<string> => {
-	const shellCommon = mode === 'whitelist' ? `touch /data/adb/shamiko/whitelist` : 'rm -rf /data/adb/shamiko/whitelist'
+	const shellCommon =
+		mode === 'whitelist' ? `touch /data/adb/shamiko/whitelist` : 'rm -rf /data/adb/shamiko/whitelist';
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -595,4 +590,139 @@ export const putShamikoMode = (mode: 'whitelist' | 'blacklist'): Promise<string>
 		}),
 		shellCommon,
 	);
-}
+};
+
+export const getHasPenUpdateControl = (): Promise<string> => {
+	const shellCommon = `test -d /sys/touchpanel/pen_update && echo "exists" || echo "not exists"`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`exists`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const getHasPenEnableControl = (): Promise<string> => {
+	const shellCommon = `test -d /sys/touchpanel/pen_enable && echo "exists" || echo "not exists"`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`exists`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const getHasKeyboardControl = (): Promise<string> => {
+	const shellCommon = `test -d /sys/touchpanel/keyboard && echo "exists" || echo "not exists"`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`exists`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const getCurrentPenUpdate = (): Promise<string> => {
+	const shellCommon = `cat /sys/touchpanel/pen_update`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`exists`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const putCurrentPenUpdate = (mode:PenUpdate): Promise<string> => {
+	const shellCommon = `echo ${mode} > /sys/touchpanel/pen_update`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`success`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const getCurrentPenEnable = (): Promise<string> => {
+	const shellCommon = `cat /sys/touchpanel/pen_enable`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`exists`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const putCurrentPenEnable = (mode:PenEnable): Promise<string> => {
+	const shellCommon = `echo ${mode} > /sys/touchpanel/pen_enable`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`success`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const getCurrentKeyboardMode = (): Promise<string> => {
+	const shellCommon = `cat /sys/touchpanel/keyboard`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`exists`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const putCurrentKeyboardMode = (mode:KeyboardMode): Promise<string> => {
+	const shellCommon = `echo ${mode} > /sys/touchpanel/keyboard`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`success`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};

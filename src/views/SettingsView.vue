@@ -9,12 +9,13 @@ import * as deviceApi from '@/apis/deviceApi';
 import $to from 'await-to-js';
 import { useEmbeddedStore } from '@/stores/embedded';
 import { keyBy } from 'lodash-es';
-const deviceStore = useDeviceStore();
 import { useFontStore } from '@/stores/font';
 import { findBase64InString } from '@/utils/common';
 import { arrayBufferToBase64, base64ToArrayBuffer } from '@/utils/format';
 import * as embeddedApi from '@/apis/embeddedApi';
 import pako from 'pako';
+import { useAmktiao, type KeyboardModeOptions } from '@/hooks/useAmktiao';
+const deviceStore = useDeviceStore();
 const embeddedStore = useEmbeddedStore();
 const { activateABTest, loading: activateABTestLoading } = useABTestActivation();
 const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
@@ -25,6 +26,7 @@ const { message, modal } = createDiscreteApi(['message', 'modal'], {
 });
 const gameMode = useGameMode();
 const fontStore = useFontStore();
+const amktiaoHook = useAmktiao();
 const handleSmartFocusIOChange = (value: boolean) => {
 	message.info('功能尚未上线，无任何实际效果，请等待后续更新！');
 };
@@ -612,7 +614,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 					<div v-if="deviceStore.shamikoInfo.installed" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
-							Shamiko工作模式
+							Shamiko 工作模式
 						</dt>
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
@@ -621,9 +623,62 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 								:rail-style="railStyle"
 								:value="deviceStore.shamikoInfo.mode === 'whitelist' ? true: false"
 								:loading="deviceStore.loading">
-								<template #checked>白名单</template>
-								<template #unchecked>黑名单</template>
+								<template #checked>白名单模式</template>
+								<template #unchecked>黑名单模式</template>
 							</n-switch>
+						</dd>
+					</div>
+					<div v-if="amktiaoHook.hasPenEnableControl" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+						<dt
+							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
+							第三方触控笔（水龙）
+						</dt>
+						<dd
+							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
+							<n-switch
+								@update:value="(value: boolean) => amktiaoHook.changePenEnableMode(value)"
+								:rail-style="railStyle"
+								:value="amktiaoHook.currentPenEnable.value ? true: false"
+								:loading="deviceStore.loading">
+								<template #checked>已启用</template>
+								<template #unchecked>未启用</template>
+							</n-switch>
+						</dd>
+					</div>
+					<div v-if="amktiaoHook.hasPenUpdateControl" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+						<dt
+							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
+							手写笔驱动（水龙）
+						</dt>
+						<dd
+							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
+							<n-switch
+								@update:value="(value: boolean) => amktiaoHook.changePenUpdateMode(value)"
+								:rail-style="railStyle"
+								:value="amktiaoHook.currentPenUpdate.value ? true: false"
+								:loading="deviceStore.loading">
+								<template #checked>二代笔驱动</template>
+								<template #unchecked>一代笔驱动</template>
+							</n-switch>
+						</dd>
+					</div>
+					<div v-if="amktiaoHook.hasKeyboardControl" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+						<dt
+							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
+							键盘连接器管理（水龙）
+						</dt>
+						<dd
+							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
+							<n-dropdown
+								:value="amktiaoHook.currentKeyboardModeSelect"
+								size="large"
+								trigger="click"
+								:options="amktiaoHook.keyboardModeOptions.value"
+								@select="amktiaoHook.changeKeyboardMode">
+								<n-button size="small" :type="amktiaoHook.currentKeyboardModeSelect.value.type" dashed>
+									{{ amktiaoHook.currentKeyboardModeSelect.value.label }}
+								</n-button>
+							</n-dropdown>
 						</dd>
 					</div>
 					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
@@ -900,7 +955,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
-							电池售后健康度(高通)
+							电池售后健康度（高通）
 						</dt>
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
@@ -913,7 +968,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
-							电池售后健康度(联发科)
+							电池售后健康度（联发科）
 						</dt>
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">

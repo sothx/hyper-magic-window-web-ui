@@ -4,6 +4,7 @@ import $to from 'await-to-js';
 import * as deviceApi from '@/apis/deviceApi';
 import type { ErrorLogging } from '@/types/ErrorLogging';
 import type { InstallAppNameListDictionary } from '@/hooks/useInstalledAppNames';
+import { useAmktiao, type KeyboardModeOptions } from '@/hooks/useAmktiao';
 
 
 export interface ModuleInfo {
@@ -176,6 +177,11 @@ export const useDeviceStore = defineStore(
 				$to<string, string>(deviceApi.getBatteryChargeFull()),
 				// 电池循环次数
 				$to<string, string>(deviceApi.getBatteryCycleCount()),
+				// 触控笔控制(水龙)
+				$to<string, string>(deviceApi.getHasPenUpdateControl()),
+				$to<string, string>(deviceApi.getHasPenEnableControl()),
+				// 键盘控制(水龙)
+				$to<string, string>(deviceApi.getHasKeyboardControl()),
 			];
 			// 等待所有 promises 完成
 			const executeWithoutWaitingResults = await Promise.all(executeWithoutWaiting);
@@ -191,6 +197,9 @@ export const useDeviceStore = defineStore(
 				[, getBatteryChargeFullDesignRes],
 				[, getBatteryChargeFullRes],
 				[, getBatteryCycleCountRes],
+				[, getHasPenUpdateControlRes],
+				[, getHasPenEnableControlRes],
+				[, getHasKeyboardControlRes],
 			] = executeWithoutWaitingResults;
 			// 模块信息 *弱校验
 			if (!getModuleInfoRes?.length) {
@@ -234,6 +243,49 @@ export const useDeviceStore = defineStore(
 			// Shamiko控制
 			if (getShamikoHasInstalledRes) {
 				shamikoInfo.installed = true;
+				const [getShamikoModeReject, getShamikoModeResolve] = await $to<string, string>(
+					deviceApi.getShamikoMode(),
+				);
+				if (getShamikoModeResolve === 'whitelist') {
+					shamikoInfo.mode = 'whitelist';
+				}
+
+				if (getShamikoModeReject) {
+					shamikoInfo.mode = 'blacklist';
+				}
+
+			}
+			const amktiaoHook = useAmktiao();
+			// 移植包键盘和手写笔控制
+			if (getHasPenUpdateControlRes) {
+				amktiaoHook.hasPenUpdateControl.value = true;
+				const [, getCurrentPenUpdateResolve] = await $to<string, string>(
+					deviceApi.getCurrentPenUpdate(),
+				);
+
+				if (getCurrentPenUpdateResolve) {
+					amktiaoHook.currentPenUpdate.value = 1;
+				}
+			}
+			if (getHasPenEnableControlRes) {
+				amktiaoHook.hasPenEnableControl.value = true;
+				const [, getCurrentPenEnableResolve] = await $to<string, string>(
+					deviceApi.getCurrentPenEnable(),
+				);
+
+				if (getCurrentPenEnableResolve) {
+					amktiaoHook.currentPenEnable.value = 1;
+				}
+			}
+			if (getHasKeyboardControlRes) {
+				amktiaoHook.hasKeyboardControl.value = true;
+				const [, getCurrentKeyboardModeResolve] = await $to<string, string>(
+					deviceApi.getCurrentKeyboardMode(),
+				);
+
+				if (getCurrentKeyboardModeResolve) {
+					amktiaoHook.currentPenUpdate.value = 1;
+				}
 			}
 			// 售后电池健康度
 			batteryInfo.sohQcom = Number(getBatterySohQcomRes)
