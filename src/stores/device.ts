@@ -67,6 +67,9 @@ export const useDeviceStore = defineStore(
 		const deviceSocModel = ref<string>();
 		const moduleDir = ref<string>();
 		const moduleID = ref<string>();
+		const hasPenUpdateControl = ref<boolean>(false);
+		const hasPenEnableControl = ref<boolean>(false);
+		const hasKeyboardControl = ref<boolean>(false);
 		const deviceName = ref<string>('');
 		const installedAndroidApplicationPackageNameList = ref<string[]>([]);
 		const installedAppNameList = ref<InstallAppNameListDictionary>({});
@@ -255,39 +258,15 @@ export const useDeviceStore = defineStore(
 				}
 
 			}
-			const amktiaoHook = useAmktiao();
 			// 移植包键盘和手写笔控制
 			if (getHasPenUpdateControlRes) {
-				amktiaoHook.hasPenUpdateControl.value = true;
-				const [, getCurrentPenUpdateResolve] = await $to<string, string>(
-					deviceApi.getCurrentPenUpdate(),
-				);
-
-				if (getCurrentPenUpdateResolve) {
-					amktiaoHook.currentPenUpdate.value = 1;
-				}
+				hasPenUpdateControl.value = true;
 			}
 			if (getHasPenEnableControlRes) {
-				amktiaoHook.hasPenEnableControl.value = true;
-				const [, getCurrentPenEnableResolve] = await $to<string, string>(
-					deviceApi.getCurrentPenEnable(),
-				);
-
-				if (getCurrentPenEnableResolve) {
-					amktiaoHook.currentPenEnable.value = 1;
-				}
+				hasPenEnableControl.value = true;
 			}
 			if (getHasKeyboardControlRes) {
-				amktiaoHook.hasKeyboardControl.value = true;
-				const [, getCurrentKeyboardModeResolve] = await $to<string, string>(
-					deviceApi.getCurrentKeyboardMode(),
-				);
-
-				if (getCurrentKeyboardModeResolve) {
-					const mode:KeyboardMode = Number(getCurrentKeyboardModeResolve) as KeyboardMode
-					amktiaoHook.currentKeyboardMode.value = mode;
-					amktiaoHook.currentKeyboardModeSelect.value = amktiaoHook.keyboardModeOptions.value[mode]
-				}
+				hasKeyboardControl.value = true;
 			}
 			// 售后电池健康度
 			batteryInfo.sohQcom = Number(getBatterySohQcomRes)
@@ -419,7 +398,10 @@ export const useDeviceStore = defineStore(
 			isDarkMode,
 			rhythmMode,
 			initDefault,
-			ABTestInfo
+			ABTestInfo,
+			hasPenUpdateControl,
+			hasPenEnableControl,
+			hasKeyboardControl
 		};
 	},
 	{

@@ -1,5 +1,6 @@
 import { ref, computed, onMounted } from 'vue';
 import { useDeviceStore } from '@/stores/device';
+import $to from 'await-to-js';
 import {
 	NButton,
 	createDiscreteApi,
@@ -31,12 +32,6 @@ export function useAmktiao() {
 	const { message, modal } = createDiscreteApi(['message', 'modal'], {
 		configProviderProps: configProviderPropsRef,
 	});
-
-	const hasPenUpdateControl = ref<boolean>(false);
-
-	const hasPenEnableControl = ref<boolean>(false);
-
-	const hasKeyboardControl = ref<boolean>(false);
 
 	const currentPenUpdate = ref<PenUpdate>(0);
 
@@ -83,40 +78,122 @@ export function useAmktiao() {
         })
     };
 
-    const changePenUpdateMode = (value: boolean) => {
-        deviceApi.putCurrentPenUpdate(value ? 1 : 0).then(((res) => {
-			currentPenUpdate.value = value ? 1 : 0;
-        })).catch((err) => {
-            modal.create({
+    const changePenUpdateMode = async (value: boolean) => {
+		const [putCurrentPenUpdateErr, putCurrentPenUpdateRes] = await $to(deviceApi.putCurrentPenUpdate(value ? 1 : 0))
+		if (putCurrentPenUpdateErr) {
+			modal.create({
 				title: '操作失败',
 				type: 'error',
 				preset: 'dialog',
 				content: () => <p>修改失败，详情请查看日志记录~</p>,
 				negativeText: '确定',
 			});
-        })
+		} else {
+			if (value) {
+				const [addIsAmktiaoPenUpdateErr,addIsAmktiaoPenUpdateRes] = await $to(deviceApi.addIsAmktiaoPenUpdate())
+				if (addIsAmktiaoPenUpdateErr) {
+					modal.create({
+						title: '操作失败',
+						type: 'error',
+						preset: 'dialog',
+						content: () => <p>修改失败，详情请查看日志记录~</p>,
+						negativeText: '确定',
+					});
+				} else {
+					currentPenUpdate.value = 1;
+				}
+			} else {
+				const [removeIsAmktiaoPenUpdateErr,removeIsAmktiaoPenUpdateRes] = await $to(deviceApi.removeIsAmktiaoPenUpdate())
+				if (removeIsAmktiaoPenUpdateErr) {
+					modal.create({
+						title: '操作失败',
+						type: 'error',
+						preset: 'dialog',
+						content: () => <p>修改失败，详情请查看日志记录~</p>,
+						negativeText: '确定',
+					});
+				} else {
+					currentPenUpdate.value = 0;
+				}
+			}
+		}
     }
 
-    const changePenEnableMode = (value: boolean) => {
-        deviceApi.putCurrentPenEnable(value ? 1 : 0).then(((res) => {
-			currentPenEnable.value = value ? 1 : 0;
-        })).catch((err) => {
-            modal.create({
+    const changePenEnableMode = async (value: boolean) => {
+		const [putCurrentPenEnableErr, putCurrentPenEnableRes] = await $to(deviceApi.putCurrentPenEnable(value ? 1 : 0))
+		if (putCurrentPenEnableErr) {
+			modal.create({
 				title: '操作失败',
 				type: 'error',
 				preset: 'dialog',
 				content: () => <p>修改失败，详情请查看日志记录~</p>,
 				negativeText: '确定',
 			});
-        })
+		} else {
+			if (value) {
+				const [addIsAmktiaoPenEnableErr,addIsAmktiaoPenEnableRes] = await $to(deviceApi.addIsAmktiaoPenEnable())
+				if (addIsAmktiaoPenEnableErr) {
+					modal.create({
+						title: '操作失败',
+						type: 'error',
+						preset: 'dialog',
+						content: () => <p>修改失败，详情请查看日志记录~</p>,
+						negativeText: '确定',
+					});
+				} else {
+					currentPenEnable.value = 1;
+				}
+			} else {
+				const [removeIsAmktiaoPenEnableErr,removeIsAmktiaoPenEnableRes] = await $to(deviceApi.removeIsAmktiaoPenEnable())
+				if (removeIsAmktiaoPenEnableErr) {
+					modal.create({
+						title: '操作失败',
+						type: 'error',
+						preset: 'dialog',
+						content: () => <p>修改失败，详情请查看日志记录~</p>,
+						negativeText: '确定',
+					});
+				} else {
+					currentPenEnable.value = 0;
+				}
+			}
+		}
     }
 
-	onMounted(() => {});
+	onMounted(async () => {
+			// 移植包键盘和手写笔控制
+			if (deviceStore.hasPenUpdateControl) {
+				const [, getCurrentPenUpdateResolve] = await $to<string, string>(
+					deviceApi.getCurrentPenUpdate(),
+				);
+
+				if (Number(getCurrentPenUpdateResolve)) {
+					currentPenUpdate.value = 1;
+				}
+			}
+			if (deviceStore.hasPenEnableControl) {
+				const [, getCurrentPenEnableResolve] = await $to<string, string>(
+					deviceApi.getCurrentPenEnable(),
+				);
+
+				if (Number(getCurrentPenEnableResolve)) {
+					currentPenEnable.value = 1;
+				}
+			}
+			if (deviceStore.hasKeyboardControl) {
+				const [, getCurrentKeyboardModeResolve] = await $to<string, string>(
+					deviceApi.getCurrentKeyboardMode(),
+				);
+
+				if (getCurrentKeyboardModeResolve) {
+					const mode:KeyboardMode = Number(getCurrentKeyboardModeResolve) as KeyboardMode
+					currentKeyboardMode.value = mode;
+					currentKeyboardModeSelect.value = keyboardModeOptions.value[mode]
+				}
+			}
+	});
 
 	return {
-		hasPenUpdateControl,
-		hasPenEnableControl,
-		hasKeyboardControl,
 		currentPenUpdate,
 		currentPenEnable,
 		currentKeyboardMode,

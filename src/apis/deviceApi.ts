@@ -593,7 +593,7 @@ export const putShamikoMode = (mode: 'whitelist' | 'blacklist'): Promise<string>
 };
 
 export const getHasPenUpdateControl = (): Promise<string> => {
-	const shellCommon = `test -d /sys/touchpanel/pen_update && echo "exists" || echo "not exists"`;
+	const shellCommon = `test -f /sys/touchpanel/pen_update && echo "exists" || echo "not exists"`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -608,7 +608,7 @@ export const getHasPenUpdateControl = (): Promise<string> => {
 };
 
 export const getHasPenEnableControl = (): Promise<string> => {
-	const shellCommon = `test -d /sys/touchpanel/pen_enable && echo "exists" || echo "not exists"`;
+	const shellCommon = `test -f /sys/touchpanel/pen_enable && echo "exists" || echo "not exists"`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -623,7 +623,7 @@ export const getHasPenEnableControl = (): Promise<string> => {
 };
 
 export const getHasKeyboardControl = (): Promise<string> => {
-	const shellCommon = `test -d /sys/touchpanel/keyboard && echo "exists" || echo "not exists"`;
+	const shellCommon = `test -f /sys/touchpanel/keyboard && echo "exists" || echo "not exists"`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -642,7 +642,7 @@ export const getCurrentPenUpdate = (): Promise<string> => {
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
-				resolve(`exists`);
+				resolve(`0`);
 			} else {
 				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
 				errno ? reject(stderr) : resolve(stdout);
@@ -667,12 +667,42 @@ export const putCurrentPenUpdate = (mode:PenUpdate): Promise<string> => {
 	);
 };
 
+export const addIsAmktiaoPenUpdate = (): Promise<string> => {
+	const shellCommon = `grep -q '^is_amktiao_pen_update=' /data/adb/MIUI_MagicWindow+/config.prop || (echo "is_amktiao_pen_update=true" | tee -a /data/adb/MIUI_MagicWindow+/config.prop > /dev/null && echo "Command executed successfully." || echo "Command failed.")`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`Command executed successfully.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : stdout === 'Command executed successfully.' ? resolve(stdout) : reject(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const removeIsAmktiaoPenUpdate = (): Promise<string> => {
+	const shellCommon = `sed -i '/^is_amktiao_pen_update=/d' //data/adb/MIUI_MagicWindow+/config.prop && echo "Remove is_amktiao_pen_update successfully." || echo "Remove is_amktiao_pen_update failed."`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`Remove is_amktiao_pen_update successfully.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
 export const getCurrentPenEnable = (): Promise<string> => {
 	const shellCommon = `cat /sys/touchpanel/pen_enable`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
-				resolve(`exists`);
+				resolve(`0`);
 			} else {
 				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
 				errno ? reject(stderr) : resolve(stdout);
@@ -697,12 +727,42 @@ export const putCurrentPenEnable = (mode:PenEnable): Promise<string> => {
 	);
 };
 
-export const getCurrentKeyboardMode = (): Promise<string> => {
-	const shellCommon = `cat /sys/touchpanel/keyboard`;
+export const addIsAmktiaoPenEnable = (): Promise<string> => {
+	const shellCommon = `grep -q '^is_amktiao_pen_enable=' /data/adb/MIUI_MagicWindow+/config.prop || (echo "is_amktiao_pen_enable=true" | tee -a /data/adb/MIUI_MagicWindow+/config.prop > /dev/null && echo "Command executed successfully." || echo "Command failed.")`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
-				resolve(`exists`);
+				resolve(`Command executed successfully.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : stdout === 'Command executed successfully.' ? resolve(stdout) : reject(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const removeIsAmktiaoPenEnable = (): Promise<string> => {
+	const shellCommon = `sed -i '/^is_amktiao_pen_enable=/d' //data/adb/MIUI_MagicWindow+/config.prop && echo "Remove is_amktiao_pen_enable successfully." || echo "Remove is_amktiao_pen_enable failed."`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`Remove is_amktiao_pen_enable successfully.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const getCurrentKeyboardMode = (): Promise<string> => {
+	const shellCommon = `cat /sys/touchpanel/keyboard | head -n 1`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`0`);
 			} else {
 				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
 				errno ? reject(stderr) : resolve(stdout);
