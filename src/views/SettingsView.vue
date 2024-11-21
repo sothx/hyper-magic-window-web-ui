@@ -675,7 +675,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 								trigger="click"
 								:options="amktiaoHook.keyboardModeOptions.value"
 								@select="amktiaoHook.changeKeyboardMode">
-								<n-button size="small" :type="amktiaoHook.currentKeyboardModeSelect.value.type" dashed>
+								<n-button strong secondary size="small" :type="amktiaoHook.currentKeyboardModeSelect.value.type">
 									{{ amktiaoHook.currentKeyboardModeSelect.value.label }}
 								</n-button>
 							</n-dropdown>

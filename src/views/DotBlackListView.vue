@@ -26,6 +26,8 @@ import {
 	TrashIcon,
 	SquaresPlusIcon,
 	XCircleIcon,
+	WindowIcon,
+	StopIcon,
 	MagnifyingGlassIcon,
 	CircleStackIcon,
 } from '@heroicons/vue/24/outline';
@@ -220,6 +222,44 @@ const hotReloadApplicationData = async () => {
 		hotReloadLoading.value = false;
 	}
 };
+
+const rebootDevice = async () => {
+	const [negativeRes, positiveRes] = await $to(
+		new Promise((resolve, reject) => {
+			modal.create({
+				title: '想重启设备吗？',
+				type: 'info',
+				preset: 'dialog',
+				content: () => (
+					<div>
+						<p>是否立即重启设备，以使规则生效？</p>
+					</div>
+				),
+				positiveText: '确认重启',
+				negativeText: '取消',
+				onPositiveClick: () => {
+					resolve('positiveClick');
+				},
+				onNegativeClick: () => {
+					reject('negativeClick');
+				},
+			});
+		}),
+	);
+	if (positiveRes) {
+		const [rebootDeviceErr] = await $to(deviceApi.rebootDevice());
+		if (rebootDeviceErr) {
+			modal.create({
+				title: '操作失败',
+				type: 'error',
+				preset: 'dialog',
+				content: () => <p>无法重启设备，详情请查看日志记录~</p>,
+				negativeText: '确定',
+			});
+			return;
+		}
+	}
+}
 
 const importShareRule = async () => {
 	if (!deviceStore.ABTestInfo.Hyper_OS_DOT_BLACK_LIST_MANAGER) {
@@ -948,6 +988,18 @@ function createColumns(): DataTableColumns<DotBlackListMergeItem> {
 						</n-icon>
 					</template>
 					从分享口令导入
+				</n-button>
+				<n-button
+					class="mb-3 mr-3"
+					type="error"
+					:loading="deviceStore.loading || dotBlackListStore.loading || importShareRuleLoading"
+					@click="rebootDevice()">
+					<template #icon>
+						<n-icon>
+							<WindowIcon />
+						</n-icon>
+					</template>
+					重启设备
 				</n-button>
 			</div>
 			<div class="flex flex-wrap">
