@@ -600,7 +600,7 @@ export const getHasPenUpdateControl = (): Promise<string> => {
 				resolve(`exists`);
 			} else {
 				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
-				errno ? reject(stderr) : resolve(stdout);
+				errno ? reject(stderr) : stdout === 'exists' ? resolve(stdout) : reject(stdout);
 			}
 		}),
 		shellCommon,
@@ -615,7 +615,7 @@ export const getHasPenEnableControl = (): Promise<string> => {
 				resolve(`exists`);
 			} else {
 				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
-				errno ? reject(stderr) : resolve(stdout);
+				errno ? reject(stderr) : stdout === 'exists' ? resolve(stdout) : reject(stdout);
 			}
 		}),
 		shellCommon,
@@ -630,7 +630,7 @@ export const getHasKeyboardControl = (): Promise<string> => {
 				resolve(`exists`);
 			} else {
 				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
-				errno ? reject(stderr) : resolve(stdout);
+				errno ? reject(stderr) : stdout === 'exists' ? resolve(stdout) : reject(stdout);
 			}
 		}),
 		shellCommon,
