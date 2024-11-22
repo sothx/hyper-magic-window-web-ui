@@ -1001,7 +1001,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 									v-model:value="realQuantityHook.qcomBatteryFg1RSocInfo.autoReload"
 									:rail-style="railStyle">
 									<template #checked>开启自动刷新</template>
-									<template #unchecked>关闭自动刷新</template>
+									<template #unchecked>未开启自动刷新</template>
 								</n-switch>
 							</p>
 							<div v-if="realQuantityHook.qcomBatteryFg1RSocInfo.autoReload">
@@ -1051,7 +1051,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 									v-model:value="realQuantityHook.capacityRawInfo.autoReload"
 									:rail-style="railStyle">
 									<template #checked>开启自动刷新</template>
-									<template #unchecked>关闭自动刷新</template>
+									<template #unchecked>未开启自动刷新</template>
 								</n-switch>
 							</p>
 							<div v-if="realQuantityHook.capacityRawInfo.autoReload">
