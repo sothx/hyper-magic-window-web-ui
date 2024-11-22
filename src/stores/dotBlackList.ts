@@ -144,8 +144,6 @@ export const useDotBlackListStore = defineStore(
 			
 			const [getHasHTMLViewerCloudDataBaseErr, getHasHTMLViewerCloudDataBaseRes] = await $to<string>(dotBlackListApi.getHasHTMLViewerCloudDataBase())
 
-			await $to<string>(deviceApi.getWhichSu())
-
 			if (getHasHTMLViewerCloudDataBaseErr) {
 				loading.value = false;
 				hasHTMLViewerCloudData.value = false;

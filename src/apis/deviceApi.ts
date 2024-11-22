@@ -332,6 +332,36 @@ export const getBatteryCycleCount = (): Promise<string> => {
 	);
 };
 
+export const getQcomBatteryFg1RSoc = (): Promise<string> => {
+	const shellCommon = `cat /sys/class/qcom-battery/fg1_rsoc`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`90`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : stdout === 'null' ? resolve('') : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const getCapacityRaw = (): Promise<string> => {
+	const shellCommon = `cat /sys/class/power_supply/bms/capacity_raw`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`9001`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : stdout === 'null' ? resolve('') : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
 export const getPreSystemVersion = (): Promise<string> => {
 	const shellCommon = `settings get global miui_pre_version`;
 	return handlePromiseWithLogging(
@@ -631,21 +661,6 @@ export const getHasKeyboardControl = (): Promise<string> => {
 			} else {
 				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
 				errno ? reject(stderr) : stdout === 'exists' ? resolve(stdout) : reject(stdout);
-			}
-		}),
-		shellCommon,
-	);
-};
-
-export const getWhichSu = (): Promise<string> => {
-	const shellCommon = `which test`;
-	return handlePromiseWithLogging(
-		new Promise(async (resolve, reject) => {
-			if (import.meta.env.MODE === 'development') {
-				resolve(`exists`);
-			} else {
-				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
-				errno ? reject(stderr) : resolve(stdout)
 			}
 		}),
 		shellCommon,

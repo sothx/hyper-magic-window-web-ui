@@ -1006,7 +1006,6 @@ configProviderProps: configProviderPropsRef
         <n-button
 					class="mb-3 mr-3"
 					color="#69b2b6"
-          v-if="deviceStore.androidTargetSdk && deviceStore.androidTargetSdk > 33"
 					:loading="deviceStore.loading || autoUIStore.loading || installedAppNames.loading.value"
 					@click="getInstalledAppNameList()">
 					<template #icon>
