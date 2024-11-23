@@ -38,9 +38,9 @@ const router = createRouter({
       component: () => import('../views/EmbeddedWebView.vue'),
     },
     {
-      path: '/project',
-      name: 'project',
-      component: () => import('../views/Project.vue'),
+      path: '/appStore',
+      name: 'appStore',
+      component: () => import('../views/AppStore.vue'),
     },
     {
       path: '/logs',

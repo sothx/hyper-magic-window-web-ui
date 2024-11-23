@@ -15,25 +15,23 @@ configProviderProps: configProviderPropsRef
     <div class="mt-5">
       <div class="px-4 sm:px-0">
         <h3 :class="`text-base font-semibold leading-7 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`" >
-          开发路线图
+          精选应用
         </h3>
         <p :class="`mt-1 max-w-2xl text-sm leading-6  ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-500'}`">
-          在这里是一些功能需求和开发进度
+          这里罗列了一些适配大屏良好的应用作为精选推荐应用
         </p>
         <p :class="`mt-1 max-w-2xl text-sm leading-6  ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-500'}`">
-          若有期待的需求可以通过酷安/Github/模块反馈群上进行反馈
-        </p>
-        <p :class="`mt-1 max-w-2xl text-sm leading-6  ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-500'}`">
-          （写不过来QwQ，可能进展缓慢，请勿催更~）
+          部分增强小米平板的系统体验的大屏应用也罗列在此
         </p>
       </div>
       <div class="mt-6 border-gray-100">
         <dl class="divide-gray-100 mb-5">
+          <div>开发中，尚未上线</div>
           <!-- <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
             <dt class="text-sm font-medium leading-6 text-gray-900">模块版本号</dt>
             <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">暂定</dd>
           </div> -->
-          <div class="px-4 flex sm:grid sm:px-0">
+          <!-- <div class="px-4 flex sm:grid sm:px-0">
             <n-alert
               title="[已完成] 应用横屏配置-Android 13 - Android 14"
               type="success"
@@ -84,7 +82,7 @@ configProviderProps: configProviderPropsRef
               远期可能性需求规划，待讨论，不一定做。通过JSON可视化编辑的方式，提供可视化修改平行窗口自定义规则的功能，包含所有小米提供的反向适配参数。
               <span class="hidden">(技术栈暂定vue3-ts-jsoneditor)</span>
             </n-alert>
-          </div>
+          </div> -->
         </dl>
       </div>
     </div>

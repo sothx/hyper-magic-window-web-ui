@@ -18,6 +18,7 @@
     ComputerDesktopIcon,
     SquaresPlusIcon,
     WindowIcon,
+    BuildingStorefrontIcon,
     XMarkIcon,
   } from '@heroicons/vue/24/outline'
   import { useRoute } from 'vue-router';
@@ -176,7 +177,15 @@
       icon: ComputerDesktopIcon 
     },
     { name: '日志记录', routeName: 'logs', href: '/logs', icon: DocumentDuplicateIcon },
-    // { name: '开发路线图', routeName: 'project', href: '/project', icon: ChartPieIcon },
+    { 
+      name: '精选应用', 
+      routeName: 'appStore', 
+      href: '/appStore', 
+      icon: BuildingStorefrontIcon,
+      isShow() {
+        return import.meta.env.MODE === 'development'
+      }
+    },
   ])
   const teams = [
     { id: 1, name: '模块首页', href: '/embedded-webview?url=https://hyper-magic-window.sothx.com', initial: 'H', current: false },
