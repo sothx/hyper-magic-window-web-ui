@@ -1644,6 +1644,15 @@ onMounted(() => {
 							onPositiveClick() {
 								resolve('success');
 							},
+							onNegativeClick() {
+								reject('cancel')
+							},
+							onMaskClick() {
+								reject('cancel')
+							},
+							onClose() {
+								reject('cancel')
+							}
 						});
 					}),
 				);
