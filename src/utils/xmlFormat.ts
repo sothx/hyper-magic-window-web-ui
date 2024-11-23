@@ -11,7 +11,7 @@ import * as autoUIFun from '@/utils/autoUIFun';
 import { useDeviceStore } from "@/stores/device";
 import { getSettingMode } from "./embeddedFun";
 
-const transformValues = <T>(obj: Record<string, T>): Record<string, T> => {
+export const transformValues = <T>(obj: Record<string, T>): Record<string, T> => {
   return mapValues(obj, (value) => {
     if (typeof value === "string") {
       // 转换布尔值字符串

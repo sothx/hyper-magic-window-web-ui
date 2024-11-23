@@ -1,5 +1,5 @@
 <script setup lang="tsx">
-import { ref, reactive, watch, type Component, h, onMounted, computed } from 'vue';
+import { ref, reactive, watch, type Component, h, onMounted, computed, watchEffect, nextTick } from 'vue';
 import type EmbeddedMergeRuleItem from '@/types/EmbeddedMergeRuleItem';
 import $to from 'await-to-js';
 import pako from 'pako';
@@ -1613,6 +1613,49 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 		},
 	];
 }
+
+onMounted(() => {
+	watchEffect(() => {
+		if (embeddedStore.isNeedShowReloadPathModeDialog) {
+			nextTick(async () => {
+				const [, positiveRes] = await $to(
+					new Promise((resolve, reject) => {
+						modal.create({
+							title: '是否需要重新生成定制应用数据？',
+							type: 'info',
+							preset: 'dialog',
+							content: () => (
+								<p>
+									检测到您最近已经更新了模块版本并且开启了{' '}
+									<span
+										class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+										定制模式
+									</span>{' '}
+									，模块需要重新操作{' '}
+									<span
+										class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+										生成定制应用数据
+									</span>{' '}
+									，确定要继续吗？
+								</p>
+							),
+							positiveText: '确定',
+							negativeText: '取消',
+							onPositiveClick() {
+								resolve('success');
+							},
+						});
+					}),
+				);
+				if (positiveRes) {
+					reloadPatchModeConfigList()
+				}
+				embeddedStore.isNeedShowReloadPathModeDialog = false;
+				deviceStore.needReloadData = false;
+			});
+		}
+	});
+});
 </script>
 
 <template>

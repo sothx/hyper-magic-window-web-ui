@@ -23,6 +23,7 @@ export const useEmbeddedStore = defineStore(
 		const isPatchMode = ref<boolean>(false);
 		const filterInstalledApps = ref<boolean>(false);
 		const applicationName = ref<ApplicationName>({});
+		const isNeedShowReloadPathModeDialog = ref<boolean>(false);
 		// 平行窗口
 		const sourceEmbeddedRulesList = ref<Record<EmbeddedRuleItem['name'], EmbeddedRuleItem>>({});
 		const systemEmbeddedRulesList = ref<Record<EmbeddedRuleItem['name'], EmbeddedRuleItem>>({});
@@ -422,6 +423,9 @@ export const useEmbeddedStore = defineStore(
 
 			if (!errorLogging.length) {
 				loading.value = false;
+				if (deviceStore.needReloadData && isPatchMode.value) {
+					isNeedShowReloadPathModeDialog.value = true;
+				}
 			}
 		}
 
@@ -452,6 +456,7 @@ export const useEmbeddedStore = defineStore(
 			isPatchMode,
 			initDefault,
 			updateMergeRuleList,
+			isNeedShowReloadPathModeDialog
 		};
 	},
 	{

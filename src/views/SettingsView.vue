@@ -516,6 +516,64 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 
 			<div class="mt-6 border-t border-gray-100">
 				<dl class="divide-y divide-gray-100">
+					<div v-if="deviceStore.moduleInfo?.id" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+						<dt
+							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`"
+							>模块ID
+						</dt>
+						<dd
+							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
+							{{ deviceStore.moduleInfo.id || '获取失败' }}
+						</dd>
+					</div>
+					<div v-if="deviceStore.moduleInfo?.dir" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+						<dt
+							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
+							模块路径
+						</dt>
+						<dd
+							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
+							{{ deviceStore.moduleInfo.dir || '获取失败' }}
+						</dd>
+					</div>
+					<div v-if="deviceStore.moduleInfo?.version" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+						<dt
+							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
+							模块版本名
+						</dt>
+						<dd
+							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
+							{{ deviceStore.moduleInfo.version || '获取失败' }}
+						</dd>
+					</div>
+					<div v-if="deviceStore.moduleInfo?.versionCode" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+						<dt
+							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
+							模块版本号
+						</dt>
+						<dd
+							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
+							{{ deviceStore.moduleInfo.versionCode || '获取失败' }}
+						</dd>
+					</div>
+					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+						<dt
+							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
+							模块工作模式
+						</dt>
+						<dd
+							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
+							<n-switch
+								@update:value="(value: boolean) => changePatchMode(value)"
+								:rail-style="railStyle"
+								:value="embeddedStore.isPatchMode"
+								:loading="switchPatchModeLoading"
+								:disabled="deviceStore.androidTargetSdk && deviceStore.androidTargetSdk < 32">
+								<template #checked>定制模式</template>
+								<template #unchecked>完整模式</template>
+							</n-switch>
+						</dd>
+					</div>
 					<div v-if="deviceStore.deviceName" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
@@ -755,44 +813,6 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 									{{ amktiaoHook.currentKeyboardModeSelect.value.label }}
 								</n-button>
 							</n-dropdown>
-						</dd>
-					</div>
-					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-						<dt
-							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`"
-							>模块ID
-						</dt>
-						<dd
-							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							{{ deviceStore.moduleID || '获取失败' }}
-						</dd>
-					</div>
-					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-						<dt
-							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
-							模块路径
-						</dt>
-						<dd
-							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							{{ deviceStore.moduleDir || '获取失败' }}
-						</dd>
-					</div>
-					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-						<dt
-							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
-							模块工作模式
-						</dt>
-						<dd
-							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							<n-switch
-								@update:value="(value: boolean) => changePatchMode(value)"
-								:rail-style="railStyle"
-								:value="embeddedStore.isPatchMode"
-								:loading="switchPatchModeLoading"
-								:disabled="deviceStore.androidTargetSdk && deviceStore.androidTargetSdk < 32">
-								<template #checked>定制模式</template>
-								<template #unchecked>完整模式</template>
-							</n-switch>
 						</dd>
 					</div>
 					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">

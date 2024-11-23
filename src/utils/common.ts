@@ -8,3 +8,17 @@ export const findBase64InString = (input: string): string | null => {
 export const renderApplicationName = (name:string,packageName?:string) => {
     return packageName ? `${packageName}(${name})` : name;
 }
+
+export const parsePropContent = (content: string): { [key: string]: string } => {
+    const result: { [key: string]: string } = {};
+    content.split('\n').forEach(line => {
+      line = line.trim();
+      if (line && !line.startsWith('#')) {
+        const [key, value] = line.split('=') as [string, string];
+        if (key && value) {
+          result[key.trim()] = value.trim();
+        }
+      }
+    });
+    return result;
+  };

@@ -5,12 +5,9 @@ import * as deviceApi from '@/apis/deviceApi';
 import type { ErrorLogging } from '@/types/ErrorLogging';
 import type { InstallAppNameListDictionary } from '@/hooks/useInstalledAppNames';
 import { useAmktiao, type KeyboardMode, type KeyboardModeOptions } from '@/hooks/useAmktiao';
+import { parsePropContent } from '@/utils/common';
+import { transformValues } from '@/utils/xmlFormat';
 
-
-export interface ModuleInfo {
-	moduleDir: string;
-	id: string;
-}
 
 export interface ModuleProp {
 	id: string;
@@ -20,6 +17,7 @@ export interface ModuleProp {
 	author: string;
 	description: string;
 	updateJson: string;
+	dir: string;
 }
 
 export interface UpdateInfo {
@@ -75,8 +73,9 @@ export const useDeviceStore = defineStore(
 			display0Panel: '',
 			memoryInfo: ''
 		})
-		const moduleDir = ref<string>();
-		const moduleID = ref<string>();
+		const lastVersionCode = ref<number>();
+		const needReloadData = ref<boolean>(false);
+		const moduleInfo = ref<ModuleProp>();
 		const hasPenUpdateControl = ref<boolean>(false);
 		const hasPenEnableControl = ref<boolean>(false);
 		const hasKeyboardControl = ref<boolean>(false);
@@ -92,15 +91,6 @@ export const useDeviceStore = defineStore(
 			installed: false,
 			mode: undefined
 		})
-		const moduleProp = reactive<ModuleProp>({
-			id: '',
-			name: '',
-			version: '',
-			versionCode: 0,
-			author: '',
-			description: '',
-			updateJson: '',
-		});
 		const updateInfo = reactive<UpdateInfo>({
 			version: '',
 			versionCode: 0,
@@ -240,9 +230,21 @@ export const useDeviceStore = defineStore(
 				});
 			}
 			if (getModuleInfoRes?.length) {
-				const moduleInfoObj: ModuleInfo = JSON.parse(getModuleInfoRes);
-				moduleDir.value = moduleInfoObj.moduleDir;
-				moduleID.value = moduleInfoObj.id;
+				const moduleInfoParse = transformValues({
+					...parsePropContent(getModuleInfoRes),
+					dir: '/data/adb/modules/MIUI_MagicWindow+'
+				}) as unknown as ModuleProp
+				if (moduleInfoParse.versionCode) {
+					if (!lastVersionCode.value) {
+						lastVersionCode.value = moduleInfoParse.versionCode
+					} else if (lastVersionCode.value < moduleInfoParse.versionCode) {
+						needReloadData.value = true;
+						lastVersionCode.value = moduleInfoParse.versionCode
+					}
+				}
+				moduleInfo.value = moduleInfoParse
+				// moduleDir.value = moduleInfoObj.moduleDir;
+				// moduleID.value = moduleInfoObj.id;
 			}
 			// 设备名称
 			deviceName.value = getDeviceNameRes || '';
@@ -397,14 +399,15 @@ export const useDeviceStore = defineStore(
 			isNeedShowErrorModal,
 			androidTargetSdk,
 			MIOSVersion,
-			moduleDir,
-			moduleID,
 			shamikoInfo,
+			moduleInfo,
 			systemVersion,
 			systemPreVersion,
 			deviceName,
 			deviceInfo,
 			batteryInfo,
+			lastVersionCode,
+			needReloadData,
 			smartFocusIO,
 			showRotationSuggestions,
 			installedAndroidApplicationPackageNameList,
@@ -430,7 +433,7 @@ export const useDeviceStore = defineStore(
 	},
 	{
 		persist: {
-			pick: ['skipConfirm', 'installedAndroidApplicationPackageNameList', 'isDarkMode', 'rhythmMode','ABTestInfo','installedAppNameList'],
+			pick: ['skipConfirm', 'installedAndroidApplicationPackageNameList', 'isDarkMode', 'rhythmMode','ABTestInfo','installedAppNameList','lastVersionCode'],
 		},
 	},
 );

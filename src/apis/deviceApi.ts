@@ -1,4 +1,4 @@
-import { exec, spawn, fullScreen, toast, moduleInfo, type ExecResults } from '@/utils/kernelsu/index.js';
+import { exec, spawn, fullScreen, toast, type ExecResults } from '@/utils/kernelsu/index.js';
 import axios from 'axios';
 import handlePromiseWithLogging from '@/utils/handlePromiseWithLogging';
 import $to from 'await-to-js';
@@ -136,19 +136,17 @@ export const getMiuiAppCompatEnable = (): Promise<string> => {
 };
 
 export const getModuleInfo = (): Promise<string> => {
+	const shellCommon = `cat /data/adb/modules/MIUI_MagicWindow+/module.prop`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
-			const response = JSON.stringify({
-				moduleDir: '/data/adb/modules/MIUI_MagicWindow+',
-				id: 'MIUI_MagicWindow+',
-			});
 			if (import.meta.env.MODE === 'development') {
-				resolve(response);
+				resolve(`id=MIUI_MagicWindow+\nname=HyperOS For Pad(Fold) 完美横屏应用计划\nversion=pad-ext-2.04.26.beta\nversionCode=204026\nauthor=御坂初琴、做梦书、柚稚的孩纸 等\ndescription=[★适配应用总数:8365] 适用于HyperOS For Pad，用于扩展应用横屏布局、应用布局优化和游戏显示布局的支持范围并优化适配体验，支持[自定义规则]扩充或覆盖部分应用适配。当前刷入的是[自用版]，此版本仅供模块作者使用，含有大量测试用途的代码，误装容易造成卡米。(下载正式版可前往酷安动态 @做梦书 ，模块首页:https://hyper-magic-window.sothx.com，GitHub仓库:https://github.com/sothx/mipad-magic-window，模块Q群:277757185，如需卸载模块请移除模块后重启平板)\nupdateJson=https://hyper-magic-window-module-update.sothx.com/release/V7/pad-ext.json`);
 			} else {
-				resolve(response);
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : stdout === 'null' ? resolve('') : resolve(stdout);
 			}
 		}),
-		'getModuleInfo',
+		shellCommon,
 	);
 };
 
@@ -542,7 +540,7 @@ export const getIsPatchMode = (): Promise<string> => {
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
-				resolve(`false`);
+				resolve(`true`);
 			} else {
 				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
 				errno ? reject(stderr) : resolve(stdout);
