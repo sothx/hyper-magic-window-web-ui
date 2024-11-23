@@ -987,14 +987,14 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							<p>{{  deviceStore.deviceInfo.display0Panel  }}</p>
 						</dd>
 					</div>
-					<div v-if="deviceStore.deviceInfo.ufs" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+					<div v-if="deviceStore.deviceInfo.memoryInfo" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
-							设备UFS信息
+							设备DDR和UFS信息
 						</dt>
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							{{ deviceStore.deviceInfo.ufs || '获取失败' }}
+							<div class="whitespace-pre">{{ deviceStore.deviceInfo.memoryInfo || '获取失败' }}</div>
 						</dd>
 					</div>
 					<div

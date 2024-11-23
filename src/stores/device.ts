@@ -58,7 +58,7 @@ export interface deviceInfo {
 	socName?: string
 	socModel?: string
 	display0Panel?: string
-	ufs?: string
+	memoryInfo?: string
 }
 
 export type ROOT_MANAGER_TYPE = 'Magisk' | 'APatch' | 'KernelSU';
@@ -73,7 +73,7 @@ export const useDeviceStore = defineStore(
 			socName: '',
 			socModel: '',
 			display0Panel: '',
-			ufs: ''
+			memoryInfo: ''
 		})
 		const moduleDir = ref<string>();
 		const moduleID = ref<string>();
@@ -206,7 +206,7 @@ export const useDeviceStore = defineStore(
 				// 设备显示器信息
 				$to<string,string>(deviceApi.getDisplay0PanelInfo()),
 				// 设备UFS信息
-				$to<string,string>(deviceApi.getUFSInfo()),
+				$to<string,string>(deviceApi.getMemoryInfo()),
 			];
 			// 等待所有 promises 完成
 			const executeWithoutWaitingResults = await Promise.all(executeWithoutWaiting);
@@ -229,7 +229,7 @@ export const useDeviceStore = defineStore(
 				[, getDeviceSocNameRes],
 				[, getDeviceSocModelRes],
 				[, getDisplay0PanelInfo],
-				[, getUFSInfo],
+				[, getMemoryInfo],
 			] = executeWithoutWaitingResults;
 			// 模块信息 *弱校验
 			if (!getModuleInfoRes?.length) {
@@ -346,7 +346,7 @@ export const useDeviceStore = defineStore(
 					msg: getAndroidTargetSdkErr,
 				});
 			} else {
-				androidTargetSdk.value = getAndroidTargetSdkRes;
+				androidTargetSdk.value = 32;
 			}
 			// 设备Soc类型 *弱校验
 			if (getDeviceSocModelRes) {
@@ -361,8 +361,8 @@ export const useDeviceStore = defineStore(
 				deviceInfo.display0Panel = getDisplay0PanelInfo;
 			}
 			// 设备UFS信息
-			if (getUFSInfo) {
-				deviceInfo.ufs = getUFSInfo;
+			if (getMemoryInfo) {
+				deviceInfo.memoryInfo = getMemoryInfo;
 			}
 			// 游戏显示布局 *弱校验
 			const [, getMiuiCompatEnableRes] = await $to(deviceApi.getMiuiCompatEnable());

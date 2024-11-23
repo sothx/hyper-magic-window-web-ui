@@ -682,7 +682,7 @@ export const getCurrentPenUpdate = (): Promise<string> => {
 	);
 };
 
-export const putCurrentPenUpdate = (mode:PenUpdate): Promise<string> => {
+export const putCurrentPenUpdate = (mode: PenUpdate): Promise<string> => {
 	const shellCommon = `echo ${mode} > /sys/touchpanel/pen_update`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
@@ -742,7 +742,7 @@ export const getCurrentPenEnable = (): Promise<string> => {
 	);
 };
 
-export const putCurrentPenEnable = (mode:PenEnable): Promise<string> => {
+export const putCurrentPenEnable = (mode: PenEnable): Promise<string> => {
 	const shellCommon = `echo ${mode} > /sys/touchpanel/pen_enable`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
@@ -802,7 +802,7 @@ export const getCurrentKeyboardMode = (): Promise<string> => {
 	);
 };
 
-export const putCurrentKeyboardMode = (mode:KeyboardMode): Promise<string> => {
+export const putCurrentKeyboardMode = (mode: KeyboardMode): Promise<string> => {
 	const shellCommon = `echo ${mode} > /sys/touchpanel/keyboard`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
@@ -847,9 +847,9 @@ export const getCurrentMiuiDktMode = (): Promise<string> => {
 	);
 };
 
-export type MiuiDKTMode = 1 | 'null'
+export type MiuiDKTMode = 1 | 'null';
 
-export const putCurrentMiuiDktMode = (mode:MiuiDKTMode): Promise<string> => {
+export const putCurrentMiuiDktMode = (mode: MiuiDKTMode): Promise<string> => {
 	const shellCommon = `settings put system miui_dkt_mode ${mode}`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
@@ -939,7 +939,7 @@ export const removeShowNotificationIconNum = (): Promise<string> => {
 	);
 };
 
-export const addShowNotificationIconNum = (num:number): Promise<string> => {
+export const addShowNotificationIconNum = (num: number): Promise<string> => {
 	const shellCommon = `grep -q '^show_notification_icon_num=' /data/adb/MIUI_MagicWindow+/config.prop || (echo "show_notification_icon_num=${num}" | tee -a /data/adb/MIUI_MagicWindow+/config.prop > /dev/null && echo "Command executed successfully." || echo "Command failed.")`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
@@ -969,7 +969,7 @@ export const getCurrentStatusBarShowNotificationIcon = (): Promise<string> => {
 	);
 };
 
-export const putCurrentStatusBarShowNotificationIcon = (num:number): Promise<string> => {
+export const putCurrentStatusBarShowNotificationIcon = (num: number): Promise<string> => {
 	const shellCommon = `settings put system status_bar_show_notification_icon ${num}`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
@@ -984,12 +984,12 @@ export const putCurrentStatusBarShowNotificationIcon = (num:number): Promise<str
 	);
 };
 
-export const getUFSInfo = (): Promise<string> => {
-	const shellCommon = `cat /sys/class/block/sda/device/inquiry`;
+export const getMemoryInfo = (): Promise<string> => {
+	const shellCommon = `cat /proc/mv`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
-				resolve(`SAMSUNG KLUEG8UHGC-B0E1 0700`);
+				resolve(`D: 0x06 12\nU: 0x01ad 256 HN8T15DEHKX075 A003`);
 			} else {
 				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
 				errno ? reject(stderr) : stdout === 'null' ? resolve('') : resolve(stdout);
@@ -1008,16 +1008,16 @@ export const getDisplay0PanelInfo = (): Promise<string> => {
 			} else {
 				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
 				if (errno) {
-					reject(stderr) 
+					reject(stderr);
 				} else {
 					if (stdout === 'null') {
-						resolve('')
+						resolve('');
 					}
-					const stdoutArr =  stdout.split('=')
+					const stdoutArr = stdout.split('=');
 					if (Array.isArray(stdoutArr) && stdoutArr.length === 2) {
-						resolve(stdoutArr[1])
+						resolve(stdoutArr[1]);
 					} else {
-						resolve('')
+						resolve('');
 					}
 				}
 			}
