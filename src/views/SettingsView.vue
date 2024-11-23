@@ -956,24 +956,45 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							{{ deviceStore.deviceCharacteristics === 'tablet' ? '平板(Pad)' : '折叠屏(Fold)' }}
 						</dd>
 					</div>
-					<div v-if="deviceStore.deviceSocModel" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+					<div v-if="deviceStore.deviceInfo.socModel" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
 							设备Soc类型
 						</dt>
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							{{ deviceStore.deviceSocModel || '获取失败' }}
+							{{ deviceStore.deviceInfo.socModel || '获取失败' }}
 						</dd>
 					</div>
-					<div v-if="deviceStore.deviceSocName" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+					<div v-if="deviceStore.deviceInfo.socName" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
 							设备Soc名称
 						</dt>
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							{{ deviceStore.deviceSocName || '获取失败' }}
+							{{ deviceStore.deviceInfo.socName || '获取失败' }}
+						</dd>
+					</div>
+					<div v-if="deviceStore.deviceInfo.display0Panel" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+						<dt
+							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
+							设备显示器信息(display0)
+						</dt>
+						<dd
+							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
+							<!-- {{ 'mdss_dsi_m81_42_02_0b_dualdsi_dsc_lcd_video' || '获取失败' }} -->
+							<p>{{  deviceStore.deviceInfo.display0Panel  }}</p>
+						</dd>
+					</div>
+					<div v-if="deviceStore.deviceInfo.ufs" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+						<dt
+							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
+							设备UFS信息
+						</dt>
+						<dd
+							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
+							{{ deviceStore.deviceInfo.ufs || '获取失败' }}
 						</dd>
 					</div>
 					<div

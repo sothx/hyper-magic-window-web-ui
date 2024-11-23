@@ -983,3 +983,45 @@ export const putCurrentStatusBarShowNotificationIcon = (num:number): Promise<str
 		shellCommon,
 	);
 };
+
+export const getUFSInfo = (): Promise<string> => {
+	const shellCommon = `cat /sys/class/block/sda/device/inquiry`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`SAMSUNG KLUEG8UHGC-B0E1 0700`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : stdout === 'null' ? resolve('') : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const getDisplay0PanelInfo = (): Promise<string> => {
+	const shellCommon = `cat /sys/class/mi_display/disp-DSI-0/panel_info`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`mdss_dsi_m81_42_02_0b_dualdsi_dsc_lcd_video`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				if (errno) {
+					reject(stderr) 
+				} else {
+					if (stdout === 'null') {
+						resolve('')
+					}
+					const stdoutArr =  stdout.split('=')
+					if (Array.isArray(stdoutArr) && stdoutArr.length === 2) {
+						resolve(stdoutArr[1])
+					} else {
+						resolve('')
+					}
+				}
+			}
+		}),
+		shellCommon,
+	);
+};

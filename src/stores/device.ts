@@ -54,6 +54,13 @@ export interface ShamikoInfo {
 	mode?: 'whitelist' | 'blacklist';
 }
 
+export interface deviceInfo {
+	socName?: string
+	socModel?: string
+	display0Panel?: string
+	ufs?: string
+}
+
 export type ROOT_MANAGER_TYPE = 'Magisk' | 'APatch' | 'KernelSU';
 
 export const useDeviceStore = defineStore(
@@ -62,9 +69,12 @@ export const useDeviceStore = defineStore(
 		const deviceCharacteristics = ref<string>();
 		const androidTargetSdk = ref<number>();
 		const MIOSVersion = ref<number>();
-		const deviceCode = ref<string>();
-		const deviceSocName = ref<string>();
-		const deviceSocModel = ref<string>();
+		const deviceInfo = reactive<deviceInfo>({
+			socName: '',
+			socModel: '',
+			display0Panel: '',
+			ufs: ''
+		})
 		const moduleDir = ref<string>();
 		const moduleID = ref<string>();
 		const hasPenUpdateControl = ref<boolean>(false);
@@ -189,6 +199,14 @@ export const useDeviceStore = defineStore(
 				$to<string, string>(deviceApi.getHasKeyboardControl()),
 				// 工作台模式判断
 				$to<string,string>(deviceApi.getMiuiDesktopModeEnabled()),
+				// 设备Soc名称
+				$to<string,string>(deviceApi.getDeviceSocName()),
+				// 设备Soc类型
+				$to<string,string>(deviceApi.getDeviceSocModel()),
+				// 设备显示器信息
+				$to<string,string>(deviceApi.getDisplay0PanelInfo()),
+				// 设备UFS信息
+				$to<string,string>(deviceApi.getUFSInfo()),
 			];
 			// 等待所有 promises 完成
 			const executeWithoutWaitingResults = await Promise.all(executeWithoutWaiting);
@@ -208,6 +226,10 @@ export const useDeviceStore = defineStore(
 				[, getHasPenEnableControlRes],
 				[, getHasKeyboardControlRes],
 				[, getMiuiDesktopModeEnabledRes],
+				[, getDeviceSocNameRes],
+				[, getDeviceSocModelRes],
+				[, getDisplay0PanelInfo],
+				[, getUFSInfo],
 			] = executeWithoutWaitingResults;
 			// 模块信息 *弱校验
 			if (!getModuleInfoRes?.length) {
@@ -326,27 +348,21 @@ export const useDeviceStore = defineStore(
 			} else {
 				androidTargetSdk.value = getAndroidTargetSdkRes;
 			}
-			// 设备Soc类型 *强校验
-			const [getDeviceSocModelErr, getDeviceSocModelRes] = await $to<string, string>(deviceApi.getDeviceSocModel());
-			if (getDeviceSocModelErr) {
-				errorLogging.push({
-					type: 'deviceSocModel',
-					title: '设备Soc类型',
-					msg: getDeviceSocModelErr,
-				});
-			} else {
-				deviceSocModel.value = getDeviceSocModelRes;
+			// 设备Soc类型 *弱校验
+			if (getDeviceSocModelRes) {
+				deviceInfo.socModel = getDeviceSocModelRes;
 			}
-			// 设备Soc名称 *强校验
-			const [getDeviceSocNameErr, getDeviceSocNameRes] = await $to<string, string>(deviceApi.getDeviceSocName());
-			if (getDeviceSocNameErr) {
-				errorLogging.push({
-					type: 'deviceSocName',
-					title: '设备Soc名称',
-					msg: getDeviceSocNameErr,
-				});
-			} else {
-				deviceSocName.value = getDeviceSocNameRes;
+			// 设备Soc名称 *弱校验
+			if (getDeviceSocNameRes) {
+				deviceInfo.socName = getDeviceSocNameRes;
+			}
+			// 设备显示器信息
+			if (getDisplay0PanelInfo) {
+				deviceInfo.display0Panel = getDisplay0PanelInfo;
+			}
+			// 设备UFS信息
+			if (getUFSInfo) {
+				deviceInfo.ufs = getUFSInfo;
 			}
 			// 游戏显示布局 *弱校验
 			const [, getMiuiCompatEnableRes] = await $to(deviceApi.getMiuiCompatEnable());
@@ -381,15 +397,13 @@ export const useDeviceStore = defineStore(
 			isNeedShowErrorModal,
 			androidTargetSdk,
 			MIOSVersion,
-			deviceCode,
 			moduleDir,
 			moduleID,
 			shamikoInfo,
 			systemVersion,
 			systemPreVersion,
 			deviceName,
-			deviceSocName,
-			deviceSocModel,
+			deviceInfo,
 			batteryInfo,
 			smartFocusIO,
 			showRotationSuggestions,

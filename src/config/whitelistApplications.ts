@@ -184,6 +184,7 @@ const topApplicationList = [
     'me.ele', // 饿了么
     'com.max.xiaoheihe', // 小黑盒
     'com.ruanmei.ithome', // IT之家
+    'com.youdao.translator', // 有道翻译官
 ]
 
 
