@@ -346,7 +346,7 @@ export const useDeviceStore = defineStore(
 					msg: getAndroidTargetSdkErr,
 				});
 			} else {
-				androidTargetSdk.value = 32;
+				androidTargetSdk.value = getAndroidTargetSdkRes;
 			}
 			// 设备Soc类型 *弱校验
 			if (getDeviceSocModelRes) {
