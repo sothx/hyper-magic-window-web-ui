@@ -518,7 +518,7 @@ const openAddEmbeddedApp = async () => {
 		logsStore.info('应用横屏配置-添加应用', '该功能仅兼容平板设备，暂时不兼容折叠屏设备，请等待后续更新情况！');
 		return;
 	}
-	if (!deviceStore.ABTestInfo.OS2_PAD_EMBEDDED_APP_MANAGER && deviceStore.MIOSVersion && deviceStore.MIOSVersion === 2) {
+	if (!deviceStore.ABTestInfo.OS2_PAD_EMBEDDED_APP_MANAGER) {
 		modal.create({
 			title: '内测说明',
 			type: 'warning',
@@ -706,7 +706,7 @@ const openAddEmbeddedApp = async () => {
 };
 
 const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) => {
-	if (!deviceStore.ABTestInfo.OS2_PAD_EMBEDDED_APP_MANAGER && deviceStore.MIOSVersion && deviceStore.MIOSVersion === 2) {
+	if (!deviceStore.ABTestInfo.OS2_PAD_EMBEDDED_APP_MANAGER) {
 		modal.create({
 			title: '内测说明',
 			type: 'warning',
@@ -1123,7 +1123,7 @@ const handleCustomRuleDropdown = async (
 	row: EmbeddedMergeRuleItem,
 	index: number,
 ) => {
-	if (!deviceStore.ABTestInfo.OS2_PAD_EMBEDDED_APP_MANAGER && deviceStore.MIOSVersion && deviceStore.MIOSVersion === 2) {
+	if (!deviceStore.ABTestInfo.OS2_PAD_EMBEDDED_APP_MANAGER) {
 		modal.create({
 			title: '内测说明',
 			type: 'warning',
