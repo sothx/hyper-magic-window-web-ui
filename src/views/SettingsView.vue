@@ -536,7 +536,9 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							{{ deviceStore.moduleInfo.dir || '获取失败' }}
 						</dd>
 					</div>
-					<div v-if="deviceStore.moduleInfo?.version" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+					<div
+						v-if="deviceStore.moduleInfo?.version"
+						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
 							模块版本名
@@ -546,7 +548,9 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							{{ deviceStore.moduleInfo.version || '获取失败' }}
 						</dd>
 					</div>
-					<div v-if="deviceStore.moduleInfo?.versionCode" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+					<div
+						v-if="deviceStore.moduleInfo?.versionCode"
+						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
 							模块版本号
@@ -780,7 +784,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 								<template #checked>已启用</template>
 								<template #unchecked>未启用</template>
 							</n-switch>
-							<p class="mt-2">Tips:仅兼容水龙(Amktiao)的移植包，存在 /sys/touchpanel/pen_enable 开关映射时生效</p>
+							<n-alert class="mt-2" type="error" :show-icon="false" :bordered="false">Tips:仅兼容水龙(Amktiao)的移植包，存在 /sys/touchpanel/pen_enable 开关映射时生效</n-alert>
 						</dd>
 					</div>
 					<div
@@ -811,7 +815,9 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 								<template #checked>二代笔驱动</template>
 								<template #unchecked>一代笔驱动</template>
 							</n-switch>
-							<p class="mt-2">Tips:仅兼容水龙(Amktiao)的移植包，存在 /sys/touchpanel/pen_update 开关映射时生效</p>
+							<n-alert class="mt-2" type="error" :show-icon="false" :bordered="false">
+								<p>Tips:仅兼容水龙(Amktiao)的移植包，存在 /sys/touchpanel/pen_update 开关映射时生效</p>
+							</n-alert>
 						</dd>
 					</div>
 					<div
@@ -848,7 +854,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 									{{ amktiaoHook.currentKeyboardModeSelect.value.label }}
 								</n-button>
 							</n-dropdown>
-							<p class="mt-2">Tips:仅兼容水龙(Amktiao)的移植包，存在 /sys/touchpanel/keyboard 开关映射时生效</p>
+							<n-alert class="mt-2" type="error" :show-icon="false" :bordered="false">Tips:仅兼容水龙(Amktiao)的移植包，存在 /sys/touchpanel/keyboard 开关映射时生效</n-alert>
 						</dd>
 					</div>
 					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
@@ -1012,7 +1018,9 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							{{ deviceStore.deviceCharacteristics === 'tablet' ? '平板(Pad)' : '折叠屏(Fold)' }}
 						</dd>
 					</div>
-					<div v-if="deviceStore.deviceInfo.socModel" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+					<div
+						v-if="deviceStore.deviceInfo.socModel"
+						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
 							设备Soc类型
@@ -1022,7 +1030,9 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							{{ deviceStore.deviceInfo.socModel || '获取失败' }}
 						</dd>
 					</div>
-					<div v-if="deviceStore.deviceInfo.socName" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+					<div
+						v-if="deviceStore.deviceInfo.socName"
+						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
 							设备Soc名称
@@ -1032,7 +1042,9 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							{{ deviceStore.deviceInfo.socName || '获取失败' }}
 						</dd>
 					</div>
-					<div v-if="deviceStore.deviceInfo.display0Panel" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+					<div
+						v-if="deviceStore.deviceInfo.display0Panel"
+						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
 							设备显示器信息(display0)
@@ -1040,10 +1052,12 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
 							<!-- {{ 'mdss_dsi_m81_42_02_0b_dualdsi_dsc_lcd_video' || '获取失败' }} -->
-							<p>{{  deviceStore.deviceInfo.display0Panel  }}</p>
+							<p>{{ deviceStore.deviceInfo.display0Panel }}</p>
 						</dd>
 					</div>
-					<div v-if="deviceStore.deviceInfo.memoryInfo" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+					<div
+						v-if="deviceStore.deviceInfo.memoryInfo"
+						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
 							设备DDR和UFS信息
