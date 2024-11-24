@@ -764,7 +764,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 									secondary
 									size="small"
 									@click="() => amktiaoHook.enableSetting()"
-									type="info">
+									type="warning">
 									启用功能
 								</n-button>
 							</p>
@@ -795,7 +795,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 									secondary
 									size="small"
 									@click="() => amktiaoHook.enableSetting()"
-									type="info">
+									type="warning">
 									启用功能
 								</n-button>
 							</p>
@@ -826,7 +826,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 									secondary
 									size="small"
 									@click="() => amktiaoHook.enableSetting()"
-									type="info">
+									type="warning">
 									启用功能
 								</n-button>
 							</p>

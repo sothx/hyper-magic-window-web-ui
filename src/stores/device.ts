@@ -437,7 +437,7 @@ export const useDeviceStore = defineStore(
 	},
 	{
 		persist: {
-			pick: ['skipConfirm', 'installedAndroidApplicationPackageNameList', 'isDarkMode', 'rhythmMode','ABTestInfo','installedAppNameList','lastVersionCode'],
+			pick: ['skipConfirm', 'installedAndroidApplicationPackageNameList', 'isDarkMode', 'rhythmMode','ABTestInfo','installedAppNameList','lastVersionCode','showThirdPartySetting'],
 		},
 	},
 );
