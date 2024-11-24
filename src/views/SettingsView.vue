@@ -758,17 +758,29 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
 							第三方触控笔管理（水龙）
+							<p class="mt-2" v-if="!deviceStore.showThirdPartySetting.amktiaoROMInterface">
+								<n-button
+									strong
+									secondary
+									size="small"
+									@click="() => amktiaoHook.enableSetting()"
+									type="info">
+									启用功能
+								</n-button>
+							</p>
 						</dt>
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
 							<n-switch
 								@update:value="(value: boolean) => amktiaoHook.changePenEnableMode(value)"
 								:rail-style="railStyle"
+								:disabled="!deviceStore.showThirdPartySetting.amktiaoROMInterface"
 								:value="amktiaoHook.currentPenEnable.value ? true : false"
 								:loading="deviceStore.loading">
 								<template #checked>已启用</template>
 								<template #unchecked>未启用</template>
 							</n-switch>
+							<p class="mt-2">Tips:仅兼容水龙(Amktiao)的移植包，存在 /sys/touchpanel/pen_enable 开关映射时生效</p>
 						</dd>
 					</div>
 					<div
@@ -777,17 +789,29 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
 							手写笔驱动管理（水龙）
+							<p class="mt-2" v-if="!deviceStore.showThirdPartySetting.amktiaoROMInterface">
+								<n-button
+									strong
+									secondary
+									size="small"
+									@click="() => amktiaoHook.enableSetting()"
+									type="info">
+									启用功能
+								</n-button>
+							</p>
 						</dt>
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
 							<n-switch
 								@update:value="(value: boolean) => amktiaoHook.changePenUpdateMode(value)"
 								:rail-style="railStyle"
+								:disabled="!deviceStore.showThirdPartySetting.amktiaoROMInterface"
 								:value="amktiaoHook.currentPenUpdate.value ? true : false"
 								:loading="deviceStore.loading">
 								<template #checked>二代笔驱动</template>
 								<template #unchecked>一代笔驱动</template>
 							</n-switch>
+							<p class="mt-2">Tips:仅兼容水龙(Amktiao)的移植包，存在 /sys/touchpanel/pen_update 开关映射时生效</p>
 						</dd>
 					</div>
 					<div
@@ -796,6 +820,16 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
 							键盘连接器管理（水龙）
+							<p class="mt-2" v-if="!deviceStore.showThirdPartySetting.amktiaoROMInterface">
+								<n-button
+									strong
+									secondary
+									size="small"
+									@click="() => amktiaoHook.enableSetting()"
+									type="info">
+									启用功能
+								</n-button>
+							</p>
 						</dt>
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
@@ -808,11 +842,13 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 								<n-button
 									strong
 									secondary
+									:disabled="!deviceStore.showThirdPartySetting.amktiaoROMInterface"
 									size="small"
 									:type="amktiaoHook.currentKeyboardModeSelect.value.type">
 									{{ amktiaoHook.currentKeyboardModeSelect.value.label }}
 								</n-button>
 							</n-dropdown>
+							<p class="mt-2">Tips:仅兼容水龙(Amktiao)的移植包，存在 /sys/touchpanel/keyboard 开关映射时生效</p>
 						</dd>
 					</div>
 					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
@@ -1185,7 +1221,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
-							电池售后健康度（联发科）
+							电池售后健康度
 						</dt>
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">

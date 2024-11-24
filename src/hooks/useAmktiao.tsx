@@ -62,6 +62,31 @@ export function useAmktiao() {
 		key: 0,
 	});
 
+	const enableSetting = async () => {
+		modal.create({
+			title: '想启用该功能吗？',
+			type: 'info',
+			preset: 'dialog',
+			content: () => (
+				<div>
+					<p>
+						该功能仅兼容{' '}
+						<span
+							class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+							水龙(Amktiao)
+						</span>{' '}
+						的移植包，不兼容其他移植包作者，请确保当前使用的是水龙的移植包再启用该功能，确定要继续吗？
+					</p>
+				</div>
+			),
+			positiveText: '确认启用',
+			negativeText: '我再想想',
+			onPositiveClick: () => {
+				deviceStore.showThirdPartySetting.amktiaoROMInterface = true;
+			}
+		});
+	}
+
 	const changeKeyboardMode = async (mode: KeyboardMode) => {
 		const [negativeRes, positiveRes] = await $to(
 			new Promise((resolve, reject) => {
@@ -259,5 +284,6 @@ export function useAmktiao() {
 		changeKeyboardMode,
 		changePenUpdateMode,
 		changePenEnableMode,
+		enableSetting
 	};
 }

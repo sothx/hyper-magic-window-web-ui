@@ -132,6 +132,9 @@ export const useDeviceStore = defineStore(
 			MIUIContentExt: false,
 			lowWebViewVersion: false
 		});
+		const showThirdPartySetting = reactive({
+			amktiaoROMInterface: false
+		})
 
 		const isNeedShowErrorModal = computed(() => Boolean(errorLogging.length > 0));
 
@@ -416,6 +419,7 @@ export const useDeviceStore = defineStore(
 			miuiAppCompatEnable,
 			installedAppNameList,
 			skipConfirm,
+			showThirdPartySetting,
 			currentRootManager,
 			rootManagerInfo,
 			errorLogging,
