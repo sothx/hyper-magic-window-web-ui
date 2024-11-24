@@ -504,24 +504,6 @@ const reloadPatchModeConfigList = async () => {
 			),
 			negativeText: '确定',
 		});
-		// logsStore.info('获取到已安装的应用数量', embeddedStore.installedAndroidApplicationPackageNameList.length)
-		// logsStore.info('获取到模块规则的平行窗口的应用数量', Object.keys(embeddedStore.sourceEmbeddedRulesList).length)
-		// logsStore.info('获取到模块规则的信箱模式的应用数量', Object.keys(embeddedStore.sourceFixedOrientationList).length)
-		// logsStore.info('获取到系统规则的平行窗口的应用数量', Object.keys(embeddedStore.systemEmbeddedRulesList).length)
-		// logsStore.info('获取到系统规则的信箱模式的应用数量', Object.keys(embeddedStore.systemFixedOrientationList).length)
-		// logsStore.info('获取到patch规则的平行窗口的应用数量', Object.keys(embeddedStore.patchEmbeddedRulesList).length)
-		// logsStore.info('获取到patch规则的信箱模式的应用数量', Object.keys(embeddedStore.patchFixedOrientationList).length)
-		// logsStore.info('是否存在DNA Android', new Set(Object.keys(embeddedStore.patchEmbeddedRulesList)).has('com.dna.tools'))
-		// const {
-		//   errno: EmErrno,
-		//   stdout: EmStdout,
-		//   stderr: EmStderr,
-		// }: any = await exec(
-		//   `echo '${xmlFormat.objectToXML(embeddedStore.sourceEmbeddedRulesList, 'package', 'package_config')}' > /data/adb/MIUI_MagicWindow+/echo_embedded_rule_list.xml`
-		// );
-		// if (EmStdout) {
-		//   logsStore.info('输出/data/adb/MIUI_MagicWindow+/echo_embedded_rule_list.xml 成功')
-		// }
 	}
 };
 
@@ -536,7 +518,7 @@ const openAddEmbeddedApp = async () => {
 		logsStore.info('应用横屏配置-添加应用', '该功能仅兼容平板设备，暂时不兼容折叠屏设备，请等待后续更新情况！');
 		return;
 	}
-	if (!deviceStore.ABTestInfo.OS2_PAD_EMBEDDED_APP_MANAGER) {
+	if (!deviceStore.ABTestInfo.OS2_PAD_EMBEDDED_APP_MANAGER && deviceStore.MIOSVersion && deviceStore.MIOSVersion === 2) {
 		modal.create({
 			title: '内测说明',
 			type: 'warning',
@@ -724,7 +706,7 @@ const openAddEmbeddedApp = async () => {
 };
 
 const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) => {
-	if (!deviceStore.ABTestInfo.OS2_PAD_EMBEDDED_APP_MANAGER) {
+	if (!deviceStore.ABTestInfo.OS2_PAD_EMBEDDED_APP_MANAGER && deviceStore.MIOSVersion && deviceStore.MIOSVersion === 2) {
 		modal.create({
 			title: '内测说明',
 			type: 'warning',
@@ -1141,7 +1123,7 @@ const handleCustomRuleDropdown = async (
 	row: EmbeddedMergeRuleItem,
 	index: number,
 ) => {
-	if (!deviceStore.ABTestInfo.OS2_PAD_EMBEDDED_APP_MANAGER) {
+	if (!deviceStore.ABTestInfo.OS2_PAD_EMBEDDED_APP_MANAGER && deviceStore.MIOSVersion && deviceStore.MIOSVersion === 2) {
 		modal.create({
 			title: '内测说明',
 			type: 'warning',

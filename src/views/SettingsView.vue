@@ -784,7 +784,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 								<template #checked>已启用</template>
 								<template #unchecked>未启用</template>
 							</n-switch>
-							<n-alert class="mt-2" type="error" :show-icon="false" :bordered="false">Tips:仅兼容水龙(Amktiao)的移植包，存在 /sys/touchpanel/pen_enable 开关映射时生效</n-alert>
+							<n-alert class="mt-5" type="warning" :show-icon="false" :bordered="false">Tips:仅兼容水龙(Amktiao)的移植包，存在 /sys/touchpanel/pen_enable 开关映射时生效</n-alert>
 						</dd>
 					</div>
 					<div
@@ -815,7 +815,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 								<template #checked>二代笔驱动</template>
 								<template #unchecked>一代笔驱动</template>
 							</n-switch>
-							<n-alert class="mt-2" type="error" :show-icon="false" :bordered="false">
+							<n-alert class="mt-5" type="warning" :show-icon="false" :bordered="false">
 								<p>Tips:仅兼容水龙(Amktiao)的移植包，存在 /sys/touchpanel/pen_update 开关映射时生效</p>
 							</n-alert>
 						</dd>
@@ -854,7 +854,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 									{{ amktiaoHook.currentKeyboardModeSelect.value.label }}
 								</n-button>
 							</n-dropdown>
-							<n-alert class="mt-2" type="error" :show-icon="false" :bordered="false">Tips:仅兼容水龙(Amktiao)的移植包，存在 /sys/touchpanel/keyboard 开关映射时生效</n-alert>
+							<n-alert class="mt-5" type="warning" :show-icon="false" :bordered="false">Tips:仅兼容水龙(Amktiao)的移植包，存在 /sys/touchpanel/keyboard 开关映射时生效</n-alert>
 						</dd>
 					</div>
 					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
