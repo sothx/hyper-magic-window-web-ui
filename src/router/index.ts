@@ -48,6 +48,11 @@ const router = createRouter({
       component: () => import('../views/LogView.vue'),
     },
     {
+      path: '/game-booster',
+      name: 'game-booster',
+      component: () => import('../views/GameBooster.vue'),
+    },
+    {
       path: '/game-turbo-config',
       name: 'game-turbo-config',
       component: () => import('../views/GameTurboConfig.vue'),

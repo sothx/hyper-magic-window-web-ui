@@ -52,63 +52,10 @@
     },
     {
       name: '游戏显示布局',
+      routeName: 'game-booster', 
+      href: '/game-booster', 
       isShow() {
         return deviceStore.androidTargetSdk && deviceStore.androidTargetSdk >= 32
-      },
-      click() {
-        if (gameMode.isSupportGameMode.value) {
-          modal.create({
-            title: '确认打开游戏显示布局吗？',
-            type: 'info',
-            preset: 'dialog',
-            content: () => (<div>
-              <p>即将打开 <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>游戏显示布局</span> 管理界面，确定要继续吗？</p>
-              <p>您可以将希望调整 <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>游戏显示布局</span> 的应用加到 <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>游戏工具箱</span> 中，即可进行管理~</p>
-              {
-                deviceStore.deviceCharacteristics === 'tablet' && deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && (<p>从Hyper OS 2.0开始，小米平板需要搭配配套的 <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>修改版平板/手机管家</span> 才能使用游戏显示布局，详情请前往模块首页了解~</p>)
-              }
-            </div>
-            ),
-            positiveText: '确定打开',
-            negativeText: '我再想想',
-            onPositiveClick: async () => {
-              deviceApi.openGameModeManager().then((res) => {
-                modal.create({
-                  title: '已开启',
-                  type: 'success',
-                  preset: 'dialog',
-                  content: () => (<div>
-                    <p>好耶OwO~</p>
-                    <p>已经成功开启 <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>游戏显示布局</span> 的管理界面了~</p>
-                  </div>),
-                  positiveText: '确定'
-                })
-              }, (err) => {
-                modal.create({
-                  title: '无法打开游戏显示布局',
-                  type: 'error',
-                  preset: 'dialog',
-                  content: () => (<div>
-                    <p>您未开启 <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>游戏显示布局</span>，请前往模块设置中开启~</p>
-                    <p>如果仍然无法正常打开，请更新手机/平板管家~</p>
-                  </div>),
-                  negativeText: '确定'
-                })
-              })
-            }
-          })
-        } else {
-          modal.create({
-            title: '无法打开游戏显示布局',
-            type: 'error',
-            preset: 'dialog',
-            content: () => (<div>
-              <p>您未开启 <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>游戏显示布局</span>，请前往模块设置中开启~</p>
-              <p>如果仍然无法正常打开，请更新手机/平板管家~</p>
-            </div>),
-            negativeText: '确定'
-          })
-        }
       },
       icon: PlayIcon
     },
@@ -172,7 +119,7 @@
       routeName: 'dot-black-list', 
       href: '/dot-black-list', 
       isShow() {
-        return deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 1
+        return false
       },
       icon: ComputerDesktopIcon 
     },

@@ -407,6 +407,8 @@ export const getRootManagerInfo = (): Promise<string> => {
 
 export const getAndroidApplicationPackageNameList = (): Promise<string> => {
 	const shellCommon = `pm list packages -a | awk -F':' '{print $2}' | tr '\n' ',' | sed 's/,$/\n/'`;
+	// 列出包名和UID
+	//  pm list packages -U | awk -F'[: ]+' '{print $2":"$4}' | tr '\n' ',' | sed 's/,$/\n/'
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {

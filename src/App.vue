@@ -11,8 +11,10 @@ import { useFontStore } from '@/stores/font';
 import { useDotBlackListStore } from '@/stores/dotBlackList';
 import { useLogsStore } from '@/stores/logs';
 import { useAutoUIStore } from '@/stores/autoui';
+import { useGameBoosterStore } from './stores/gameBooster';
 const deviceStore = useDeviceStore();
 const logsStore = useLogsStore();
+const gameBoosterStore = useGameBoosterStore();
 const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
 	theme: deviceStore.isDarkMode ? darkTheme : lightTheme,
 }));
@@ -117,9 +119,10 @@ onMounted(async () => {
 		}
 		embeddedStore.initDefault();
 		autoUIStore.initDefault();
-		if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 1) {
-			dotBlackListStore.initDefault();
-		}
+		gameBoosterStore.initDefault();
+		// if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 1) {
+		// 	dotBlackListStore.initDefault();
+		// }
 	}
 });
 </script>
