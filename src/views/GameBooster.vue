@@ -4,6 +4,7 @@ import { useDotBlackListStore } from '@/stores/dotBlackList';
 import { useGameBoosterStore } from '@/stores/gameBooster';
 import * as deviceApi from '@/apis/deviceApi';
 import * as dotBlackListApi from '@/apis/dotBlackListApi';
+import { Cog6ToothIcon } from '@heroicons/vue/24/solid';
 import { useAutoUIStore } from '@/stores/autoui';
 import * as xmlFormat from '@/utils/xmlFormat';
 import { useDeviceStore } from '@/stores/device';
@@ -63,9 +64,9 @@ const { message, modal, notification } = createDiscreteApi(['message', 'modal', 
 const dotBlackListStore = useDotBlackListStore();
 const gameBoosterStore = useGameBoosterStore();
 const GAME_RATIO_OPTIONS = gameRatioOptions();
-const GAME_RATIO_VALUE_MAP = mapKeys(GAME_RATIO_OPTIONS, (item) => item.value)
+const GAME_RATIO_VALUE_MAP = mapKeys(GAME_RATIO_OPTIONS, item => item.value);
 const GAME_GRAVITY_OPTIONS = gameGravityOptions();
-const GAME_GRAVITY_VALUE_MAP = mapKeys(GAME_GRAVITY_OPTIONS, (item) => item.value)
+const GAME_GRAVITY_VALUE_MAP = mapKeys(GAME_GRAVITY_OPTIONS, item => item.value);
 const hotReloadLoading = ref(false);
 const autoUI = useAutoUI();
 const addDotBlackListApp = ref<DotBlackListAppDrawerInstance | null>(null);
@@ -81,6 +82,14 @@ function renderIcon(icon: Component) {
 		});
 	};
 }
+
+const handleDropdown = async (
+	type: 'game_ratio' | 'game_gravity',
+	key: string | number,
+	option: DropdownOption,
+	row: GameBoosterTableItem,
+	index: number,
+) => {};
 
 const reloadPage = async () => {
 	if (!deviceStore.ABTestInfo.Hyper_OS_DOT_BLACK_LIST_MANAGER) {
@@ -123,11 +132,11 @@ const getInstalledAppNameList = async () => {
 	const [getListErr, getListRes] = await $to(installedAppNames.getList());
 	if (getListErr) {
 		modal.create({
-					title: '获取失败',
-					type: 'warning',
-					preset: 'dialog',
-					content: () => <p>您的系统环境暂不支持该功能，获取失败~</p>,
-					negativeText: '确定',
+			title: '获取失败',
+			type: 'warning',
+			preset: 'dialog',
+			content: () => <p>您的系统环境暂不支持该功能，获取失败~</p>,
+			negativeText: '确定',
 		});
 	}
 	if (getListRes) {
@@ -140,7 +149,6 @@ const getInstalledAppNameList = async () => {
 		});
 	}
 };
-
 
 const handleCustomRuleDropdown = async (
 	key: string | number,
@@ -403,7 +411,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 function createColumns(): DataTableColumns<GameBoosterTableItem> {
 	return [
 		{
-			title: '应用名称',
+			title: '游戏名称',
 			minWidth: 250,
 			key: 'name',
 			render(row, index) {
@@ -426,10 +434,23 @@ function createColumns(): DataTableColumns<GameBoosterTableItem> {
 			minWidth: 150,
 			key: 'game_ratio',
 			render(row, index) {
-				return (
-						<n-button size='small' dashed type={GAME_RATIO_VALUE_MAP[row.game_ratio].color}>
-							{ GAME_RATIO_VALUE_MAP[row.game_ratio].label }
-						</n-button>
+				return GAME_RATIO_VALUE_MAP[row.game_ratio] && GAME_RATIO_VALUE_MAP[row.game_ratio].label ? (
+					<n-tag
+						dashed
+						type={GAME_RATIO_VALUE_MAP[row.game_ratio].type}
+						color={GAME_RATIO_VALUE_MAP[row.game_ratio].color}>
+						{GAME_RATIO_VALUE_MAP[row.game_ratio].label}
+					</n-tag>
+				) : (
+					<n-tag
+						dashed
+						color={{
+							color: 'rgba(155, 89, 182, 0.1)',
+							borderColor: 'rgba(155, 89, 182, 0.3)',
+							textColor: '#9b59b6',
+						}}>
+						自定义
+					</n-tag>
 				);
 			},
 		},
@@ -439,12 +460,27 @@ function createColumns(): DataTableColumns<GameBoosterTableItem> {
 			key: 'game_gravity',
 			render(row, index) {
 				return (
-						<n-button size='small' dashed type={GAME_GRAVITY_VALUE_MAP[row.game_gravity].color}>
-							{ GAME_GRAVITY_VALUE_MAP[row.game_gravity].label }
-						</n-button>
+					<n-tag dashed type={GAME_GRAVITY_VALUE_MAP[row.game_gravity].color}>
+						{GAME_GRAVITY_VALUE_MAP[row.game_gravity].label}
+					</n-tag>
 				);
 			},
-		}
+		},
+		{
+			title: '操作',
+			minWidth: 100,
+			key: 'setting',
+			render(row, index) {
+				const slots = {
+					icon: Cog6ToothIcon,
+				};
+				return (
+					<n-button v-slots={slots} size='small' strong dashed type='info'>
+						管理
+					</n-button>
+				);
+			},
+		},
 	];
 }
 </script>
@@ -463,13 +499,33 @@ function createColumns(): DataTableColumns<GameBoosterTableItem> {
 			</div>
 		</div>
 		<n-card title="操作区" size="small">
+			<div class="flex flex-wrap mb-3">
+				<n-alert :show-icon="true" type="info">
+					<p>请添加需要管理的游戏应用到游戏工具箱！</p>
+					<p>Hyper OS 2.0+ 还需要安装修改版的手机/平板管家才会生效</p>
+				</n-alert>
+			</div>
+			<div class="flex flex-wrap">
+				<n-button
+					class="mb-3 mr-3"
+					type="success"
+					:loading="deviceStore.loading || gameBoosterStore.loading"
+					@click="() => reloadPage()">
+					<template #icon>
+						<n-icon>
+							<ArrowPathIcon />
+						</n-icon>
+					</template>
+					刷新游戏列表
+				</n-button>
+			</div>
 			<n-input-group>
 				<n-input
 					size="large"
 					clearable
 					v-model:value="dotBlackListStore.searchKeyWord"
 					ref="searchKeyWordInput"
-					placeholder="搜索应用名称/应用包名"
+					placeholder="搜索游戏名称/游戏包名"
 					autosize
 					:style="{ width: '80%' }" />
 				<n-button
