@@ -1,6 +1,7 @@
 <script setup lang="tsx">
   import { computed, reactive, ref } from 'vue'
   import { RouterLink } from 'vue-router'
+  import { useGameBoosterStore } from '@/stores/gameBooster';
   import {
     Dialog,
     DialogPanel,
@@ -32,6 +33,7 @@
   const route = useRoute();
   const gameMode = useGameMode();
   const deviceStore = useDeviceStore();
+  const gameBoosterStore = useGameBoosterStore();
   const MIUIContentExtension = useMIUIContentExtension()
   const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
       theme: deviceStore.isDarkMode ? darkTheme : lightTheme
@@ -55,7 +57,7 @@
       routeName: 'game-booster', 
       href: '/game-booster', 
       isShow() {
-        return deviceStore.androidTargetSdk && deviceStore.androidTargetSdk >= 32
+        return deviceStore.androidTargetSdk && deviceStore.androidTargetSdk >= 32 && gameBoosterStore.hasGameBoosterDataBase
       },
       icon: PlayIcon
     },

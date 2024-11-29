@@ -57,7 +57,7 @@ const getAppDownload = async () => {
 		preset: 'dialog',
 		content: () => (
 			<div>
-				<p>由于小米调整了机型校验的规则，Hyper OS 2.0+ 还需要安装修改版的手机/平板管家才会生效~</p>
+				<p>如果规则无法生效，还需要安装修改版的手机/平板管家才会生效~</p>
 				<p>下载地址:https://caiyun.139.com/m/i?135Cdw6hrWd7c</p>
 			</div>
 		),
@@ -84,21 +84,12 @@ const handleClickSetting = async (row: GameBoosterTableItem, index: number) => {
 		});
 		return;
 	}
-	if(!gameMode.isSupportGameMode) {
+	if(!gameMode.isSupportGameMode.value) {
 		modal.create({
 			title: '未开启游戏显示布局',
 			type: 'error',
 			preset: 'dialog',
 			content: () => <p>未开启游戏显示布局，请先前往模块设置进行开启~</p>,
-		});
-		return;
-	}
-	if (!gameBoosterStore.hasGameBoosterDataBase) {
-		modal.create({
-			title: '无法获取到手机/平板管家的应用数据',
-			type: 'error',
-			preset: 'dialog',
-			content: () => <p>无法获取到手机/平板管家的应用数据，请检查是否管家服务是否被禁用或者清除手机/平板管家的数据再重启设备尝试操作~</p>
 		});
 		return;
 	}
@@ -344,12 +335,12 @@ function createColumns(): DataTableColumns<GameBoosterTableItem> {
 		<n-card title="操作区" size="small">
 			<div class="mb-3 flex flex-wrap">
 				<n-alert :show-icon="true" type="info">
-					<p>请添加需要管理的游戏应用到游戏工具箱，Hyper OS 2.0+ 还需要安装修改版的手机/平板管家才会生效。</p>
+					<p>请添加需要管理的游戏应用到游戏工具箱，Hyper OS 2.0+还需要安装修改版的手机/平板管家才会生效。</p>
+					<p>修改版的手机/平板管家支持Hyper OS 2.0/1.0和MIUI 14:</p>
 					<n-button
 						strong
 						secondary
 						type="info"
-						v-if="deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2"
 						@click="() => getAppDownload()"
 						>获取修改版手机/平板管家</n-button
 					>

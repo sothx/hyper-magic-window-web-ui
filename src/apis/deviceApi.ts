@@ -540,18 +540,14 @@ export const killAndroidSystemUI = (): Promise<string> => {
 };
 
 export const killGameBoosterApp = (packageName: string): Promise<string> => {
-	const shellCommon = `am force-stop ${packageName} && am force-stop com.miui.securitycenter && echo "kill command executed successfully." || echo "kill command failed."`;
+	const shellCommon = `pgrep -f ${packageName} > /dev/null && kill -9 $(pgrep -f ${packageName}) || true && pgrep -f com.miui.securitycenter > /dev/null && kill -9 $(pgrep -f com.miui.securitycenter) || true && pgrep -f com.miui.securityadd > /dev/null && kill -9 $(pgrep -f com.miui.securityadd) || true && am start -n com.miui.securityadd/com.miui.gamebooster.GameBoosterRichWebActivity`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
 				resolve(`kill command executed successfully.`);
 			} else {
 				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
-				errno
-					? reject(stderr)
-					: stdout === 'kill command executed successfully.'
-						? resolve(stdout)
-						: reject(stdout);
+				errno ? reject(stderr) : resolve(stdout);
 			}
 		}),
 		shellCommon,

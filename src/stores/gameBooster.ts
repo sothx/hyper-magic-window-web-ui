@@ -76,11 +76,12 @@ export const useGameBoosterStore = defineStore(
 					gameBoosterApi.getGameBoosterList(),
 				);
 				if (getGameBoosterListErr) {
+					loading.value = false;
 					gameBoosterList.value = [];
 				}
 	
 				if (getGameBoosterListRes) {
-					console.log(getGameBoosterListRes,'getGameBoosterListRes')
+					loading.value = false;
 					gameBoosterList.value = getGameBoosterListRes;
 				}
 			}

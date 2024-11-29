@@ -67,6 +67,8 @@ export const getGameBoosterList = (): Promise<GameBoosterTableItem[]> => {
 					} catch (err) {
 						reject(err);
 					}
+				} else {
+					reject(errno)
 				}
 			}
 		}),
@@ -74,25 +76,6 @@ export const getGameBoosterList = (): Promise<GameBoosterTableItem[]> => {
 	);
 };
 
-
-
-export interface updateDotBlackListAppErrorLoggingItem {
-	type: string;
-	name: string;
-	message: string | string[];
-}
-
-export interface updateDotBlackListAppSuccessLoggingItem {
-	type: string;
-	name: string;
-	message: string | string[];
-}
-
-export interface updateDotBlackListAppParams {
-	dotBlackList: string[];
-	sourceDotBlackList: DotBlackListItem[];
-	customDotBlackList: string[];
-}
 
 export const getHasGameBoosterDataBase = (): Promise<string> => {
 	const shellCommon = `test -f /data/data/com.miui.securitycenter/databases/gamebooster.db && echo "exists" || echo "not exists"`;
