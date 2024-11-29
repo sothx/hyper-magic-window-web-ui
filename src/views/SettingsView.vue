@@ -88,18 +88,18 @@ const handleSelectRhythmMode = (item: string) => {
 };
 const activateABTestTextarea = ref<string>('');
 const handleActivateABTest = async () => {
-	// const ABTestontent = {
-	// 	Hyper_OS_DOT_BLACK_LIST_MANAGER: true
-	// };
-	// const jsonString = JSON.stringify(ABTestontent);
-	// const deflate = pako.deflate(jsonString, {
-	// 	level: 9,
-	// 	memLevel: 9,
-	// 	windowBits: 15,
-	// });
-	// const compressedData = new Uint8Array(deflate);
-	// const base64String: string = arrayBufferToBase64(compressedData);
-	// console.log(base64String,'base64String')
+	const ABTestontent = {
+		GAME_BOOSTER_CUSTOM_RATIO: true
+	};
+	const jsonString = JSON.stringify(ABTestontent);
+	const deflate = pako.deflate(jsonString, {
+		level: 9,
+		memLevel: 9,
+		windowBits: 15,
+	});
+	const compressedData = new Uint8Array(deflate);
+	const base64String: string = arrayBufferToBase64(compressedData);
+	console.log(base64String,'base64String')
 	activateABTestTextarea.value = '';
 	const [activateABTestTextareaModalErr, activateABTestTextareaModalRes] = await $to(
 		new Promise((resolve, reject) => {

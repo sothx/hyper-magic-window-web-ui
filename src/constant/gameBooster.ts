@@ -1,4 +1,4 @@
-import { invert } from 'lodash-es';
+import { cloneDeep, invert } from 'lodash-es';
 type Dictionary<T> = {
 	[key: string]: T;
 };
@@ -46,8 +46,21 @@ export const ratioOptionItems = {
     }
 } as const;
 
-export const gameRatioOptions = () => {
-    return Object.entries(gameRatioMap).map(([value, key]) => {
+export interface GameRatioOptions {
+    label:string;
+    value: string;
+    type?: string;
+    color?: {
+        color: string;
+        borderColor: string;
+        textColor: string;
+    };
+}
+
+export const gameRatioOptions = (inputArr?:GameRatioOptions[]) : GameRatioOptions[] => {
+    console.log(inputArr,'inputArr')
+    const copyInputArr = cloneDeep(inputArr)
+    let ratioOptions = Object.entries(gameRatioMap).map(([value, key]) => {
       // 通过反转后的 key（比例标识）从 ratioOptionItems 获取对应的选项
       const option = ratioOptionItems[key as keyof typeof ratioOptionItems];
   
@@ -57,7 +70,16 @@ export const gameRatioOptions = () => {
         type: option.type,
         color: option.color // 映射为颜色
       };
-    });
+    }) as GameRatioOptions[];
+
+    if (copyInputArr) {
+        ratioOptions = [
+            ...ratioOptions,
+            ...copyInputArr
+        ]
+    }
+
+    return ratioOptions;
 };
 
 export const gameGravityMap: GameGravityMap = invert({
@@ -81,7 +103,13 @@ export const gravityOptionItems = {
     }
 }
 
-export const gameGravityOptions = () => {
+export interface GameGravityOptions {
+    label:string;
+    value: string;
+    color: string;
+}
+
+export const gameGravityOptions = () : GameGravityOptions[] => {
     return Object.entries(gameGravityMap).map(([value, key]) => {
       // 使用反转后的 key 来查找 gravityOptionItems
       const option = gravityOptionItems[key as keyof typeof gravityOptionItems];

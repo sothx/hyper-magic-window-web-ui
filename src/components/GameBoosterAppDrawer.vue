@@ -1,5 +1,5 @@
 <script setup lang="tsx">
-import { computed, onMounted, reactive, ref, watch, type CSSProperties } from 'vue';
+import { computed, onMounted, reactive, readonly, ref, watch, type CSSProperties } from 'vue';
 import { useDeviceStore } from '@/stores/device';
 import { createDiscreteApi, darkTheme, lightTheme, type ConfigProviderProps, type NInput } from 'naive-ui';
 import * as validateFun from '@/utils/validateFun';
@@ -9,6 +9,13 @@ import { useAutoUIStore } from '@/stores/autoui';
 import { useDotBlackListStore } from '@/stores/dotBlackList';
 const dotBlackListStore = useDotBlackListStore();
 import { useLogsStore } from '@/stores/logs';
+import {
+	gameRatioOptions,
+	gameGravityOptions,
+	type GameGravityOptions,
+	type GameRatioOptions,
+} from '@/constant/gameBooster';
+import { mapKeys } from 'lodash-es';
 type NInputInstance = InstanceType<typeof NInput>;
 const currentSkippedActivityRuleRef = ref<NInputInstance | null>(null);
 const currentActivityRuleRef = ref<NInputInstance | null>(null);
@@ -20,6 +27,21 @@ const emit = defineEmits(['submit']);
 
 // Refs and stores
 const activeDrawer = ref(false); // 控制drawer显示
+const GAME_RATIO_OPTIONS = gameRatioOptions([
+	{
+		label: '自定义',
+		value: 'custom',
+		type: 'primary',
+		color: {
+			color: 'rgba(155, 89, 182, 0.1)',
+			borderColor: 'rgba(155, 89, 182, 0.3)',
+			textColor: '#9b59b6',
+		},
+	},
+]);
+const GAME_RATIO_VALUE_MAP = mapKeys(GAME_RATIO_OPTIONS, item => item.value);
+const GAME_GRAVITY_OPTIONS = gameGravityOptions();
+const GAME_GRAVITY_VALUE_MAP = mapKeys(GAME_GRAVITY_OPTIONS, item => item.value);
 const deviceStore = useDeviceStore();
 const autoUIStore = useAutoUIStore();
 const logsStore = useLogsStore();
@@ -29,17 +51,27 @@ const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
 const { message, modal } = createDiscreteApi(['message', 'modal'], {
 	configProviderProps: configProviderPropsRef,
 });
-export interface DotBlackListDrawerSubmitResult {
-	name: string;
+export interface GameBoosterAppSubmitResult {
+	appName: string;
+	packageName: string;
+	gameRatio: string;
+	gameGravity: string;
 	loadingCallback: () => void;
 	closeCallback: () => void;
 }
 
-let resolvePromise: (result: DotBlackListDrawerSubmitResult) => void; // 用于保存Promise的resolve
+export interface GameBoosterAppInput {
+	appName: string;
+	packageName: string;
+	gameRatio: string;
+	gameGravity: string;
+}
+
+let resolvePromise: (result: GameBoosterAppSubmitResult) => void; // 用于保存Promise的resolve
 let rejectPromise: (reason?: any) => void; // 用于保存Promise的reject
 
 const GameBoosterAppDrawer = ref({
-	openDrawer: (initialParams?: AutoUIMergeRuleItem): Promise<DotBlackListDrawerSubmitResult> => {
+	openDrawer: (initialParams?: GameBoosterAppInput): Promise<GameBoosterAppSubmitResult> => {
 		return new Promise((resolve, reject) => {
 			if (props.type === 'update' && !initialParams) {
 				reject(new Error('更新模式下必须传入初始化参数'));
@@ -47,11 +79,26 @@ const GameBoosterAppDrawer = ref({
 				return;
 			}
 
+			if (props.type === 'update') {
+				currentPackageName.value = initialParams?.packageName || '';
+				currentAppName.value = initialParams?.appName || '';
+				if (initialParams?.gameGravity) {
+					currentGameGravity.value = GAME_GRAVITY_VALUE_MAP[initialParams.gameGravity];
+				}
+				if (initialParams?.gameRatio) {
+					if (GAME_RATIO_VALUE_MAP[initialParams.gameRatio]) {
+						currentGameRatio.value = GAME_RATIO_VALUE_MAP[initialParams.gameRatio];
+						currentCustomGameRatio.value = initialParams.gameRatio;
+					} else {
+						currentGameRatio.value = GAME_RATIO_VALUE_MAP['custom'];
+						currentCustomGameRatio.value = initialParams.gameRatio;
+					}
+				}
+			}
+
 			// 保存Promise的resolve和reject
 			resolvePromise = resolve;
 			rejectPromise = reject;
-
-			currentAppName.value = '';
 
 			activeDrawer.value = true; // 打开drawer
 		});
@@ -61,33 +108,56 @@ const GameBoosterAppDrawer = ref({
 		rejectPromise('Drawer closed without submission'); // 当关闭抽屉时，Promise被拒绝
 	},
 });
-const resizeDrawerContentFun = (isResize: boolean) => {
-	const autoUIDrawerContentEl = document.querySelector('.n-drawer-content');
-	if (autoUIDrawerContentEl instanceof HTMLElement) {
-		logsStore.info(`resizeDrawerContent`, isResize);
-		autoUIDrawerContentEl.style.height = isResize ? `calc(100% + 200px)` : `100%`;
+
+const currentAppName = ref<string>('');
+const currentPackageName = ref<string>('');
+
+const currentGameGravity = ref<GameGravityOptions>(GAME_GRAVITY_OPTIONS[0]);
+
+const currentGameRatio = ref<GameRatioOptions>(GAME_RATIO_OPTIONS[0]);
+
+const currentCustomGameRatio = ref<string>('');
+
+const handleSelectGameRatio = (key: string, option: GameRatioOptions) => {
+	if (option.value === 'custom') {
+		if (!deviceStore.ABTestInfo.GAME_BOOSTER_CUSTOM_RATIO) {
+			modal.create({
+				title: '无使用权限',
+				type: 'warning',
+				preset: 'dialog',
+				content: () => (
+					<div>
+						<p>
+							自定义游戏比例存在使用风险，如果配置了不恰当的自定义游戏比例，可能会触发部分游戏风控导致游戏账号被封！
+						</p>
+						<p>
+							如仍然坚持使用自定义游戏比例，请通过做梦书的酷安动态获取自定义游戏比例的激活口令！(动态内容就有，无需私信，新功能不同口令也不相同)
+						</p>
+					</div>
+				),
+			});
+			return;
+		}
+	}
+	currentGameRatio.value = option;
+	if (option.value === 'custom') {
+		currentCustomGameRatio.value = '';
+	} else {
+		currentCustomGameRatio.value = option.value;
 	}
 };
 
-const currentAppName = ref<string>('');
-const currentAppNameInputStatus = ref<string>('');
+const handleSelectGameGravity = (key: string, option: GameGravityOptions) => {
+	currentGameGravity.value = option;
+};
 
 const handleDrawerSubmit = async () => {
-	if (!currentAppName.value) {
+	if (!currentCustomGameRatio.value) {
 		modal.create({
-			title: '应用包名不能为空',
+			title: '游戏显示比例不能为空',
 			type: 'error',
 			preset: 'dialog',
-			content: () => <p>噫？应用包名不能为空（敲</p>,
-		});
-		return;
-	}
-	if (dotBlackListStore.allPackageName.has(currentAppName.value)) {
-		modal.create({
-			title: '应用包名已存在',
-			type: 'error',
-			preset: 'dialog',
-			content: () => <p>噫？这个应用包名已经存在列表中了（敲</p>,
+			content: () => <p>噫？游戏显示比例不能为空（敲</p>,
 		});
 		return;
 	}
@@ -103,35 +173,31 @@ const handleDrawerSubmit = async () => {
 		drawerSubmitLoading.value = false;
 	};
 
-	const result: DotBlackListDrawerSubmitResult = {
-		name: currentAppName.value,
+	const result: GameBoosterAppSubmitResult = {
+		appName: currentAppName.value,
+		packageName: currentPackageName.value,
+		gameGravity: currentGameGravity.value.value,
+		gameRatio: currentCustomGameRatio.value,
 		loadingCallback,
 		closeCallback,
 	};
-
 	modal.create({
-		title: '确认隐藏窗口控制器吗？',
+		title: '确认调整游戏显示布局吗？',
 		type: 'warning',
 		preset: 'dialog',
 		content: () => {
 			return (
 				<p>
-					窗口控制器的隐藏受小米云控规则下发影响，如果隐藏窗口控制器失效，请重新操作{' '}
-					<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-						热重载应用数据
-					</span>{' '}
-					，如后续需要恢复{' '}
-					<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-						窗口控制器
-					</span>{' '}
-					的显示，则需要先清除自定义规则，确定要继续吗？
+					调整后会改变游戏的显示比例，获得更大的游戏视野，但并非所有游戏都兼容游戏显示比例调整，且部分游戏可能会对游戏显示比例的修改作为风控管理，可能导致游戏账号被封禁，调整游戏显示布局前，即认可并了解这些须知。确定要继续吗？
 				</p>
 			);
 		},
-		positiveText: '确定隐藏',
+		positiveText: '确定调整',
 		negativeText: '我再想想',
 		onPositiveClick: async () => {
 			resolvePromise(result);
+			loadingCallback();
+			closeCallback();
 		},
 		onNegativeClick() {
 			loadingCallback();
@@ -165,19 +231,50 @@ defineExpose({
 			}"
 			:title="props.title"
 			closable>
-			<n-input-group :class="deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 ? '' : 'mb-5'">
-				<n-input-group-label size="large">应用包名</n-input-group-label>
+			<n-input-group>
+				<n-input-group-label size="large">游戏名称</n-input-group-label>
+				<n-input size="large" v-model:value="currentAppName" :readonly="true" placeholder="请输入游戏名称" />
+			</n-input-group>
+			<n-input-group class="mt-5">
+				<n-input-group-label size="large">游戏包名</n-input-group-label>
 				<n-input
 					size="large"
-					:status="currentAppNameInputStatus"
-					v-model:value="currentAppName"
-					:allow-input="(value: string) => validateFun.validateAndroidPackageName(value)"
-					:readonly="props.type === 'update'"
-					placeholder="请输入应用包名" />
+					v-model:value="currentPackageName"
+					:readonly="true"
+					placeholder="请输入游戏包名" />
 			</n-input-group>
-      <n-alert :show-icon="false" :bordered="false" title="隐藏窗口控制器" type="info" class="mt-5">
-						添加后，应用上方的窗口控制器将被隐藏
-			</n-alert>
+			<n-card :bordered="false" title="游戏显示比例" size="small">
+				<n-dropdown
+					v-model:value="currentGameRatio"
+					size="large"
+					trigger="click"
+					:options="GAME_RATIO_OPTIONS"
+					@select="handleSelectGameRatio">
+					<n-button block :type="currentGameRatio.type" :color="currentGameRatio.color?.textColor" dashed>
+						{{ currentGameRatio.label }}
+					</n-button>
+				</n-dropdown>
+				<n-input-group class="mt-5">
+					<n-input
+						type="number"
+						ref="currentCustomGameRatioRef"
+						:readonly="currentGameRatio.value !== 'custom'"
+						v-model:value="currentCustomGameRatio"
+						placeholder="请输入游戏显示比例" />
+				</n-input-group>
+			</n-card>
+			<n-card :bordered="false" title="游戏显示位置" size="small">
+				<n-dropdown
+					v-model:value="currentGameGravity"
+					size="large"
+					trigger="click"
+					:options="GAME_GRAVITY_OPTIONS"
+					@select="handleSelectGameGravity">
+					<n-button block :type="currentGameGravity.color" dashed>
+						{{ currentGameGravity.label }}
+					</n-button>
+				</n-dropdown>
+			</n-card>
 			<template #footer>
 				<n-button type="info" v-model:loading="drawerSubmitLoading" @click="() => handleDrawerSubmit()">
 					提交

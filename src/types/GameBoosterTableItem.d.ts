@@ -9,9 +9,11 @@ export default interface GameBoosterTableItem {
     app_name: string;
 
     /** 游戏显示比例 */
-    game_ratio: 0.0 | 2.3333333 | 1.3333333 | 1.7777778;
+    // 0.0 | 2.3333333 | 1.3333333 | 1.7777778
+    game_ratio: string;
 
     /** 游戏显示位置 居底80，居顶48，居中17 */
-    game_gravity: 17 | 48 | 80;
+    // 17 | 48 | 80
+    game_gravity: string;
   }
   

@@ -46,7 +46,7 @@ export const getCustomDotBlackList = (): Promise<string[]> => {
 export const getGameBoosterList = (): Promise<GameBoosterTableItem[]> => {
 	const sqlite3 = '/data/adb/modules/MIUI_MagicWindow+/common/utils/sqlite3';
 	const GameBoosterDataBase = `/data/data/com.miui.securitycenter/databases/gamebooster.db`;
-	const shellCommon = `echo "$(${sqlite3} ${GameBoosterDataBase} "SELECT * FROM gamebooster_table WHERE package_name!='none';")"`;
+	const shellCommon = `echo "$(${sqlite3} ${GameBoosterDataBase} "SELECT * FROM gamebooster_table WHERE package_name!='none';" -json)"`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -109,35 +109,10 @@ export const getHasGameBoosterDataBase = (): Promise<string> => {
 	);
 };
 
-export const updateGameRatio = (packageName:GameBoosterTableItem['package_name'],gameRatio: GameBoosterTableItem['game_ratio']): Promise<string> => {
+export const updateGameRatioSetting = (packageName:GameBoosterTableItem['package_name'],gameRatio: GameBoosterTableItem['game_ratio'], gameGravity:GameBoosterTableItem['game_gravity']): Promise<string> => {
 	const sqlite3 = '/data/adb/modules/MIUI_MagicWindow+/common/utils/sqlite3';
 	const GameBoosterDataBase = `/data/data/com.miui.securitycenter/databases/gamebooster.db`;
-	const shellCommon = `echo "$(${sqlite3} ${GameBoosterDataBase} "UPDATE gamebooster_table SET game_ratio='${gameRatio}' WHERE package_name='${packageName}';")"`;
-	return handlePromiseWithLogging(
-		new Promise(async (resolve, reject) => {
-			if (import.meta.env.MODE === 'development') {
-				resolve(`1`);
-			} else {
-				const { errno, stdout, stderr }: ExecResults = (await exec(
-					shellCommon,
-				)) as unknown as ExecResults;
-				if (errno) {
-					reject(stderr);
-				}
-				if (stdout) {
-					stdout === '1' ? resolve(stdout) : reject(stdout)
-				}
-			}
-		}),
-		shellCommon,
-	);
-};
-
-
-export const updateGameGravity = (packageName:GameBoosterTableItem['package_name'],gameGravity: GameBoosterTableItem['game_gravity']): Promise<string> => {
-	const sqlite3 = '/data/adb/modules/MIUI_MagicWindow+/common/utils/sqlite3';
-	const GameBoosterDataBase = `/data/data/com.miui.securitycenter/databases/gamebooster.db`;
-	const shellCommon = `echo "$(${sqlite3} ${GameBoosterDataBase} "UPDATE gamebooster_table SET game_gravity='${gameGravity}' WHERE package_name='${packageName}';")"`;
+	const shellCommon = `echo "$(${sqlite3} ${GameBoosterDataBase} "UPDATE gamebooster_table SET game_ratio='${gameRatio}', game_gravity='${gameGravity}' WHERE package_name='${packageName}'; SELECT changes();")"`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {

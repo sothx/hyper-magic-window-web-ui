@@ -117,7 +117,9 @@ export const useDeviceStore = defineStore(
 		})
 		const ABTestInfo = reactive({
 			OS2_PAD_EMBEDDED_APP_MANAGER: false,
-			Hyper_OS_DOT_BLACK_LIST_MANAGER: false
+			Hyper_OS_DOT_BLACK_LIST_MANAGER: false,
+			GAME_BOOSTER_RADIO_MANAGER: false,
+			GAME_BOOSTER_CUSTOM_RATIO: false
 		})
 		const smartFocusIO = ref<deviceApi.SmartFocusIOResult['stdout']>();
 		const miuiCompatEnable = ref<boolean>(false);

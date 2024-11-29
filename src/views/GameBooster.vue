@@ -3,10 +3,8 @@ import { ref, reactive, watch, type CSSProperties, h, type Component, computed, 
 import { useDotBlackListStore } from '@/stores/dotBlackList';
 import { useGameBoosterStore } from '@/stores/gameBooster';
 import * as deviceApi from '@/apis/deviceApi';
-import * as dotBlackListApi from '@/apis/dotBlackListApi';
 import { Cog6ToothIcon } from '@heroicons/vue/24/solid';
-import { useAutoUIStore } from '@/stores/autoui';
-import * as xmlFormat from '@/utils/xmlFormat';
+import * as gameBoosterApi from '@/apis/gameBoosterApi';
 import { useDeviceStore } from '@/stores/device';
 import $to from 'await-to-js';
 import {
@@ -22,38 +20,20 @@ import {
 } from 'naive-ui';
 import {
 	ArrowPathIcon,
-	FunnelIcon,
-	PlusIcon,
-	ShareIcon,
-	TrashIcon,
-	SquaresPlusIcon,
 	XCircleIcon,
-	WindowIcon,
-	StopIcon,
 	MagnifyingGlassIcon,
-	CircleStackIcon,
 } from '@heroicons/vue/24/outline';
-import type AutoUIMergeRuleItem from '@/types/AutoUIMergeRuleItem';
-import { useRouter, useRoute } from 'vue-router';
-import { FunnelIcon as FunnelSolidIcon } from '@heroicons/vue/24/solid';
-import { useLogsStore } from '@/stores/logs';
-import { useAutoUI } from '@/hooks/useAutoUI';
-import * as validateFun from '@/utils/validateFun';
-import DotBlackListAppDrawer from '@/components/DotBlackListAppDrawer.vue';
-import { findBase64InString, renderApplicationName } from '@/utils/common';
-import { arrayBufferToBase64, base64ToArrayBuffer } from '@/utils/format';
-import pako from 'pako';
+import { useGameMode } from '@/hooks/useGameMode';
+import GameBoosterAppDrawer from '@/components/GameBoosterAppDrawer.vue';
 import { useInstalledAppNames } from '@/hooks/useInstalledAppNames';
-import type DotBlackListMergeItem from '@/types/DotBlackListMergeItem';
 import type GameBoosterTableItem from '@/types/GameBoosterTableItem';
 import { gameGravityOptions, gameRatioOptions } from '@/constant/gameBooster';
 import { mapKeys } from 'lodash-es';
 type SearchKeyWordInputInstance = InstanceType<typeof NInput>;
-type DotBlackListAppDrawerInstance = InstanceType<typeof DotBlackListAppDrawer>;
+type GameBoosterAppDrawerInstance = InstanceType<typeof GameBoosterAppDrawer>;
 const searchKeyWordInput = ref<SearchKeyWordInputInstance | null>(null);
 const columns = createColumns();
 const deviceStore = useDeviceStore();
-const autoUIStore = useAutoUIStore();
 const installedAppNames = useInstalledAppNames();
 const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
 	theme: deviceStore.isDarkMode ? darkTheme : lightTheme,
@@ -67,65 +47,151 @@ const GAME_RATIO_OPTIONS = gameRatioOptions();
 const GAME_RATIO_VALUE_MAP = mapKeys(GAME_RATIO_OPTIONS, item => item.value);
 const GAME_GRAVITY_OPTIONS = gameGravityOptions();
 const GAME_GRAVITY_VALUE_MAP = mapKeys(GAME_GRAVITY_OPTIONS, item => item.value);
-const hotReloadLoading = ref(false);
-const autoUI = useAutoUI();
-const addDotBlackListApp = ref<DotBlackListAppDrawerInstance | null>(null);
-const router = useRouter();
-const logsStore = useLogsStore();
-const route = useRoute();
-const shareRuleTextarea = ref('');
+const gameMode = useGameMode();
+const updateGameBoosterAppDrawer = ref<GameBoosterAppDrawerInstance | null>(null);
 
-function renderIcon(icon: Component) {
-	return () => {
-		return h(NIcon, null, {
-			default: () => h(icon),
-		});
-	};
-}
+const getAppDownload = async () => {
+	modal.create({
+		title: '获取手机/平板管家',
+		type: 'info',
+		preset: 'dialog',
+		content: () => (
+			<div>
+				<p>由于小米调整了机型校验的规则，Hyper OS 2.0+ 还需要安装修改版的手机/平板管家才会生效~</p>
+				<p>下载地址:https://caiyun.139.com/m/i?135Cdw6hrWd7c</p>
+			</div>
+		),
+		positiveText: '复制下载链接到剪切板',
+		negativeText: '取消',
+		onPositiveClick: () => {
+			navigator.clipboard.writeText(`https://caiyun.139.com/m/i?135Cdw6hrWd7c`);
+		},
+		onNegativeClick: () => {},
+	});
+};
 
-const handleDropdown = async (
-	type: 'game_ratio' | 'game_gravity',
-	key: string | number,
-	option: DropdownOption,
-	row: GameBoosterTableItem,
-	index: number,
-) => {};
-
-const reloadPage = async () => {
-	if (!deviceStore.ABTestInfo.Hyper_OS_DOT_BLACK_LIST_MANAGER) {
+const handleClickSetting = async (row: GameBoosterTableItem, index: number) => {
+	if (!deviceStore.ABTestInfo.GAME_BOOSTER_RADIO_MANAGER) {
 		modal.create({
 			title: '内测说明',
 			type: 'warning',
 			preset: 'dialog',
 			content: () => (
 				<p>
-					该功能尚处于测试阶段，预估最快2024-12-21后正式上线，可能存在较多不稳定性，需要有一定的玩机知识和问题解决能力，如需参与测试请通过做梦书的酷安动态获取新功能内测的激活口令！(动态内容就有，无需私信，新功能不同口令也不相同)
+					该功能尚处于测试阶段，预估最快2024-12-29后正式上线，可能存在较多不稳定性，需要有一定的玩机知识和问题解决能力，如需参与测试请通过做梦书的酷安动态获取新功能内测的激活口令！(动态内容就有，无需私信，新功能不同口令也不相同)
 				</p>
 			),
 		});
 		return;
 	}
-	if (!dotBlackListStore.systemDotBlackList.length || !dotBlackListStore.hasHTMLViewerCloudData) {
+	if(!gameMode.isSupportGameMode) {
 		modal.create({
-			title: '获取云控失败',
+			title: '未开启游戏显示布局',
 			type: 'error',
 			preset: 'dialog',
-			content: () => (
-				<div>
-					<p>无法获取到HTML查看器的云控，请检查是否禁用云控或者清除HTML查看器的数据再重启平板尝试操作~</p>
-					{deviceStore.currentRootManager !== 'Magisk' && (
-						<p>
-							部分{deviceStore.currentRootManager}版本内置的Web
-							UI存在异常，如仍然无法正常获取云控数据库，请单独安装模块网盘内提供的KsuWebUI。
-						</p>
-					)}
-				</div>
-			),
+			content: () => <p>未开启游戏显示布局，请先前往模块设置进行开启~</p>,
 		});
 		return;
 	}
-	await deviceStore.getAndroidApplicationPackageNameList();
-	await dotBlackListStore.initDefault();
+	if (!gameBoosterStore.hasGameBoosterDataBase) {
+		modal.create({
+			title: '无法获取到手机/平板管家的应用数据',
+			type: 'error',
+			preset: 'dialog',
+			content: () => <p>无法获取到手机/平板管家的应用数据，请检查是否管家服务是否被禁用或者清除手机/平板管家的数据再重启设备尝试操作~</p>
+		});
+		return;
+	}
+	if (updateGameBoosterAppDrawer.value) {
+		const [updateGameBoosterAppDrawerCancel, updateGameBoosterAppDrawerRes] = await $to(
+			updateGameBoosterAppDrawer.value.openDrawer({
+				appName: row.app_name,
+				packageName: row.package_name,
+				gameRatio: row.game_ratio,
+				gameGravity: row.game_gravity,
+			}),
+		);
+		if (updateGameBoosterAppDrawerCancel) {
+			console.log('操作取消:', updateGameBoosterAppDrawerCancel);
+		} else {
+			if (updateGameBoosterAppDrawerRes) {
+				gameBoosterStore.loading = true;
+				const [updateGameRatioSettingError, updateGameRatioSettingRes] = await $to(
+					gameBoosterApi.updateGameRatioSetting(
+						updateGameBoosterAppDrawerRes.packageName,
+						updateGameBoosterAppDrawerRes.gameRatio,
+						updateGameBoosterAppDrawerRes.gameGravity,
+					),
+				);
+				if (updateGameRatioSettingError) {
+					modal.create({
+						title: '更新设置失败',
+						type: 'error',
+						preset: 'dialog',
+						content: () => <p>发生异常错误，更新失败了QwQ，详细错误请查看错误日志~</p>,
+					});
+					gameBoosterStore.loading = false;
+				}
+				if (updateGameRatioSettingRes) {
+					gameBoosterStore.loading = false;
+					modal.create({
+						title: '更新设置成功',
+						type: 'success',
+						preset: 'dialog',
+						content: () => (
+							<p>
+								好耶w，已经成功配置{' '}
+								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+									{updateGameBoosterAppDrawerRes.appName}
+								</span>{' '}
+								的游戏显示布局了OwO~实际生效还需要重启{' '}
+								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+									{updateGameBoosterAppDrawerRes.appName}
+								</span>{' '}和{' '}
+								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+									平板/手机管家
+								</span>{' '}
+								的作用域，确定要继续吗？
+							</p>
+						),
+						positiveText: '确定重启作用域',
+						negativeText: '稍后手动重启',
+						onPositiveClick() {
+							deviceApi
+								.killGameBoosterApp(row.package_name)
+								.then(async res => {
+									await gameBoosterStore.initDefault()
+									modal.create({
+										title: '重启作用域成功',
+										type: 'success',
+										preset: 'dialog',
+										content: () => (
+											<p>
+												已经成功为你重启对应的作用域，请查看是否生效~
+											</p>
+										),
+									});
+								})
+								.catch(err => {
+									modal.create({
+										title: '重启作用域失败',
+										type: 'error',
+										preset: 'dialog',
+										content: () => (
+											<p>发生异常错误，重启系统界面作用域失败QwQ，详细错误请查看日志~</p>
+										),
+									});
+								});
+						},
+					});
+				}
+			}
+		}
+	}
+};
+
+const reloadPage = async () => {
+	await gameBoosterStore.initDefault();
 };
 
 const getInstalledAppNameList = async () => {
@@ -148,235 +214,6 @@ const getInstalledAppNameList = async () => {
 			negativeText: '确定',
 		});
 	}
-};
-
-const handleCustomRuleDropdown = async (
-	key: string | number,
-	option: DropdownOption,
-	row: DotBlackListMergeItem,
-	index: number,
-) => {
-	if (!deviceStore.ABTestInfo.Hyper_OS_DOT_BLACK_LIST_MANAGER) {
-		modal.create({
-			title: '内测说明',
-			type: 'warning',
-			preset: 'dialog',
-			content: () => (
-				<p>
-					该功能尚处于测试阶段，预估最快2024-12-21后正式上线，可能存在较多不稳定性，需要有一定的玩机知识和问题解决能力，如需参与测试请通过做梦书的酷安动态获取新功能内测的激活口令！(动态内容就有，无需私信，新功能不同口令也不相同)
-				</p>
-			),
-		});
-		return;
-	}
-	if (!dotBlackListStore.systemDotBlackList.length || !dotBlackListStore.hasHTMLViewerCloudData) {
-		modal.create({
-			title: '获取云控失败',
-			type: 'error',
-			preset: 'dialog',
-			content: () => (
-				<div>
-					<p>无法获取到HTML查看器的云控，请检查是否禁用云控或者清除HTML查看器的数据再重启平板尝试操作~</p>
-					{deviceStore.currentRootManager !== 'Magisk' && (
-						<p>
-							部分{deviceStore.currentRootManager}版本内置的Web
-							UI存在异常，如仍然无法正常获取云控数据库，请单独安装模块网盘内提供的KsuWebUI。
-						</p>
-					)}
-				</div>
-			),
-		});
-		return;
-	}
-	if (key === 'cleanCustomRule') {
-		const cleanCustomModal = modal.create({
-			title: '想清除自定义规则吗？',
-			type: 'warning',
-			preset: 'dialog',
-			content: () => (
-				<p>
-					清除自定义规则后，将恢复{' '}
-					<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-						{renderApplicationName(row.name, row.applicationName)}
-					</span>{' '}
-					的窗口控制器显示效果。确定要继续吗？
-				</p>
-			),
-			positiveText: '确定清除',
-			negativeText: '我再想想',
-			onPositiveClick: async () => {
-				cleanCustomModal.loading = true;
-				dotBlackListStore.customDotBlackList = dotBlackListStore.customDotBlackList.filter(
-					item => item !== row.name,
-				);
-				dotBlackListStore.sourceDotBlackList = dotBlackListStore.sourceDotBlackList.map(item => {
-					item.dataList = item.dataList.filter((item: string) => item !== row.name);
-					return item;
-				});
-				const currentDotBlackList = dotBlackListStore.mergeDotBlackList.map(item => {
-					return item.name;
-				});
-				const [submitCleanCustomRuleErr, submitCleanCustomRuleRes] = await $to(
-					dotBlackListApi.updateDotBlackList({
-						dotBlackList: currentDotBlackList,
-						sourceDotBlackList: dotBlackListStore.sourceDotBlackList,
-						customDotBlackList: dotBlackListStore.customDotBlackList,
-					}),
-				);
-				if (submitCleanCustomRuleErr) {
-					modal.create({
-						title: '清除自定义规则失败',
-						type: 'error',
-						preset: 'dialog',
-						content: () => <p>发生异常错误，清除失败了QwQ，详细错误请查看错误日志~</p>,
-					});
-					cleanCustomModal.loading = false;
-				} else {
-					cleanCustomModal.loading = false;
-					modal.create({
-						title: '清除自定义规则成功',
-						type: 'success',
-						preset: 'dialog',
-						content: () => (
-							<p>
-								好耶w，清除自定义规则成功了OwO~实际生效还需要重启{' '}
-								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-									系统界面
-								</span>{' '}
-								的作用域，确定要继续吗？
-							</p>
-						),
-						positiveText: '确定重启作用域',
-						negativeText: '稍后手动重启',
-						onPositiveClick() {
-							deviceApi
-								.killAndroidSystemUI()
-								.then(async res => {
-									await reloadPage();
-									modal.create({
-										title: '重启作用域成功',
-										type: 'success',
-										preset: 'dialog',
-										content: () => (
-											<p>
-												已经成功为你重启系统界面的作用域，请查看是否生效，如不生效请手动重启平板再查看效果~
-											</p>
-										),
-									});
-								})
-								.catch(err => {
-									modal.create({
-										title: '重启作用域失败',
-										type: 'error',
-										preset: 'dialog',
-										content: () => (
-											<p>发生异常错误，重启系统界面作用域失败QwQ，详细错误请查看日志~</p>
-										),
-									});
-								});
-						},
-					});
-					cleanCustomModal.loading = false;
-					await reloadPage();
-				}
-			},
-		});
-	}
-	if (key === 'shareCustomRule') {
-		const shareContent = {
-			name: row.name,
-			cmpt: 1,
-			rules: {
-				name: row.name,
-			},
-			type: 'dot_black_list',
-			device: deviceStore.deviceCharacteristics === 'tablet' ? 'pad' : 'fold',
-		};
-		const jsonString = JSON.stringify(shareContent);
-		const deflate = pako.deflate(jsonString, {
-			level: 9,
-			memLevel: 9,
-			windowBits: 15,
-		});
-		const compressedData = new Uint8Array(deflate);
-		const base64String: string = arrayBufferToBase64(compressedData);
-		const [writeClipboardErr] = await $to(
-			navigator.clipboard.writeText(
-				`我分享了一个[窗口控制器]的自定义规则，可以前往[完美横屏应用计划 For Web UI]导入：\n${base64String}`,
-			),
-		);
-		if (writeClipboardErr) {
-			modal.create({
-				title: '复制分享口令失败',
-				type: 'error',
-				preset: 'dialog',
-				content: () => (
-					<p>
-						复制{' '}
-						<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-							{renderApplicationName(row.name, row.applicationName)}
-						</span>{' '}
-						的分享口令失败了QwQ，可能由于没有读取/写入剪切板的权限或{' '}
-						<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-							自定义规则
-						</span>{' '}
-						长度过大。
-					</p>
-				),
-				negativeText: '确定',
-			});
-			return;
-		} else {
-			modal.create({
-				title: '复制分享口令成功',
-				type: 'success',
-				preset: 'dialog',
-				content: () => (
-					<div>
-						<p>
-							好耶w，复制{' '}
-							<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-								{renderApplicationName(row.name, row.applicationName)}
-							</span>{' '}
-							分享口令成功了~
-						</p>
-						<p>
-							如果没有复制成功，请确认是否给予了读取/写入剪切板的权限或{' '}
-							<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-								自定义规则
-							</span>{' '}
-							长度过大。
-						</p>
-						<p>
-							分享口令导入入口位于{' '}
-							<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-								窗口控制器- 从分享口令导入
-							</span>{' '}
-							。
-						</p>
-					</div>
-				),
-				positiveText: '确定',
-			});
-		}
-	}
-};
-
-const handleSystemRuleMode = (row: DotBlackListMergeItem, index: number) => {
-	modal.create({
-		title: '系统规则说明',
-		type: 'warning',
-		preset: 'dialog',
-		content: () => (
-			<p>
-				系统已对{' '}
-				<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-					{renderApplicationName(row.name, row.applicationName)}
-				</span>{' '}
-				配置了窗口控制器的隐藏，且不可被移除，仅有自定义规则可以被移除哦~
-			</p>
-		),
-	});
 };
 
 const pagination = reactive({
@@ -475,7 +312,13 @@ function createColumns(): DataTableColumns<GameBoosterTableItem> {
 					icon: Cog6ToothIcon,
 				};
 				return (
-					<n-button v-slots={slots} size='small' strong dashed type='info'>
+					<n-button
+						onClick={() => handleClickSetting(row, index)}
+						v-slots={slots}
+						size='small'
+						strong
+						dashed
+						type='info'>
 						管理
 					</n-button>
 				);
@@ -499,10 +342,17 @@ function createColumns(): DataTableColumns<GameBoosterTableItem> {
 			</div>
 		</div>
 		<n-card title="操作区" size="small">
-			<div class="flex flex-wrap mb-3">
+			<div class="mb-3 flex flex-wrap">
 				<n-alert :show-icon="true" type="info">
-					<p>请添加需要管理的游戏应用到游戏工具箱！</p>
-					<p>Hyper OS 2.0+ 还需要安装修改版的手机/平板管家才会生效</p>
+					<p>请添加需要管理的游戏应用到游戏工具箱，Hyper OS 2.0+ 还需要安装修改版的手机/平板管家才会生效。</p>
+					<n-button
+						strong
+						secondary
+						type="info"
+						v-if="deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2"
+						@click="() => getAppDownload()"
+						>获取修改版手机/平板管家</n-button
+					>
 				</n-alert>
 			</div>
 			<div class="flex flex-wrap">
@@ -566,4 +416,5 @@ function createColumns(): DataTableColumns<GameBoosterTableItem> {
 			:data="gameBoosterStore.filterGameBoosterList"
 			:pagination="pagination" />
 	</main>
+	<GameBoosterAppDrawer ref="updateGameBoosterAppDrawer" type="update" title="更新设置" />
 </template>

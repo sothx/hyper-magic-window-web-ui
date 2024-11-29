@@ -119,7 +119,7 @@
       routeName: 'dot-black-list', 
       href: '/dot-black-list', 
       isShow() {
-        return false
+        return deviceStore.ABTestInfo.Hyper_OS_DOT_BLACK_LIST_MANAGER
       },
       icon: ComputerDesktopIcon 
     },

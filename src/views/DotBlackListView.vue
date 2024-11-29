@@ -75,19 +75,6 @@ function renderIcon(icon: Component) {
 }
 
 const reloadPage = async () => {
-	if (!deviceStore.ABTestInfo.Hyper_OS_DOT_BLACK_LIST_MANAGER) {
-		modal.create({
-			title: '内测说明',
-			type: 'warning',
-			preset: 'dialog',
-			content: () => (
-				<p>
-					该功能尚处于测试阶段，预估最快2024-12-21后正式上线，可能存在较多不稳定性，需要有一定的玩机知识和问题解决能力，如需参与测试请通过做梦书的酷安动态获取新功能内测的激活口令！(动态内容就有，无需私信，新功能不同口令也不相同)
-				</p>
-			),
-		});
-		return;
-	}
 	if (!dotBlackListStore.systemDotBlackList.length || !dotBlackListStore.hasHTMLViewerCloudData) {
 		modal.create({
 			title: '获取云控失败',
@@ -138,19 +125,6 @@ const filterHasBeenInstalledApp = () => {
 };
 
 const hotReloadApplicationData = async () => {
-	if (!deviceStore.ABTestInfo.Hyper_OS_DOT_BLACK_LIST_MANAGER) {
-		modal.create({
-			title: '内测说明',
-			type: 'warning',
-			preset: 'dialog',
-			content: () => (
-				<p>
-					该功能尚处于测试阶段，预估最快2024-12-21后正式上线，可能存在较多不稳定性，需要有一定的玩机知识和问题解决能力，如需参与测试请通过做梦书的酷安动态获取新功能内测的激活口令！(动态内容就有，无需私信，新功能不同口令也不相同)
-				</p>
-			),
-		});
-		return;
-	}
 	if (!dotBlackListStore.systemDotBlackList.length || !dotBlackListStore.hasHTMLViewerCloudData) {
 		modal.create({
 			title: '获取云控失败',
@@ -278,19 +252,6 @@ const rebootDevice = async () => {
 };
 
 const importShareRule = async () => {
-	if (!deviceStore.ABTestInfo.Hyper_OS_DOT_BLACK_LIST_MANAGER) {
-		modal.create({
-			title: '内测说明',
-			type: 'warning',
-			preset: 'dialog',
-			content: () => (
-				<p>
-					该功能尚处于测试阶段，预估最快2024-12-21后正式上线，可能存在较多不稳定性，需要有一定的玩机知识和问题解决能力，如需参与测试请通过做梦书的酷安动态获取新功能内测的激活口令！(动态内容就有，无需私信，新功能不同口令也不相同)
-				</p>
-			),
-		});
-		return;
-	}
 	if (!dotBlackListStore.systemDotBlackList.length || !dotBlackListStore.hasHTMLViewerCloudData) {
 		modal.create({
 			title: '获取云控失败',
@@ -503,19 +464,6 @@ const handleCustomRuleDropdown = async (
 	row: DotBlackListMergeItem,
 	index: number,
 ) => {
-	if (!deviceStore.ABTestInfo.Hyper_OS_DOT_BLACK_LIST_MANAGER) {
-		modal.create({
-			title: '内测说明',
-			type: 'warning',
-			preset: 'dialog',
-			content: () => (
-				<p>
-					该功能尚处于测试阶段，预估最快2024-12-21后正式上线，可能存在较多不稳定性，需要有一定的玩机知识和问题解决能力，如需参与测试请通过做梦书的酷安动态获取新功能内测的激活口令！(动态内容就有，无需私信，新功能不同口令也不相同)
-				</p>
-			),
-		});
-		return;
-	}
 	if (!dotBlackListStore.systemDotBlackList.length || !dotBlackListStore.hasHTMLViewerCloudData) {
 		modal.create({
 			title: '获取云控失败',
@@ -727,19 +675,6 @@ const handleSystemRuleMode = (row: DotBlackListMergeItem, index: number) => {
 };
 
 const openAddDrawer = async () => {
-	if (!deviceStore.ABTestInfo.Hyper_OS_DOT_BLACK_LIST_MANAGER) {
-		modal.create({
-			title: '内测说明',
-			type: 'warning',
-			preset: 'dialog',
-			content: () => (
-				<p>
-					该功能尚处于测试阶段，预估最快2024-12-21后正式上线，可能存在较多不稳定性，需要有一定的玩机知识和问题解决能力，如需参与测试请通过做梦书的酷安动态获取新功能内测的激活口令！(动态内容就有，无需私信，新功能不同口令也不相同)
-				</p>
-			),
-		});
-		return;
-	}
 	if (!dotBlackListStore.systemDotBlackList.length || !dotBlackListStore.hasHTMLViewerCloudData) {
 		modal.create({
 			title: '获取云控失败',
