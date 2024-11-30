@@ -1,23 +1,12 @@
 import { ref, computed, reactive, type ComputedRef } from 'vue';
 import { defineStore } from 'pinia';
-import type AutoUIItem from '@/types/AutoUIItem';
-import type AutoUISettingRuleItem from '@/types/AutoUISettingRuleItem';
-import type AutoUIMergeRuleItem from '@/types/AutoUIMergeRuleItem';
 import $to from 'await-to-js';
-import * as deviceApi from '@/apis/deviceApi';
 import * as gameBoosterApi from '@/apis/gameBoosterApi';
-import * as xmlFormat from '@/utils/xmlFormat';
 import type { ErrorLogging } from '@/types/ErrorLogging';
-type ApplicationName = Record<string, string>;
-import { useDeviceStore } from './device';
-import type DotBlackListMergeItem from '@/types/DotBlackListMergeItem';
-import type DotBlackListItem from '@/types/DotBlackListItem';
-import { invert } from 'lodash-es';
 import type GameBoosterTableItem from '@/types/GameBoosterTableItem';
-import GameBooster from '@/views/GameBooster.vue';
 
 export const useGameBoosterStore = defineStore(
-	'dotBlackList',
+	'gameBooster',
 	() => {
 		// 游戏显示布局
 		const gameBoosterList = ref<GameBoosterTableItem[]>([])

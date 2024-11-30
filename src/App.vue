@@ -120,9 +120,9 @@ onMounted(async () => {
 		embeddedStore.initDefault();
 		autoUIStore.initDefault();
 		gameBoosterStore.initDefault();
-		// if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 1) {
-		// 	dotBlackListStore.initDefault();
-		// }
+		if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 1) {
+			dotBlackListStore.initDefault();
+		}
 	}
 });
 </script>

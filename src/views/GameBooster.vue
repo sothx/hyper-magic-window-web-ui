@@ -1,6 +1,5 @@
 <script setup lang="tsx">
 import { ref, reactive, watch, type CSSProperties, h, type Component, computed, onMounted } from 'vue';
-import { useDotBlackListStore } from '@/stores/dotBlackList';
 import { useGameBoosterStore } from '@/stores/gameBooster';
 import * as deviceApi from '@/apis/deviceApi';
 import { Cog6ToothIcon } from '@heroicons/vue/24/solid';
@@ -18,11 +17,7 @@ import {
 	type DataTableColumns,
 	type DropdownOption,
 } from 'naive-ui';
-import {
-	ArrowPathIcon,
-	XCircleIcon,
-	MagnifyingGlassIcon,
-} from '@heroicons/vue/24/outline';
+import { ArrowPathIcon, XCircleIcon, MagnifyingGlassIcon } from '@heroicons/vue/24/outline';
 import { useGameMode } from '@/hooks/useGameMode';
 import GameBoosterAppDrawer from '@/components/GameBoosterAppDrawer.vue';
 import { useInstalledAppNames } from '@/hooks/useInstalledAppNames';
@@ -41,7 +36,6 @@ const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
 const { message, modal, notification } = createDiscreteApi(['message', 'modal', 'notification'], {
 	configProviderProps: configProviderPropsRef,
 });
-const dotBlackListStore = useDotBlackListStore();
 const gameBoosterStore = useGameBoosterStore();
 const GAME_RATIO_OPTIONS = gameRatioOptions();
 const GAME_RATIO_VALUE_MAP = mapKeys(GAME_RATIO_OPTIONS, item => item.value);
@@ -49,6 +43,18 @@ const GAME_GRAVITY_OPTIONS = gameGravityOptions();
 const GAME_GRAVITY_VALUE_MAP = mapKeys(GAME_GRAVITY_OPTIONS, item => item.value);
 const gameMode = useGameMode();
 const updateGameBoosterAppDrawer = ref<GameBoosterAppDrawerInstance | null>(null);
+
+const openAddGame = async () => {
+	const [openAddGameRes, openAddGameErr] = await $to(gameBoosterApi.openAddGame());
+	if (openAddGameErr) {
+		modal.create({
+			title: '操作失败',
+			type: 'error',
+			preset: 'dialog',
+			content: () => <p>发生异常错误，详细错误请查看日志~</p>,
+		});
+	}
+};
 
 const getAppDownload = async () => {
 	modal.create({
@@ -84,7 +90,7 @@ const handleClickSetting = async (row: GameBoosterTableItem, index: number) => {
 		});
 		return;
 	}
-	if(!gameMode.isSupportGameMode.value) {
+	if (!gameMode.isSupportGameMode.value) {
 		modal.create({
 			title: '未开启游戏显示布局',
 			type: 'error',
@@ -138,7 +144,8 @@ const handleClickSetting = async (row: GameBoosterTableItem, index: number) => {
 								的游戏显示布局了OwO~实际生效还需要重启{' '}
 								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
 									{updateGameBoosterAppDrawerRes.appName}
-								</span>{' '}和{' '}
+								</span>{' '}
+								和{' '}
 								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
 									平板/手机管家
 								</span>{' '}
@@ -151,16 +158,12 @@ const handleClickSetting = async (row: GameBoosterTableItem, index: number) => {
 							deviceApi
 								.killGameBoosterApp(row.package_name)
 								.then(async res => {
-									await gameBoosterStore.initDefault()
+									await gameBoosterStore.initDefault();
 									modal.create({
 										title: '重启作用域成功',
 										type: 'success',
 										preset: 'dialog',
-										content: () => (
-											<p>
-												已经成功为你重启对应的作用域，请查看是否生效~
-											</p>
-										),
+										content: () => <p>已经成功为你重启对应的作用域，请查看是否生效~</p>,
 									});
 								})
 								.catch(err => {
@@ -337,16 +340,24 @@ function createColumns(): DataTableColumns<GameBoosterTableItem> {
 				<n-alert :show-icon="true" type="info">
 					<p>请添加需要管理的游戏应用到游戏工具箱，Hyper OS 2.0+还需要安装修改版的手机/平板管家才会生效。</p>
 					<p>修改版的手机/平板管家支持Hyper OS 2.0/1.0和MIUI 14:</p>
-					<n-button
-						strong
-						secondary
-						type="info"
-						@click="() => getAppDownload()"
+					<n-button strong secondary type="info" @click="() => getAppDownload()"
 						>获取修改版手机/平板管家</n-button
 					>
 				</n-alert>
 			</div>
 			<div class="flex flex-wrap">
+				<n-button
+					class="mb-3 mr-3"
+					type="info"
+					:loading="deviceStore.loading || gameBoosterStore.loading"
+					@click="() => openAddGame()">
+					<template #icon>
+						<n-icon>
+							<PlusIcon />
+						</n-icon>
+					</template>
+					添加游戏
+				</n-button>
 				<n-button
 					class="mb-3 mr-3"
 					type="success"
@@ -364,7 +375,7 @@ function createColumns(): DataTableColumns<GameBoosterTableItem> {
 				<n-input
 					size="large"
 					clearable
-					v-model:value="dotBlackListStore.searchKeyWord"
+					v-model:value="gameBoosterStore.searchKeyWord"
 					ref="searchKeyWordInput"
 					placeholder="搜索游戏名称/游戏包名"
 					autosize
@@ -389,7 +400,7 @@ function createColumns(): DataTableColumns<GameBoosterTableItem> {
 					bordered
 					@click="
 						() => {
-							dotBlackListStore.searchKeyWord = '';
+							gameBoosterStore.searchKeyWord = '';
 						}
 					">
 					<template #icon>

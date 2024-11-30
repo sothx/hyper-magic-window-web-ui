@@ -1,11 +1,6 @@
 import { exec, spawn, fullScreen, toast, moduleInfo, type ExecResults } from '@/utils/kernelsu/index.js';
 import axios from 'axios';
 import handlePromiseWithLogging from '@/utils/handlePromiseWithLogging';
-import $to from 'await-to-js';
-import { useDeviceStore } from '@/stores/device';
-import { useLogsStore } from '@/stores/logs';
-import type DotBlackListItem from '@/types/DotBlackListItem';
-import { cloneDeep } from 'lodash-es';
 import type GameBoosterTableItem from '@/types/GameBoosterTableItem';
 
 export interface SmartFocusIOResult extends ExecResults {
@@ -15,33 +10,6 @@ export interface SmartFocusIOResult extends ExecResults {
 export interface AndroidAppPackageJobsResult extends Omit<ExecResults, 'stdout'> {
 	stdout: number;
 }
-
-export const getCustomDotBlackList = (): Promise<string[]> => {
-	const shellCommon = `cat /data/adb/MIUI_MagicWindow+/config/dot_black_list.json`;
-	return handlePromiseWithLogging(
-		new Promise(async (resolve, reject) => {
-			if (import.meta.env.MODE === 'development') {
-				const response = await axios.get('/data/custom/dot_black_list.json');
-				const jsonText = response.data; // 这是 XML 内容
-				resolve(jsonText as unknown as string[]);
-			} else {
-				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
-				if (errno) {
-					reject(stderr);
-				}
-
-				if (stdout) {
-					try {
-						resolve(JSON.parse(stdout));
-					} catch (err) {
-						reject(err);
-					}
-				}
-			}
-		}),
-		shellCommon,
-	);
-};
 
 export const getGameBoosterList = (): Promise<GameBoosterTableItem[]> => {
 	const sqlite3 = '/data/adb/modules/MIUI_MagicWindow+/common/utils/sqlite3';
@@ -76,6 +44,21 @@ export const getGameBoosterList = (): Promise<GameBoosterTableItem[]> => {
 	);
 };
 
+export const openAddGame = ():Promise<string> => {
+	const shellCommon = `am start -n com.miui.securityadd/com.miui.gamebooster.GameBoosterRichWebActivity`
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`success`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout)
+			}
+		}),
+		shellCommon,
+	);
+}
+
 
 export const getHasGameBoosterDataBase = (): Promise<string> => {
 	const shellCommon = `test -f /data/data/com.miui.securitycenter/databases/gamebooster.db && echo "exists" || echo "not exists"`;
@@ -108,7 +91,7 @@ export const updateGameRatioSetting = (packageName:GameBoosterTableItem['package
 					reject(stderr);
 				}
 				if (stdout) {
-					stdout === '1' ? resolve(stdout) : reject(stdout)
+					resolve(stdout)
 				}
 			}
 		}),

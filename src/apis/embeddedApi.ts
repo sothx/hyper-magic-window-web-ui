@@ -4,8 +4,6 @@ import handlePromiseWithLogging from '@/utils/handlePromiseWithLogging';
 import $to from 'await-to-js';
 import * as deviceApi from '@/apis/deviceApi';
 import { useDeviceStore } from '@/stores/device';
-import { useLogsStore } from '@/stores/logs';
-import type DotBlackListItem from '@/types/DotBlackListItem';
 
 export interface SmartFocusIOResult extends ExecResults {
 	stdout: 'on' | 'off';
