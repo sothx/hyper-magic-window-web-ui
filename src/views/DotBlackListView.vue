@@ -902,6 +902,12 @@ function createColumns(): DataTableColumns<DotBlackListMergeItem> {
 			</div>
 		</div>
 		<n-card title="操作区" size="small">
+			<div class="mb-3 flex flex-wrap">
+				<n-alert :show-icon="true" type="warning">
+					<p>经过测试效果体验不佳，极易被云控覆盖。</p>
+					<p>功能可以继续使用，但是不再维护，且不接受该功能的缺陷和需求反馈。</p>
+				</n-alert>
+			</div>
 			<div class="flex flex-wrap">
 				<n-button
 					class="mb-3 mr-3"

@@ -17,7 +17,7 @@ import {
 	type DataTableColumns,
 	type DropdownOption,
 } from 'naive-ui';
-import { ArrowPathIcon, XCircleIcon, MagnifyingGlassIcon } from '@heroicons/vue/24/outline';
+import { ArrowPathIcon, XCircleIcon, MagnifyingGlassIcon, PlusIcon } from '@heroicons/vue/24/outline';
 import { useGameMode } from '@/hooks/useGameMode';
 import GameBoosterAppDrawer from '@/components/GameBoosterAppDrawer.vue';
 import { useInstalledAppNames } from '@/hooks/useInstalledAppNames';
@@ -45,7 +45,7 @@ const gameMode = useGameMode();
 const updateGameBoosterAppDrawer = ref<GameBoosterAppDrawerInstance | null>(null);
 
 const openAddGame = async () => {
-	const [openAddGameRes, openAddGameErr] = await $to(gameBoosterApi.openAddGame());
+	const [openAddGameErr, openAddGameRes] = await $to(gameBoosterApi.openAddGame());
 	if (openAddGameErr) {
 		modal.create({
 			title: '操作失败',

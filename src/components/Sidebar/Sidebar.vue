@@ -53,7 +53,7 @@
       icon: Squares2X2Icon 
     },
     {
-      name: '游戏显示布局',
+      name: '游戏显示布局(内测)',
       routeName: 'game-booster', 
       href: '/game-booster', 
       isShow() {

@@ -116,8 +116,8 @@ export const useDeviceStore = defineStore(
 			cycleCount: 0
 		})
 		const ABTestInfo = reactive({
-			OS2_PAD_EMBEDDED_APP_MANAGER: false,
-			Hyper_OS_DOT_BLACK_LIST_MANAGER: false,
+			OS2_PAD_EMBEDDED_APP_MANAGER: true,
+			Hyper_OS_DOT_BLACK_LIST_MANAGER: true,
 			GAME_BOOSTER_RADIO_MANAGER: false,
 			GAME_BOOSTER_CUSTOM_RATIO: false
 		})
