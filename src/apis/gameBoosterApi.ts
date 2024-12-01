@@ -45,7 +45,7 @@ export const getGameBoosterList = (): Promise<GameBoosterTableItem[]> => {
 };
 
 export const openAddGame = ():Promise<string> => {
-	const shellCommon = `am start -n com.miui.securityadd/com.miui.gamebooster.GameBoosterRichWebActivity`
+	const shellCommon = `am start -n com.miui.securitycenter/com.miui.gamebooster.ui.SelectGameLandActivity`
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {

@@ -63,9 +63,6 @@
     },
     {
       name: '传送门',
-      isShow() {
-        return deviceStore.deviceCharacteristics === 'tablet'
-      },
       async click() {
         if (!MIUIContentExtension.isInstallMIUIContentExtension.value) {
           await navigator.clipboard.writeText(`https://caiyun.139.com/m/i?135CdxVMTx4nf`)
@@ -121,7 +118,7 @@
       routeName: 'dot-black-list', 
       href: '/dot-black-list', 
       isShow() {
-        return deviceStore.ABTestInfo.Hyper_OS_DOT_BLACK_LIST_MANAGER && deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 1
+        return deviceStore.ABTestInfo.Hyper_OS_DOT_BLACK_LIST_MANAGER && deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 1 && deviceStore.deviceCharacteristics === 'tablet'
       },
       icon: ComputerDesktopIcon 
     },
