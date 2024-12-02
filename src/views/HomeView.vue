@@ -1664,6 +1664,9 @@ onMounted(() => {
 			</div>
 		</div>
 		<n-card title="操作区" size="small">
+		    <n-alert type="info" class="mb-3" v-if="!deviceStore.skipConfirm.patchModeAlert" closable @close="() => { deviceStore.skipConfirm.patchModeAlert = true; }">
+			由于小米系统优化不佳的原因，大量的应用适配规则可能导致系统出现卡顿、掉帧等问题，建议老机型可以前往开启模块的定制模式，详情可以前往模块设置中了解。
+			</n-alert>
 			<div class="flex flex-wrap">
 				<n-button
 					class="mb-3 mr-3"

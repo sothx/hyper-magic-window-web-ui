@@ -18,11 +18,13 @@ import { useAmktiao, type KeyboardModeOptions } from '@/hooks/useAmktiao';
 import { useMiuiDesktopMode } from '@/hooks/useMiuiDesktopMode';
 import { useShowNotificationIcon } from '@/hooks/useShowNotificationIconNum';
 import { useRealQuantity } from '@/hooks/useRealQuantity';
+import { useDisplayModeRecord } from '@/hooks/useDisplayModeRecord';
 const deviceStore = useDeviceStore();
 const embeddedStore = useEmbeddedStore();
 const miuiDesktopModeHook = useMiuiDesktopMode();
 const showNotificationIconHook = useShowNotificationIcon();
 const realQuantityHook = useRealQuantity();
+const displayModeRecordHook = useDisplayModeRecord();
 const { activateABTest, loading: activateABTestLoading } = useABTestActivation();
 const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
 	theme: deviceStore.isDarkMode ? darkTheme : lightTheme,
@@ -76,6 +78,20 @@ const fontModeMap = computed(() => {
 const handleSelectFontMode = (item: string) => {
 	fontStore.currentFont = item;
 };
+
+const handleOpenRateFrameService = async () => {
+	await deviceApi.openFrameRate()
+}
+
+const handleSelectFps = async () => {
+	modal.create({
+                title: '未开放功能',
+                type: 'error',
+                preset: 'dialog',
+                content: () => <p>未开放功能，请等待后续消息~</p>,
+                negativeText: '确定',
+            });
+}
 
 const handleSelectRhythmMode = (item: string) => {
 	deviceStore.rhythmMode = item;
@@ -702,17 +718,28 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 						</dd>
 					</div>
 					<div
-						v-if="deviceStore.enabledMiuiDesktopMode"
+						v-if="deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 1"
 						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
-							工作台模式
+							<p>工作台模式</p>
+							<p v-if="!deviceStore.enabledMiuiDesktopMode" class="mt-2">
+								<n-button
+									strong
+									secondary
+									size="small"
+									@click="() => miuiDesktopModeHook.changeMiuiDesktopModeEnabled()"
+									type="warning">
+									启用功能
+								</n-button>
+							</p>
 						</dt>
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
 							<n-switch
 								@update:value="(value: boolean) => miuiDesktopModeHook.changeMiuiDktMode(value)"
 								:rail-style="railStyle"
+								:disabled="!deviceStore.enabledMiuiDesktopMode"
 								:value="miuiDesktopModeHook.currentMiuiDktMode"
 								:loading="deviceStore.loading">
 								<template #checked>工作台模式</template>
@@ -1065,6 +1092,43 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
 							<div class="whitespace-pre">{{ deviceStore.deviceInfo.memoryInfo || '获取失败' }}</div>
+						</dd>
+					</div>
+					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+						<dt
+							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
+							性能监视器
+						</dt>
+						<dd
+							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
+							<n-button
+								size="small"
+								type="warning"
+								:loading="deviceStore.loading"
+								@click="handleOpenRateFrameService()">
+								打开性能监视器
+							</n-button>
+						</dd>
+					</div>
+					<div v-if="displayModeRecordHook.formatDisplayModeList.value.length" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+						<dt
+							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
+							分辨率及刷新率
+						</dt>
+						<dd
+							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
+							<div class="flex mb-3" v-for="item in displayModeRecordHook.formatDisplayModeList.value" :key="item.id">
+								<p class="mr-3">ID: {{ item.id }}</p>
+								<p class="mr-3">分辨率: {{ `${item.width}x${item.height}` }}</p>
+								<p class="mr-3">刷新率: {{ `${item.fps} Hz` }}</p>
+								<!-- <n-button
+								size="small"
+								type="info"
+								:loading="deviceStore.loading"
+								@click="handleSelectFps()">
+								应用该配置(未开放)
+							</n-button> -->
+							</div>
 						</dd>
 					</div>
 					<div

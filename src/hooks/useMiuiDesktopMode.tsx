@@ -42,6 +42,103 @@ export function useMiuiDesktopMode() {
 		}
 	}
 
+	const changeMiuiDesktopModeEnabled = async () => {
+		const [negativeRes, positiveRes] = await $to(
+			new Promise((resolve, reject) => {
+				modal.create({
+					title: '想激活工作台模式吗？',
+					type: 'info',
+					preset: 'dialog',
+					content: () => (
+						<div>
+							<p>
+								激活{' '}
+								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+									工作台模式
+								</span>{' '}
+								后需要设备重启才会生效~
+							</p>
+							<p>是否立即重启？</p>
+						</div>
+					),
+					positiveText: '确认并立即重启',
+					negativeText: '取消',
+					onPositiveClick: () => {
+						resolve('positiveClick');
+					},
+					onNegativeClick: () => {
+						reject('negativeClick');
+					},
+				});
+			}),
+		);
+		if (positiveRes) {
+			const [removeIsAddDesktopModeEnabledErr, removeIsAddDesktopModeEnabledRes] = await $to(
+				deviceApi.removeIsAddDesktopModeEnabled(),
+			);
+			if (removeIsAddDesktopModeEnabledErr) {
+				modal.create({
+					title: '操作失败',
+					type: 'error',
+					preset: 'dialog',
+					content: () => <p>修改失败，详情请查看日志记录~</p>,
+					negativeText: '确定',
+				});
+				return;
+			}
+			const [addIsAddDesktopModeEnabledErr, addIsAddDesktopModeEnabledRes] = await $to(
+				deviceApi.addIsAddDesktopModeEnabled(),
+			);
+			if (addIsAddDesktopModeEnabledErr) {
+				modal.create({
+					title: '操作失败',
+					type: 'error',
+					preset: 'dialog',
+					content: () => <p>修改失败，详情请查看日志记录~</p>,
+					negativeText: '确定',
+				});
+				return;
+			}
+			const [removeMiuiDesktopModeEnabledErr, removeMiuiDesktopModeEnabledRes] = await $to(
+				deviceApi.removeMiuiDesktopModeEnabled(),
+			);
+			if (removeMiuiDesktopModeEnabledErr) {
+				modal.create({
+					title: '操作失败',
+					type: 'error',
+					preset: 'dialog',
+					content: () => <p>修改失败，详情请查看日志记录~</p>,
+					negativeText: '确定',
+				});
+				return;
+			}
+			const [addMiuiDesktopModeEnabledErr, addMiuiDesktopModeEnabledRes] = await $to(
+				deviceApi.addMiuiDesktopModeEnabled(),
+			);
+			if (addMiuiDesktopModeEnabledErr) {
+				modal.create({
+					title: '操作失败',
+					type: 'error',
+					preset: 'dialog',
+					content: () => <p>修改失败，详情请查看日志记录~</p>,
+					negativeText: '确定',
+				});
+				return;
+			}
+			const [rebootDeviceErr] = await $to(deviceApi.rebootDevice());
+			if (rebootDeviceErr) {
+				modal.create({
+					title: '操作失败',
+					type: 'error',
+					preset: 'dialog',
+					content: () => <p>无法重启设备，详情请查看日志记录~</p>,
+					negativeText: '确定',
+				});
+				return;
+			}
+		}
+	};
+
 	onMounted(async () => {
         if (deviceStore.enabledMiuiDesktopMode) {
 			const [, getCurrentMiuiDktModeResolve] = await $to<string, string>(deviceApi.getCurrentMiuiDktMode());
@@ -54,6 +151,7 @@ export function useMiuiDesktopMode() {
 
 	return {
 		currentMiuiDktMode,
-		changeMiuiDktMode
+		changeMiuiDktMode,
+		changeMiuiDesktopModeEnabled
 	};
 }

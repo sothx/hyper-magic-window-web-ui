@@ -132,7 +132,8 @@ export const useDeviceStore = defineStore(
 		const skipConfirm = reactive({
 			GameMode: false,
 			MIUIContentExt: false,
-			lowWebViewVersion: false
+			lowWebViewVersion: false,
+			patchModeAlert: false,
 		});
 		const showThirdPartySetting = reactive({
 			amktiaoROMInterface: false

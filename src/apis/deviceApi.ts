@@ -6,6 +6,7 @@ import { useDeviceStore } from '@/stores/device';
 import { useLogsStore } from '@/stores/logs';
 import type DotBlackListItem from '@/types/DotBlackListItem';
 import type { KeyboardMode, PenEnable, PenUpdate } from '@/hooks/useAmktiao';
+import type { DisplayModeItem } from '@/hooks/useDisplayModeRecord';
 
 export interface SmartFocusIOResult extends ExecResults {
 	stdout: 'on' | 'off';
@@ -554,6 +555,88 @@ export const killGameBoosterApp = (packageName: string): Promise<string> => {
 	);
 };
 
+export const openFrameRate = (): Promise<string> => {
+	const shellCommon = `cmd activity startservice -n com.miui.powerkeeper/.ui.framerate.FrameRateService`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`startservice command executed successfully.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+const parseDisplayModeRecords = (output: string): DisplayModeItem[] => {
+    const records: DisplayModeItem[] = [];
+    const lines = output.split("\n");
+
+    lines.forEach(line => {
+        const regex = /id=(\d+),\s*width=(\d+),\s*height=(\d+),\s*fps=([\d.]+),\s*alternativeRefreshRates=\[([^\]]*)\],\s*supportedHdrTypes=\[([^\]]*)\]/;
+        const match = regex.exec(line);
+
+        if (match) {
+            const [
+                _,
+                id,
+                width,
+                height,
+                fps,
+                alternativeRefreshRates,
+                supportedHdrTypes
+            ] = match;
+
+            const record: DisplayModeItem = {
+                id: parseInt(id, 10),
+                width: parseInt(width, 10),
+                height: parseInt(height, 10),
+                fps: parseFloat(fps),
+                alternativeRefreshRates: alternativeRefreshRates
+                    ? alternativeRefreshRates.split(",").map(rate => parseFloat(rate.trim()))
+                    : [],
+                supportedHdrTypes: supportedHdrTypes
+                    ? supportedHdrTypes.split(",").map(type => parseInt(type.trim(), 10))
+                    : []
+            };
+
+            records.push(record);
+        }
+    });
+
+    return records;
+};
+
+export const getDisplayModeRecord = (): Promise<DisplayModeItem[]> => {
+	const jq = '/data/adb/modules/MIUI_MagicWindow+/common/utils/jq';
+	const shellCommon = `dumpsys display | grep 'DisplayModeRecord'`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				const response = await axios.get('/data/system/DisplayModeRecord.json');
+				const jsonText = response.data;
+				resolve(jsonText);
+			} else {
+				try {
+                    const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+                    if (errno) {
+                        reject(stderr);
+                        return;
+                    }
+
+                    const parsedRecords = parseDisplayModeRecords(stdout);
+                    resolve(parsedRecords);
+                } catch (error) {
+                    reject(error);
+                }
+			}
+		}),
+		shellCommon,
+	);
+};
+
 export const getIsPatchMode = (): Promise<string> => {
 	const shellCommon = `grep 'is_patch_mode=' /data/adb/MIUI_MagicWindow+/config.prop | awk -F'=' '{print $2}'`;
 	return handlePromiseWithLogging(
@@ -840,6 +923,66 @@ export const getMiuiDesktopModeEnabled = (): Promise<string> => {
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
 				resolve(`true`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const addIsAddDesktopModeEnabled = (): Promise<string> => {
+	const shellCommon = `grep -q '^is_add_miui_desktop_mode_enabled=' /data/adb/MIUI_MagicWindow+/config.prop || (echo "is_add_miui_desktop_mode_enabled=true" | tee -a /data/adb/MIUI_MagicWindow+/config.prop > /dev/null && echo "Command executed successfully." || echo "Command failed.")`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`Command executed successfully.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : stdout === 'Command executed successfully.' ? resolve(stdout) : reject(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const removeIsAddDesktopModeEnabled = (): Promise<string> => {
+	const shellCommon = `sed -i '/^is_add_miui_desktop_mode_enabled=/d' //data/adb/MIUI_MagicWindow+/config.prop && echo "Remove is_add_miui_desktop_mode_enabled successfully." || echo "Remove is_add_miui_desktop_mode_enabled failed."`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`Remove is_add_miui_desktop_mode_enabled successfully.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const addMiuiDesktopModeEnabled = (): Promise<string> => {
+	const shellCommon = `grep -q '^ro.config.miui_desktop_mode_enabled=' /data/adb/modules/MIUI_MagicWindow+/system.prop || (echo "ro.config.miui_desktop_mode_enabled=true" | tee -a /data/adb/modules/MIUI_MagicWindow+/system.prop > /dev/null && echo "Command executed successfully." || echo "Command failed.")`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`Command executed successfully.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : stdout === 'Command executed successfully.' ? resolve(stdout) : reject(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const removeMiuiDesktopModeEnabled = (): Promise<string> => {
+	const shellCommon = `sed -i '/^ro.config.miui_desktop_mode_enabled=/d' //data/adb/modules/MIUI_MagicWindow+/system.prop && echo "Remove ro.config.miui_desktop_mode_enabled successfully." || echo "Remove ro.config.miui_desktop_mode_enabled failed."`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`Remove ro.config.miui_desktop_mode_enabled successfully.`);
 			} else {
 				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
 				errno ? reject(stderr) : resolve(stdout);
