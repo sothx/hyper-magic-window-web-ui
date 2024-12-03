@@ -718,7 +718,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 						</dd>
 					</div>
 					<div
-						v-if="deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 1"
+						v-if="deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 1 && deviceStore.deviceCharacteristics === 'tablet'"
 						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">

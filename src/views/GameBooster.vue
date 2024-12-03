@@ -64,13 +64,13 @@ const getAppDownload = async () => {
 		content: () => (
 			<div>
 				<p>如果规则无法生效，还需要安装修改版的手机/平板管家才会生效~</p>
-				<p>下载地址:https://caiyun.139.com/m/i?135Cdw6hrWd7c</p>
+				<p>下载地址:https://caiyun.139.com/m/i?135CeBMHACC6p</p>
 			</div>
 		),
 		positiveText: '复制下载链接到剪切板',
 		negativeText: '取消',
 		onPositiveClick: () => {
-			navigator.clipboard.writeText(`https://caiyun.139.com/m/i?135Cdw6hrWd7c`);
+			navigator.clipboard.writeText(`https://caiyun.139.com/m/i?135CeBMHACC6p`);
 		},
 		onNegativeClick: () => {},
 	});
