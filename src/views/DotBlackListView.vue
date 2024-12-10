@@ -897,7 +897,7 @@ function createColumns(): DataTableColumns<DotBlackListMergeItem> {
 				</h3>
 				<p
 					:class="`mt-1 max-w-2xl text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-500'}`">
-					在这里可以快速管理有关窗口控制器的配置
+					窗口控制器，让界面在掌控中自如切换。
 				</p>
 			</div>
 		</div>

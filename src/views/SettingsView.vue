@@ -526,7 +526,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 				</h3>
 				<p
 					:class="`mt-1 max-w-2xl text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-500'}`">
-					在这里可以快速了解模块当前的运行数据
+					模块设置，让功能在自定义中完美契合。
 				</p>
 			</div>
 

@@ -1659,7 +1659,7 @@ onMounted(() => {
 				</h3>
 				<p
 					:class="`mt-1 max-w-2xl text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-500'}`">
-					在这里可以快速管理平板在横屏应用下的配置
+					应用横屏布局，让视界在横向中无限拓展。
 				</p>
 			</div>
 		</div>
