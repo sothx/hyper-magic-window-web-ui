@@ -26,7 +26,7 @@ export function useABTestActivation() {
 						<p>
 							已成功参与OS2{' '}
 							<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-								应用横屏配置 For Web UI
+								应用横屏布局 For Web UI
 							</span>{' '}
 							的Beta测试w。由于小米在OS2新开发的{' '}
 							<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>

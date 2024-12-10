@@ -515,7 +515,7 @@ const openAddEmbeddedApp = async () => {
 			preset: 'dialog',
 			content: () => <p>该功能仅兼容平板设备，暂时不兼容折叠屏设备，请等待后续更新情况！</p>,
 		});
-		logsStore.info('应用横屏配置-添加应用', '该功能仅兼容平板设备，暂时不兼容折叠屏设备，请等待后续更新情况！');
+		logsStore.info('应用横屏布局-添加应用', '该功能仅兼容平板设备，暂时不兼容折叠屏设备，请等待后续更新情况！');
 		return;
 	}
 	if (!deviceStore.ABTestInfo.OS2_PAD_EMBEDDED_APP_MANAGER) {
@@ -1289,7 +1289,7 @@ const handleCustomRuleDropdown = async (
 		const base64String: string = arrayBufferToBase64(compressedData);
 		const [writeClipboardErr] = await $to(
 			navigator.clipboard.writeText(
-				`我分享了一个[应用横屏配置]的自定义规则，可以前往[完美横屏应用计划 For Web UI]导入：\n${base64String}`,
+				`我分享了一个[应用横屏布局]的自定义规则，可以前往[完美横屏应用计划 For Web UI]导入：\n${base64String}`,
 			),
 		);
 		if (writeClipboardErr) {
@@ -1337,7 +1337,7 @@ const handleCustomRuleDropdown = async (
 						<p>
 							分享口令导入入口位于{' '}
 							<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-								应用横屏配置- 从分享口令导入
+								应用横屏布局- 从分享口令导入
 							</span>{' '}
 							。
 						</p>
@@ -1655,7 +1655,7 @@ onMounted(() => {
 			<div class="mb-5 px-4 sm:px-0">
 				<h3
 					:class="`text-base font-semibold leading-7 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
-					应用横屏配置
+					应用横屏布局
 				</h3>
 				<p
 					:class="`mt-1 max-w-2xl text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-500'}`">

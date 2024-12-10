@@ -37,7 +37,7 @@ const { message, modal } = createDiscreteApi(['message', 'modal'], {
 	configProviderProps: configProviderPropsRef,
 });
 const navigation = reactive([
-	{ name: '应用横屏配置', routeName: 'home', href: '/', icon: WindowIcon },
+	{ name: '应用横屏布局', routeName: 'home', href: '/', icon: WindowIcon },
 	{
 		name: '应用布局优化',
 		routeName: 'autoui',

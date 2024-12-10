@@ -254,7 +254,7 @@ const changePatchMode = async (value: boolean) => {
 								</span>{' '}
 								，以解决老机型由于系统优化不佳而导致的卡顿、掉帧等问题，后续每次更新模块或者安装新的应用后，建议前往{' '}
 								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-									应用横屏配置
+									应用横屏布局
 								</span>{' '}
 								重新{' '}
 								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
@@ -391,7 +391,7 @@ const changePatchMode = async (value: boolean) => {
 								</span>{' '}
 								，以解决老机型由于系统优化不佳而导致的卡顿、掉帧等问题，建议每次更新模块或者安装新的应用后，均需要在前往{' '}
 								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-									应用横屏配置
+									应用横屏布局
 								</span>{' '}
 								界面重新生成{' '}
 								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
