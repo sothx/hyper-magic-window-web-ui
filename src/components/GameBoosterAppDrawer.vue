@@ -223,7 +223,7 @@ defineExpose({
 	<slot v-bind="{ openDrawer: GameBoosterAppDrawer.openDrawer }"></slot>
 
 	<!-- Drawer -->
-	<n-drawer v-model:show="activeDrawer" :default-width="500" placement="right">
+	<n-drawer v-model:show="activeDrawer" :width="deviceStore.windowWidth >= 640 ? `450px` : `100%`" placement="right">
 		<n-drawer-content
 			body-content-class="auto-ui-drawer-content"
 			:scrollbar-props="{

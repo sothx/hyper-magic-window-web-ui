@@ -80,6 +80,7 @@ export const useDeviceStore = defineStore(
 		const hasPenEnableControl = ref<boolean>(false);
 		const hasKeyboardControl = ref<boolean>(false);
 		const enabledMiuiDesktopMode = ref<boolean>(false);
+		const windowWidth = ref(window.innerWidth);
 		const isEnableShowNotificationIconNum = ref<boolean>(false);
 		const deviceName = ref<string>('');
 		const installedAndroidApplicationPackageNameList = ref<string[]>([]);
@@ -428,6 +429,7 @@ export const useDeviceStore = defineStore(
 			errorLogging,
 			loading,
 			isDarkMode,
+			windowWidth,
 			rhythmMode,
 			initDefault,
 			ABTestInfo,

@@ -530,7 +530,7 @@ defineExpose({
 	<slot v-bind="{ openDrawer: embeddedAppDrawer.openDrawer }"></slot>
 
 	<!-- Drawer -->
-	<n-drawer v-model:show="activeDrawer" :default-width="500" placement="right">
+	<n-drawer v-model:show="activeDrawer" :width="deviceStore.windowWidth >= 640 ? `450px` : `100%`" placement="right">
 		<n-drawer-content :title="props.title" closable>
 			<n-input-group :class="deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 ? '' : 'mb-5'">
 				<n-input-group-label size="large">应用包名</n-input-group-label>
