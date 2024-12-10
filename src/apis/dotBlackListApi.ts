@@ -145,7 +145,7 @@ export interface updateDotBlackListAppParams {
 }
 
 export const getHasHTMLViewerCloudDataBase = (): Promise<string> => {
-	const shellCommon = `test -f /data/user_de/0/com.android.htmlviewer/databases/cloud_all_data.db && echo "exists" || echo "not exists"`;
+	const shellCommon = `ls /data/user_de/0/com.android.htmlviewer/databases/cloud_all_data.db &>/dev/null && echo "exists" || echo "not exists"`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {

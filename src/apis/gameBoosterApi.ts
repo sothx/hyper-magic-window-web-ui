@@ -61,7 +61,7 @@ export const openAddGame = ():Promise<string> => {
 
 
 export const getHasGameBoosterDataBase = (): Promise<string> => {
-	const shellCommon = `test -f /data/data/com.miui.securitycenter/databases/gamebooster.db && echo "exists" || echo "not exists"`;
+	const shellCommon = `ls /data/data/com.miui.securitycenter/databases/gamebooster.db &>/dev/null && echo "exists" || echo "not exists"`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {

@@ -444,7 +444,7 @@ export const getInstalledAppNameList = (): Promise<string> => {
 };
 
 export const getHasInstalledMIUIContentExtension = (): Promise<string> => {
-	const shellCommon = `test -f /system/product/priv-app/MIUIContentExtension/MIUIContentExtension.apk && echo "exists" || echo "not exists"`;
+	const shellCommon = `ls /system/product/priv-app/MIUIContentExtension/MIUIContentExtension.apk &>/dev/null && echo "exists" || echo "not exists"`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -677,7 +677,7 @@ export const updateRule = (): Promise<string> => {
 };
 
 export const getShamikoHasInstalled = (): Promise<string> => {
-	const shellCommon = `test -d /data/adb/shamiko/ && echo "exists" || echo "not exists"`;
+	const shellCommon = `ls -d /data/adb/shamiko/ &>/dev/null && echo "exists" || echo "not exists"`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -692,7 +692,7 @@ export const getShamikoHasInstalled = (): Promise<string> => {
 };
 
 export const getShamikoMode = (): Promise<string> => {
-	const shellCommon = `test -f /data/adb/shamiko/whitelist && echo "whitelist" || echo "blacklist"`;
+	const shellCommon = `ls /data/adb/shamiko/whitelist &>/dev/null && echo "whitelist" || echo "blacklist"`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -723,7 +723,7 @@ export const putShamikoMode = (mode: 'whitelist' | 'blacklist'): Promise<string>
 };
 
 export const getHasPenUpdateControl = (): Promise<string> => {
-	const shellCommon = `test -f /sys/touchpanel/pen_update && echo "exists" || echo "not exists"`;
+	const shellCommon = `ls /sys/touchpanel/pen_update &>/dev/null && echo "exists" || echo "not exists"`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -738,7 +738,7 @@ export const getHasPenUpdateControl = (): Promise<string> => {
 };
 
 export const getHasPenEnableControl = (): Promise<string> => {
-	const shellCommon = `test -f /sys/touchpanel/pen_enable && echo "exists" || echo "not exists"`;
+	const shellCommon = `ls /sys/touchpanel/pen_enable &>/dev/null && echo "exists" || echo "not exists"`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -753,7 +753,7 @@ export const getHasPenEnableControl = (): Promise<string> => {
 };
 
 export const getHasKeyboardControl = (): Promise<string> => {
-	const shellCommon = `test -f /sys/touchpanel/keyboard && echo "exists" || echo "not exists"`;
+	const shellCommon = `ls /sys/touchpanel/keyboard &>/dev/null && echo "exists" || echo "not exists"`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
