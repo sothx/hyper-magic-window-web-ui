@@ -19,6 +19,8 @@ import {
 	FireIcon,
 	NewspaperIcon,
 	Square2StackIcon,
+	LifebuoyIcon,
+	Square3Stack3DIcon,
 } from '@heroicons/vue/24/outline';
 import { useRoute } from 'vue-router';
 import { ChevronDownIcon, MagnifyingGlassIcon } from '@heroicons/vue/20/solid';
@@ -48,7 +50,7 @@ const navigation = reactive([
 			return deviceStore.androidTargetSdk && deviceStore.androidTargetSdk >= 33;
 		},
 		href: '/autoui',
-		icon: SquaresPlusIcon,
+		icon: Square3Stack3DIcon,
 	},
 	{
 		name: '游戏显示布局(内测)',
@@ -61,7 +63,7 @@ const navigation = reactive([
 				gameBoosterStore.hasGameBoosterDataBase
 			);
 		},
-		icon: Square2StackIcon,
+		icon: LifebuoyIcon,
 	},
 	{
 		name: '传送门',
