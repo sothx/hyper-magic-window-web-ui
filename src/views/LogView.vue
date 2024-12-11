@@ -109,7 +109,7 @@ onMounted(() => {
 					若有影响使用的问题可以通过酷安/Github/模块反馈群上进行反馈
 				</p>
 			</div>
-			<n-card :bordered="true" title="操作区" class="mt-3" size="small">
+			<n-card :bordered="true" class="mt-3" size="small">
 				<div class="flex flex-wrap">
 					<n-button
 						class="mr-3 mb-3"

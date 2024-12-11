@@ -971,7 +971,7 @@ configProviderProps: configProviderPropsRef
         </p>
       </div>
     </div>
-    <n-card title="操作区" size="small">
+    <n-card size="small">
       <div class="flex flex-wrap">
         <n-button
           class="mr-3 mb-3"

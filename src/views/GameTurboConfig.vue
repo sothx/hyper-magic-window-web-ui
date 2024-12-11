@@ -55,7 +55,7 @@
           在这里可以查看小米的部分云控节点配置
         </p>
       </div>
-      <n-card :bordered="true" title="操作区" class="mt-3" size="small">
+      <n-card :bordered="true" class="mt-3" size="small">
         <div class="flex">
           <n-button class="mr-3" type="info">测试按钮1</n-button>
           <n-button class="mr-3" type="error">测试按钮2</n-button>

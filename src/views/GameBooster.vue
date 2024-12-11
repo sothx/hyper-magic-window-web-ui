@@ -335,7 +335,7 @@ function createColumns(): DataTableColumns<GameBoosterTableItem> {
 				</p>
 			</div>
 		</div>
-		<n-card title="操作区" size="small">
+		<n-card size="small">
 			<div class="mb-3 flex flex-wrap">
 				<n-alert v-if="deviceStore.deviceCharacteristics === 'tablet'" :show-icon="true" type="info">
 					<p>请添加需要管理的游戏应用到游戏工具箱，Hyper OS 2.0+还需要安装修改版的手机/平板管家才会生效。</p>

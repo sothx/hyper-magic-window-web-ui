@@ -3,6 +3,7 @@ import { RouterLink, RouterView } from 'vue-router';
 import HelloWorld from './components/HelloWorld.vue';
 import { Sidebar } from './components/Sidebar';
 import ErrorModal from '@/components/ErrorModal.vue';
+import SplashScreen from '@/components/SplashScreen.vue';
 import { ref, onMounted, watch, watchEffect, computed } from 'vue';
 import { useDeviceStore } from '@/stores/device';
 import { createDiscreteApi, darkTheme, lightTheme, type ConfigProviderProps } from 'naive-ui';
@@ -27,6 +28,19 @@ const fontStore = useFontStore();
 const autoUIStore = useAutoUIStore();
 const dotBlackListStore = useDotBlackListStore();
 const showErrorModal = ref(false);
+const isSplashVisible = ref(true);
+
+watchEffect((onCleanup) => {
+  // 检查 deviceStore.loading 和 embeddedStore.loading 是否都为 false
+  if (!deviceStore.loading && !embeddedStore.loading) {
+    isSplashVisible.value = false;  // 隐藏开屏页
+  }
+
+  // 清理函数，不再需要监听时执行
+  onCleanup(() => {
+    // 这里可以移除其他的副作用，如定时器等
+  });
+});
 
 watch(
 	() => fontStore.currentFont, // 监听的值
@@ -146,6 +160,7 @@ onMounted(async () => {
 				<RouterView />
 			</Sidebar>
 			<ErrorModal v-model="showErrorModal" :errorLogging="deviceStore.errorLogging" />
+			<SplashScreen v-if="isSplashVisible" />
 		</n-config-provider>
 	</div>
 </template>
