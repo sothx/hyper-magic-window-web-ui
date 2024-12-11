@@ -264,7 +264,7 @@ onBeforeUnmount(() => {
 							<div
 								:class="[
 									'flex grow flex-col gap-y-5 overflow-y-auto px-6 pb-4',
-									deviceStore.isDarkMode ? 'bg-zinc-900' : 'bg-white',
+									deviceStore.isDarkMode ? 'bg-[#151515]' : 'bg-[#f6f6f6]',
 								]">
 								<div class="flex h-2 shrink-0 items-center"></div>
 								<nav class="flex flex-1 flex-col">
@@ -377,7 +377,7 @@ onBeforeUnmount(() => {
 			<div
 				:class="[
 					'flex grow flex-col gap-y-5 overflow-y-auto border-r',
-					deviceStore.isDarkMode ? 'border-gray-700 bg-zinc-900' : 'border-gray-200 bg-white',
+					deviceStore.isDarkMode ? 'border-gray-700 bg-[#151515]' : 'border-gray-200 bg-[#f6f6f6]',
 					'px-6 pb-4',
 				]">
 				<div class="flex h-10 shrink-0 items-center"></div>
@@ -499,7 +499,9 @@ onBeforeUnmount(() => {
 								:class="[
 									deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-600',
 									'text-lg font-bold',
+									'bg-clip-text text-center text-transparent text-h1'
 								]"
+								style="background-image: linear-gradient(101.22deg, rgb(255, 182, 133) -18.32%, rgb(255, 111, 29) 7.01%, rgb(252, 181, 232) 41.59%, rgb(135, 148, 255) 70.98%, rgb(60, 112, 255) 91.35%, rgb(60, 112, 255) 110.17%);"
 								>完美横屏应用计划 For Web UI</h1
 							>
 						</div>

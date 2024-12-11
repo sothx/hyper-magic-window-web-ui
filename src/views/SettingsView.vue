@@ -521,7 +521,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 		<div class="mt-5">
 			<div class="px-4 sm:px-0">
 				<h3
-					:class="`text-base font-semibold leading-7 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
+					:class="`text-base font-semibold bg-clip-text text-transparent leading-7 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`" style="background-image: linear-gradient(101.22deg, rgb(255, 182, 133) -18.32%, rgb(255, 111, 29) 7.01%, rgb(252, 181, 232) 41.59%, rgb(135, 148, 255) 70.98%, rgb(60, 112, 255) 91.35%, rgb(60, 112, 255) 110.17%);">
 					模块设置
 				</h3>
 				<p
