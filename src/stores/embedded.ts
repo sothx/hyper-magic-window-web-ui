@@ -331,11 +331,11 @@ export const useEmbeddedStore = defineStore(
 			// 获取系统内置居中布局列表
 			if (getSystemFixedOrientationListErr) {
 				systemFixedOrientationList.value = {};
-				errorLogging.push({
-					type: 'systemFixedOrientationList',
-					title: '[模块]信箱模式配置文件',
-					msg: getSystemFixedOrientationListErr,
-				});
+				// errorLogging.push({
+				// 	type: 'systemFixedOrientationList',
+				// 	title: '[模块]信箱模式配置文件',
+				// 	msg: getSystemFixedOrientationListErr,
+				// });
 			}
 			if (getSystemFixedOrientationListRes) {
 				systemFixedOrientationList.value = xmlFormat.parseXMLToObject<FixedOrientationRuleItem>(

@@ -8,7 +8,8 @@ const systemApplicationList = [
     'com.miui.contentextension',
     'com.miui.misound',
     'com.miui.voiceassist',
-    'com.lbe.security.miui'
+    'com.lbe.security.miui',
+    'com.miui.securityadd'
 ]
 
 const topApplicationList = [

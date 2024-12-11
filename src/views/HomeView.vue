@@ -39,7 +39,7 @@ import {
 	SquaresPlusIcon,
 	ScissorsIcon,
 } from '@heroicons/vue/24/outline';
-import { FunnelIcon as FunnelSolidIcon, Cog6ToothIcon, EllipsisHorizontalCircleIcon, MinusCircleIcon, QuestionMarkCircleIcon } from '@heroicons/vue/24/solid';
+import { FunnelIcon as FunnelSolidIcon, Cog6ToothIcon, EllipsisHorizontalCircleIcon, MinusCircleIcon, QuestionMarkCircleIcon, XCircleIcon as XCircleIconSolid } from '@heroicons/vue/24/solid';
 import { arrayBufferToBase64, base64ToArrayBuffer } from '@/utils/format';
 import { findBase64InString, renderApplicationName } from '@/utils/common';
 import { getAppModeCode, getSettingEnableMode, getSettingMode } from '@/utils/embeddedFun';
@@ -1445,7 +1445,7 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 			key: 'setting',
 			render(row, index) {
 				const slots = {
-					icon: MinusCircleIcon
+					icon: XCircleIconSolid
 				};
 				const handleClickAppCompatReset = (row: EmbeddedMergeRuleItem, index: number) => {
 					modal.create({
@@ -1671,7 +1671,7 @@ onMounted(() => {
 				</h3>
 				<p
 					:class="`mt-1 max-w-2xl text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-500'}`">
-					应用横屏布局，让视界在横向中无限拓展。
+					应用横屏布局，让应用在横屏中无限拓展。
 				</p>
 			</div>
 		</div>
