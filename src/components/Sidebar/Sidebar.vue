@@ -9,13 +9,16 @@ import {
 	Cog6ToothIcon,
 	DeviceTabletIcon,
 	DocumentDuplicateIcon,
-	PlayIcon,
+	BanknotesIcon,
 	Squares2X2Icon,
 	ComputerDesktopIcon,
 	SquaresPlusIcon,
 	WindowIcon,
 	BuildingStorefrontIcon,
 	XMarkIcon,
+	FireIcon,
+	NewspaperIcon,
+	Square2StackIcon,
 } from '@heroicons/vue/24/outline';
 import { useRoute } from 'vue-router';
 import { ChevronDownIcon, MagnifyingGlassIcon } from '@heroicons/vue/20/solid';
@@ -37,7 +40,7 @@ const { message, modal } = createDiscreteApi(['message', 'modal'], {
 	configProviderProps: configProviderPropsRef,
 });
 const navigation = reactive([
-	{ name: '应用横屏布局', routeName: 'home', href: '/', icon: WindowIcon },
+	{ name: '应用横屏布局', routeName: 'home', href: '/', icon: Squares2X2Icon },
 	{
 		name: '应用布局优化',
 		routeName: 'autoui',
@@ -45,7 +48,7 @@ const navigation = reactive([
 			return deviceStore.androidTargetSdk && deviceStore.androidTargetSdk >= 33;
 		},
 		href: '/autoui',
-		icon: Squares2X2Icon,
+		icon: SquaresPlusIcon,
 	},
 	{
 		name: '游戏显示布局(内测)',
@@ -58,7 +61,7 @@ const navigation = reactive([
 				gameBoosterStore.hasGameBoosterDataBase
 			);
 		},
-		icon: PlayIcon,
+		icon: Square2StackIcon,
 	},
 	{
 		name: '传送门',
@@ -132,7 +135,7 @@ const navigation = reactive([
 				},
 			});
 		},
-		icon: DeviceTabletIcon,
+		icon: NewspaperIcon,
 	},
 	{
 		name: '窗口控制器',
@@ -146,7 +149,7 @@ const navigation = reactive([
 				deviceStore.deviceCharacteristics === 'tablet'
 			);
 		},
-		icon: ComputerDesktopIcon,
+		icon: WindowIcon,
 	},
 	{ name: '日志记录', routeName: 'logs', href: '/logs', icon: DocumentDuplicateIcon },
 	{

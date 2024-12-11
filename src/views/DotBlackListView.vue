@@ -33,7 +33,7 @@ import {
 } from '@heroicons/vue/24/outline';
 import type AutoUIMergeRuleItem from '@/types/AutoUIMergeRuleItem';
 import { useRouter, useRoute } from 'vue-router';
-import { FunnelIcon as FunnelSolidIcon } from '@heroicons/vue/24/solid';
+import { FunnelIcon as FunnelSolidIcon, EllipsisHorizontalCircleIcon, QuestionMarkCircleIcon } from '@heroicons/vue/24/solid';
 import { useLogsStore } from '@/stores/logs';
 import { useAutoUI } from '@/hooks/useAutoUI';
 import * as validateFun from '@/utils/validateFun';
@@ -850,6 +850,9 @@ function createColumns(): DataTableColumns<DotBlackListMergeItem> {
 			width: 150,
 			key: 'ruleMode',
 			render(row, index) {
+				const slots = {
+					icon: row.ruleMode === 'custom' ? EllipsisHorizontalCircleIcon : QuestionMarkCircleIcon
+				};
 				if (row.ruleMode === 'custom') {
 					const rule = [
 						{
@@ -871,14 +874,14 @@ function createColumns(): DataTableColumns<DotBlackListMergeItem> {
 							size='large'
 							trigger='click'
 							options={rule}>
-							<n-button size='small' dashed type='info'>
+							<n-button v-slots={slots} size='small' dashed type='info'>
 								自定义规则
 							</n-button>
 						</n-dropdown>
 					);
 				}
 				return (
-					<n-button size='small' dashed type='error' onClick={() => handleSystemRuleMode(row, index)}>
+					<n-button size='small' v-slots={slots} dashed type='error' onClick={() => handleSystemRuleMode(row, index)}>
 						系统规则
 					</n-button>
 				);

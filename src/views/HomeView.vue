@@ -39,7 +39,7 @@ import {
 	SquaresPlusIcon,
 	ScissorsIcon,
 } from '@heroicons/vue/24/outline';
-import { FunnelIcon as FunnelSolidIcon } from '@heroicons/vue/24/solid';
+import { FunnelIcon as FunnelSolidIcon, Cog6ToothIcon, EllipsisHorizontalCircleIcon, MinusCircleIcon, QuestionMarkCircleIcon } from '@heroicons/vue/24/solid';
 import { arrayBufferToBase64, base64ToArrayBuffer } from '@/utils/format';
 import { findBase64InString, renderApplicationName } from '@/utils/common';
 import { getAppModeCode, getSettingEnableMode, getSettingMode } from '@/utils/embeddedFun';
@@ -1349,6 +1349,7 @@ const handleCustomRuleDropdown = async (
 	}
 };
 
+
 const handleModuleRuleMode = (row: EmbeddedMergeRuleItem, index: number) => {
 	if (deviceStore.deviceCharacteristics !== 'tablet') {
 		modal.create({
@@ -1401,6 +1402,9 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 			minWidth: 100,
 			key: 'ruleMode',
 			render(row, index) {
+				const slots = {
+					icon: row.ruleMode === 'custom' ? EllipsisHorizontalCircleIcon : QuestionMarkCircleIcon
+				};
 				if (row.ruleMode === 'custom') {
 					const rule = [
 						{
@@ -1422,14 +1426,14 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 							size='large'
 							trigger='click'
 							options={rule}>
-							<n-button size='small' dashed type='info'>
+							<n-button v-slots={slots} size='small' dashed type='info'>
 								自定义规则
 							</n-button>
 						</n-dropdown>
 					);
 				}
 				return (
-					<n-button size='small' dashed type='error' onClick={() => handleModuleRuleMode(row, index)}>
+					<n-button v-slots={slots} size='small' dashed type='error' onClick={() => handleModuleRuleMode(row, index)}>
 						模块规则
 					</n-button>
 				);
@@ -1440,6 +1444,9 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 			minWidth: 100,
 			key: 'setting',
 			render(row, index) {
+				const slots = {
+					icon: MinusCircleIcon
+				};
 				const handleClickAppCompatReset = (row: EmbeddedMergeRuleItem, index: number) => {
 					modal.create({
 						title: '想重置应用兼容性吗？',
@@ -1494,6 +1501,7 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 						<n-button
 							size='small'
 							dashed
+							v-slots={slots}
 							type='warning'
 							onClick={() => handleClickAppCompatReset(row, index)}>
 							兼容性重置
@@ -1507,6 +1515,9 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 			minWidth: 100,
 			key: 'settingMode',
 			render(row, index) {
+				const slots = {
+					icon: Cog6ToothIcon
+				};
 				const modeMap = {
 					embedded: {
 						type: 'success',
@@ -1585,6 +1596,7 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 					<n-button
 						size='small'
 						strong
+						v-slots={slots}
 						dashed
 						type={modeMap[row.settingMode].type}
 						onClick={() => modeMap[row.settingMode].onClick(row, index)}>

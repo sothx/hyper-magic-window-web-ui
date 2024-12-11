@@ -29,7 +29,7 @@
   import { ArrowPathIcon, FunnelIcon, PlusIcon, ShareIcon, TrashIcon, SquaresPlusIcon, XCircleIcon,MagnifyingGlassIcon, CircleStackIcon } from '@heroicons/vue/24/outline';
   import type AutoUIMergeRuleItem from '@/types/AutoUIMergeRuleItem';
   import { useRouter, useRoute } from 'vue-router';
-  import { FunnelIcon as FunnelSolidIcon } from '@heroicons/vue/24/solid';
+  import { Cog6ToothIcon, FunnelIcon as FunnelSolidIcon, EllipsisHorizontalCircleIcon, QuestionMarkCircleIcon } from '@heroicons/vue/24/solid';
   import { useLogsStore } from '@/stores/logs';
   import { useAutoUI } from '@/hooks/useAutoUI'; 
   import * as validateFun from '@/utils/validateFun';
@@ -834,6 +834,9 @@ configProviderProps: configProviderPropsRef
         title: '规则来源',
         key: 'ruleMode',
         render(row, index) {
+          const slots = {
+					icon: row.ruleMode === 'custom' ? EllipsisHorizontalCircleIcon : QuestionMarkCircleIcon
+				};
           if (row.ruleMode === 'custom') {
             const rule = [
               {
@@ -856,7 +859,7 @@ configProviderProps: configProviderPropsRef
                 trigger="click"
                 options={rule}
               >
-                <n-button size="small" dashed type="info">
+                <n-button size="small" v-slots={slots} dashed type="info">
                   自定义规则
                 </n-button>
               </n-dropdown>
@@ -867,6 +870,7 @@ configProviderProps: configProviderPropsRef
               size="small"
               dashed
               type="error"
+              v-slots={slots}
               onClick={() => handleModuleRuleMode(row, index)}
             >
               模块规则
@@ -897,11 +901,15 @@ configProviderProps: configProviderPropsRef
         title: '布局规则',
         key: 'settingMode',
         render(row, index) {
+          const slots = {
+					icon: Cog6ToothIcon
+				};
           return (
             <n-button
               size="small"
               strong
               dashed
+              v-slots={slots}
               type={modeMap[row.settingMode].type}
               color={modeMap[row.settingMode].color}
               onClick={() => openUpdateDrawer(row, index)}
