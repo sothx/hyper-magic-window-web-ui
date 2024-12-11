@@ -160,7 +160,8 @@ const navigation = reactive([
 		href: '/appStore',
 		icon: BuildingStorefrontIcon,
 		isShow() {
-			return import.meta.env.MODE === 'development';
+			return false
+			// return import.meta.env.MODE === 'development';
 		},
 	},
 ]);

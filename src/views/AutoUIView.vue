@@ -967,7 +967,7 @@ configProviderProps: configProviderPropsRef
           应用布局优化
         </h3>
         <p :class="`mt-1 max-w-2xl text-sm leading-6  ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-500'}`">
-          应用布局优化，让应用元素重新流动，赋予大屏新的体验。
+          应用布局优化，自动优化应用内图文布局，提升视觉体验。
         </p>
       </div>
     </div>

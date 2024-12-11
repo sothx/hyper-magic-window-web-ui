@@ -331,7 +331,7 @@ function createColumns(): DataTableColumns<GameBoosterTableItem> {
 				</h3>
 				<p
 					:class="`mt-1 max-w-2xl text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-500'}`">
-					游戏显示布局，让沉浸的画面在宽广中自由延展。
+					游戏显示布局，改变游戏比例，获得更大的游戏视野。
 				</p>
 			</div>
 		</div>

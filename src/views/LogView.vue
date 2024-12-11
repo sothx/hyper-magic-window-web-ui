@@ -110,9 +110,9 @@ onMounted(() => {
 				</p>
 			</div>
 			<n-card :bordered="true" title="操作区" class="mt-3" size="small">
-				<div class="flex">
+				<div class="flex flex-wrap">
 					<n-button
-						class="mr-3"
+						class="mr-3 mb-3"
 						type="info"
 						@click="
 							() => {
@@ -125,7 +125,7 @@ onMounted(() => {
 						回到顶部
 					</n-button>
 					<n-button
-						class="mr-3"
+						class="mr-3 mb-3"
 						type="error"
 						@click="
 							() => {
@@ -138,7 +138,7 @@ onMounted(() => {
 						回到底部
 					</n-button>
 					<n-button
-						class="mr-3"
+						class="mr-3 mb-3"
 						type="success"
 						@click="
 							() => {
@@ -151,7 +151,7 @@ onMounted(() => {
 						清空日志
 					</n-button>
 					<n-button
-						class="mr-3"
+						class="mr-3 mb-3"
 						type="warning"
 						@click="
 							() => {
@@ -164,7 +164,7 @@ onMounted(() => {
 						保存日志
 					</n-button>
 				</div>
-				<div class="mt-6 border-t border-gray-100">
+				<div class="mt-3 border-t border-gray-100">
 					<n-space vertical>
 						<n-log
 							:hljs="hljs"

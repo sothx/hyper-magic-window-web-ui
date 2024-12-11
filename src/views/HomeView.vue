@@ -1671,7 +1671,7 @@ onMounted(() => {
 				</h3>
 				<p
 					:class="`mt-1 max-w-2xl text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-500'}`">
-					应用横屏布局，让应用在横屏中无限拓展。
+					应用横屏布局，优化应用在横屏下的体验。
 				</p>
 			</div>
 		</div>
