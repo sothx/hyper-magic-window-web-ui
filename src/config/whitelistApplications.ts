@@ -13,7 +13,6 @@ const systemApplicationList = [
 ]
 
 const topApplicationList = [
-    'dev.miuiicons.pedroz', // 完美图标计划
     'com.miui.touchassistant', // 悬浮球
     'com.miui.whitenoise', // 小米白噪音
     'com.tencent.mobileqq', // QQ
