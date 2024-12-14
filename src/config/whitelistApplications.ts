@@ -186,6 +186,7 @@ const topApplicationList = [
     'com.max.xiaoheihe', // 小黑盒
     'com.ruanmei.ithome', // IT之家
     'com.youdao.translator', // 有道翻译官
+    'com.netflix.NGP.MonumentValley3', // 纪念碑谷3
 ]
 
 

@@ -63,7 +63,8 @@ const getAppDownload = async () => {
 		preset: 'dialog',
 		content: () => (
 			<div>
-				<p>如果规则无法生效，还需要安装修改版的手机/平板管家才会生效~</p>
+				<p>如果规则无法生效，还需要安装修改版的手机/平板管家才会生效，安装后如出现崩溃等异常，推荐清空管家数据并重启设备再尝试~</p>
+				<p>(Tips:需搭配核心破解并通过MT管理器安装)</p>
 				<p>下载地址:https://caiyun.139.com/m/i?135CeBMHACC6p</p>
 			</div>
 		),
@@ -342,9 +343,7 @@ function createColumns(): DataTableColumns<GameBoosterTableItem> {
 				<n-alert v-if="deviceStore.deviceCharacteristics === 'tablet'" :show-icon="true" type="info">
 					<p>请添加需要管理的游戏应用到游戏工具箱，Hyper OS 2.0+还需要安装修改版的手机/平板管家才会生效。</p>
 					<p>修改版的手机/平板管家支持Hyper OS 2.0/1.0和MIUI 14:</p>
-					<n-button strong secondary type="info" @click="() => getAppDownload()"
-						>获取修改版手机/平板管家</n-button
-					>
+					<n-button strong secondary type="info" @click="() => getAppDownload()">获取修改版手机/平板管家</n-button>
 				</n-alert>
 			</div>
 			<div class="flex flex-wrap">

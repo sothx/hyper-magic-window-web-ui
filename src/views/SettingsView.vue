@@ -1292,6 +1292,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
 							<p>{{ `${deviceStore.batteryInfo.sohQcom} %` }}</p>
+							<p>{{ `≈ ${deviceStore.batteryInfo.chargeFullDesign * (deviceStore.batteryInfo.sohQcom / 100) / 1000} mAh` }}</p>
 							<p>(Tips:在设备保修期内健康度低于80%可以申请电池质保)</p>
 						</dd>
 					</div>
@@ -1305,6 +1306,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
 							<p>{{ `${deviceStore.batteryInfo.sohMTK} %` }}</p>
+							<p>{{ `≈ ${deviceStore.batteryInfo.chargeFullDesign * (deviceStore.batteryInfo.sohMTK / 100) / 1000} mAh` }}</p>
 							<p>(Tips:在设备保修期内健康度低于80%可以申请电池质保)</p>
 						</dd>
 					</div>
