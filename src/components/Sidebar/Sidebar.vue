@@ -53,7 +53,7 @@ const navigation = reactive([
 		icon: Square3Stack3DIcon,
 	},
 	{
-		name: '游戏显示布局(内测)',
+		name: '游戏显示布局',
 		routeName: 'game-booster',
 		href: '/game-booster',
 		isShow() {
@@ -499,7 +499,7 @@ onBeforeUnmount(() => {
 								:class="[
 									deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-600',
 									'text-lg font-bold',
-									'bg-clip-text text-center text-transparent text-h1'
+									'bg-clip-text text-center text-transparent text-h1 animated-bg'
 								]"
 								style="background-image: linear-gradient(101.22deg, rgb(255, 182, 133) -18.32%, rgb(255, 111, 29) 7.01%, rgb(252, 181, 232) 41.59%, rgb(135, 148, 255) 70.98%, rgb(60, 112, 255) 91.35%, rgb(60, 112, 255) 110.17%);"
 								>完美横屏应用计划 For Web UI</h1

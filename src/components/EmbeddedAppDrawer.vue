@@ -532,7 +532,7 @@ defineExpose({
 	<!-- Drawer -->
 	<n-drawer v-model:show="activeDrawer" :width="deviceStore.windowWidth >= 640 ? `450px` : `100%`" placement="right">
 		<n-drawer-content :title="props.title" closable>
-			<n-input-group :class="deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 ? '' : 'mb-5'">
+			<n-input-group>
 				<n-input-group-label size="large">应用包名</n-input-group-label>
 				<n-input
 					size="large"
@@ -549,7 +549,7 @@ defineExpose({
 				<n-tag :bordered="false" type="info">自定义规则</n-tag>
 				。
 			</n-alert>
-			<n-tabs class="my-5" type="segment" animated v-model:value="currentSettingMode">
+			<n-tabs class="my-3" type="segment" animated v-model:value="currentSettingMode">
 				<n-tab-pane name="embedded" tab="平行窗口" v-if="props.type === 'update' && isSupportEmbedded">
 					<n-alert :show-icon="false" :bordered="false" title="应用分屏显示" type="success">
 						开启后，未适配横屏应用界面将通过平行窗口显示
