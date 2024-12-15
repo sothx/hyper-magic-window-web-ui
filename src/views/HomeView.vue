@@ -519,19 +519,6 @@ const openAddEmbeddedApp = async () => {
 		logsStore.info('应用横屏布局-添加应用', '该功能仅兼容平板设备，暂时不兼容折叠屏设备，请等待后续更新情况！');
 		return;
 	}
-	if (!deviceStore.ABTestInfo.OS2_PAD_EMBEDDED_APP_MANAGER) {
-		modal.create({
-			title: '内测说明',
-			type: 'warning',
-			preset: 'dialog',
-			content: () => (
-				<p>
-					该功能尚处于测试阶段，预估最快2024-12-15后正式上线，可能存在较多不稳定性，需要有一定的玩机知识和问题解决能力，如需参与测试请通过做梦书的酷安动态获取新功能内测的激活口令！(动态内容就有，无需私信，新功能不同口令也不相同)
-				</p>
-			),
-		});
-		return;
-	}
 	if (addEmbeddedApp.value) {
 		const [addEmbeddedAppCancel, addEmbeddedAppRes] = await $to(addEmbeddedApp.value.openDrawer());
 		if (addEmbeddedAppCancel) {
@@ -707,17 +694,14 @@ const openAddEmbeddedApp = async () => {
 };
 
 const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) => {
-	if (!deviceStore.ABTestInfo.OS2_PAD_EMBEDDED_APP_MANAGER) {
+	if (deviceStore.deviceCharacteristics !== 'tablet') {
 		modal.create({
-			title: '内测说明',
+			title: '不兼容说明',
 			type: 'warning',
 			preset: 'dialog',
-			content: () => (
-				<p>
-					该功能尚处于测试阶段，预估最快2024-12-15后正式上线，可能存在较多不稳定性，需要有一定的玩机知识和问题解决能力，如需参与测试请通过做梦书的酷安动态获取新功能内测的激活口令！(动态内容就有，无需私信，新功能不同口令也不相同)
-				</p>
-			),
+			content: () => <p>该功能仅兼容平板设备，暂时不兼容折叠屏设备，请等待后续更新情况！</p>,
 		});
+		logsStore.info('应用横屏布局-添加应用', '该功能仅兼容平板设备，暂时不兼容折叠屏设备，请等待后续更新情况！');
 		return;
 	}
 	if (updateEmbeddedApp.value) {
@@ -1124,17 +1108,14 @@ const handleCustomRuleDropdown = async (
 	row: EmbeddedMergeRuleItem,
 	index: number,
 ) => {
-	if (!deviceStore.ABTestInfo.OS2_PAD_EMBEDDED_APP_MANAGER) {
+	if (deviceStore.deviceCharacteristics !== 'tablet') {
 		modal.create({
-			title: '内测说明',
+			title: '不兼容说明',
 			type: 'warning',
 			preset: 'dialog',
-			content: () => (
-				<p>
-					该功能尚处于测试阶段，预估最快2024-12-15后正式上线，可能存在较多不稳定性，需要有一定的玩机知识和问题解决能力，如需参与测试请通过做梦书的酷安动态获取新功能内测的激活口令！(动态内容就有，无需私信，新功能不同口令也不相同)
-				</p>
-			),
+			content: () => <p>该功能仅兼容平板设备，不兼容折叠屏设备！</p>,
 		});
+		logsStore.info('应用横屏布局-添加应用', '该功能仅兼容平板设备，不兼容折叠屏设备！');
 		return;
 	}
 	if (key === 'cleanCustomRule') {
@@ -1357,7 +1338,7 @@ const handleModuleRuleMode = (row: EmbeddedMergeRuleItem, index: number) => {
 			title: '不兼容说明',
 			type: 'warning',
 			preset: 'dialog',
-			content: () => <p>该功能仅兼容平板设备，暂时不兼容折叠屏设备，请等待后续更新情况！</p>,
+			content: () => <p>该功能仅兼容平板设备，不兼容折叠屏设备！</p>,
 		});
 		return;
 	}
@@ -1530,7 +1511,7 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 									type: 'warning',
 									preset: 'dialog',
 									content: () => (
-										<p>该功能仅兼容平板设备，暂时不兼容折叠屏设备，请等待后续更新情况！</p>
+										<p>该功能仅兼容平板设备，不兼容折叠屏设备！</p>
 									),
 								});
 								return;
@@ -1548,7 +1529,7 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 									type: 'warning',
 									preset: 'dialog',
 									content: () => (
-										<p>该功能仅兼容平板设备，暂时不兼容折叠屏设备，请等待后续更新情况！</p>
+										<p>该功能仅兼容平板设备不兼容折叠屏设备！</p>
 									),
 								});
 								return;
@@ -1566,7 +1547,7 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 									type: 'warning',
 									preset: 'dialog',
 									content: () => (
-										<p>该功能仅兼容平板设备，暂时不兼容折叠屏设备，请等待后续更新情况！</p>
+										<p>该功能仅兼容平板设备，不兼容折叠屏设备！</p>
 									),
 								});
 								return;
@@ -1584,7 +1565,7 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 									type: 'warning',
 									preset: 'dialog',
 									content: () => (
-										<p>该功能仅兼容平板设备，暂时不兼容折叠屏设备，请等待后续更新情况！</p>
+										<p>该功能仅兼容平板设备，不兼容折叠屏设备！</p>
 									),
 								});
 								return;

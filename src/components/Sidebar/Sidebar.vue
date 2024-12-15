@@ -145,7 +145,7 @@ const navigation = reactive([
 		href: '/dot-black-list',
 		isShow() {
 			return (
-				deviceStore.ABTestInfo.Hyper_OS_DOT_BLACK_LIST_MANAGER &&
+
 				deviceStore.MIOSVersion &&
 				deviceStore.MIOSVersion >= 1 &&
 				deviceStore.deviceCharacteristics === 'tablet'

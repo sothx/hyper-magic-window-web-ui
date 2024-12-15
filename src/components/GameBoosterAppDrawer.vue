@@ -131,7 +131,10 @@ const handleSelectGameRatio = (key: string, option: GameRatioOptions) => {
 							自定义游戏比例存在使用风险，如果配置了不恰当的自定义游戏比例，可能会触发部分游戏风控导致游戏账号被封！
 						</p>
 						<p>
-							如仍然坚持使用自定义游戏比例，请通过做梦书的酷安动态获取自定义游戏比例的激活口令！(动态内容就有，无需私信，新功能不同口令也不相同)
+							如仍然坚持使用自定义游戏比例，请前往模块设置导入激活口令激活自定义游戏比例：
+						</p>
+						<p>
+							eNqrVnJ39HWNd/L3Dw5xDYp3Dg0O8feND3IM8fRXsiopKk2tBQC2Pwrm
 						</p>
 					</div>
 				),

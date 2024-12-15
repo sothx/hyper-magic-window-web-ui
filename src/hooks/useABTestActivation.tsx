@@ -111,16 +111,16 @@ export function useABTestActivation() {
 				negativeText: '确定',
 			});
 		} else if (activateABTestRuleContent.GAME_BOOSTER_CUSTOM_RATIO) {
-      if (!deviceStore.ABTestInfo.GAME_BOOSTER_RADIO_MANAGER) {
-        modal.create({
-          title: '激活自定义游戏比例失败',
-          type: 'error',
-          preset: 'dialog',
-          content: () => <p>激活自定义游戏比例失败了QwQ，请先激活游戏显示布局2.0的Beta测试！</p>,
-          negativeText: '确定',
-        });
-        return;
-      }
+    //   if (!deviceStore.ABTestInfo.GAME_BOOSTER_RADIO_MANAGER) {
+    //     modal.create({
+    //       title: '激活自定义游戏比例失败',
+    //       type: 'error',
+    //       preset: 'dialog',
+    //       content: () => <p>激活自定义游戏比例失败了QwQ，请先激活游戏显示布局2.0的Beta测试！</p>,
+    //       negativeText: '确定',
+    //     });
+    //     return;
+    //   }
       deviceStore.ABTestInfo.GAME_BOOSTER_CUSTOM_RATIO = true;
       modal.create({
 				title: '操作成功',

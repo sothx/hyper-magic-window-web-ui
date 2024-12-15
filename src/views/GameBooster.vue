@@ -45,6 +45,15 @@ const gameMode = useGameMode();
 const updateGameBoosterAppDrawer = ref<GameBoosterAppDrawerInstance | null>(null);
 
 const openAddGame = async () => {
+	if (!gameMode.isSupportGameMode.value) {
+		modal.create({
+			title: '未开启游戏显示布局',
+			type: 'warning',
+			preset: 'dialog',
+			content: () => <p>未开启游戏显示布局，请先前往模块设置进行开启~</p>,
+		});
+		return;
+	}
 	const [openAddGameErr, openAddGameRes] = await $to(gameBoosterApi.openAddGame());
 	if (openAddGameErr) {
 		modal.create({
@@ -78,23 +87,10 @@ const getAppDownload = async () => {
 };
 
 const handleClickSetting = async (row: GameBoosterTableItem, index: number) => {
-	if (!deviceStore.ABTestInfo.GAME_BOOSTER_RADIO_MANAGER) {
-		modal.create({
-			title: '内测说明',
-			type: 'warning',
-			preset: 'dialog',
-			content: () => (
-				<p>
-					该功能尚处于测试阶段，预估最快2024-12-29后正式上线，可能存在较多不稳定性，需要有一定的玩机知识和问题解决能力，如需参与测试请通过做梦书的酷安动态获取新功能内测的激活口令！(动态内容就有，无需私信，新功能不同口令也不相同)
-				</p>
-			),
-		});
-		return;
-	}
 	if (!gameMode.isSupportGameMode.value) {
 		modal.create({
 			title: '未开启游戏显示布局',
-			type: 'error',
+			type: 'warning',
 			preset: 'dialog',
 			content: () => <p>未开启游戏显示布局，请先前往模块设置进行开启~</p>,
 		});
