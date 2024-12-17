@@ -165,7 +165,7 @@ defineExpose({
 			}"
 			:title="props.title"
 			closable>
-			<n-input-group :class="deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 ? '' : 'mb-5'">
+			<n-input-group>
 				<n-input-group-label size="large">应用包名</n-input-group-label>
 				<n-input
 					size="large"
