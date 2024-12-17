@@ -1048,6 +1048,7 @@ function createColumns(): DataTableColumns<DotBlackListMergeItem> {
 		<n-data-table
 			:loading="deviceStore.loading || dotBlackListStore.loading"
 			:columns="columns"
+			class="mt-3"
 			:data="dotBlackListStore.filterMergeDotBlackList"
 			:pagination="pagination" />
 		<DotBlackListAppDrawer ref="addDotBlackListApp" type="add" title="添加应用" />

@@ -1106,6 +1106,7 @@ configProviderProps: configProviderPropsRef
     <n-data-table
       :loading="deviceStore.loading || autoUIStore.loading"
       :columns="columns"
+      class="mt-3"
       :data="autoUIStore.filterMergeRuleList"
       :pagination="pagination"
     />

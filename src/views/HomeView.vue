@@ -1801,6 +1801,7 @@ onMounted(() => {
 			ref="embeddedTableRef"
 			:loading="deviceStore.loading || embeddedStore.loading"
 			:columns="columns"
+			class="mt-3"
 			:data="embeddedStore.filterMergeRuleList"
 			:pagination="pagination" />
 	</main>

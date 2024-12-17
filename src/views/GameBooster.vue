@@ -412,6 +412,7 @@ function createColumns(): DataTableColumns<GameBoosterTableItem> {
 		<n-data-table
 			:loading="deviceStore.loading || gameBoosterStore.loading"
 			:columns="columns"
+			class="mt-3"
 			:data="gameBoosterStore.filterGameBoosterList"
 			:pagination="pagination" />
 	</main>
