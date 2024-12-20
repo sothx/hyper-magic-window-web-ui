@@ -18,6 +18,7 @@ import { useAmktiao, type KeyboardModeOptions } from '@/hooks/useAmktiao';
 import { useMiuiDesktopMode } from '@/hooks/useMiuiDesktopMode';
 import { useShowNotificationIcon } from '@/hooks/useShowNotificationIconNum';
 import { useRealQuantity } from '@/hooks/useRealQuantity';
+import { BoltIcon, CpuChipIcon } from '@heroicons/vue/24/solid';
 import { useDisplayModeRecord, type DisplayModeItem } from '@/hooks/useDisplayModeRecord';
 const deviceStore = useDeviceStore();
 const embeddedStore = useEmbeddedStore();
@@ -80,22 +81,8 @@ const handleSelectFontMode = (item: string) => {
 };
 
 const handleOpenRateFrameService = async () => {
-	await deviceApi.openFrameRate()
-}
-
-const handleSelectFps = async (data:DisplayModeItem) => {
-	modal.create({
-                title: '想应用该配置吗?',
-                type: 'info',
-                preset: 'dialog',
-                content: () => <p>应用后设备分辨率将配置为{data.width}x{data.height}，刷新率将配置为{data.fps}Hz，在设备下次重启前将一直维持该配置，该功能可能受触控笔和其他第三方模块影响不一定生效，如需恢复系统设置内的默认分辨率及刷新率配置，请手动重启设备。{deviceStore.deviceCharacteristics === 'tablet' && <span>连接触控笔蓝牙期间，为了确保触控笔正常工作，系统也会强行重置该配置，断开触控笔蓝牙后需要重新配置，</span>}确定要继续应用该配置么？</p>,
-                negativeText: '取消',
-				positiveText: '确定',
-				onPositiveClick() {
-					displayModeRecordHook.setDisplayMode(data.id - 1);
-				}
-            });
-}
+	await deviceApi.openFrameRate();
+};
 
 const handleSelectRhythmMode = (item: string) => {
 	deviceStore.rhythmMode = item;
@@ -109,7 +96,7 @@ const handleSelectRhythmMode = (item: string) => {
 const activateABTestTextarea = ref<string>('');
 const handleActivateABTest = async () => {
 	const ABTestontent = {
-		GAME_BOOSTER_CUSTOM_RATIO: true
+		GAME_BOOSTER_CUSTOM_RATIO: true,
 	};
 	const jsonString = JSON.stringify(ABTestontent);
 	const deflate = pako.deflate(jsonString, {
@@ -119,7 +106,7 @@ const handleActivateABTest = async () => {
 	});
 	const compressedData = new Uint8Array(deflate);
 	const base64String: string = arrayBufferToBase64(compressedData);
-	console.log(base64String,'base64String')
+	console.log(base64String, 'base64String');
 	activateABTestTextarea.value = '';
 	const [activateABTestTextareaModalErr, activateABTestTextareaModalRes] = await $to(
 		new Promise((resolve, reject) => {
@@ -524,10 +511,22 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 	<div class="setting">
 		<div class="mt-3">
 			<div class="px-3 sm:px-0">
-				<h3
-					:class="`text-base font-semibold leading-7`"
+				<h3 :class="`text-base font-semibold leading-7`">
+					<span
+						class="animated-bg bg-clip-text font-semibold text-transparent"
+						style="
+							background-image: linear-gradient(
+								101.22deg,
+								rgb(255, 182, 133) -18.32%,
+								rgb(255, 111, 29) 7.01%,
+								rgb(252, 181, 232) 41.59%,
+								rgb(135, 148, 255) 70.98%,
+								rgb(60, 112, 255) 91.35%,
+								rgb(60, 112, 255) 110.17%
+							);
+						"
+						>模块设置</span
 					>
-					<span class="font-semibold animated-bg bg-clip-text text-transparent" style="background-image: linear-gradient(101.22deg, rgb(255, 182, 133) -18.32%, rgb(255, 111, 29) 7.01%, rgb(252, 181, 232) 41.59%, rgb(135, 148, 255) 70.98%, rgb(60, 112, 255) 91.35%, rgb(60, 112, 255) 110.17%);">模块设置</span>
 				</h3>
 				<p
 					:class="`mt-1 max-w-2xl text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-500'}`">
@@ -535,7 +534,8 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 				</p>
 			</div>
 
-			<div :class="`mt-3 border-t ${deviceStore.isDarkMode ? 'divide-sothx-gray-color border-sothx-gray-color' : ' border-gray-200 divide-gray-200'}`">
+			<div
+				:class="`mt-3 border-t ${deviceStore.isDarkMode ? 'divide-sothx-gray-color border-sothx-gray-color' : 'divide-gray-200 border-gray-200'}`">
 				<dl :class="`divide-y ${deviceStore.isDarkMode ? 'divide-sothx-gray-color' : 'divide-gray-200'}`">
 					<div v-if="deviceStore.moduleInfo?.id" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
@@ -723,7 +723,11 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 						</dd>
 					</div>
 					<div
-						v-if="deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 1 && deviceStore.deviceCharacteristics === 'tablet'"
+						v-if="
+							deviceStore.MIOSVersion &&
+							deviceStore.MIOSVersion >= 1 &&
+							deviceStore.deviceCharacteristics === 'tablet'
+						"
 						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
@@ -816,7 +820,10 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 								<template #checked>已启用</template>
 								<template #unchecked>未启用</template>
 							</n-switch>
-							<n-alert class="mt-5" type="warning" :show-icon="false" :bordered="false">Tips:仅兼容水龙(Amktiao)的移植包，存在 /sys/touchpanel/pen_enable 开关映射时生效</n-alert>
+							<n-alert class="mt-5" type="warning" :show-icon="false" :bordered="false"
+								>Tips:仅兼容水龙(Amktiao)的移植包，存在 /sys/touchpanel/pen_enable
+								开关映射时生效</n-alert
+							>
 						</dd>
 					</div>
 					<div
@@ -886,7 +893,9 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 									{{ amktiaoHook.currentKeyboardModeSelect.value.label }}
 								</n-button>
 							</n-dropdown>
-							<n-alert class="mt-5" type="warning" :show-icon="false" :bordered="false">Tips:仅兼容水龙(Amktiao)的移植包，存在 /sys/touchpanel/keyboard 开关映射时生效</n-alert>
+							<n-alert class="mt-5" type="warning" :show-icon="false" :bordered="false"
+								>Tips:仅兼容水龙(Amktiao)的移植包，存在 /sys/touchpanel/keyboard 开关映射时生效</n-alert
+							>
 						</dd>
 					</div>
 					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
@@ -1108,12 +1117,17 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
 							<n-button
-								size="small"
+								class="mb-3 mr-3"
 								type="warning"
 								secondary
 								:loading="deviceStore.loading"
-								@click="handleOpenRateFrameService()">
-								打开性能监视器
+								@click="() => deviceApi.openFrameRate()">
+								<template #icon>
+									<n-icon>
+										<CpuChipIcon />
+									</n-icon>
+								</template>
+								性能监视器
 							</n-button>
 						</dd>
 					</div>
@@ -1124,44 +1138,49 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 						</dt>
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							<n-button
-								size="small"
-								type="success"
-								secondary
-								:loading="deviceStore.loading"
-								@click="() => deviceApi.setFpsFrameService(true)">
-								打开帧率监视器
-							</n-button>
-							<n-button
-								size="small"
-								class="ml-2"
-								type="error"
-								secondary
-								:loading="deviceStore.loading"
-								@click="() => deviceApi.setFpsFrameService(false)">
-								关闭帧率监视器
-							</n-button>
+							<n-dropdown
+								size="large"
+								trigger="click"
+								:options="[
+									{ label: '打开帧率监视器', key: 'open' },
+									{ label: '关闭帧率监视器', key: 'close' },
+								]"
+								@select="(key: string) => { key === 'open' ? deviceApi.setFpsFrameService(true) : deviceApi.setFpsFrameService(false) }">
+								<n-button class="mb-3 mr-3" type="info" secondary :loading="deviceStore.loading">
+									<template #icon>
+										<n-icon>
+											<BoltIcon />
+										</n-icon>
+									</template>
+									帧率监视器
+								</n-button>
+							</n-dropdown>
 						</dd>
 					</div>
-					<div v-if="displayModeRecordHook.formatDisplayModeList.value.length" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+					<div
+						v-if="displayModeRecordHook.formatDisplayModeList.value.length"
+						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
 							分辨率及刷新率
 						</dt>
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							<div class="flex mb-3" v-for="item in displayModeRecordHook.formatDisplayModeList.value" :key="item.id">
+							<div
+								class="mb-3 flex"
+								v-for="item in displayModeRecordHook.formatDisplayModeList.value"
+								:key="item.id">
 								<p class="mr-3">ID: {{ item.id }}</p>
 								<p class="mr-3">分辨率: {{ `${item.width}x${item.height}` }}</p>
 								<p class="mr-3">刷新率: {{ `${item.fps} Hz` }}</p>
 								<n-button
-								size="small"
-								type="info"
-								secondary
-								:loading="deviceStore.loading"
-								@click="handleSelectFps(item)">
-								应用该配置
-							</n-button>
+									size="small"
+									type="info"
+									secondary
+									:loading="deviceStore.loading"
+									@click="() => displayModeRecordHook.selectDisplayMode(item)">
+									应用该配置
+								</n-button>
 							</div>
 						</dd>
 					</div>
@@ -1325,7 +1344,9 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
 							<p>{{ `${deviceStore.batteryInfo.sohQcom} %` }}</p>
-							<p>{{ `≈ ${deviceStore.batteryInfo.chargeFullDesign * (deviceStore.batteryInfo.sohQcom / 100) / 1000} mAh` }}</p>
+							<p>{{
+								`≈ ${(deviceStore.batteryInfo.chargeFullDesign * (deviceStore.batteryInfo.sohQcom / 100)) / 1000} mAh`
+							}}</p>
 							<p>(Tips:在设备保修期内健康度低于80%可以申请电池质保)</p>
 						</dd>
 					</div>
@@ -1339,7 +1360,9 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
 							<p>{{ `${deviceStore.batteryInfo.sohMTK} %` }}</p>
-							<p>{{ `≈ ${deviceStore.batteryInfo.chargeFullDesign * (deviceStore.batteryInfo.sohMTK / 100) / 1000} mAh` }}</p>
+							<p>{{
+								`≈ ${(deviceStore.batteryInfo.chargeFullDesign * (deviceStore.batteryInfo.sohMTK / 100)) / 1000} mAh`
+							}}</p>
 							<p>(Tips:在设备保修期内健康度低于80%可以申请电池质保)</p>
 						</dd>
 					</div>

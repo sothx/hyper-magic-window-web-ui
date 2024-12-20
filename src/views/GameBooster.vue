@@ -2,7 +2,7 @@
 import { ref, reactive, watch, type CSSProperties, h, type Component, computed, onMounted } from 'vue';
 import { useGameBoosterStore } from '@/stores/gameBooster';
 import * as deviceApi from '@/apis/deviceApi';
-import { Cog6ToothIcon } from '@heroicons/vue/24/solid';
+import { BoltIcon, Cog6ToothIcon, CpuChipIcon } from '@heroicons/vue/24/solid';
 import * as gameBoosterApi from '@/apis/gameBoosterApi';
 import { useDeviceStore } from '@/stores/device';
 import $to from 'await-to-js';
@@ -23,7 +23,7 @@ import GameBoosterAppDrawer from '@/components/GameBoosterAppDrawer.vue';
 import { useInstalledAppNames } from '@/hooks/useInstalledAppNames';
 import type GameBoosterTableItem from '@/types/GameBoosterTableItem';
 import { gameGravityOptions, gameRatioOptions } from '@/constant/gameBooster';
-import { mapKeys } from 'lodash-es';
+import { keyBy, mapKeys } from 'lodash-es';
 type SearchKeyWordInputInstance = InstanceType<typeof NInput>;
 type GameBoosterAppDrawerInstance = InstanceType<typeof GameBoosterAppDrawer>;
 const searchKeyWordInput = ref<SearchKeyWordInputInstance | null>(null);
@@ -72,7 +72,9 @@ const getAppDownload = async () => {
 		preset: 'dialog',
 		content: () => (
 			<div>
-				<p>如果规则无法生效，还需要安装修改版的手机/平板管家才会生效，安装后如出现崩溃等异常，推荐清空管家数据并重启设备再尝试~</p>
+				<p>
+					如果规则无法生效，还需要安装修改版的手机/平板管家才会生效，安装后如出现崩溃等异常，推荐清空管家数据并重启设备再尝试~
+				</p>
 				<p>(Tips:需搭配核心破解并通过MT管理器安装)</p>
 				<p>下载地址:https://caiyun.139.com/m/i?135CeBMHACC6p</p>
 			</div>
@@ -323,10 +325,22 @@ function createColumns(): DataTableColumns<GameBoosterTableItem> {
 	<main class="autoui-view mb-10">
 		<div class="mt-3">
 			<div class="mb-3 px-4 sm:px-0">
-				<h3
-					:class="`text-base font-semibold leading-7`"
+				<h3 :class="`text-base font-semibold leading-7`">
+					<span
+						class="animated-bg bg-clip-text font-semibold text-transparent"
+						style="
+							background-image: linear-gradient(
+								101.22deg,
+								rgb(255, 182, 133) -18.32%,
+								rgb(255, 111, 29) 7.01%,
+								rgb(252, 181, 232) 41.59%,
+								rgb(135, 148, 255) 70.98%,
+								rgb(60, 112, 255) 91.35%,
+								rgb(60, 112, 255) 110.17%
+							);
+						"
+						>游戏显示布局</span
 					>
-					<span class="font-semibold animated-bg bg-clip-text text-transparent" style="background-image: linear-gradient(101.22deg, rgb(255, 182, 133) -18.32%, rgb(255, 111, 29) 7.01%, rgb(252, 181, 232) 41.59%, rgb(135, 148, 255) 70.98%, rgb(60, 112, 255) 91.35%, rgb(60, 112, 255) 110.17%);">游戏显示布局</span>
 				</h3>
 				<p
 					:class="`mt-1 max-w-2xl text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-500'}`">
@@ -339,7 +353,9 @@ function createColumns(): DataTableColumns<GameBoosterTableItem> {
 				<n-alert v-if="deviceStore.deviceCharacteristics === 'tablet'" :show-icon="true" type="info">
 					<p>请添加需要管理的游戏应用到游戏工具箱，Hyper OS 2.0+还需要安装修改版的手机/平板管家才会生效。</p>
 					<p>修改版的手机/平板管家支持Hyper OS 2.0/1.0和MIUI 14:</p>
-					<n-button strong secondary type="info" @click="() => getAppDownload()">获取修改版手机/平板管家</n-button>
+					<n-button strong secondary type="info" @click="() => getAppDownload()"
+						>获取修改版手机/平板管家</n-button
+					>
 				</n-alert>
 			</div>
 			<div class="flex flex-wrap">
@@ -367,6 +383,42 @@ function createColumns(): DataTableColumns<GameBoosterTableItem> {
 					</template>
 					刷新游戏列表
 				</n-button>
+			</div>
+			<div class="flex flex-wrap">
+				<n-button
+					class="mb-3 mr-3"
+					type="warning"
+					secondary
+					:loading="deviceStore.loading || gameBoosterStore.loading"
+					@click="() => deviceApi.openFrameRate()">
+					<template #icon>
+						<n-icon>
+							<CpuChipIcon />
+						</n-icon>
+					</template>
+					性能监视器
+				</n-button>
+				<n-dropdown
+					size="large"
+					trigger="click"
+					:options="[
+						{ label: '打开帧率监视器', key: 'open' },
+						{ label: '关闭帧率监视器', key: 'close' },
+					]"
+					@select="(key: string) => { key === 'open' ? deviceApi.setFpsFrameService(true) : deviceApi.setFpsFrameService(false) }">
+					<n-button
+						class="mb-3 mr-3"
+						type="info"
+						secondary
+						:loading="deviceStore.loading || gameBoosterStore.loading">
+						<template #icon>
+							<n-icon>
+								<BoltIcon />
+							</n-icon>
+						</template>
+						帧率监视器
+					</n-button>
+				</n-dropdown>
 			</div>
 			<n-input-group>
 				<n-input

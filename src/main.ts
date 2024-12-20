@@ -46,6 +46,7 @@ import {
   NCheckboxGroup,
   NCheckbox,
   NGi,
+  NIcon,
   NStatistic,
   NThemeEditor,
   NGrid,
@@ -98,6 +99,7 @@ const naive = create({
     NSkeleton,
     NGi,
     NGrid,
+    NIcon,
     NBadge
   ],
 });
