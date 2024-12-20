@@ -1185,3 +1185,35 @@ export const getDisplay0PanelInfo = (): Promise<string> => {
 		shellCommon,
 	);
 };
+
+
+export const setDisplayMode = (displayModeID: number): Promise<string> => {
+	const shellCommon = `service call SurfaceFlinger 1035 i32 ${displayModeID}`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`Result: Parcel(NULL)`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const setFpsFrameService = (status: boolean): Promise<string> => {
+	const shellCommon = `service call SurfaceFlinger 1034 i32 ${status ? 1 : 0}`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`Result: Parcel(NULL)`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+

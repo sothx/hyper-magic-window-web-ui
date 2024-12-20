@@ -34,6 +34,28 @@ export function useDisplayModeRecord() {
           }));
     })
 
+    const setDisplayMode = async (displayModeID: number) => {
+        const [setDisplayModeErr,setDisplayModeRes] = await $to(deviceApi.setDisplayMode(displayModeID))
+        if (setDisplayModeErr) {
+            modal.create({
+                title: '操作失败',
+                type: 'error',
+                preset: 'dialog',
+                content: () => <p>修改失败，详情请查看日志记录~</p>,
+                negativeText: '确定',
+            });
+        }
+        if (setDisplayModeRes) {
+            modal.create({
+                title: '操作成功',
+                type: 'success',
+                preset: 'dialog',
+                content: () => <p>已成功应用该分辨率及刷新率配置，在设备下次重启前将一直维持该配置，如需恢复系统设置内的默认分辨率及刷新率配置，请手动重启设备。</p>,
+                negativeText: '确定',
+            });
+        }
+    }
+
 
 
     onMounted(async () => {
@@ -55,7 +77,8 @@ export function useDisplayModeRecord() {
 
     return {
         displayModeList,
-        formatDisplayModeList
+        formatDisplayModeList,
+        setDisplayMode
     }
 
 

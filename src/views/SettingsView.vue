@@ -18,7 +18,7 @@ import { useAmktiao, type KeyboardModeOptions } from '@/hooks/useAmktiao';
 import { useMiuiDesktopMode } from '@/hooks/useMiuiDesktopMode';
 import { useShowNotificationIcon } from '@/hooks/useShowNotificationIconNum';
 import { useRealQuantity } from '@/hooks/useRealQuantity';
-import { useDisplayModeRecord } from '@/hooks/useDisplayModeRecord';
+import { useDisplayModeRecord, type DisplayModeItem } from '@/hooks/useDisplayModeRecord';
 const deviceStore = useDeviceStore();
 const embeddedStore = useEmbeddedStore();
 const miuiDesktopModeHook = useMiuiDesktopMode();
@@ -83,13 +83,17 @@ const handleOpenRateFrameService = async () => {
 	await deviceApi.openFrameRate()
 }
 
-const handleSelectFps = async () => {
+const handleSelectFps = async (data:DisplayModeItem) => {
 	modal.create({
-                title: '未开放功能',
-                type: 'error',
+                title: '想应用该配置吗?',
+                type: 'info',
                 preset: 'dialog',
-                content: () => <p>未开放功能，请等待后续消息~</p>,
-                negativeText: '确定',
+                content: () => <p>应用后设备分辨率将配置为{data.width}x{data.height}，刷新率将配置为{data.fps}Hz，在设备下次重启前将一直维持该配置，该功能可能受触控笔和其他第三方模块影响不一定生效，如需恢复系统设置内的默认分辨率及刷新率配置，请手动重启设备。连接触控笔蓝牙期间，为了保证触控笔正常工作，系统也会强行重置该配置，断开触控笔蓝牙后需要重新配置，确定要继续应用该配置么？</p>,
+                negativeText: '取消',
+				positiveText: '确定',
+				onPositiveClick() {
+					displayModeRecordHook.setDisplayMode(data.id - 1);
+				}
             });
 }
 
@@ -985,6 +989,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							<n-button
 								size="small"
 								type="warning"
+								secondary
 								:loading="deviceStore.loading || embeddedStore.loading || activateABTestLoading"
 								@click="handleActivateABTest()">
 								导入激活口令
@@ -1105,9 +1110,36 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							<n-button
 								size="small"
 								type="warning"
+								secondary
 								:loading="deviceStore.loading"
 								@click="handleOpenRateFrameService()">
 								打开性能监视器
+							</n-button>
+						</dd>
+					</div>
+					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+						<dt
+							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
+							帧率监视器
+						</dt>
+						<dd
+							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
+							<n-button
+								size="small"
+								type="success"
+								secondary
+								:loading="deviceStore.loading"
+								@click="() => deviceApi.setFpsFrameService(true)">
+								打开帧率监视器
+							</n-button>
+							<n-button
+								size="small"
+								class="ml-2"
+								type="error"
+								secondary
+								:loading="deviceStore.loading"
+								@click="() => deviceApi.setFpsFrameService(false)">
+								关闭帧率监视器
 							</n-button>
 						</dd>
 					</div>
@@ -1122,13 +1154,14 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 								<p class="mr-3">ID: {{ item.id }}</p>
 								<p class="mr-3">分辨率: {{ `${item.width}x${item.height}` }}</p>
 								<p class="mr-3">刷新率: {{ `${item.fps} Hz` }}</p>
-								<!-- <n-button
+								<n-button
 								size="small"
 								type="info"
+								secondary
 								:loading="deviceStore.loading"
-								@click="handleSelectFps()">
-								应用该配置(未开放)
-							</n-button> -->
+								@click="handleSelectFps(item)">
+								应用该配置
+							</n-button>
 							</div>
 						</dd>
 					</div>
