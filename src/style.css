@@ -24,6 +24,18 @@ body {
 	animation: gradientShift 6s infinite ease-in-out;
 }
 
+.gradient-box {
+	background: linear-gradient(90deg, #c5dfff, #eaf7ff, #ffe6f2);
+	border-radius: 8px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 0 15px;
+	font-family: Arial, sans-serif;
+	color: #333;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
 
 @keyframes gradientShift {
   0% {

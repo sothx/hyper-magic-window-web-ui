@@ -145,7 +145,6 @@ const navigation = reactive([
 		href: '/dot-black-list',
 		isShow() {
 			return (
-
 				deviceStore.MIOSVersion &&
 				deviceStore.MIOSVersion >= 1 &&
 				deviceStore.deviceCharacteristics === 'tablet'
@@ -160,7 +159,7 @@ const navigation = reactive([
 		href: '/appStore',
 		icon: BuildingStorefrontIcon,
 		isShow() {
-			return false
+			return false;
 			// return import.meta.env.MODE === 'development';
 		},
 	},
@@ -484,7 +483,7 @@ onBeforeUnmount(() => {
 		</div>
 
 		<div class="min-h-screen lg:pl-72">
-			<div class="sticky top-0 z-40 lg:mx-auto backdrop-blur-md">
+			<div class="sticky top-0 z-40 backdrop-blur-md lg:mx-auto">
 				<div
 					class="flex h-14 items-center gap-x-4 border-b"
 					:class="deviceStore.isDarkMode ? 'border-gray-700 bg-zinc-900/50' : 'border-gray-200 bg-white/50'">
@@ -499,11 +498,23 @@ onBeforeUnmount(() => {
 								:class="[
 									deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-600',
 									'text-lg font-bold',
-									'bg-clip-text text-center text-transparent text-h1 animated-bg'
+									'text-h1 animated-bg bg-clip-text text-center text-transparent',
 								]"
-								style="background-image: linear-gradient(101.22deg, rgb(255, 182, 133) -18.32%, rgb(255, 111, 29) 7.01%, rgb(252, 181, 232) 41.59%, rgb(135, 148, 255) 70.98%, rgb(60, 112, 255) 91.35%, rgb(60, 112, 255) 110.17%);"
+								style="
+									background-image: linear-gradient(
+										101.22deg,
+										rgb(255, 182, 133) -18.32%,
+										rgb(255, 111, 29) 7.01%,
+										rgb(252, 181, 232) 41.59%,
+										rgb(135, 148, 255) 70.98%,
+										rgb(60, 112, 255) 91.35%,
+										rgb(60, 112, 255) 110.17%
+									);
+								"
 								>完美横屏应用计划 For Web UI</h1
 							>
+							<n-badge v-if="false" value="发现新版本" type="info" :offset="[40,-8]">
+							</n-badge>
 						</div>
 						<div class="flex items-center gap-x-4 lg:gap-x-6"></div>
 					</div>
@@ -511,6 +522,9 @@ onBeforeUnmount(() => {
 			</div>
 			<main>
 				<div class="mx-auto max-w-7xl px-4 pb-1 sm:px-6 lg:px-8">
+					<!-- <n-alert class="mt-5" title="发现模块新版本" type="success">
+					Leave it till tomorrow to unpack my case
+					</n-alert> -->
 					<slot></slot>
 				</div>
 			</main>
