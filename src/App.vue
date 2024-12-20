@@ -154,7 +154,7 @@ onMounted(async () => {
       </nav>
     </div>
   </header> -->
-	<div class="app-container h-full" :class="`${deviceStore.isDarkMode ? 'bg-zinc-900' : 'bg-white'}`">
+	<div class="app-container h-full" :class="`${deviceStore.isDarkMode ? 'bg-zinc-900 theme-dark-mode' : 'bg-white'}`">
 		<n-config-provider :theme="deviceStore.isDarkMode ? darkTheme : undefined">
 			<Sidebar>
 				<RouterView />

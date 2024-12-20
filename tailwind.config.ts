@@ -4,7 +4,11 @@ export default {
 	mode: 'jit',
 	content: ['./index.html', './src/**/*.{vue,js,ts,jsx,tsx}'],
 	theme: {
-		extend: {},
+		extend: {
+			colors: {
+				'sothx-gray-color': 'rgba(255, 255, 255, 0.09)'
+			}
+		},
 		screens: {
 		  'sm': '640px',
 		  'md': '768px',

@@ -531,8 +531,8 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 				</p>
 			</div>
 
-			<div class="mt-3 border-t border-gray-100">
-				<dl class="divide-y divide-gray-100">
+			<div :class="`mt-3 border-t ${deviceStore.isDarkMode ? 'divide-sothx-gray-color border-sothx-gray-color' : ' border-gray-200 divide-gray-200'}`">
+				<dl :class="`divide-y ${deviceStore.isDarkMode ? 'divide-sothx-gray-color' : 'divide-gray-200'}`">
 					<div v-if="deviceStore.moduleInfo?.id" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`"
