@@ -88,16 +88,11 @@ export const useDeviceStore = defineStore(
 		const systemVersion = ref<string>('');
 		const systemPreVersion = ref<string>('');
 		const currentRootManager = ref<ROOT_MANAGER_TYPE>('Magisk');
+		const hasNeedUpdateModule = ref<boolean>(false);
 		const shamikoInfo =  reactive<ShamikoInfo>({
 			installed: false,
 			mode: undefined
 		})
-		const updateInfo = reactive<UpdateInfo>({
-			version: '',
-			versionCode: 0,
-			zipUrl: '',
-			changelog: '',
-		});
 		const rootManagerInfo = reactive<ROOTManagerInfo>({
 			KSU: false,
 			KSU_VER: '',
@@ -436,6 +431,7 @@ export const useDeviceStore = defineStore(
 			hasPenUpdateControl,
 			hasPenEnableControl,
 			hasKeyboardControl,
+			hasNeedUpdateModule,
 			enabledMiuiDesktopMode,
 			isEnableShowNotificationIconNum
 		};

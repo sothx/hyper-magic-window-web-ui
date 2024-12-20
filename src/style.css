@@ -36,3 +36,8 @@ body {
     background-position: 30% 50%;
   }
 }
+@media (prefers-color-scheme: dark){
+	.n-data-table__pagination{
+		color: #fff;
+	}
+}

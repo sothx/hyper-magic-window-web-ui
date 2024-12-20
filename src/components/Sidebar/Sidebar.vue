@@ -284,11 +284,11 @@ onBeforeUnmount(() => {
 														:class="[
 															item.routeName === route.name
 																? deviceStore.isDarkMode
-																	? 'bg-gray-700 text-teal-400'
-																	: 'bg-gray-50 text-teal-600'
+																	? 'bg-[#232323] text-teal-400'
+																	: 'bg-[#E8E8E8] text-teal-600'
 																: deviceStore.isDarkMode
-																	? 'text-gray-300 hover:bg-gray-700 hover:text-teal-400'
-																	: 'text-gray-700 hover:bg-gray-50 hover:text-teal-600',
+																	? 'text-gray-300 hover:bg-[#232323] hover:text-teal-400'
+																	: 'text-gray-700 hover:bg-[#E8E8E8] hover:text-teal-600',
 															'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6',
 														]">
 														<component
@@ -322,11 +322,11 @@ onBeforeUnmount(() => {
 														:class="[
 															team.href === route.fullPath
 																? deviceStore.isDarkMode
-																	? 'bg-gray-700 text-teal-400'
-																	: 'bg-gray-50 text-teal-600'
+																	? 'bg-[#232323] text-teal-400'
+																	: 'bg-[#E8E8E8] text-teal-600'
 																: deviceStore.isDarkMode
-																	? 'text-gray-300 hover:bg-gray-700 hover:text-teal-400'
-																	: 'text-gray-700 hover:bg-gray-50 hover:text-teal-600',
+																	? 'text-gray-300 hover:bg-[#232323] hover:text-teal-400'
+																	: 'text-gray-700 hover:bg-[#E8E8E8] hover:text-teal-600',
 															'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6',
 														]">
 														<span
@@ -353,11 +353,11 @@ onBeforeUnmount(() => {
 												:class="[
 													route.name === 'settings'
 														? deviceStore.isDarkMode
-															? 'bg-gray-700 text-teal-400'
-															: 'bg-gray-50 text-teal-600'
+															? 'bg-[#232323] text-teal-400'
+															: 'bg-[#E8E8E8] text-teal-600'
 														: deviceStore.isDarkMode
-															? 'text-gray-300 hover:bg-gray-700 hover:text-teal-400'
-															: 'text-gray-700 hover:bg-gray-50 hover:text-teal-600',
+															? 'text-gray-300 hover:bg-[#232323] hover:text-teal-400'
+															: 'text-gray-700 hover:bg-[#E8E8E8] hover:text-teal-600',
 													'group-mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6',
 												]">
 												<Cog6ToothIcon class="h-6 w-6 shrink-0" aria-hidden="true" />
@@ -398,11 +398,11 @@ onBeforeUnmount(() => {
 										:class="[
 											item.routeName === route.name
 												? deviceStore.isDarkMode
-													? 'bg-gray-700 text-teal-400'
-													: 'bg-gray-50 text-teal-600'
+													? 'bg-[#232323] text-teal-400'
+													: 'bg-[#E8E8E8] text-teal-600'
 												: deviceStore.isDarkMode
-													? 'text-gray-300 hover:bg-gray-700 hover:text-teal-400'
-													: 'text-gray-700 hover:bg-gray-50 hover:text-teal-600',
+													? 'text-gray-300 hover:bg-[#232323] hover:text-teal-400'
+													: 'text-gray-700 hover:bg-[#E8E8E8] hover:text-teal-600',
 											'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6',
 										]">
 										<component
@@ -436,11 +436,11 @@ onBeforeUnmount(() => {
 										:class="[
 											team.href === route.fullPath
 												? deviceStore.isDarkMode
-													? 'bg-gray-700 text-teal-400'
-													: 'bg-gray-50 text-teal-600'
+													? 'bg-[#232323] text-teal-400'
+													: 'bg-[#E8E8E8] text-teal-600'
 												: deviceStore.isDarkMode
-													? 'text-gray-300 hover:bg-gray-700 hover:text-teal-400'
-													: 'text-gray-700 hover:bg-gray-50 hover:text-teal-600',
+													? 'text-gray-300 hover:bg-[#232323] hover:text-teal-400'
+													: 'text-gray-700 hover:bg-[#E8E8E8] hover:text-teal-600',
 											'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6',
 										]">
 										<span
@@ -467,11 +467,11 @@ onBeforeUnmount(() => {
 								:class="[
 									route.name === 'settings'
 										? deviceStore.isDarkMode
-											? 'bg-gray-700 text-teal-400'
-											: 'bg-gray-50 text-teal-600'
+											? 'bg-[#232323] text-teal-400'
+											: 'bg-[#E8E8E8] text-teal-600'
 										: deviceStore.isDarkMode
-											? 'text-gray-300 hover:bg-gray-700 hover:text-teal-400'
-											: 'text-gray-700 hover:bg-gray-50 hover:text-teal-600',
+											? 'text-gray-300 hover:bg-[#232323] hover:text-teal-400'
+											: 'text-gray-700 hover:bg-[#E8E8E8] hover:text-teal-600',
 									'group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6',
 								]">
 								<Cog6ToothIcon class="h-6 w-6 shrink-0" aria-hidden="true" />

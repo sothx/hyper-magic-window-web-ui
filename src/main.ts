@@ -34,6 +34,7 @@ import {
   NAlert,
   NRadioGroup,
   NRadioButton,
+  NBadge,
   NInputGroupLabel,
   NInputNumber,
   NDropdown,
@@ -96,7 +97,8 @@ const naive = create({
     NCheckbox,
     NSkeleton,
     NGi,
-    NGrid
+    NGrid,
+    NBadge
   ],
 });
 
