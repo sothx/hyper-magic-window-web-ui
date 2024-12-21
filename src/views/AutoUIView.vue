@@ -1027,7 +1027,7 @@ function createColumns(): DataTableColumns<AutoUIMergeRuleItem> {
 					@click="() => deviceApi.openVoiceAssistant()">
 					<template #icon>
 						<n-icon>
-							<ChatBubbleLeftEllipsisIcon />
+							<img src="/images/icons/ai_icon.png" />
 						</n-icon>
 					</template>
 					超级小爱
