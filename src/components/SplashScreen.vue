@@ -28,5 +28,10 @@ const deviceStore = useDeviceStore();
         background-size: cover;
         background-position: center;
     }
+    .theme-dark-mode{
+      .splash-screen {
+        background-image: url('/images/ai_cover_dark_bg.webp');
+      }
+    }
   </style>
   
