@@ -18,7 +18,7 @@ import { useAmktiao, type KeyboardModeOptions } from '@/hooks/useAmktiao';
 import { useMiuiDesktopMode } from '@/hooks/useMiuiDesktopMode';
 import { useShowNotificationIcon } from '@/hooks/useShowNotificationIconNum';
 import { useRealQuantity } from '@/hooks/useRealQuantity';
-import { BoltIcon, CpuChipIcon } from '@heroicons/vue/24/solid';
+import { BoltIcon, CpuChipIcon,ArrowDownCircleIcon } from '@heroicons/vue/24/solid';
 import { useDisplayModeRecord, type DisplayModeItem } from '@/hooks/useDisplayModeRecord';
 const deviceStore = useDeviceStore();
 const embeddedStore = useEmbeddedStore();
@@ -1001,6 +1001,11 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 								secondary
 								:loading="deviceStore.loading || embeddedStore.loading || activateABTestLoading"
 								@click="handleActivateABTest()">
+								<template #icon>
+						<n-icon>
+							<ArrowDownCircleIcon />
+						</n-icon>
+					</template>
 								导入激活口令
 							</n-button>
 						</dd>
@@ -1119,6 +1124,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							<n-button
 								class="mb-3 mr-3"
 								type="warning"
+								size="small"
 								secondary
 								:loading="deviceStore.loading"
 								@click="() => deviceApi.openFrameRate()">
@@ -1146,7 +1152,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 									{ label: '关闭帧率监视器', key: 'close' },
 								]"
 								@select="(key: string) => { key === 'open' ? deviceApi.setFpsFrameService(true) : deviceApi.setFpsFrameService(false) }">
-								<n-button class="mb-3 mr-3" type="info" secondary :loading="deviceStore.loading">
+								<n-button size="small" class="mb-3 mr-3" type="info" secondary :loading="deviceStore.loading">
 									<template #icon>
 										<n-icon>
 											<BoltIcon />

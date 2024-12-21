@@ -39,7 +39,7 @@ import {
 	SquaresPlusIcon,
 	ScissorsIcon,
 } from '@heroicons/vue/24/outline';
-import { FunnelIcon as FunnelSolidIcon, Cog6ToothIcon, EllipsisHorizontalCircleIcon, MinusCircleIcon, QuestionMarkCircleIcon, XCircleIcon as XCircleIconSolid } from '@heroicons/vue/24/solid';
+import { FunnelIcon as FunnelSolidIcon, Cog6ToothIcon, EllipsisHorizontalCircleIcon, MinusCircleIcon, QuestionMarkCircleIcon, XCircleIcon as XCircleIconSolid, MicrophoneIcon, ChatBubbleLeftEllipsisIcon } from '@heroicons/vue/24/solid';
 import { arrayBufferToBase64, base64ToArrayBuffer } from '@/utils/format';
 import { findBase64InString, renderApplicationName } from '@/utils/common';
 import { getAppModeCode, getSettingEnableMode, getSettingMode } from '@/utils/embeddedFun';
@@ -1752,6 +1752,19 @@ onMounted(() => {
 						</n-icon>
 					</template>
 					{{ embeddedStore.filterInstalledApps ? '已安装应用' : '全部应用' }}
+				</n-button>
+				<n-button
+					class="mb-3 mr-3"
+					type="error"
+					secondary
+					:loading="deviceStore.loading || embeddedStore.loading"
+					@click="() => deviceApi.openVoiceAssistant()">
+					<template #icon>
+						<n-icon>
+							<ChatBubbleLeftEllipsisIcon />
+						</n-icon>
+					</template>
+					超级小爱
 				</n-button>
 			</div>
 			<div class="flex">

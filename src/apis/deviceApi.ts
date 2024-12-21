@@ -1217,3 +1217,18 @@ export const setFpsFrameService = (status: boolean): Promise<string> => {
 	);
 };
 
+
+export const openVoiceAssistant = (): Promise<string> => {
+	const shellCommon = `am start com.miui.voiceassist/com.xiaomi.voiceassistant.CTAAlertActivity`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`am start command executed successfully.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};

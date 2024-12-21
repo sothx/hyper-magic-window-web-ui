@@ -2,7 +2,7 @@
 import { ref, reactive, watch, type CSSProperties, h, type Component, computed, onMounted } from 'vue';
 import { useGameBoosterStore } from '@/stores/gameBooster';
 import * as deviceApi from '@/apis/deviceApi';
-import { BoltIcon, Cog6ToothIcon, CpuChipIcon } from '@heroicons/vue/24/solid';
+import { BoltIcon, Cog6ToothIcon, CpuChipIcon, ChatBubbleLeftEllipsisIcon } from '@heroicons/vue/24/solid';
 import * as gameBoosterApi from '@/apis/gameBoosterApi';
 import { useDeviceStore } from '@/stores/device';
 import $to from 'await-to-js';
@@ -419,6 +419,19 @@ function createColumns(): DataTableColumns<GameBoosterTableItem> {
 						帧率监视器
 					</n-button>
 				</n-dropdown>
+				<n-button
+					class="mb-3 mr-3"
+					type="error"
+					secondary
+					:loading="deviceStore.loading || gameBoosterStore.loading"
+					@click="() => deviceApi.openVoiceAssistant()">
+					<template #icon>
+						<n-icon>
+							<ChatBubbleLeftEllipsisIcon />
+						</n-icon>
+					</template>
+					超级小爱
+				</n-button>
 			</div>
 			<n-input-group>
 				<n-input

@@ -33,7 +33,7 @@ import {
 } from '@heroicons/vue/24/outline';
 import type AutoUIMergeRuleItem from '@/types/AutoUIMergeRuleItem';
 import { useRouter, useRoute } from 'vue-router';
-import { FunnelIcon as FunnelSolidIcon, EllipsisHorizontalCircleIcon, QuestionMarkCircleIcon } from '@heroicons/vue/24/solid';
+import { FunnelIcon as FunnelSolidIcon, EllipsisHorizontalCircleIcon, QuestionMarkCircleIcon, ChatBubbleLeftEllipsisIcon } from '@heroicons/vue/24/solid';
 import { useLogsStore } from '@/stores/logs';
 import { useAutoUI } from '@/hooks/useAutoUI';
 import * as validateFun from '@/utils/validateFun';
@@ -1002,6 +1002,19 @@ function createColumns(): DataTableColumns<DotBlackListMergeItem> {
 						</n-icon>
 					</template>
 					{{ dotBlackListStore.filterInstalledApps ? '已安装应用' : '全部应用' }}
+				</n-button>
+				<n-button
+					class="mb-3 mr-3"
+					type="error"
+					secondary
+					:loading="deviceStore.loading || dotBlackListStore.loading"
+					@click="() => deviceApi.openVoiceAssistant()">
+					<template #icon>
+						<n-icon>
+							<ChatBubbleLeftEllipsisIcon />
+						</n-icon>
+					</template>
+					超级小爱
 				</n-button>
 			</div>
 			<n-input-group>
