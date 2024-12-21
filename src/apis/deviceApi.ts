@@ -555,12 +555,12 @@ export const killGameBoosterApp = (packageName: string): Promise<string> => {
 	);
 };
 
-export const openFrameRate = (): Promise<string> => {
-	const shellCommon = `cmd activity startservice -n com.miui.powerkeeper/.ui.framerate.FrameRateService`;
+export const frameRateService = (status: 'start' | 'stop'): Promise<string> => {
+	const shellCommon = `cmd activity ${status}service -n com.miui.powerkeeper/.ui.framerate.FrameRateService`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
-				resolve(`startservice command executed successfully.`);
+				resolve(`${status}service command executed successfully.`);
 			} else {
 				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
 				errno ? reject(stderr) : resolve(stdout);
@@ -1232,3 +1232,34 @@ export const openVoiceAssistant = (): Promise<string> => {
 		shellCommon,
 	);
 };
+
+
+export const openAITranslation = (): Promise<string> => {
+	const shellCommon = `am startservice -n com.xiaomi.aiasst.vision/.control.translation.AiTranslateService --es from systemui.plugin.tile.aisubtitles --es floatingWindowType startAiSubtitlesWindow`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`am startservice command executed successfully.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const openLSPosedManger = (): Promise<string> => {
+	const shellCommon = `am broadcast -a android.telephony.action.SECRET_CODE -d android_secret_code://5776733 android`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`am broadcast command executed successfully.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+}

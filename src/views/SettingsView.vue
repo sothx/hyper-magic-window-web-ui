@@ -18,7 +18,7 @@ import { useAmktiao, type KeyboardModeOptions } from '@/hooks/useAmktiao';
 import { useMiuiDesktopMode } from '@/hooks/useMiuiDesktopMode';
 import { useShowNotificationIcon } from '@/hooks/useShowNotificationIconNum';
 import { useRealQuantity } from '@/hooks/useRealQuantity';
-import { BoltIcon, CpuChipIcon,ArrowDownCircleIcon } from '@heroicons/vue/24/solid';
+import { BoltIcon, CpuChipIcon, ArrowDownCircleIcon, FilmIcon } from '@heroicons/vue/24/solid';
 import { useDisplayModeRecord, type DisplayModeItem } from '@/hooks/useDisplayModeRecord';
 const deviceStore = useDeviceStore();
 const embeddedStore = useEmbeddedStore();
@@ -78,10 +78,6 @@ const fontModeMap = computed(() => {
 
 const handleSelectFontMode = (item: string) => {
 	fontStore.currentFont = item;
-};
-
-const handleOpenRateFrameService = async () => {
-	await deviceApi.openFrameRate();
 };
 
 const handleSelectRhythmMode = (item: string) => {
@@ -722,6 +718,23 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							</n-switch>
 						</dd>
 					</div>
+					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+						<dt
+							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
+							LSPosed 管理器
+						</dt>
+						<dd
+							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
+							<n-button
+								size="small"
+								type="info"
+								secondary
+								:loading="deviceStore.loading || embeddedStore.loading || activateABTestLoading"
+								@click="() => deviceApi.openLSPosedManger()">
+								打开LSPosed 管理器
+							</n-button>
+						</dd>
+					</div>
 					<div
 						v-if="
 							deviceStore.MIOSVersion &&
@@ -991,6 +1004,28 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
+							实时字幕
+						</dt>
+						<dd
+							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
+							<n-button
+								size="small"
+								type="info"
+								secondary
+								:loading="deviceStore.loading || embeddedStore.loading || activateABTestLoading"
+								@click="() => deviceApi.openAITranslation()">
+								<template #icon>
+									<n-icon>
+										<FilmIcon />
+									</n-icon>
+								</template>
+								打开实时字幕
+							</n-button>
+						</dd>
+					</div>
+					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+						<dt
+							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
 							激活口令
 						</dt>
 						<dd
@@ -1002,10 +1037,10 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 								:loading="deviceStore.loading || embeddedStore.loading || activateABTestLoading"
 								@click="handleActivateABTest()">
 								<template #icon>
-						<n-icon>
-							<ArrowDownCircleIcon />
-						</n-icon>
-					</template>
+									<n-icon>
+										<ArrowDownCircleIcon />
+									</n-icon>
+								</template>
 								导入激活口令
 							</n-button>
 						</dd>
@@ -1121,20 +1156,23 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 						</dt>
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							<n-button
-								class="mb-3 mr-3"
-								type="warning"
-								size="small"
-								secondary
-								:loading="deviceStore.loading"
-								@click="() => deviceApi.openFrameRate()">
-								<template #icon>
-									<n-icon>
-										<CpuChipIcon />
-									</n-icon>
-								</template>
-								性能监视器
-							</n-button>
+							<n-dropdown
+								size="large"
+								trigger="click"
+								:options="[
+									{ label: '打开性能监视器', key: 'start' },
+									{ label: '关闭性能监视器', key: 'stop' },
+								]"
+								@select="(key: 'start' | 'stop') => { deviceApi.frameRateService(key) }">
+								<n-button class="mb-3 mr-3" type="warning" secondary :loading="deviceStore.loading">
+									<template #icon>
+										<n-icon>
+											<CpuChipIcon />
+										</n-icon>
+									</template>
+									性能监视器
+								</n-button>
+							</n-dropdown>
 						</dd>
 					</div>
 					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
@@ -1152,7 +1190,12 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 									{ label: '关闭帧率监视器', key: 'close' },
 								]"
 								@select="(key: string) => { key === 'open' ? deviceApi.setFpsFrameService(true) : deviceApi.setFpsFrameService(false) }">
-								<n-button size="small" class="mb-3 mr-3" type="info" secondary :loading="deviceStore.loading">
+								<n-button
+									size="small"
+									class="mb-3 mr-3"
+									type="info"
+									secondary
+									:loading="deviceStore.loading">
 									<template #icon>
 										<n-icon>
 											<BoltIcon />
@@ -1165,7 +1208,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 					</div>
 					<div
 						v-if="displayModeRecordHook.formatDisplayModeList.value.length"
-						 id="displayModeSettings"
+						id="displayModeSettings"
 						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">

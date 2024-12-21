@@ -446,19 +446,27 @@ function createColumns(): DataTableColumns<GameBoosterTableItem> {
 				</n-button>
 			</div>
 			<div class="flex flex-wrap">
-				<n-button
-					class="mb-3 mr-3"
-					type="warning"
-					secondary
-					:loading="deviceStore.loading || gameBoosterStore.loading"
-					@click="() => deviceApi.openFrameRate()">
-					<template #icon>
-						<n-icon>
-							<CpuChipIcon />
-						</n-icon>
-					</template>
-					性能监视器
-				</n-button>
+				<n-dropdown
+					size="large"
+					trigger="click"
+					:options="[
+						{ label: '打开性能监视器', key: 'start' },
+						{ label: '关闭性能监视器', key: 'stop' },
+					]"
+					@select="(key: 'start' | 'stop') => { deviceApi.frameRateService(key) }">
+					<n-button
+						class="mb-3 mr-3"
+						type="warning"
+						secondary
+						:loading="deviceStore.loading || gameBoosterStore.loading">
+						<template #icon>
+							<n-icon>
+								<CpuChipIcon />
+							</n-icon>
+						</template>
+						性能监视器
+					</n-button>
+				</n-dropdown>
 				<n-dropdown
 					size="large"
 					trigger="click"
