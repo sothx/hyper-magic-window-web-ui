@@ -39,7 +39,16 @@ import {
 	SquaresPlusIcon,
 	ScissorsIcon,
 } from '@heroicons/vue/24/outline';
-import { FunnelIcon as FunnelSolidIcon, Cog6ToothIcon, EllipsisHorizontalCircleIcon, MinusCircleIcon, QuestionMarkCircleIcon, XCircleIcon as XCircleIconSolid, MicrophoneIcon, ChatBubbleLeftEllipsisIcon } from '@heroicons/vue/24/solid';
+import {
+	FunnelIcon as FunnelSolidIcon,
+	Cog6ToothIcon,
+	EllipsisHorizontalCircleIcon,
+	MinusCircleIcon,
+	QuestionMarkCircleIcon,
+	XCircleIcon as XCircleIconSolid,
+	MicrophoneIcon,
+	ChatBubbleLeftEllipsisIcon,
+} from '@heroicons/vue/24/solid';
 import { arrayBufferToBase64, base64ToArrayBuffer } from '@/utils/format';
 import { findBase64InString, renderApplicationName } from '@/utils/common';
 import { getAppModeCode, getSettingEnableMode, getSettingMode } from '@/utils/embeddedFun';
@@ -1331,7 +1340,6 @@ const handleCustomRuleDropdown = async (
 	}
 };
 
-
 const handleModuleRuleMode = (row: EmbeddedMergeRuleItem, index: number) => {
 	if (deviceStore.deviceCharacteristics !== 'tablet') {
 		modal.create({
@@ -1385,7 +1393,7 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 			key: 'ruleMode',
 			render(row, index) {
 				const slots = {
-					icon: row.ruleMode === 'custom' ? EllipsisHorizontalCircleIcon : QuestionMarkCircleIcon
+					icon: row.ruleMode === 'custom' ? EllipsisHorizontalCircleIcon : QuestionMarkCircleIcon,
 				};
 				if (row.ruleMode === 'custom') {
 					const rule = [
@@ -1415,7 +1423,12 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 					);
 				}
 				return (
-					<n-button v-slots={slots} size='small' dashed type='error' onClick={() => handleModuleRuleMode(row, index)}>
+					<n-button
+						v-slots={slots}
+						size='small'
+						dashed
+						type='error'
+						onClick={() => handleModuleRuleMode(row, index)}>
 						模块规则
 					</n-button>
 				);
@@ -1427,7 +1440,7 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 			key: 'setting',
 			render(row, index) {
 				const slots = {
-					icon: XCircleIconSolid
+					icon: XCircleIconSolid,
 				};
 				const handleClickAppCompatReset = (row: EmbeddedMergeRuleItem, index: number) => {
 					modal.create({
@@ -1498,7 +1511,7 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 			key: 'settingMode',
 			render(row, index) {
 				const slots = {
-					icon: Cog6ToothIcon
+					icon: Cog6ToothIcon,
 				};
 				const modeMap = {
 					embedded: {
@@ -1510,9 +1523,7 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 									title: '不兼容说明',
 									type: 'warning',
 									preset: 'dialog',
-									content: () => (
-										<p>该功能仅兼容平板设备，不兼容折叠屏设备！</p>
-									),
+									content: () => <p>该功能仅兼容平板设备，不兼容折叠屏设备！</p>,
 								});
 								return;
 							}
@@ -1528,9 +1539,7 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 									title: '不兼容说明',
 									type: 'warning',
 									preset: 'dialog',
-									content: () => (
-										<p>该功能仅兼容平板设备不兼容折叠屏设备！</p>
-									),
+									content: () => <p>该功能仅兼容平板设备不兼容折叠屏设备！</p>,
 								});
 								return;
 							}
@@ -1546,9 +1555,7 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 									title: '不兼容说明',
 									type: 'warning',
 									preset: 'dialog',
-									content: () => (
-										<p>该功能仅兼容平板设备，不兼容折叠屏设备！</p>
-									),
+									content: () => <p>该功能仅兼容平板设备，不兼容折叠屏设备！</p>,
 								});
 								return;
 							}
@@ -1564,9 +1571,7 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 									title: '不兼容说明',
 									type: 'warning',
 									preset: 'dialog',
-									content: () => (
-										<p>该功能仅兼容平板设备，不兼容折叠屏设备！</p>
-									),
+									content: () => <p>该功能仅兼容平板设备，不兼容折叠屏设备！</p>,
 								});
 								return;
 							}
@@ -1621,19 +1626,19 @@ onMounted(() => {
 								resolve('success');
 							},
 							onNegativeClick() {
-								reject('cancel')
+								reject('cancel');
 							},
 							onMaskClick() {
-								reject('cancel')
+								reject('cancel');
 							},
 							onClose() {
-								reject('cancel')
-							}
+								reject('cancel');
+							},
 						});
 					}),
 				);
 				if (positiveRes) {
-					reloadPatchModeConfigList()
+					reloadPatchModeConfigList();
 				}
 				embeddedStore.isNeedShowReloadPathModeDialog = false;
 				deviceStore.needReloadData = false;
@@ -1647,10 +1652,22 @@ onMounted(() => {
 	<main class="mb-10">
 		<div class="mt-3">
 			<div class="mb-3 px-4 sm:px-0">
-				<h3
-					:class="`text-base font-semibold leading-7`"
+				<h3 :class="`text-base font-semibold leading-7`">
+					<span
+						class="animated-bg bg-clip-text font-semibold text-transparent"
+						style="
+							background-image: linear-gradient(
+								101.22deg,
+								rgb(255, 182, 133) -18.32%,
+								rgb(255, 111, 29) 7.01%,
+								rgb(252, 181, 232) 41.59%,
+								rgb(135, 148, 255) 70.98%,
+								rgb(60, 112, 255) 91.35%,
+								rgb(60, 112, 255) 110.17%
+							);
+						"
+						>应用横屏布局</span
 					>
-					<span class="font-semibold animated-bg bg-clip-text text-transparent" style="background-image: linear-gradient(101.22deg, rgb(255, 182, 133) -18.32%, rgb(255, 111, 29) 7.01%, rgb(252, 181, 232) 41.59%, rgb(135, 148, 255) 70.98%, rgb(60, 112, 255) 91.35%, rgb(60, 112, 255) 110.17%);">应用横屏布局</span>
 				</h3>
 				<p
 					:class="`mt-1 max-w-2xl text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-500'}`">
@@ -1659,8 +1676,17 @@ onMounted(() => {
 			</div>
 		</div>
 		<n-card size="small">
-		    <n-alert type="info" class="mb-3" v-if="!deviceStore.skipConfirm.patchModeAlert" closable @close="() => { deviceStore.skipConfirm.patchModeAlert = true; }">
-			由于小米系统优化不佳的原因，大量的应用适配规则可能导致系统出现卡顿、掉帧等问题，建议老机型可以前往开启模块的定制模式，详情可以前往模块设置中了解。
+			<n-alert
+				type="info"
+				class="mb-3"
+				v-if="!deviceStore.skipConfirm.patchModeAlert"
+				closable
+				@close="
+					() => {
+						deviceStore.skipConfirm.patchModeAlert = true;
+					}
+				">
+				由于小米系统优化不佳的原因，大量的应用适配规则可能导致系统出现卡顿、掉帧等问题，建议老机型可以前往开启模块的定制模式，详情可以前往模块设置中了解。
 			</n-alert>
 			<div class="flex flex-wrap">
 				<n-button

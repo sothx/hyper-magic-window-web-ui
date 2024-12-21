@@ -33,7 +33,12 @@ import {
 } from '@heroicons/vue/24/outline';
 import type AutoUIMergeRuleItem from '@/types/AutoUIMergeRuleItem';
 import { useRouter, useRoute } from 'vue-router';
-import { FunnelIcon as FunnelSolidIcon, EllipsisHorizontalCircleIcon, QuestionMarkCircleIcon, ChatBubbleLeftEllipsisIcon } from '@heroicons/vue/24/solid';
+import {
+	FunnelIcon as FunnelSolidIcon,
+	EllipsisHorizontalCircleIcon,
+	QuestionMarkCircleIcon,
+	ChatBubbleLeftEllipsisIcon,
+} from '@heroicons/vue/24/solid';
 import { useLogsStore } from '@/stores/logs';
 import { useAutoUI } from '@/hooks/useAutoUI';
 import * as validateFun from '@/utils/validateFun';
@@ -102,11 +107,11 @@ const getInstalledAppNameList = async () => {
 	const [getListErr, getListRes] = await $to(installedAppNames.getList());
 	if (getListErr) {
 		modal.create({
-					title: '获取失败',
-					type: 'warning',
-					preset: 'dialog',
-					content: () => <p>您的系统环境暂不支持该功能，获取失败~</p>,
-					negativeText: '确定',
+			title: '获取失败',
+			type: 'warning',
+			preset: 'dialog',
+			content: () => <p>您的系统环境暂不支持该功能，获取失败~</p>,
+			negativeText: '确定',
 		});
 	}
 	if (getListRes) {
@@ -852,7 +857,7 @@ function createColumns(): DataTableColumns<DotBlackListMergeItem> {
 			key: 'ruleMode',
 			render(row, index) {
 				const slots = {
-					icon: row.ruleMode === 'custom' ? EllipsisHorizontalCircleIcon : QuestionMarkCircleIcon
+					icon: row.ruleMode === 'custom' ? EllipsisHorizontalCircleIcon : QuestionMarkCircleIcon,
 				};
 				if (row.ruleMode === 'custom') {
 					const rule = [
@@ -882,7 +887,12 @@ function createColumns(): DataTableColumns<DotBlackListMergeItem> {
 					);
 				}
 				return (
-					<n-button size='small' v-slots={slots} dashed type='error' onClick={() => handleSystemRuleMode(row, index)}>
+					<n-button
+						size='small'
+						v-slots={slots}
+						dashed
+						type='error'
+						onClick={() => handleSystemRuleMode(row, index)}>
 						系统规则
 					</n-button>
 				);
@@ -895,10 +905,22 @@ function createColumns(): DataTableColumns<DotBlackListMergeItem> {
 	<main class="autoui-view mb-10">
 		<div class="mt-3">
 			<div class="mb-3 px-4 sm:px-0">
-				<h3
-					:class="`text-base font-semibold leading-7`"
+				<h3 :class="`text-base font-semibold leading-7`">
+					<span
+						class="animated-bg bg-clip-text font-semibold text-transparent"
+						style="
+							background-image: linear-gradient(
+								101.22deg,
+								rgb(255, 182, 133) -18.32%,
+								rgb(255, 111, 29) 7.01%,
+								rgb(252, 181, 232) 41.59%,
+								rgb(135, 148, 255) 70.98%,
+								rgb(60, 112, 255) 91.35%,
+								rgb(60, 112, 255) 110.17%
+							);
+						"
+						>窗口控制器</span
 					>
-					<span class="font-semibold animated-bg bg-clip-text text-transparent" style="background-image: linear-gradient(101.22deg, rgb(255, 182, 133) -18.32%, rgb(255, 111, 29) 7.01%, rgb(252, 181, 232) 41.59%, rgb(135, 148, 255) 70.98%, rgb(60, 112, 255) 91.35%, rgb(60, 112, 255) 110.17%);">窗口控制器</span>
 				</h3>
 				<p
 					:class="`mt-1 max-w-2xl text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-500'}`">

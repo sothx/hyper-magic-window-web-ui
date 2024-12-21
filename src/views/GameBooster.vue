@@ -1,11 +1,18 @@
 <script setup lang="tsx">
-import { ref, reactive, watch, type CSSProperties, h, type Component, computed, onMounted } from 'vue';
+import { ref, reactive, watch, type CSSProperties, h, type Component, computed, onMounted, nextTick } from 'vue';
 import { useGameBoosterStore } from '@/stores/gameBooster';
 import * as deviceApi from '@/apis/deviceApi';
-import { BoltIcon, Cog6ToothIcon, CpuChipIcon, ChatBubbleLeftEllipsisIcon } from '@heroicons/vue/24/solid';
+import {
+	BoltIcon,
+	Cog6ToothIcon,
+	CpuChipIcon,
+	ChatBubbleLeftEllipsisIcon,
+	RocketLaunchIcon,
+} from '@heroicons/vue/24/solid';
 import * as gameBoosterApi from '@/apis/gameBoosterApi';
 import { useDeviceStore } from '@/stores/device';
 import $to from 'await-to-js';
+import { useRouter } from 'vue-router';
 import {
 	NButton,
 	NIcon,
@@ -29,6 +36,7 @@ type GameBoosterAppDrawerInstance = InstanceType<typeof GameBoosterAppDrawer>;
 const searchKeyWordInput = ref<SearchKeyWordInputInstance | null>(null);
 const columns = createColumns();
 const deviceStore = useDeviceStore();
+const router = useRouter();
 const installedAppNames = useInstalledAppNames();
 const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
 	theme: deviceStore.isDarkMode ? darkTheme : lightTheme,
@@ -51,6 +59,24 @@ const openAddGame = async () => {
 			type: 'warning',
 			preset: 'dialog',
 			content: () => <p>未开启游戏显示布局，请先前往模块设置进行开启~</p>,
+			positiveText: '立即前往',
+			negativeText: '取消',
+			onPositiveClick() {
+				router.push({ name: 'settings', hash: '#gameModeSettings' }).then(() => {
+					const observer = new MutationObserver(() => {
+						const target = document.getElementById('gameModeSettings');
+						if (target) {
+							target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+							observer.disconnect(); // 停止观察
+						}
+					});
+
+					observer.observe(document.body, {
+						childList: true,
+						subtree: true,
+					});
+				});
+			},
 		});
 		return;
 	}
@@ -88,6 +114,23 @@ const getAppDownload = async () => {
 	});
 };
 
+const goToDisplayModeSettings = () => {
+	router.push({ name: 'settings', hash: '#displayModeSettings' }).then(() => {
+		const observer = new MutationObserver(() => {
+			const target = document.getElementById('displayModeSettings');
+			if (target) {
+				target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+				observer.disconnect(); // 停止观察
+			}
+		});
+
+		observer.observe(document.body, {
+			childList: true,
+			subtree: true,
+		});
+	});
+};
+
 const handleClickSetting = async (row: GameBoosterTableItem, index: number) => {
 	if (!gameMode.isSupportGameMode.value) {
 		modal.create({
@@ -95,6 +138,24 @@ const handleClickSetting = async (row: GameBoosterTableItem, index: number) => {
 			type: 'warning',
 			preset: 'dialog',
 			content: () => <p>未开启游戏显示布局，请先前往模块设置进行开启~</p>,
+			positiveText: '立即前往',
+			negativeText: '取消',
+			onPositiveClick() {
+				router.push({ name: 'settings', hash: '#gameModeSettings' }).then(() => {
+					const observer = new MutationObserver(() => {
+						const target = document.getElementById('gameModeSettings');
+						if (target) {
+							target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+							observer.disconnect(); // 停止观察
+						}
+					});
+
+					observer.observe(document.body, {
+						childList: true,
+						subtree: true,
+					});
+				});
+			},
 		});
 		return;
 	}
@@ -419,6 +480,19 @@ function createColumns(): DataTableColumns<GameBoosterTableItem> {
 						帧率监视器
 					</n-button>
 				</n-dropdown>
+				<n-button
+					class="mb-3 mr-3"
+					type="success"
+					secondary
+					:loading="deviceStore.loading || gameBoosterStore.loading"
+					@click="goToDisplayModeSettings">
+					<template #icon>
+						<n-icon>
+							<RocketLaunchIcon />
+						</n-icon>
+					</template>
+					分辨率及刷新率
+				</n-button>
 				<n-button
 					class="mb-3 mr-3"
 					type="error"
