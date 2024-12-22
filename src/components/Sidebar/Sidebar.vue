@@ -12,6 +12,7 @@ import {
 	BanknotesIcon,
 	Squares2X2Icon,
 	CubeIcon,
+	CubeTransparentIcon,
 	ComputerDesktopIcon,
 	SquaresPlusIcon,
 	WindowIcon,
@@ -162,18 +163,17 @@ const navigation = reactive([
 		},
 		icon: WindowIcon,
 	},
-	
-	{ name: '日志记录', routeName: 'logs', href: '/logs', icon: DocumentDuplicateIcon },
 	{
 		name: '精选应用',
 		routeName: 'appStore',
 		href: '/appStore',
-		icon: BuildingStorefrontIcon,
+		icon: CubeTransparentIcon,
 		isShow() {
-			return false;
-			// return import.meta.env.MODE === 'development';
+			// return false;
+			return import.meta.env.MODE === 'development';
 		},
 	},
+	{ name: '日志记录', routeName: 'logs', href: '/logs', icon: DocumentDuplicateIcon },
 ]);
 const teams = [
 	{
