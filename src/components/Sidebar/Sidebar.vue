@@ -167,7 +167,7 @@ const navigation = reactive([
 		name: '精选应用',
 		routeName: 'appStore',
 		href: '/appStore',
-		icon: CubeTransparentIcon
+		icon: CubeIcon
 	},
 	{ name: '日志记录', routeName: 'logs', href: '/logs', icon: DocumentDuplicateIcon },
 ]);
@@ -187,15 +187,15 @@ const teams = [
 		current: false,
 	},
 	// { id: 3, name: '感谢', href: '/embedded-webview?url=https://hyper-magic-window.sothx.com/thanks.html', initial: 'W', current: false },
+	// {
+	// 	id: 3,
+	// 	name: '许可协议',
+	// 	href: '/embedded-webview?url=https://hyper-magic-window.sothx.com/license-agreement.html',
+	// 	initial: 'L',
+	// 	current: false,
+	// },
 	{
 		id: 3,
-		name: '许可协议',
-		href: '/embedded-webview?url=https://hyper-magic-window.sothx.com/license-agreement.html',
-		initial: 'L',
-		current: false,
-	},
-	{
-		id: 4,
 		name: '问题合集',
 		href: '/embedded-webview?url=https://hyper-magic-window.sothx.com/FAQ.html',
 		initial: 'F',
