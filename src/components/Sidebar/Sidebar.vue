@@ -167,11 +167,7 @@ const navigation = reactive([
 		name: '精选应用',
 		routeName: 'appStore',
 		href: '/appStore',
-		icon: CubeTransparentIcon,
-		isShow() {
-			// return false;
-			return import.meta.env.MODE === 'development';
-		},
+		icon: CubeTransparentIcon
 	},
 	{ name: '日志记录', routeName: 'logs', href: '/logs', icon: DocumentDuplicateIcon },
 ]);
