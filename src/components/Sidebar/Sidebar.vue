@@ -146,8 +146,7 @@ const navigation = reactive([
 		isShow() {
 			return (
 				deviceStore.MIOSVersion &&
-				deviceStore.MIOSVersion >= 1 &&
-				deviceStore.deviceCharacteristics === 'tablet'
+				deviceStore.MIOSVersion >= 1
 			);
 		},
 		icon: WindowIcon,
