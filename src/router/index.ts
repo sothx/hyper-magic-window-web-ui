@@ -62,6 +62,11 @@ const router = createRouter({
       name: 'dot-black-list',
       component: () => import('../views/DotBlackListView.vue'),
     },
+    {
+      path: '/tools',
+      name: 'tools',
+      component: () => import('../views/ToolsView.vue'),
+    },
   ],
   scrollBehavior(to, from, next) {
     return {

@@ -11,6 +11,7 @@ import {
 	DocumentDuplicateIcon,
 	BanknotesIcon,
 	Squares2X2Icon,
+	CubeIcon,
 	ComputerDesktopIcon,
 	SquaresPlusIcon,
 	WindowIcon,
@@ -140,6 +141,16 @@ const navigation = reactive([
 		icon: NewspaperIcon,
 	},
 	{
+		name: '百宝箱',
+		routeName: 'tools',
+		href: '/tools',
+		icon: CubeIcon,
+		isShow() {
+			return false;
+			// return import.meta.env.MODE === 'development';
+		},
+	},
+	{
 		name: '窗口控制器',
 		routeName: 'dot-black-list',
 		href: '/dot-black-list',
@@ -151,6 +162,7 @@ const navigation = reactive([
 		},
 		icon: WindowIcon,
 	},
+	
 	{ name: '日志记录', routeName: 'logs', href: '/logs', icon: DocumentDuplicateIcon },
 	{
 		name: '精选应用',
