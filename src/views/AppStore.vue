@@ -17,7 +17,7 @@
 		content: () => (
 			<div>
         <p>确定要下载{title}么？请注意核对部分应用的兼容性。
-        { type === 'system' && <span>（Tips: 系统应用无非通过小米自带的应用包管理器安装，请通过MT管理器安装！）</span> }
+        { type === 'system' && <span>（Tips: 系统应用无法通过小米自带的应用包管理器安装，请通过MT管理器安装！）</span> }
         { type === 'revision' && <span>（Tips: 修改版需搭配核心破解并通过MT管理器安装）</span> }
       </p>
 				<p>下载地址:</p>
