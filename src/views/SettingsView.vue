@@ -731,7 +731,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 								secondary
 								:loading="deviceStore.loading || embeddedStore.loading || activateABTestLoading"
 								@click="() => deviceApi.openLSPosedManger()">
-								打开LSPosed 管理器
+								打开 LSPosed 管理器
 							</n-button>
 						</dd>
 					</div>

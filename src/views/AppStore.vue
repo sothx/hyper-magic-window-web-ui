@@ -145,6 +145,44 @@
               <n-button class="mt-2" strong secondary type="info" @click="() => getAppDownload('三星浏览器', 'https://caiyun.139.com/m/i?135CmXZb9D6PP', 'original')">获取三星浏览器</n-button>
             </n-alert>
           </div>
+          <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="deviceStore.deviceCharacteristics === 'tablet'">
+            <n-alert
+              title="波点音乐"
+              type="success"
+            >
+            <template #icon>
+              <img src="/images/apps/bodian.webp" />
+            </template>
+              <p>酷我出品的音乐APP(腾讯音乐娱乐集团旗下)，全新版本已增加对平板的大屏适配！</p>
+              <n-button class="mt-2" strong secondary type="success" @click="() => getAppDownload('波点音乐', 'https://caiyun.139.com/m/i?135CmXWNtw2yy', 'original')">获取波点音乐</n-button>
+            </n-alert>
+          </div>
+          <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="deviceStore.deviceCharacteristics === 'tablet'">
+            <n-alert
+              title="荣耀音乐"
+              type="error"
+            >
+            <template #icon>
+              <img src="/images/apps/honor_music.png" />
+            </template>
+              <p>荣耀音乐 X 网易云音乐，跟普通网易云音乐不同的大屏适配体验！</p>
+              <p>注意事项:  请使用绑定了网易云音乐的手机账号登录，必须安装荣耀基础服务，荣耀应用市场方便追踪应用更新。</p>
+              <n-button class="mt-2" strong secondary type="error" @click="() => getAppDownload('荣耀音乐', 'https://caiyun.139.com/m/i?135CmrVUbH2y3', 'original')">获取荣耀音乐</n-button>
+            </n-alert>
+          </div>
+          <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="deviceStore.deviceCharacteristics === 'tablet'">
+            <n-alert
+              title="像素习惯"
+              type="info"
+            >
+            <template #icon>
+              <img src="/images/apps/habicat.webp" />
+            </template>
+              <p>像素习惯是一款像素风的游戏化习惯养成打卡软件，你可以在里面通过培养习惯来抽装备，集成就，强化数值装备自己，不断进步。</p>
+              <p>注意事项:  完美横屏应用计划已为像素习惯通过应用布局优化适配大屏，请确保你安装的模块版本和系统版本支持应用布局优化。</p>
+              <n-button class="mt-2" strong secondary type="info" @click="() => getAppDownload('像素习惯', 'https://caiyun.139.com/m/i?135Ce9wkd3aKT', 'original')">获取像素习惯</n-button>
+            </n-alert>
+          </div>
           <!-- <div class="px-4 flex sm:grid sm:px-0 mt-5">
             <n-alert title="[已完成] 应用布局优化" type="success">
               供可视化简易适配应用的布局规则，支持模块预设规则及自定义规则，可以随意开关应用的布局优化规则
