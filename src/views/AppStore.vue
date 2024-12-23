@@ -88,7 +88,7 @@
               <p>小米 Hyper OS 系统桌面！该版本提取自小米平板6S Pro，包含新的打断动画和部分动画效果改变！</p>
               <p>兼容性:  Hyper OS 1</p>
               <p>注意事项:  小米平板6 推荐安装去模糊阉割版，需搭配核心破解，会补全被阉割的 Dock 栏模糊！</p>
-              <n-button class="mt-2" strong secondary type="error" @click="() => getAppDownload('小米平板系统桌面', 'https://caiyun.139.com/m/i?135ClZdWPAYZk', 'system')">小米平板系统桌面</n-button>
+              <n-button class="mt-2" strong secondary type="error" @click="() => getAppDownload('小米平板系统桌面', 'https://caiyun.139.com/m/i?135ClZdWPAYZk', 'system')">获取小米平板系统桌面</n-button>
             </n-alert>
           </div>
           <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="deviceStore.MIOSVersion && deviceStore.MIOSVersion === 2 && deviceStore.deviceCharacteristics === 'tablet'">
@@ -102,7 +102,7 @@
               <p>小米 Hyper OS 系统桌面！该版本提取自小米平板7 Pro，包含九宫格、优化后的动画效果和全新超级小爱Dock便捷入口！</p>
               <p>兼容性:  Hyper OS 2</p>
               <p>注意事项:  如提示系统应用无法安装请从文件管理安装</p>
-              <n-button class="mt-2" strong secondary type="error" @click="() => getAppDownload('小米平板系统桌面', 'https://caiyun.139.com/m/i?135CmXZPQXz3d', 'system')">小米平板系统桌面</n-button>
+              <n-button class="mt-2" strong secondary type="error" @click="() => getAppDownload('小米平板系统桌面', 'https://caiyun.139.com/m/i?135CmXZPQXz3d', 'system')">获取小米平板系统桌面</n-button>
             </n-alert>
           </div>
           <div class="px-4 flex sm:grid sm:px-0 mt-5">
@@ -117,6 +117,19 @@
               <p>兼容性:  Hyper OS 1 / Hyper OS 2 / MIUI 14</p>
               <p>注意事项:  领取会员的位置比较隐蔽，位于首页左上角~</p>
               <n-button class="mt-2" strong secondary type="info" @click="() => getAppDownload('StarNote', 'https://yun.139.com/sharewap/#/m/i?135CmrnDyIHP2', 'original')">获取StarNote</n-button>
+            </n-alert>
+          </div>
+          <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="deviceStore.deviceCharacteristics === 'tablet'">
+            <n-alert
+              title="小米音乐(平板端)"
+              type="success"
+            >
+            <template #icon>
+              <img src="/images/apps/mi_music.png" />
+            </template>
+              <p>小米音乐 X QQ音乐！该版本小米已经去除反向适配的平行窗口，拥有更好的大屏体验！</p>
+              <p>注意事项:  如提示系统应用无法安装请从文件管理安装</p>
+              <n-button class="mt-2" strong secondary type="success" @click="() => getAppDownload('小米音乐', 'https://caiyun.139.com/m/i?135CmXllwKaxM', 'system')">获取小米音乐</n-button>
             </n-alert>
           </div>
           <div class="px-4 flex sm:grid sm:px-0 mt-5">
