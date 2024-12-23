@@ -16,9 +16,10 @@
 		preset: 'dialog',
 		content: () => (
 			<div>
-        <p>确定要下载{title}么？请注意核对部分应用的兼容性。</p>
-        { type === 'system' && <p>（Tips: 系统应用无非通过小米自带的应用包管理器安装，请通过MT管理器安装！）</p> }
-        { type === 'revision' && <p>（Tips: 修改版需搭配核心破解并通过MT管理器安装）</p> }
+        <p>确定要下载{title}么？请注意核对部分应用的兼容性。
+        { type === 'system' && <span>（Tips: 系统应用无非通过小米自带的应用包管理器安装，请通过MT管理器安装！）</span> }
+        { type === 'revision' && <span>（Tips: 修改版需搭配核心破解并通过MT管理器安装）</span> }
+      </p>
 				<p>下载地址:</p>
         <p>{url}</p>
 			</div>
@@ -76,6 +77,34 @@
               <n-button class="mt-2" strong secondary type="error" @click="() => getAppDownload('超级小爱', 'https://caiyun.139.com/m/i?135CmDfhvmaxV', 'system')">获取超级小爱</n-button>
             </n-alert>
           </div>
+          <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="deviceStore.MIOSVersion && deviceStore.MIOSVersion === 1 && deviceStore.deviceCharacteristics === 'tablet'">
+            <n-alert
+              title="小米平板系统桌面 - Hyper OS 1"
+              type="error"
+            >
+            <template #icon>
+              <img src="/images/apps/mi_home.png" />
+            </template>
+              <p>小米 Hyper OS 系统桌面！该版本提取自小米平板6S Pro，包含新的打断动画和部分动画效果改变！</p>
+              <p>兼容性:  Hyper OS 1</p>
+              <p>注意事项:  小米平板6 推荐安装去模糊阉割版，需搭配核心破解，会补全被阉割的 Dock 栏模糊！</p>
+              <n-button class="mt-2" strong secondary type="error" @click="() => getAppDownload('小米平板系统桌面', 'https://caiyun.139.com/m/i?135ClZdWPAYZk', 'system')">小米平板系统桌面</n-button>
+            </n-alert>
+          </div>
+          <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="deviceStore.MIOSVersion && deviceStore.MIOSVersion === 2 && deviceStore.deviceCharacteristics === 'tablet'">
+            <n-alert
+              title="小米平板系统桌面 - Hyper OS 2"
+              type="error"
+            >
+            <template #icon>
+              <img src="/images/apps/mi_home.png" />
+            </template>
+              <p>小米 Hyper OS 系统桌面！该版本提取自小米平板7 Pro，包含九宫格、优化后的动画效果和全新超级小爱Dock便捷入口！</p>
+              <p>兼容性:  Hyper OS 2</p>
+              <p>注意事项:  如提示系统应用无法安装请从文件管理安装</p>
+              <n-button class="mt-2" strong secondary type="error" @click="() => getAppDownload('小米平板系统桌面', 'https://caiyun.139.com/m/i?135CmXZPQXz3d', 'system')">小米平板系统桌面</n-button>
+            </n-alert>
+          </div>
           <div class="px-4 flex sm:grid sm:px-0 mt-5">
             <n-alert
               title="StarNote"
@@ -88,6 +117,19 @@
               <p>兼容性:  Hyper OS 1 / Hyper OS 2 / MIUI 14</p>
               <p>注意事项:  领取会员的位置比较隐蔽，位于首页左上角~</p>
               <n-button class="mt-2" strong secondary type="info" @click="() => getAppDownload('StarNote', 'https://yun.139.com/sharewap/#/m/i?135CmrnDyIHP2', 'original')">获取StarNote</n-button>
+            </n-alert>
+          </div>
+          <div class="px-4 flex sm:grid sm:px-0 mt-5">
+            <n-alert
+              title="三星浏览器"
+              type="info"
+            >
+            <template #icon>
+              <img src="/images/apps/samsung_browser.png" />
+            </template>
+              <p>三星出品的安全、私密且经优化的移动网络浏览器！</p>
+              <p>注意事项:  没有PC版，如果需要跨PC端书签同步可能需要搭配第三方插件。</p>
+              <n-button class="mt-2" strong secondary type="info" @click="() => getAppDownload('三星浏览器', 'https://caiyun.139.com/m/i?135CmXZb9D6PP', 'original')">获取三星浏览器</n-button>
             </n-alert>
           </div>
           <!-- <div class="px-4 flex sm:grid sm:px-0 mt-5">
