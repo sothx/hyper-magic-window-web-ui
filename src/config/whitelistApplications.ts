@@ -192,6 +192,8 @@ const topApplicationList = [
     'cn.wenyu.bodian', // 波点音乐
     'com.zte.smarthome', // 中兴智慧生活
     'com.phoenix.read', // 红果免费短剧
+    'com.bilibili.app.in', // 哔哩哔哩国际版
+    'com.bilibili.app.blue', // 哔哩哔哩概念
 ]
 
 
