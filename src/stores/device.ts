@@ -41,6 +41,7 @@ export interface ROOTManagerInfo {
 
 export interface BatteryInfo {
 	sohQcom: number
+	sohXMPower: number
 	sohMTK: number
 	chargeFullDesign: number
 	chargeFull: number
@@ -107,6 +108,7 @@ export const useDeviceStore = defineStore(
 		const batteryInfo = reactive<BatteryInfo>({
 			sohQcom: 0,
 			sohMTK:0,
+			sohXMPower:0,
 			chargeFullDesign: 0,
 			chargeFull: 0,
 			cycleCount: 0
@@ -178,6 +180,7 @@ export const useDeviceStore = defineStore(
 				// 售后电池健康度
 				$to<string, string>(deviceApi.getBatterySohQcom()),
 				$to<string, string>(deviceApi.getBatterySohMTK()),
+				$to<string, string>(deviceApi.getBatterySohXMPower()),
 				// 电池设计容量
 				$to<string, string>(deviceApi.getBatteryChargeFullDesign()),
 				// 当前电池容量
@@ -211,6 +214,7 @@ export const useDeviceStore = defineStore(
 				[, getPreSystemVersionRes],
 				[, getBatterySohQcomRes],
 				[, getBatterySohMTKRes],
+				[, getBatterySohXMPowerRes],
 				[, getBatteryChargeFullDesignRes],
 				[, getBatteryChargeFullRes],
 				[, getBatteryCycleCountRes],
@@ -305,6 +309,7 @@ export const useDeviceStore = defineStore(
 			// 售后电池健康度
 			batteryInfo.sohQcom = Number(getBatterySohQcomRes)
 			batteryInfo.sohMTK = Number(getBatterySohMTKRes)
+			batteryInfo.sohXMPower = Number(getBatterySohXMPowerRes)
 			// 电池设计容量
 			batteryInfo.chargeFullDesign = Number(getBatteryChargeFullDesignRes)
 			// 当前电池容量

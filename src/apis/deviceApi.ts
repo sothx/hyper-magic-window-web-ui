@@ -363,6 +363,21 @@ export const getCapacityRaw = (): Promise<string> => {
 	);
 };
 
+export const getBatterySohXMPower = (): Promise<string>  => {
+	const shellCommon = `cat /sys/class/xm_power/fg_master/soh`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`90`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : stdout === 'null' ? resolve('') : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
 export const getPreSystemVersion = (): Promise<string> => {
 	const shellCommon = `settings get global miui_pre_version`;
 	return handlePromiseWithLogging(
@@ -384,6 +399,66 @@ export const setRotationSuggestions = (mode: 1 | 0): Promise<string> => {
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
 				resolve(`1`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : stdout === 'null' ? resolve('') : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const addIsHideGestureLine = (): Promise<string> => {
+	const shellCommon = `grep -q '^is_hide_gesture_line=' /data/adb/MIUI_MagicWindow+/config.prop || (echo "is_hide_gesture_line=true" | tee -a /data/adb/MIUI_MagicWindow+/config.prop > /dev/null && echo "Command executed successfully." || echo "Command failed.")`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`Command executed successfully.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : stdout === 'Command executed successfully.' ? resolve(stdout) : reject(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const removeIsHideGestureLine = (): Promise<string> => {
+	const shellCommon = `sed -i '/^is_hide_gesture_line=/d' //data/adb/MIUI_MagicWindow+/config.prop && echo "Remove is_hide_gesture_line successfully." || echo "Remove is_hide_gesture_line failed."`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`Remove is_hide_gesture_line successfully.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const setHideGestureLine = (mode: 1 | 0): Promise<string> => {
+	const shellCommon = `settings put global hide_gesture_line ${mode}`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`1`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : stdout === 'null' ? resolve('') : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const getHideGestureLine = (): Promise<string> => {
+	const shellCommon = `settings get global hide_gesture_line`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`0`);
 			} else {
 				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
 				errno ? reject(stderr) : stdout === 'null' ? resolve('') : resolve(stdout);

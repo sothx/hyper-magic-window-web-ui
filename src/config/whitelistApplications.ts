@@ -189,6 +189,9 @@ const topApplicationList = [
     'com.ophone.reader.ui', // 咪咕阅读
     'studio.fountainhead.habicat', // 像素习惯
     'com.hihonor.appmarket', // 荣耀应用市场
+    'cn.wenyu.bodian', // 波点音乐
+    'com.zte.smarthome', // 中兴智慧生活
+    'com.phoenix.read', // 红果免费短剧
 ]
 
 

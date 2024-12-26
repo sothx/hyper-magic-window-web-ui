@@ -18,6 +18,7 @@ import { useAmktiao, type KeyboardModeOptions } from '@/hooks/useAmktiao';
 import { useMiuiDesktopMode } from '@/hooks/useMiuiDesktopMode';
 import { useShowNotificationIcon } from '@/hooks/useShowNotificationIconNum';
 import { useRealQuantity } from '@/hooks/useRealQuantity';
+import { useHideGestureLine } from '@/hooks/useHideGestureLine';
 import { BoltIcon, CpuChipIcon, ArrowDownCircleIcon, FilmIcon } from '@heroicons/vue/24/solid';
 import { useDisplayModeRecord, type DisplayModeItem } from '@/hooks/useDisplayModeRecord';
 const deviceStore = useDeviceStore();
@@ -26,6 +27,7 @@ const miuiDesktopModeHook = useMiuiDesktopMode();
 const showNotificationIconHook = useShowNotificationIcon();
 const realQuantityHook = useRealQuantity();
 const displayModeRecordHook = useDisplayModeRecord();
+const hideGestureLineHook = useHideGestureLine();
 const { activateABTest, loading: activateABTestLoading } = useABTestActivation();
 const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
 	theme: deviceStore.isDarkMode ? darkTheme : lightTheme,
@@ -1001,6 +1003,22 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							</n-switch>
 						</dd>
 					</div>
+					<div v-if="deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+						<dt
+							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
+							手势提示线（小白条）
+						</dt>
+						<dd
+							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
+							<n-switch
+								@update:value="(value: boolean) => hideGestureLineHook.changeIsHideGestureLine(value)"
+								:rail-style="railStyle"
+								:value="hideGestureLineHook.currentIsHideGestureLine.value === 1 ? true : false">
+								<template #checked>隐藏手势提示线</template>
+								<template #unchecked>显示手势提示线</template>
+							</n-switch>
+						</dd>
+					</div>
 					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
@@ -1412,6 +1430,22 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							<p>{{ `${deviceStore.batteryInfo.sohMTK} %` }}</p>
 							<p>{{
 								`≈ ${Math.round((deviceStore.batteryInfo.chargeFullDesign * (deviceStore.batteryInfo.sohMTK / 100)) / 1000)} mAh`
+							}}</p>
+							<p>(Tips:在设备保修期内健康度低于80%可以申请电池质保)</p>
+						</dd>
+					</div>
+					<div
+						v-if="deviceStore.batteryInfo.sohXMPower"
+						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+						<dt
+							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
+							电池售后健康度（小米）
+						</dt>
+						<dd
+							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
+							<p>{{ `${deviceStore.batteryInfo.sohXMPower} %` }}</p>
+							<p>{{
+								`≈ ${Math.round((deviceStore.batteryInfo.chargeFullDesign * (deviceStore.batteryInfo.sohXMPower / 100)) / 1000)} mAh`
 							}}</p>
 							<p>(Tips:在设备保修期内健康度低于80%可以申请电池质保)</p>
 						</dd>
