@@ -159,6 +159,21 @@
           </div>
           <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="deviceStore.deviceCharacteristics === 'tablet'">
             <n-alert
+              title="Redmi Pad Pro X 哈利·波特 联动主题"
+              type="warning"
+            >
+            <template #icon>
+              <img src="/images/apps/harry_theme.webp" />
+            </template>
+            <p>换上巫师袍，想象霍格沃茨在召唤你入学！</p>
+            <p>主题以霍格沃茨开学场景为背景，深度定制桌面背景和图标。</p>
+            <p>经典的魔法元素设计和场景呈现，带你重回哈利·波特的魔法世界！</p>
+            <p>注意事项:  需要搭配 LSPosed 模块主题破解进行食用，[模块设置-导入主题]可以快捷打开小米平板的主题导入界面~</p>
+              <n-button class="mt-2" strong secondary type="warning" @click="() => getAppDownload('Redmi Pad Pro X 哈利·波特 联动主题', 'https://caiyun.139.com/m/i?135CltA2z1VvD', 'original')">获取Redmi Pad Pro X 哈利波特 联动主题</n-button>
+            </n-alert>
+          </div>
+          <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="deviceStore.deviceCharacteristics === 'tablet'">
+            <n-alert
               title="荣耀音乐"
               type="error"
             >

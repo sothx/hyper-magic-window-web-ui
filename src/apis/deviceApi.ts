@@ -438,6 +438,7 @@ export const removeIsHideGestureLine = (): Promise<string> => {
 	);
 };
 
+
 export const setHideGestureLine = (mode: 1 | 0): Promise<string> => {
 	const shellCommon = `settings put global hide_gesture_line ${mode}`;
 	return handlePromiseWithLogging(
@@ -1330,6 +1331,21 @@ export const openLSPosedManger = (): Promise<string> => {
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
 				resolve(`am broadcast command executed successfully.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+}
+
+export const openImportThemeManger = (): Promise<string> => {
+	const shellCommon = `am start com.android.thememanager/com.android.thememanager.activity.ThemeTabActivity`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`am start command executed successfully.`);
 			} else {
 				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
 				errno ? reject(stderr) : resolve(stdout);

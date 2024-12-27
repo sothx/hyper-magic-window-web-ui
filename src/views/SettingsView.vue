@@ -222,6 +222,29 @@ const changeShamikoMode = async (value: boolean) => {
 			});
 		});
 };
+const getAppDownload = async (title:string,url:string, type: 'system' | 'revision' | 'original') => {
+	modal.create({
+		title: `获取${title}`,
+		type: 'info',
+		preset: 'dialog',
+		content: () => (
+			<div>
+        <p>确定要下载{title}么？请注意核对部分应用的兼容性。
+        { type === 'system' && <span>（Tips: 系统应用无法通过小米自带的应用包管理器安装，请通过MT管理器安装！）</span> }
+        { type === 'revision' && <span>（Tips: 修改版需搭配核心破解并通过MT管理器安装）</span> }
+      </p>
+				<p>下载地址:</p>
+        <p>{url}</p>
+			</div>
+		),
+		positiveText: '复制下载链接到剪切板',
+		negativeText: '取消',
+		onPositiveClick: () => {
+			navigator.clipboard.writeText(`${url}`);
+		},
+		onNegativeClick: () => {},
+	});
+};
 const changePatchMode = async (value: boolean) => {
 	const [negativeRes, positiveRes] = await $to(
 		new Promise((resolve, reject) => {
@@ -731,10 +754,31 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 								size="small"
 								type="info"
 								secondary
-								:loading="deviceStore.loading || embeddedStore.loading || activateABTestLoading"
+								:loading="deviceStore.loading"
 								@click="() => deviceApi.openLSPosedManger()">
 								打开 LSPosed 管理器
 							</n-button>
+						</dd>
+					</div>
+					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+						<dt
+							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
+							个性化主题导入
+						</dt>
+						<dd
+							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
+							<n-button
+								size="small"
+								type="info"
+								secondary
+								:loading="deviceStore.loading"
+								@click="() => deviceApi.openImportThemeManger()">
+								导入个性化主题
+							</n-button>
+							<n-alert class="mt-5" type="info" :show-icon="false" :bordered="false">
+								<p>需要搭配[LSPosed 模块-主题破解]，才能够正常导入[个性化主题]</p>
+								<n-button class="mt-2" strong secondary type="info" @click="() => getAppDownload('主题破解', 'https://caiyun.139.com/m/i?135CmXA9aKh8Y', 'original')">获取主题破解</n-button>
+							</n-alert>
 						</dd>
 					</div>
 					<div
