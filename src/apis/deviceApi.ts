@@ -1460,6 +1460,66 @@ export const openMiFilm = (): Promise<string> => {
 	);
 };
 
+export const openBrightColors = (): Promise<string> => {
+	const shellCommon = `am start com.android.settings/com.android.settings.Settings$ReduceBrightColorsSettingsActivity`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`am start command executed successfully.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const openManageApplicationsActivity = (): Promise<string> => {
+	const shellCommon = `am start com.android.settings/com.android.settings.Settings$ManageApplicationsActivity`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`am start command executed successfully.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const openGoogleSettings = (): Promise<string> => {
+	const shellCommon = `am start com.google.android.gms/com.google.android.gms.googlesettings.ui.GoogleSettingsActivity`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`am start command executed successfully.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const openAutoTask = (): Promise<string> => {
+	const shellCommon = `am start com.miui.securitycenter/com.miui.autotask.activity.TaskManagerActivity`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`am start command executed successfully.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
 export const openLSPosedManger = (): Promise<string> => {
 	const shellCommon = `am broadcast -a android.telephony.action.SECRET_CODE -d android_secret_code://5776733 android`;
 	return handlePromiseWithLogging(

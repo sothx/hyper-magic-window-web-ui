@@ -20,7 +20,16 @@ import { useShowNotificationIcon } from '@/hooks/useShowNotificationIconNum';
 import { useRealQuantity } from '@/hooks/useRealQuantity';
 import { useHideGestureLine } from '@/hooks/useHideGestureLine';
 import { useInVisibleMode } from '@/hooks/useInvisibleMode';
-import { BoltIcon, CpuChipIcon, ArrowDownCircleIcon, FilmIcon, ScissorsIcon } from '@heroicons/vue/24/solid';
+import {
+	BoltIcon,
+	CpuChipIcon,
+	ArrowDownCircleIcon,
+	FilmIcon,
+	ScissorsIcon,
+	BanknotesIcon,
+	ServerIcon,
+	CalendarIcon
+} from '@heroicons/vue/24/solid';
 import { useDisplayModeRecord, type DisplayModeItem } from '@/hooks/useDisplayModeRecord';
 import { useMiuiCursorStyle, type miuiCursorStyleType } from '@/hooks/useMiuiCursorStyle';
 import { useMouseGestureNaturalscroll } from '@/hooks/useMouseGestureNaturalscroll';
@@ -783,6 +792,28 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							</n-dropdown>
 						</dd>
 					</div>
+					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+						<dt
+							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
+							激活口令
+						</dt>
+						<dd
+							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
+							<n-button
+								size="small"
+								type="warning"
+								secondary
+								:loading="deviceStore.loading || embeddedStore.loading || activateABTestLoading"
+								@click="handleActivateABTest()">
+								<template #icon>
+									<n-icon>
+										<ArrowDownCircleIcon />
+									</n-icon>
+								</template>
+								导入激活口令
+							</n-button>
+						</dd>
+					</div>
 					<div
 						v-if="deviceStore.shamikoInfo.installed"
 						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
@@ -815,7 +846,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 								secondary
 								:loading="deviceStore.loading"
 								@click="() => deviceApi.openLSPosedManger()">
-								打开 LSPosed 管理器
+								LSPosed 管理器
 							</n-button>
 						</dd>
 					</div>
@@ -1080,13 +1111,16 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
 							<n-button
 								size="small"
-								type="info"
+								type="warning"
 								secondary
 								:loading="deviceStore.loading"
 								@click="() => deviceApi.openImportThemeManger()">
+								<template #icon>
+									<img src="/images/apps/mi_theme.webp" />
+								</template>
 								导入个性化主题
 							</n-button>
-							<n-alert class="mt-5" type="info" :show-icon="false" :bordered="false">
+							<n-alert class="mt-5" type="warning" :show-icon="false" :bordered="false">
 								<p
 									>需要搭配 LSPosed
 									模块[主题破解]，才能够正常导入[个性化主题]，导入按钮位于界面最底部[从SD卡导入]~</p
@@ -1094,8 +1128,9 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 								<n-button
 									class="mt-2"
 									strong
+									size="small"
 									secondary
-									type="info"
+									type="warning"
 									@click="
 										() =>
 											getAppDownload(
@@ -1176,6 +1211,29 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
+							Google 服务
+						</dt>
+						<dd
+							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
+							<n-button
+								size="small"
+								type="info"
+								secondary
+								:loading="deviceStore.loading"
+								@click="() => deviceApi.openGoogleSettings()">
+								<template #icon>
+									<img src="/images/icons/google.png" />
+								</template>
+								Google 服务
+							</n-button>
+							<n-alert class="mt-5" type="info" :show-icon="false" :bordered="false">
+								<p>仅在开启 Google 基础服务 下生效</p>
+							</n-alert>
+						</dd>
+					</div>
+					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+						<dt
+							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
 							隐身模式
 						</dt>
 						<dd
@@ -1190,6 +1248,28 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							<n-alert class="mt-5" type="info" :show-icon="false" :bordered="false">
 								<p>开启后系统将拒绝所有应用录音、定位和拍照，保护您的隐私安全</p>
 							</n-alert>
+						</dd>
+					</div>
+					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+						<dt
+							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
+							自动任务
+						</dt>
+						<dd
+							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
+							<n-button
+								size="small"
+								type="success"
+								secondary
+								:loading="deviceStore.loading"
+								@click="() => deviceApi.openAutoTask()">
+								<template #icon>
+									<n-icon>
+										<CalendarIcon />
+									</n-icon>
+								</template>
+								自动任务
+							</n-button>
 						</dd>
 					</div>
 					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
@@ -1210,7 +1290,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 										<FilmIcon />
 									</n-icon>
 								</template>
-								打开实时字幕
+								实时字幕
 							</n-button>
 						</dd>
 					</div>
@@ -1223,7 +1303,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
 							<n-button
 								size="small"
-								type="info"
+								type="error"
 								secondary
 								:loading="deviceStore.loading"
 								@click="() => deviceApi.openMiFilm()">
@@ -1232,29 +1312,51 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 										<ScissorsIcon />
 									</n-icon>
 								</template>
-								打开Mi剪辑
+								Mi剪辑
 							</n-button>
 						</dd>
 					</div>
 					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
-							激活口令
+							极暗模式
 						</dt>
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
 							<n-button
 								size="small"
-								type="warning"
+								type="info"
 								secondary
-								:loading="deviceStore.loading || embeddedStore.loading || activateABTestLoading"
-								@click="handleActivateABTest()">
+								:loading="deviceStore.loading"
+								@click="() => deviceApi.openBrightColors()">
 								<template #icon>
 									<n-icon>
-										<ArrowDownCircleIcon />
+										<BanknotesIcon />
 									</n-icon>
 								</template>
-								导入激活口令
+								极暗模式
+							</n-button>
+						</dd>
+					</div>
+					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+						<dt
+							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
+							正在运行的服务
+						</dt>
+						<dd
+							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
+							<n-button
+								size="small"
+								type="info"
+								secondary
+								:loading="deviceStore.loading"
+								@click="() => deviceApi.openManageApplicationsActivity()">
+								<template #icon>
+									<n-icon>
+										<ServerIcon />
+									</n-icon>
+								</template>
+								正在运行的服务
 							</n-button>
 						</dd>
 					</div>
