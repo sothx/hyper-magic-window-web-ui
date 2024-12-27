@@ -159,21 +159,6 @@
           </div>
           <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="deviceStore.deviceCharacteristics === 'tablet'">
             <n-alert
-              title="Redmi Pad Pro X 哈利·波特 联动主题"
-              type="warning"
-            >
-            <template #icon>
-              <img src="/images/apps/harry_theme.webp" />
-            </template>
-            <p>换上巫师袍，想象霍格沃茨在召唤你入学！</p>
-            <p>主题以霍格沃茨开学场景为背景，深度定制桌面背景和图标。</p>
-            <p>经典的魔法元素设计和场景呈现，带你重回哈利·波特的魔法世界！</p>
-            <p>注意事项:  需要搭配 LSPosed 模块主题破解进行食用，[模块设置-导入主题]可以快捷打开小米平板的主题导入界面~</p>
-              <n-button class="mt-2" strong secondary type="warning" @click="() => getAppDownload('Redmi Pad Pro X 哈利·波特 联动主题', 'https://caiyun.139.com/m/i?135CltA2z1VvD', 'original')">获取Redmi Pad Pro X 哈利波特 联动主题</n-button>
-            </n-alert>
-          </div>
-          <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="deviceStore.deviceCharacteristics === 'tablet'">
-            <n-alert
               title="荣耀音乐"
               type="error"
             >
@@ -196,6 +181,21 @@
               <p>像素习惯是一款像素风的游戏化习惯养成打卡软件，你可以在里面通过培养习惯来抽装备，集成就，强化数值装备自己，不断进步。</p>
               <p>注意事项:  完美横屏应用计划已为像素习惯通过应用布局优化适配大屏，请确保你安装的模块版本和系统版本支持应用布局优化。</p>
               <n-button class="mt-2" strong secondary type="info" @click="() => getAppDownload('像素习惯', 'https://caiyun.139.com/m/i?135Ce9wkd3aKT', 'original')">获取像素习惯</n-button>
+            </n-alert>
+          </div>
+          <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="deviceStore.deviceCharacteristics === 'tablet'">
+            <n-alert
+              title="Redmi Pad Pro X 哈利·波特 联动主题"
+              type="warning"
+            >
+            <template #icon>
+              <img src="/images/apps/mi_theme.webp" />
+            </template>
+            <p>换上巫师袍，想象霍格沃茨在召唤你入学！</p>
+            <p>主题以霍格沃茨开学场景为背景，深度定制桌面背景和图标。</p>
+            <p>经典的魔法元素设计和场景呈现，带你重回哈利·波特的魔法世界！</p>
+            <p>注意事项:  需要搭配 LSPosed 模块主题破解进行食用，[模块设置-导入主题]可以快捷打开小米平板的主题导入界面~</p>
+              <n-button class="mt-2" strong secondary type="warning" @click="() => getAppDownload('Redmi Pad Pro X 哈利·波特 联动主题', 'https://caiyun.139.com/m/i?135CltA2z1VvD', 'original')">获取Redmi Pad Pro X 哈利波特 联动主题</n-button>
             </n-alert>
           </div>
           <!-- <div class="px-4 flex sm:grid sm:px-0 mt-5">
