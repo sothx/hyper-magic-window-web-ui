@@ -1226,7 +1226,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 									{ label: '关闭性能监视器', key: 'stop' },
 								]"
 								@select="(key: 'start' | 'stop') => { deviceApi.frameRateService(key) }">
-								<n-button class="mb-3 mr-3" type="warning" secondary :loading="deviceStore.loading">
+								<n-button class="mb-3 mr-3" type="info" color="#8a2be2" secondary :loading="deviceStore.loading">
 									<template #icon>
 										<n-icon>
 											<CpuChipIcon />

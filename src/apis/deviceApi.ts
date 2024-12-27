@@ -1354,3 +1354,18 @@ export const openImportThemeManger = (): Promise<string> => {
 		shellCommon,
 	);
 }
+
+export const openAllAppList = (): Promise<string> => {
+	const shellCommon = `am start com.miui.securitycenter/com.miui.apppredict.activity.AppClassificationActivity`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`am start command executed successfully.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+}

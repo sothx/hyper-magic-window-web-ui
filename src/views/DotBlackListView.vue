@@ -1012,7 +1012,7 @@ function createColumns(): DataTableColumns<DotBlackListMergeItem> {
 			<div class="flex flex-wrap">
 				<n-button
 					class="mb-3 mr-3"
-					:type="dotBlackListStore.filterInstalledApps ? 'warning' : 'info'"
+					:type="dotBlackListStore.filterInstalledApps ? 'success' : 'info'"
 					strong
 					:loading="deviceStore.loading || dotBlackListStore.loading"
 					secondary
@@ -1024,6 +1024,19 @@ function createColumns(): DataTableColumns<DotBlackListMergeItem> {
 						</n-icon>
 					</template>
 					{{ dotBlackListStore.filterInstalledApps ? '已安装应用' : '全部应用' }}
+				</n-button>
+				<n-button
+					class="mb-3 mr-3"
+					type="warning"
+					secondary
+					:loading="deviceStore.loading || dotBlackListStore.loading"
+					@click="() => deviceApi.openAllAppList()">
+					<template #icon>
+						<n-icon>
+							<img src="/images/icons/all_app.png" />
+						</n-icon>
+					</template>
+					应用抽屉
 				</n-button>
 				<n-button
 					class="mb-3 mr-3"

@@ -456,7 +456,8 @@ function createColumns(): DataTableColumns<GameBoosterTableItem> {
 					@select="(key: 'start' | 'stop') => { deviceApi.frameRateService(key) }">
 					<n-button
 						class="mb-3 mr-3"
-						type="warning"
+						color="#8a2be2"
+						type="info"
 						secondary
 						:loading="deviceStore.loading || gameBoosterStore.loading">
 						<template #icon>
@@ -500,6 +501,19 @@ function createColumns(): DataTableColumns<GameBoosterTableItem> {
 						</n-icon>
 					</template>
 					分辨率及刷新率
+				</n-button>
+				<n-button
+					class="mb-3 mr-3"
+					type="warning"
+					secondary
+					:loading="deviceStore.loading || gameBoosterStore.loading"
+					@click="() => deviceApi.openAllAppList()">
+					<template #icon>
+						<n-icon>
+							<img src="/images/icons/all_app.png" />
+						</n-icon>
+					</template>
+					应用抽屉
 				</n-button>
 				<n-button
 					class="mb-3 mr-3"

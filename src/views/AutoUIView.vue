@@ -1006,7 +1006,7 @@ function createColumns(): DataTableColumns<AutoUIMergeRuleItem> {
 			<div class="flex flex-wrap">
 				<n-button
 					class="mb-3 mr-3"
-					:type="autoUIStore.filterInstalledApps ? 'warning' : 'info'"
+					:type="autoUIStore.filterInstalledApps ? 'success' : 'info'"
 					strong
 					:loading="deviceStore.loading || autoUIStore.loading"
 					secondary
@@ -1018,6 +1018,19 @@ function createColumns(): DataTableColumns<AutoUIMergeRuleItem> {
 						</n-icon>
 					</template>
 					{{ autoUIStore.filterInstalledApps ? '已安装应用' : '全部应用' }}
+				</n-button>
+				<n-button
+					class="mb-3 mr-3"
+					type="warning"
+					secondary
+					:loading="deviceStore.loading || autoUIStore.loading"
+					@click="() => deviceApi.openAllAppList()">
+					<template #icon>
+						<n-icon>
+							<img src="/images/icons/all_app.png" />
+						</n-icon>
+					</template>
+					应用抽屉
 				</n-button>
 				<n-button
 					class="mb-3 mr-3"
