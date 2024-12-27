@@ -19,7 +19,7 @@ import { useMiuiDesktopMode } from '@/hooks/useMiuiDesktopMode';
 import { useShowNotificationIcon } from '@/hooks/useShowNotificationIconNum';
 import { useRealQuantity } from '@/hooks/useRealQuantity';
 import { useHideGestureLine } from '@/hooks/useHideGestureLine';
-import { useInVisibleMode } from '@/hooks/useInvisibleMode';
+import { useInVisibleMode } from '@/hooks/useInVisibleMode';
 import {
 	BoltIcon,
 	CpuChipIcon,
