@@ -113,6 +113,7 @@ configProviderProps: configProviderPropsRef
         // add模式，初始化参数
         if (props.type === 'add') {
           currentType.value = 'add';
+          currentAppName.value = '';
           currentActivityRule.value = '';
           currentAutoUIRuleOptions.value = autoUIRuleOptions[0];
           currentSkippedActivityRule.value = '';

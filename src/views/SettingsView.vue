@@ -19,8 +19,12 @@ import { useMiuiDesktopMode } from '@/hooks/useMiuiDesktopMode';
 import { useShowNotificationIcon } from '@/hooks/useShowNotificationIconNum';
 import { useRealQuantity } from '@/hooks/useRealQuantity';
 import { useHideGestureLine } from '@/hooks/useHideGestureLine';
-import { BoltIcon, CpuChipIcon, ArrowDownCircleIcon, FilmIcon } from '@heroicons/vue/24/solid';
+import { useInVisibleMode } from '@/hooks/useInvisibleMode';
+import { BoltIcon, CpuChipIcon, ArrowDownCircleIcon, FilmIcon, ScissorsIcon } from '@heroicons/vue/24/solid';
 import { useDisplayModeRecord, type DisplayModeItem } from '@/hooks/useDisplayModeRecord';
+import { useMiuiCursorStyle, type miuiCursorStyleType } from '@/hooks/useMiuiCursorStyle';
+import { useMouseGestureNaturalscroll } from '@/hooks/useMouseGestureNaturalscroll';
+import { usePointerSpeed } from '@/hooks/usePointerSpeed';
 const deviceStore = useDeviceStore();
 const embeddedStore = useEmbeddedStore();
 const miuiDesktopModeHook = useMiuiDesktopMode();
@@ -28,6 +32,10 @@ const showNotificationIconHook = useShowNotificationIcon();
 const realQuantityHook = useRealQuantity();
 const displayModeRecordHook = useDisplayModeRecord();
 const hideGestureLineHook = useHideGestureLine();
+const inVisibleModeHook = useInVisibleMode();
+const miuiCursorStyleHook = useMiuiCursorStyle();
+const mouseGestureNaturalscrollHook = useMouseGestureNaturalscroll();
+const pointerSpeedHook = usePointerSpeed();
 const { activateABTest, loading: activateABTestLoading } = useABTestActivation();
 const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
 	theme: deviceStore.isDarkMode ? darkTheme : lightTheme,
@@ -222,19 +230,22 @@ const changeShamikoMode = async (value: boolean) => {
 			});
 		});
 };
-const getAppDownload = async (title:string,url:string, type: 'system' | 'revision' | 'original') => {
+const getAppDownload = async (title: string, url: string, type: 'system' | 'revision' | 'original') => {
 	modal.create({
 		title: `获取${title}`,
 		type: 'info',
 		preset: 'dialog',
 		content: () => (
 			<div>
-        <p>确定要下载{title}么？请注意核对部分应用的兼容性。
-        { type === 'system' && <span>（Tips: 系统应用无法通过小米自带的应用包管理器安装，请通过MT管理器安装！）</span> }
-        { type === 'revision' && <span>（Tips: 修改版需搭配核心破解并通过MT管理器安装）</span> }
-      </p>
+				<p>
+					确定要下载{title}么？请注意核对部分应用的兼容性。
+					{type === 'system' && (
+						<span>（Tips: 系统应用无法通过小米自带的应用包管理器安装，请通过MT管理器安装！）</span>
+					)}
+					{type === 'revision' && <span>（Tips: 修改版需搭配核心破解并通过MT管理器安装）</span>}
+				</p>
 				<p>下载地址:</p>
-        <p>{url}</p>
+				<p>{url}</p>
 			</div>
 		),
 		positiveText: '复制下载链接到剪切板',
@@ -724,6 +735,54 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							{{ deviceStore.rootManagerInfo.MAGISK_VER_CODE || '获取失败' }}
 						</dd>
 					</div>
+					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+						<dt
+							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
+							外观模式
+						</dt>
+						<dd
+							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
+							<n-dropdown
+								size="large"
+								trigger="click"
+								:options="rhythmModeOptions"
+								@select="handleSelectRhythmMode">
+								<n-button
+									size="small"
+									strong
+									secondary
+									:type="deviceStore.rhythmMode === 'autoRhythm' ? 'error' : 'success'"
+									>{{
+										(deviceStore.rhythmMode === 'autoRhythm' && '跟随系统') ||
+										(deviceStore.rhythmMode === 'lightMode' && '浅色模式') ||
+										(deviceStore.rhythmMode === 'dartMode' && '深色模式')
+									}}</n-button
+								>
+							</n-dropdown>
+						</dd>
+					</div>
+					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+						<dt
+							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
+							应用字体
+						</dt>
+						<dd
+							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
+							<n-dropdown
+								size="large"
+								trigger="click"
+								:options="fontModeOptions"
+								@select="handleSelectFontMode">
+								<n-button
+									size="small"
+									strong
+									secondary
+									:type="fontModeMap[fontStore.currentFont].type"
+									>{{ fontStore.currentFont }}</n-button
+								>
+							</n-dropdown>
+						</dd>
+					</div>
 					<div
 						v-if="deviceStore.shamikoInfo.installed"
 						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
@@ -758,27 +817,6 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 								@click="() => deviceApi.openLSPosedManger()">
 								打开 LSPosed 管理器
 							</n-button>
-						</dd>
-					</div>
-					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-						<dt
-							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
-							个性化主题导入
-						</dt>
-						<dd
-							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							<n-button
-								size="small"
-								type="info"
-								secondary
-								:loading="deviceStore.loading"
-								@click="() => deviceApi.openImportThemeManger()">
-								导入个性化主题
-							</n-button>
-							<n-alert class="mt-5" type="info" :show-icon="false" :bordered="false">
-								<p>需要搭配[LSPosed 模块-主题破解]，才能够正常导入[个性化主题]</p>
-								<n-button class="mt-2" strong secondary type="info" @click="() => getAppDownload('主题破解', 'https://caiyun.139.com/m/i?135CmXA9aKh8Y', 'original')">获取主题破解</n-button>
-							</n-alert>
 						</dd>
 					</div>
 					<div
@@ -960,49 +998,115 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
-							外观模式
+							鼠标光标样式
 						</dt>
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
 							<n-dropdown
 								size="large"
 								trigger="click"
-								:options="rhythmModeOptions"
-								@select="handleSelectRhythmMode">
+								:options="[
+									{ label: '箭头', key: 3 },
+									{ label: '圆点', key: 1 },
+									{ label: '空心圆', key: 0 },
+								]"
+								@select="(key: miuiCursorStyleType) => { miuiCursorStyleHook.changeMiuiCursorStyleType(key) }">
 								<n-button
 									size="small"
-									strong
+									class="mb-3 mr-3"
+									type="success"
 									secondary
-									:type="deviceStore.rhythmMode === 'autoRhythm' ? 'error' : 'success'"
-									>{{
-										(deviceStore.rhythmMode === 'autoRhythm' && '跟随系统') ||
-										(deviceStore.rhythmMode === 'lightMode' && '浅色模式') ||
-										(deviceStore.rhythmMode === 'dartMode' && '深色模式')
-									}}</n-button
-								>
+									:loading="deviceStore.loading">
+									{{ (miuiCursorStyleHook.currentMiuiCursorStyleType.value === 3 && '箭头') || '' }}
+									{{ (miuiCursorStyleHook.currentMiuiCursorStyleType.value === 1 && '圆点') || '' }}
+									{{ (miuiCursorStyleHook.currentMiuiCursorStyleType.value === 0 && '空心圆') || '' }}
+								</n-button>
 							</n-dropdown>
 						</dd>
 					</div>
 					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
-							应用字体
+							鼠标自然滚动
 						</dt>
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							<n-dropdown
-								size="large"
-								trigger="click"
-								:options="fontModeOptions"
-								@select="handleSelectFontMode">
+							<n-switch
+								@update:value="(value: boolean) => mouseGestureNaturalscrollHook.changeMouseGestureNaturalscroll(value)"
+								:rail-style="railStyle"
+								:value="
+									mouseGestureNaturalscrollHook.currentMouseGestureNaturalscroll.value === 1
+										? true
+										: false
+								">
+								<template #checked>已开启鼠标自然滚动</template>
+								<template #unchecked>未开启鼠标自然滚动</template>
+							</n-switch>
+							<n-alert class="mt-5" type="info" :show-icon="false" :bordered="false">
+								<p>开启后内容随手指移动</p>
+							</n-alert>
+						</dd>
+					</div>
+					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+						<dt
+							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
+							鼠标指针速度
+						</dt>
+						<dd
+							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
+							<n-slider
+								size="small"
+								:min="-7"
+								:max="7"
+								v-model:value="pointerSpeedHook.currentPointerSpeed.value"
+								:step="1" />
+							<n-input-number
+								:show-button="false"
+								class="pt-3"
+								readonly
+								v-model:value="pointerSpeedHook.currentPointerSpeed.value"
+								placeholder="请输入鼠标指针速度"
+								:min="-7"
+								:max="7"
+								:step="1" />
+						</dd>
+					</div>
+					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+						<dt
+							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
+							个性化主题导入
+						</dt>
+						<dd
+							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
+							<n-button
+								size="small"
+								type="info"
+								secondary
+								:loading="deviceStore.loading"
+								@click="() => deviceApi.openImportThemeManger()">
+								导入个性化主题
+							</n-button>
+							<n-alert class="mt-5" type="info" :show-icon="false" :bordered="false">
+								<p
+									>需要搭配 LSPosed
+									模块[主题破解]，才能够正常导入[个性化主题]，导入按钮位于界面最底部[从SD卡导入]~</p
+								>
 								<n-button
-									size="small"
+									class="mt-2"
 									strong
 									secondary
-									:type="fontModeMap[fontStore.currentFont].type"
-									>{{ fontStore.currentFont }}</n-button
+									type="info"
+									@click="
+										() =>
+											getAppDownload(
+												'主题破解',
+												'https://caiyun.139.com/m/i?135CmXA9aKh8Y',
+												'original',
+											)
+									"
+									>获取主题破解</n-button
 								>
-							</n-dropdown>
+							</n-alert>
 						</dd>
 					</div>
 					<div id="gameModeSettings" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
@@ -1047,7 +1151,13 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							</n-switch>
 						</dd>
 					</div>
-					<div v-if="deviceStore.deviceCharacteristics === 'tablet' && deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+					<div
+						v-if="
+							deviceStore.deviceCharacteristics === 'tablet' &&
+							deviceStore.MIOSVersion &&
+							deviceStore.MIOSVersion >= 2
+						"
+						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
 							手势提示线（小白条）
@@ -1066,6 +1176,25 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
+							隐身模式
+						</dt>
+						<dd
+							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
+							<n-switch
+								@update:value="(value: boolean) => inVisibleModeHook.changeIsInvisibleMode(value)"
+								:rail-style="railStyle"
+								:value="inVisibleModeHook.currentIsInVisibleMode.value === 1 ? true : false">
+								<template #checked>已开启隐身模式</template>
+								<template #unchecked>未开启隐身模式</template>
+							</n-switch>
+							<n-alert class="mt-5" type="info" :show-icon="false" :bordered="false">
+								<p>开启后系统将拒绝所有应用录音、定位和拍照，保护您的隐私安全</p>
+							</n-alert>
+						</dd>
+					</div>
+					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+						<dt
+							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
 							实时字幕
 						</dt>
 						<dd
@@ -1074,7 +1203,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 								size="small"
 								type="info"
 								secondary
-								:loading="deviceStore.loading || embeddedStore.loading || activateABTestLoading"
+								:loading="deviceStore.loading"
 								@click="() => deviceApi.openAITranslation()">
 								<template #icon>
 									<n-icon>
@@ -1082,6 +1211,28 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 									</n-icon>
 								</template>
 								打开实时字幕
+							</n-button>
+						</dd>
+					</div>
+					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+						<dt
+							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
+							Mi剪辑
+						</dt>
+						<dd
+							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
+							<n-button
+								size="small"
+								type="info"
+								secondary
+								:loading="deviceStore.loading"
+								@click="() => deviceApi.openMiFilm()">
+								<template #icon>
+									<n-icon>
+										<ScissorsIcon />
+									</n-icon>
+								</template>
+								打开Mi剪辑
 							</n-button>
 						</dd>
 					</div>
@@ -1226,7 +1377,13 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 									{ label: '关闭性能监视器', key: 'stop' },
 								]"
 								@select="(key: 'start' | 'stop') => { deviceApi.frameRateService(key) }">
-								<n-button class="mb-3 mr-3" type="info" color="#8a2be2" secondary :loading="deviceStore.loading">
+								<n-button
+									size="small"
+									class="mb-3 mr-3"
+									type="info"
+									color="#8a2be2"
+									secondary
+									:loading="deviceStore.loading">
 									<template #icon>
 										<n-icon>
 											<CpuChipIcon />

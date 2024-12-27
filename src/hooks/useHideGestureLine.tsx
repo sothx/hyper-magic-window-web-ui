@@ -11,11 +11,6 @@ import {
     type NInput,
 } from 'naive-ui';
 import * as deviceApi from '@/apis/deviceApi';
-export interface KeyboardModeOptions {
-    label: string;
-    type: string;
-    key: 0 | 1 | 2;
-}
 
 export type IsHideGestureLine = 0 | 1;
 
