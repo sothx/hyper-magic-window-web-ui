@@ -1566,7 +1566,7 @@ export const openImportThemeManger = (): Promise<string> => {
 }
 
 export const openAllAppList = (): Promise<string> => {
-	const shellCommon = `am start com.miui.securitycenter/com.miui.permcenter.settings.InvisibleModeActivity`;
+	const shellCommon = `am start -n com.miui.securitycenter/com.miui.apppredict.activity.AppClassificationActivity`;;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
