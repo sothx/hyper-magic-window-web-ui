@@ -170,6 +170,11 @@ const navigation = reactive([
 		icon: CubeIcon
 	},
 	{ name: '日志记录', routeName: 'logs', href: '/logs', icon: DocumentDuplicateIcon },
+	{ name: '新春彩蛋', routeName: 'eggs', href: '/eggs', icon: () =>(
+		<n-icon>
+			<img src="/images/icons/happy_new_year.png" />
+		</n-icon>
+	) },
 ]);
 const teams = [
 	{
@@ -194,13 +199,13 @@ const teams = [
 	// 	initial: 'L',
 	// 	current: false,
 	// },
-	{
-		id: 3,
-		name: '问题合集',
-		href: '/embedded-webview?url=https://hyper-magic-window.sothx.com/FAQ.html',
-		initial: 'F',
-		current: false,
-	},
+	// {
+	//	id: 3,
+	//	name: '问题合集',
+	//	href: '/embedded-webview?url=https://hyper-magic-window.sothx.com/FAQ.html',
+	//	initial: 'F',
+	//	current: false,
+	//},
 ];
 const userNavigation = [
 	{ name: '个人资料', href: '#' },

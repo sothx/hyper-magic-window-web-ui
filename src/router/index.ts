@@ -67,6 +67,11 @@ const router = createRouter({
       name: 'tools',
       component: () => import('../views/ToolsView.vue'),
     },
+    {
+      path: '/eggs',
+      name: 'eggs',
+      component: () => import('../views/HappyNewYearEgg.vue'),
+    },
   ],
   scrollBehavior(to, from, next) {
     return {
