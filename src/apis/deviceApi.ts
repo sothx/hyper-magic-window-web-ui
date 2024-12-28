@@ -499,8 +499,23 @@ export const getInVisibleMode = (): Promise<string> => {
 	);
 };
 
+export const openInVisibleMode = (): Promise<string> => {
+	const shellCommon = `am start -n com.miui.securitycenter/com.miui.permcenter.settings.InvisibleModeActivity`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`Starting: Intent { cmp=com.miui.securitycenter/com.miui.permcenter.settings.InvisibleModeActivity }`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
 export const setMiuiCursorStyleType = (mode: 3 | 1 | 0): Promise<string> => {
-	const shellCommon = `settings put secure system miui_cursor_style ${mode}`;
+	const shellCommon = `settings put system miui_cursor_style ${mode}`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -1446,7 +1461,7 @@ export const openAITranslation = (): Promise<string> => {
 };
 
 export const openMiFilm = (): Promise<string> => {
-	const shellCommon = `am start com.miui.mediaeditor/com.miui.gallery.vlog.template2.VlogTemplateActivity`;
+	const shellCommon = `am start -n com.miui.mediaeditor/com.miui.gallery.vlog.template2.VlogTemplateActivity`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -1461,7 +1476,7 @@ export const openMiFilm = (): Promise<string> => {
 };
 
 export const openBrightColors = (): Promise<string> => {
-	const shellCommon = `am start com.android.settings/com.android.settings.Settings$ReduceBrightColorsSettingsActivity`;
+	const shellCommon = `am start -a android.intent.action.MAIN -n com.android.settings/.Settings$ReduceBrightColorsSettingsActivity -f 0x10000000`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -1476,7 +1491,7 @@ export const openBrightColors = (): Promise<string> => {
 };
 
 export const openManageApplicationsActivity = (): Promise<string> => {
-	const shellCommon = `am start com.android.settings/com.android.settings.Settings$ManageApplicationsActivity`;
+	const shellCommon = `am start -a android.intent.action.VIEW -n com.android.settings/.RunningServices -f 0x10000000`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -1491,7 +1506,7 @@ export const openManageApplicationsActivity = (): Promise<string> => {
 };
 
 export const openGoogleSettings = (): Promise<string> => {
-	const shellCommon = `am start com.google.android.gms/com.google.android.gms.googlesettings.ui.GoogleSettingsActivity`;
+	const shellCommon = `am start -n com.google.android.gms/com.google.android.gms.googlesettings.ui.GoogleSettingsActivity`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -1506,7 +1521,7 @@ export const openGoogleSettings = (): Promise<string> => {
 };
 
 export const openAutoTask = (): Promise<string> => {
-	const shellCommon = `am start com.miui.securitycenter/com.miui.autotask.activity.TaskManagerActivity`;
+	const shellCommon = `am start -n com.miui.securitycenter/com.miui.autotask.activity.TaskManagerActivity`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -1536,7 +1551,7 @@ export const openLSPosedManger = (): Promise<string> => {
 }
 
 export const openImportThemeManger = (): Promise<string> => {
-	const shellCommon = `am start com.android.thememanager/com.android.thememanager.activity.ThemeTabActivity`;
+	const shellCommon = `am start -n com.android.thememanager/com.android.thememanager.activity.ThemeTabActivity`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -1551,7 +1566,7 @@ export const openImportThemeManger = (): Promise<string> => {
 }
 
 export const openAllAppList = (): Promise<string> => {
-	const shellCommon = `am start com.miui.securitycenter/com.miui.apppredict.activity.AppClassificationActivity`;
+	const shellCommon = `am start com.miui.securitycenter/com.miui.permcenter.settings.InvisibleModeActivity`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {

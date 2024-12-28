@@ -28,7 +28,8 @@ import {
 	ScissorsIcon,
 	BanknotesIcon,
 	ServerIcon,
-	CalendarIcon
+	CalendarIcon,
+	EyeSlashIcon
 } from '@heroicons/vue/24/solid';
 import { useDisplayModeRecord, type DisplayModeItem } from '@/hooks/useDisplayModeRecord';
 import { useMiuiCursorStyle, type miuiCursorStyleType } from '@/hooks/useMiuiCursorStyle';
@@ -1088,6 +1089,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							<n-slider
 								size="small"
 								:min="-7"
+								@update:value="(value: number) => deviceApi.setPointerSpeed(value)"
 								:max="7"
 								v-model:value="pointerSpeedHook.currentPointerSpeed.value"
 								:step="1" />
@@ -1238,13 +1240,17 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 						</dt>
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							<n-switch
-								@update:value="(value: boolean) => inVisibleModeHook.changeIsInvisibleMode(value)"
-								:rail-style="railStyle"
-								:value="inVisibleModeHook.currentIsInVisibleMode.value === 1 ? true : false">
-								<template #checked>已开启隐身模式</template>
-								<template #unchecked>未开启隐身模式</template>
-							</n-switch>
+							<n-button
+								size="small"
+								type="info"
+								secondary
+								:loading="deviceStore.loading"
+								@click="() => deviceApi.openInVisibleMode()">
+								<template #icon>
+									<EyeSlashIcon/>
+								</template>
+								隐身模式
+							</n-button>
 							<n-alert class="mt-5" type="info" :show-icon="false" :bordered="false">
 								<p>开启后系统将拒绝所有应用录音、定位和拍照，保护您的隐私安全</p>
 							</n-alert>
@@ -1316,7 +1322,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							</n-button>
 						</dd>
 					</div>
-					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+					<!-- <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
 							极暗模式
@@ -1337,7 +1343,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 								极暗模式
 							</n-button>
 						</dd>
-					</div>
+					</div> -->
 					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
