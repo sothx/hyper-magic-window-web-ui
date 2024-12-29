@@ -29,7 +29,9 @@ import {
 	BanknotesIcon,
 	ServerIcon,
 	CalendarIcon,
-	EyeSlashIcon
+	EyeSlashIcon,
+	ViewfinderCircleIcon,
+	PhoneIcon
 } from '@heroicons/vue/24/solid';
 import { useDisplayModeRecord, type DisplayModeItem } from '@/hooks/useDisplayModeRecord';
 import { useMiuiCursorStyle, type miuiCursorStyleType } from '@/hooks/useMiuiCursorStyle';
@@ -837,6 +839,33 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
+							暗码拨号盘
+						</dt>
+						<dd
+							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
+							<n-button
+								size="small"
+								type="error"
+								secondary
+								:loading="deviceStore.loading"
+								@click="() => deviceApi.openCodeDialer()">
+								<template #icon>
+									<n-icon>
+										<PhoneIcon />
+									</n-icon>
+								</template>
+								暗码拨号盘
+							</n-button>
+							<n-alert class="mt-5" type="error" :show-icon="false" :bordered="false">
+								<p>Tips: 暗码必须以*#*#开头，且以#*#*结尾</p>
+								<p>eg: 开启 LSPosed 管理器的暗码：*#*#5776733#*#*</p>
+								<p>「安全警示: 暗码拨号器是面向开发者调试的功能，用于打开一些隐藏设定，如果您不了解暗码作用与功能建议不要轻易尝试，可能会导致您的设备数据丢失！」</p>
+							</n-alert>
+						</dd>
+					</div>
+					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+						<dt
+							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
 							LSPosed 管理器
 						</dt>
 						<dd
@@ -1341,6 +1370,28 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 									</n-icon>
 								</template>
 								极暗模式
+							</n-button>
+						</dd>
+					</div>
+					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+						<dt
+							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
+							颜色反转
+						</dt>
+						<dd
+							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
+							<n-button
+								size="small"
+								type="info"
+								secondary
+								:loading="deviceStore.loading"
+								@click="() => deviceApi.openAccessibilityInversion()">
+								<template #icon>
+									<n-icon>
+										<ViewfinderCircleIcon />
+									</n-icon>
+								</template>
+								颜色反转
 							</n-button>
 						</dd>
 					</div>

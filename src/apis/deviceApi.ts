@@ -1476,7 +1476,37 @@ export const openMiFilm = (): Promise<string> => {
 };
 
 export const openBrightColors = (): Promise<string> => {
-	const shellCommon = `am start 'intent://settings/#Intent;action=android.settings.REDUCE_BRIGHT_COLORS_SETTINGS;launchFlags=0x14400000;component=com.android.settings/.Settings$ReduceBrightColorsSettingsActivity;end'`;
+	const shellCommon = `am start 'intent://settings/#Intent;action=android.intent.action.VIEW;launchFlags=0x14400000;component=com.android.settings/.Settings$ReduceBrightColorsSettingsActivity;end'`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`am start command executed successfully.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const openAccessibilityInversion = (): Promise<string> => {
+	const shellCommon = `am start 'intent://settings/#Intent;action=android.intent.action.VIEW;launchFlags=0x14400000;component=com.android.settings/.Settings$AccessibilityInversionSettingsActivity;end'`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`am start command executed successfully.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const openCodeDialer = (): Promise<string> => {
+	const shellCommon = `am start -n com.android.phone/com.android.phone.EmergencyDialer -e shortcut "volume_down_up_three_time"`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
