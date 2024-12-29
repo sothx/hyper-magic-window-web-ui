@@ -183,7 +183,7 @@
               <n-button class="mt-2" strong secondary type="info" @click="() => getAppDownload('像素习惯', 'https://caiyun.139.com/m/i?135Ce9wkd3aKT', 'original')">获取像素习惯</n-button>
             </n-alert>
           </div>
-          <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="deviceStore.deviceCharacteristics === 'tablet'">
+          <div class="px-4 flex sm:grid sm:px-0 mt-5">
             <n-alert
               title="Redmi Pad Pro X 哈利·波特 联动主题"
               type="warning"
@@ -198,49 +198,19 @@
               <n-button class="mt-2" strong secondary type="warning" @click="() => getAppDownload('Redmi Pad Pro X 哈利·波特 联动主题', 'https://caiyun.139.com/m/i?135CltA2z1VvD', 'original')">获取Redmi Pad Pro X 哈利波特 联动主题</n-button>
             </n-alert>
           </div>
-          <!-- <div class="px-4 flex sm:grid sm:px-0 mt-5">
-            <n-alert title="[已完成] 应用布局优化" type="success">
-              供可视化简易适配应用的布局规则，支持模块预设规则及自定义规则，可以随意开关应用的布局优化规则
-            </n-alert>
-          </div>
-          <div class="px-4 flex sm:grid sm:px-0 mt-5">
-            <n-alert title="[已完成] 定制模式" type="success">
-              定制模式下模块会以您设备的整体应用情况修剪模块应用适配列表
-              ，以解决老机型由于系统优化不佳而导致的卡顿、掉帧等问题
-            </n-alert>
-          </div>
-          <div class="px-4 flex sm:grid sm:px-0 mt-5">
-            <n-alert title="[已完成] 自定义规则分享口令" type="success">
-              自定义规则允许分享和导入，提供快捷的"分享口令"导入入口~
-            </n-alert>
-          </div>
-          <div class="px-4 flex sm:grid sm:px-0 mt-5">
-            <n-alert title="[已完成] 模块设置" type="success">
-              开发中，提供可视化展示部分设备信息、模块信息并且可视化控制"游戏显示布局"、"旋转建议提示按钮"开关的选项。
-            </n-alert>
-          </div>
-          <div class="px-4 flex sm:grid sm:px-0 mt-5">
-            <n-alert title="[已完成] 深色模式" type="success">
-              适配 Web UI 深色模式，优化深色模式下的使用体验
-            </n-alert>
-          </div>
           <div class="px-4 flex sm:grid sm:px-0 mt-5">
             <n-alert
-              title="[待定] 应用横屏配置- Hyper OS 2.0(Android 15+)"
-              type="warning"
-            >
-              待定，支持Android 15 配置允许使用的适配选项，支持配置自定义比例
-            </n-alert>
-          </div>
-          <div class="px-4 flex sm:grid sm:px-0 mt-5">
-            <n-alert
-              title="[远期规划] 可视化配置平行窗口自定义规则"
+              title="有诗"
               type="default"
             >
-              远期可能性需求规划，待讨论，不一定做。通过JSON可视化编辑的方式，提供可视化修改平行窗口自定义规则的功能，包含所有小米提供的反向适配参数。
-              <span class="hidden">(技术栈暂定vue3-ts-jsoneditor)</span>
+            <template #icon>
+              <img src="/images/apps/youshi.webp" />
+            </template>
+            <p>生活不止眼前的苟且，还有诗和远方的田野。</p>
+            <p>有诗，你的口袋诗库，这里收录了数十万首传统诗词与现代诗词，每日自动推荐最适合您的作品，让您在忙碌的生活中也能轻松欣赏诗词之美。我们希望，所有渴望被触碰心灵的、真实而纯粹的灵魂，在诗歌里获得片刻自由，远方未远，诗歌正好，让我们一起拥抱诗意生活。</p>
+              <n-button class="mt-2" strong secondary type="default" @click="() => getAppDownload('有诗', 'https://caiyun.139.com/m/i?135CmCz8VCpu0', 'original')">获取有诗</n-button>
             </n-alert>
-          </div> -->
+          </div>
         </dl>
       </div>
     </div>

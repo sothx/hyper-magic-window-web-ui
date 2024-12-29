@@ -36,6 +36,10 @@ watchEffect((onCleanup) => {
     isSplashVisible.value = false;  // 隐藏开屏页
   }
 
+  if (deviceStore.errorLogging.length || embeddedStore.errorLogging.length) {
+	isSplashVisible.value = false;  // 隐藏开屏页
+  }
+
   // 清理函数，不再需要监听时执行
   onCleanup(() => {
     // 这里可以移除其他的副作用，如定时器等

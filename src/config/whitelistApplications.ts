@@ -194,6 +194,11 @@ const topApplicationList = [
     'com.phoenix.read', // 红果免费短剧
     'com.bilibili.app.in', // 哔哩哔哩国际版
     'com.bilibili.app.blue', // 哔哩哔哩概念
+    'com.joey.colors.simple.c', // 中国传统色
+    'com.hanfuhui', // 汉服荟
+    'com.hurantech.cherrysleep', // 樱桃睡眠
+    'tech.caicheng.youshi', // 有诗
+    'org.panda.words', // 熊猫在学
 ]
 
 

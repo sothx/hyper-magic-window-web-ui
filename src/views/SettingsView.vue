@@ -1322,7 +1322,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							</n-button>
 						</dd>
 					</div>
-					<!-- <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
 							极暗模式
@@ -1343,7 +1343,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 								极暗模式
 							</n-button>
 						</dd>
-					</div> -->
+					</div>
 					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">

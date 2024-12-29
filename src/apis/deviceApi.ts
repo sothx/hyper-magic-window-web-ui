@@ -1476,7 +1476,7 @@ export const openMiFilm = (): Promise<string> => {
 };
 
 export const openBrightColors = (): Promise<string> => {
-	const shellCommon = `am start -a android.intent.action.MAIN -n com.android.settings/.Settings$ReduceBrightColorsSettingsActivity -f 0x10000000`;
+	const shellCommon = `am start 'intent://settings/#Intent;action=android.settings.REDUCE_BRIGHT_COLORS_SETTINGS;launchFlags=0x14400000;component=com.android.settings/.Settings$ReduceBrightColorsSettingsActivity;end'`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
