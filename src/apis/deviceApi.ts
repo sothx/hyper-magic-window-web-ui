@@ -1536,7 +1536,7 @@ export const openManageApplicationsActivity = (): Promise<string> => {
 };
 
 export const openNotificationStationActivity = (): Promise<string> => {
-	const shellCommon = `am start -a android.intent.action.VIEW -n com.android.settings/.Settings$NotificationStationActivity -f 0x10000000`;
+	const shellCommon = `am start 'intent://settings/#Intent;action=android.intent.action.VIEW;launchFlags=0x14400000;component=com.android.settings/.Settings$NotificationStationActivity;end'`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -1551,7 +1551,7 @@ export const openNotificationStationActivity = (): Promise<string> => {
 };
 
 export const openMemorySettingsActivity = (): Promise<string> => {
-	const shellCommon = `am start -a android.intent.action.VIEW -n com.android.settings/.Settings$MemorySettingsActivity -f 0x10000000`;
+	const shellCommon = `am start 'intent://settings/#Intent;action=android.intent.action.VIEW;launchFlags=0x14400000;component=com.android.settings/.Settings$MemorySettingsActivity;end'`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {

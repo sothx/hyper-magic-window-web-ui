@@ -265,6 +265,9 @@ defineExpose({
 						v-model:value="currentCustomGameRatio"
 						placeholder="请输入游戏显示比例" />
 				</n-input-group>
+				<n-alert v-if="currentGameRatio.value === 'custom'" class="mt-5" type="info" :show-icon="false" :bordered="false">
+					<p>参考计算公式：21:9=21%9≈2.3333333</p>
+				</n-alert>
 			</n-card>
 			<n-card :bordered="false" title="游戏显示位置" size="small">
 				<n-dropdown
