@@ -31,7 +31,9 @@ import {
 	CalendarIcon,
 	EyeSlashIcon,
 	ViewfinderCircleIcon,
-	PhoneIcon
+	PhoneIcon,
+	BellAlertIcon,
+	ServerStackIcon
 } from '@heroicons/vue/24/solid';
 import { useDisplayModeRecord, type DisplayModeItem } from '@/hooks/useDisplayModeRecord';
 import { useMiuiCursorStyle, type miuiCursorStyleType } from '@/hooks/useMiuiCursorStyle';
@@ -1327,6 +1329,9 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 								</template>
 								实时字幕
 							</n-button>
+							<n-alert class="mt-5" type="info" :show-icon="false" :bordered="false">
+								<p>Tips: 部分设备需要安装最新版小爱翻译或者强开「实时字幕」才能够正常使用！</p>
+							</n-alert>
 						</dd>
 					</div>
 					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
@@ -1414,6 +1419,50 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 									</n-icon>
 								</template>
 								正在运行的服务
+							</n-button>
+						</dd>
+					</div>
+					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+						<dt
+							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
+							内存使用量
+						</dt>
+						<dd
+							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
+							<n-button
+								size="small"
+								type="info"
+								secondary
+								:loading="deviceStore.loading"
+								@click="() => deviceApi.openMemorySettingsActivity()">
+								<template #icon>
+									<n-icon>
+										<ServerStackIcon />
+									</n-icon>
+								</template>
+								内存使用量
+							</n-button>
+						</dd>
+					</div>
+					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+						<dt
+							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
+							通知日志
+						</dt>
+						<dd
+							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
+							<n-button
+								size="small"
+								type="info"
+								secondary
+								:loading="deviceStore.loading"
+								@click="() => deviceApi.openNotificationStationActivity()">
+								<template #icon>
+									<n-icon>
+										<BellAlertIcon />
+									</n-icon>
+								</template>
+								通知日志
 							</n-button>
 						</dd>
 					</div>
@@ -1775,7 +1824,9 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							<p>{{
 								`≈ ${Math.round((deviceStore.batteryInfo.chargeFullDesign * (deviceStore.batteryInfo.sohQcom / 100)) / 1000)} mAh`
 							}}</p>
-							<p>(Tips:在设备保修期内健康度低于80%可以申请电池质保)</p>
+							<n-alert class="mt-5" type="info" :show-icon="false" :bordered="false">
+								<p>Tips:在设备保修期内健康度低于80%可以申请电池质保</p>
+							</n-alert>
 						</dd>
 					</div>
 					<div
@@ -1791,7 +1842,9 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							<p>{{
 								`≈ ${Math.round((deviceStore.batteryInfo.chargeFullDesign * (deviceStore.batteryInfo.sohMTK / 100)) / 1000)} mAh`
 							}}</p>
-							<p>(Tips:在设备保修期内健康度低于80%可以申请电池质保)</p>
+							<n-alert class="mt-5" type="info" :show-icon="false" :bordered="false">
+								<p>Tips:在设备保修期内健康度低于80%可以申请电池质保</p>
+							</n-alert>
 						</dd>
 					</div>
 					<div
@@ -1807,7 +1860,9 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							<p>{{
 								`≈ ${Math.round((deviceStore.batteryInfo.chargeFullDesign * (deviceStore.batteryInfo.sohXMPower / 100)) / 1000)} mAh`
 							}}</p>
-							<p>(Tips:在设备保修期内健康度低于80%可以申请电池质保)</p>
+							<n-alert class="mt-5" type="info" :show-icon="false" :bordered="false">
+								<p>Tips:在设备保修期内健康度低于80%可以申请电池质保</p>
+							</n-alert>
 						</dd>
 					</div>
 

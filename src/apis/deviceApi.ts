@@ -1535,6 +1535,36 @@ export const openManageApplicationsActivity = (): Promise<string> => {
 	);
 };
 
+export const openNotificationStationActivity = (): Promise<string> => {
+	const shellCommon = `am start -a android.intent.action.VIEW -n com.android.settings/.Settings$NotificationStationActivity -f 0x10000000`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`am start command executed successfully.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const openMemorySettingsActivity = (): Promise<string> => {
+	const shellCommon = `am start -a android.intent.action.VIEW -n com.android.settings/.Settings$MemorySettingsActivity -f 0x10000000`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`am start command executed successfully.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
 export const openGoogleSettings = (): Promise<string> => {
 	const shellCommon = `am start -n com.google.android.gms/com.google.android.gms.googlesettings.ui.GoogleSettingsActivity`;
 	return handlePromiseWithLogging(
