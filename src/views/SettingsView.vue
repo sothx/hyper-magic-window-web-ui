@@ -1132,7 +1132,7 @@
 								算力共享
 							</n-button>
 							<n-alert class="mt-5" type="info" :show-icon="false" :bordered="false">
-								<p>在附近高速算力设备提供的算力支持下，平板获得部分 AI 功能</p>
+								<p>在附近高算力设备提供的算力支持下，平板获得部分 AI 功能</p>
 							</n-alert>
 						</dd>
 					</div>

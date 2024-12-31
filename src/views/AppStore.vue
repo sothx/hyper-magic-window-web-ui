@@ -107,6 +107,34 @@
           </div>
           <div class="px-4 flex sm:grid sm:px-0 mt-5">
             <n-alert
+              title="小米笔记 - Hyper AI"
+              type="warning"
+            >
+            <template #icon>
+              <img src="/images/apps/mi_note.png" />
+            </template>
+            <p>小米笔记，一个好用的文本创作工具</p>
+            <p>兼容性:  Hyper OS 1 / Hyper OS 2</p>
+            <p>注意事项:  解锁 Hyper AI 全功能 AI 写作，需要核心破解并搭配MT管理器安装。</p>
+            <n-button class="mt-2" strong secondary type="warning" @click="() => getAppDownload('小米笔记', 'https://caiyun.139.com/m/i?135Ce9CtGXcVc', 'revision')">获取小米笔记</n-button>
+            </n-alert>
+          </div>
+          <div class="px-4 flex sm:grid sm:px-0 mt-5">
+            <n-alert
+              title="小米录音机 - Hyper AI"
+              type="error"
+            >
+            <template #icon>
+              <img src="/images/apps/mi_soundrecorder.webp" />
+            </template>
+            <p>简单好用的录音应用</p>
+            <p>兼容性:  Hyper OS 1 / Hyper OS 2</p>
+            <p>注意事项:  解锁 Hyper AI 全功能 AI 识音和转录，需要核心破解并搭配MT管理器安装。</p>
+            <n-button class="mt-2" strong secondary type="error" @click="() => getAppDownload('小米录音机', 'https://caiyun.139.com/m/i?135Ce9CYAY0YN', 'revision')">获取小米录音机</n-button>
+            </n-alert>
+          </div>
+          <div class="px-4 flex sm:grid sm:px-0 mt-5">
+            <n-alert
               title="StarNote"
               type="info"
             >
