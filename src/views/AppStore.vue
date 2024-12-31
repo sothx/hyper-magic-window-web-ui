@@ -114,8 +114,9 @@
               <img src="/images/apps/mi_note.png" />
             </template>
             <p>小米笔记，一个好用的文本创作工具</p>
+            <p>使用 AI 写作进行文本摘要、扩写、润色纠错等功能，还可以输入写作需求让AI帮您创作</p>
             <p>兼容性:  Hyper OS 1 / Hyper OS 2</p>
-            <p>注意事项:  解锁 Hyper AI 全功能 AI 写作，需要核心破解并搭配MT管理器安装。</p>
+            <p>注意事项:  解锁 Hyper AI，需要核心破解并搭配MT管理器安装。</p>
             <n-button class="mt-2" strong secondary type="warning" @click="() => getAppDownload('小米笔记', 'https://caiyun.139.com/m/i?135Ce9CtGXcVc', 'revision')">获取小米笔记</n-button>
             </n-alert>
           </div>
