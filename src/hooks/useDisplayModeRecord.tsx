@@ -9,6 +9,8 @@ export interface DisplayModeItem {
     width: number,
     height: number,
     fps: number,
+    vsync?: number,
+    synthetic?: boolean,
     alternativeRefreshRates: number[],
     supportedHdrTypes: number[]
 }

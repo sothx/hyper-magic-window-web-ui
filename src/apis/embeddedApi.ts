@@ -411,7 +411,7 @@ export const updateEmbeddedApp = (
 					}
 				}
 
-				const [UpdateRuleStderr, UpdateRuleStdout] = await $to<string, string>(deviceApi.updateRule());
+				const [UpdateRuleStderr, UpdateRuleStdout] = await $to<string, string>(deviceApi.updateRule('miui_embedding_window'));
 
 				if (UpdateRuleStderr) {
 					errorLogging.push({

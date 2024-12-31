@@ -31,6 +31,7 @@ import { useInstalledAppNames } from '@/hooks/useInstalledAppNames';
 import type GameBoosterTableItem from '@/types/GameBoosterTableItem';
 import { gameGravityOptions, gameRatioOptions } from '@/constant/gameBooster';
 import { keyBy, mapKeys } from 'lodash-es';
+import { useDisplayModeRecord, type DisplayModeItem } from '@/hooks/useDisplayModeRecord';
 type SearchKeyWordInputInstance = InstanceType<typeof NInput>;
 type GameBoosterAppDrawerInstance = InstanceType<typeof GameBoosterAppDrawer>;
 const searchKeyWordInput = ref<SearchKeyWordInputInstance | null>(null);
@@ -45,6 +46,7 @@ const { message, modal, notification } = createDiscreteApi(['message', 'modal', 
 	configProviderProps: configProviderPropsRef,
 });
 const gameBoosterStore = useGameBoosterStore();
+const displayModeRecordHook = useDisplayModeRecord();
 const GAME_RATIO_OPTIONS = gameRatioOptions();
 const GAME_RATIO_VALUE_MAP = mapKeys(GAME_RATIO_OPTIONS, item => item.value);
 const GAME_GRAVITY_OPTIONS = gameGravityOptions();
@@ -494,6 +496,7 @@ function createColumns(): DataTableColumns<GameBoosterTableItem> {
 					type="success"
 					secondary
 					:loading="deviceStore.loading || gameBoosterStore.loading"
+					v-if="displayModeRecordHook.formatDisplayModeList.value.length"
 					@click="goToDisplayModeSettings">
 					<template #icon>
 						<n-icon>

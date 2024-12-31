@@ -151,7 +151,7 @@ export const updateAutoUIApp = (
 					});
 				}
 
-				const [UpdateRuleStderr, UpdateRuleStdout] = await $to<string, string>(deviceApi.updateRule());
+				const [UpdateRuleStderr, UpdateRuleStdout] = await $to<string, string>(deviceApi.updateRule('miui_auto_ui'));
 
 				if (UpdateRuleStderr) {
 					errorLogging.push({

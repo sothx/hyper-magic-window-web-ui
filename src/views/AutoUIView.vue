@@ -111,7 +111,7 @@ const filterHasBeenInstalledApp = () => {
 const hotReloadApplicationData = async () => {
 	hotReloadLoading.value = true;
 	await reloadPage();
-	const [updateRuleErr, updateRuleRes] = await $to(deviceApi.updateRule());
+	const [updateRuleErr, updateRuleRes] = await $to(deviceApi.updateRule('miui_auto_ui'));
 	if (updateRuleErr) {
 		modal.create({
 			title: '热重载应用数据失败',

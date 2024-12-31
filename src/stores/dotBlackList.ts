@@ -145,7 +145,6 @@ export const useDotBlackListStore = defineStore(
 			const [getHasHTMLViewerCloudDataBaseErr, getHasHTMLViewerCloudDataBaseRes] = await $to<string>(dotBlackListApi.getHasHTMLViewerCloudDataBase())
 
 			if (getHasHTMLViewerCloudDataBaseErr) {
-				loading.value = false;
 				hasHTMLViewerCloudData.value = false;
 			}
 
@@ -172,9 +171,6 @@ export const useDotBlackListStore = defineStore(
 				if (getCustomDotBlackListRes) {
 					customDotBlackList.value = getCustomDotBlackListRes;
 				}
-			}
-
-			if (!errorLogging.length) {
 				loading.value = false;
 			}
 		}

@@ -14,7 +14,6 @@ export const useGameBoosterStore = defineStore(
 		const filterGameBoosterList:ComputedRef<GameBoosterTableItem[]> = computed(() => {
 			const searchValue = searchKeyWord.value.trim().toLowerCase();
 			const cachedGameBoosterList = gameBoosterList.value;
-			console.log(cachedGameBoosterList,'cachedGameBoosterList')
 			return cachedGameBoosterList.reduce((result:GameBoosterTableItem[], item) => {
 				const itemName = item.package_name.trim().toLowerCase();
 

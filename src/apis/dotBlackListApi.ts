@@ -51,13 +51,15 @@ export const getCustomDotBlackList = (): Promise<string[]> => {
 				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
 				if (errno) {
 					reject(stderr);
-				}
-
-				if (stdout) {
-					try {
-						resolve(JSON.parse(stdout));
-					} catch (err) {
-						reject(err);
+				} else {
+					if (stdout) {
+						try {
+							resolve(JSON.parse(stdout));
+						} catch (err) {
+							reject("dot_black_list config is empty");
+						}
+					} else {
+						reject(null)
 					}
 				}
 			}

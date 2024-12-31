@@ -51,7 +51,7 @@ export const getMIOSVersion = (): Promise<number> => {
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
-				resolve(1);
+				resolve(2);
 			} else {
 				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
 				errno ? reject(stderr) : resolve(Number(stdout));
@@ -183,6 +183,66 @@ export const removeIsPatchMode = (): Promise<string> => {
 	);
 };
 
+export const getIsPatchMode = (): Promise<string> => {
+	const shellCommon = `grep 'is_patch_mode=' /data/adb/MIUI_MagicWindow+/config.prop | awk -F'=' '{print $2}'`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`true`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const addIsDisabledOS2SystemAppOptimize = (): Promise<string> => {
+	const shellCommon = `grep -q '^is_disabled_os2_system_app_optimize=' /data/adb/MIUI_MagicWindow+/config.prop || (echo "is_disabled_os2_system_app_optimize=true" | tee -a /data/adb/MIUI_MagicWindow+/config.prop > /dev/null && echo "Command executed successfully." || echo "Command failed.")`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`Command executed successfully.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : stdout === 'Command executed successfully.' ? resolve(stdout) : reject(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const removeIsDisabledOS2SystemAppOptimize = (): Promise<string> => {
+	const shellCommon = `sed -i '/^is_disabled_os2_system_app_optimize=/d' //data/adb/MIUI_MagicWindow+/config.prop && echo "Remove is_disabled_os2_system_app_optimize successfully." || echo "Remove is_disabled_os2_system_app_optimize failed."`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`Remove is_disabled_os2_system_app_optimize successfully.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const getIsDisabledOS2SystemAppOptimize = (): Promise<string> => {
+	const shellCommon = `grep 'is_disabled_os2_system_app_optimize=' /data/adb/MIUI_MagicWindow+/config.prop | awk -F'=' '{print $2}'`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`true`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
 export const deleteGameMode = (): Promise<string> => {
 	const shellCommon = `sed -i '/^# 开启游戏显示布局/d; /^ro.config.miui_compat_enable=/d; /^ro.config.miui_appcompat_enable=/d' /data/adb/modules/MIUI_MagicWindow+/system.prop  && echo "Command executed successfully." || echo "Command failed."`;
 	return handlePromiseWithLogging(
@@ -199,7 +259,7 @@ export const deleteGameMode = (): Promise<string> => {
 };
 
 export const addGameMode = (): Promise<string> => {
-	const shellCommon = `grep -qxF "# 开启游戏显示布局" system.prop || echo -e "# 开启游戏显示布局\nro.config.miui_compat_enable=true\nro.config.miui_appcompat_enable=true" >> /data/adb/modules/MIUI_MagicWindow+/system.prop  && echo "Command executed successfully." || echo "Command failed."`;
+	const shellCommon = `grep -qxF "# 开启游戏显示布局" system.prop || echo -e "\n# 开启游戏显示布局\nro.config.miui_compat_enable=true\nro.config.miui_appcompat_enable=true" >> /data/adb/modules/MIUI_MagicWindow+/system.prop  && echo "Command executed successfully." || echo "Command failed."`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -782,38 +842,70 @@ export const frameRateService = (status: 'start' | 'stop'): Promise<string> => {
 };
 
 const parseDisplayModeRecords = (output: string): DisplayModeItem[] => {
+	const deviceStore = useDeviceStore();
     const records: DisplayModeItem[] = [];
     const lines = output.split("\n");
 
     lines.forEach(line => {
-        const regex = /id=(\d+),\s*width=(\d+),\s*height=(\d+),\s*fps=([\d.]+),\s*alternativeRefreshRates=\[([^\]]*)\],\s*supportedHdrTypes=\[([^\]]*)\]/;
+        const regex = deviceStore.androidTargetSdk && deviceStore.androidTargetSdk >= 35 ? /id=(\d+),\s*width=(\d+),\s*height=(\d+),\s*fps=([\d.]+),\s*vsync=([\d.]+),\s*synthetic=(true|false),\s*alternativeRefreshRates=\[([^\]]*)\],\s*supportedHdrTypes=\[([^\]]*)\]/ : /id=(\d+),\s*width=(\d+),\s*height=(\d+),\s*fps=([\d.]+),\s*alternativeRefreshRates=\[([^\]]*)\],\s*supportedHdrTypes=\[([^\]]*)\]/;
         const match = regex.exec(line);
 
         if (match) {
-            const [
-                _,
-                id,
-                width,
-                height,
-                fps,
-                alternativeRefreshRates,
-                supportedHdrTypes
-            ] = match;
-
-            const record: DisplayModeItem = {
-                id: parseInt(id, 10),
-                width: parseInt(width, 10),
-                height: parseInt(height, 10),
-                fps: parseFloat(fps),
-                alternativeRefreshRates: alternativeRefreshRates
-                    ? alternativeRefreshRates.split(",").map(rate => parseFloat(rate.trim()))
-                    : [],
-                supportedHdrTypes: supportedHdrTypes
-                    ? supportedHdrTypes.split(",").map(type => parseInt(type.trim(), 10))
-                    : []
-            };
-
-            records.push(record);
+			if (deviceStore.androidTargetSdk && deviceStore.androidTargetSdk >= 35) {
+				const [
+					_,
+					id,
+					width,
+					height,
+					fps,
+					alternativeRefreshRates,
+					supportedHdrTypes
+				] = match;
+	
+				const record: DisplayModeItem = {
+					id: parseInt(id, 10),
+					width: parseInt(width, 10),
+					height: parseInt(height, 10),
+					fps: parseFloat(fps),
+					alternativeRefreshRates: alternativeRefreshRates
+						? alternativeRefreshRates.split(",").map(rate => parseFloat(rate.trim()))
+						: [],
+					supportedHdrTypes: supportedHdrTypes
+						? supportedHdrTypes.split(",").map(type => parseInt(type.trim(), 10))
+						: []
+				};
+	
+				records.push(record);
+			} else {
+				const [
+					_,
+					id,
+					width,
+					height,
+					fps,
+					vsync,
+					synthetic,
+					alternativeRefreshRates,
+					supportedHdrTypes
+				] = match;
+	
+				const record: DisplayModeItem = {
+					id: parseInt(id, 10),
+					width: parseInt(width, 10),
+					height: parseInt(height, 10),
+					fps: parseFloat(fps),
+					vsync: parseInt(vsync, 10),
+					synthetic: synthetic === 'true' ? true : false,
+					alternativeRefreshRates: alternativeRefreshRates
+						? alternativeRefreshRates.split(",").map(rate => parseFloat(rate.trim()))
+						: [],
+					supportedHdrTypes: supportedHdrTypes
+						? supportedHdrTypes.split(",").map(type => parseInt(type.trim(), 10))
+						: []
+				};
+	
+				records.push(record);
+			}
         }
     });
 
@@ -836,8 +928,7 @@ export const getDisplayModeRecord = (): Promise<DisplayModeItem[]> => {
                         reject(stderr);
                         return;
                     }
-
-                    const parsedRecords = parseDisplayModeRecords(stdout);
+                    const parsedRecords = parseDisplayModeRecords(stdout,);
                     resolve(parsedRecords);
                 } catch (error) {
                     reject(error);
@@ -848,22 +939,7 @@ export const getDisplayModeRecord = (): Promise<DisplayModeItem[]> => {
 	);
 };
 
-export const getIsPatchMode = (): Promise<string> => {
-	const shellCommon = `grep 'is_patch_mode=' /data/adb/MIUI_MagicWindow+/config.prop | awk -F'=' '{print $2}'`;
-	return handlePromiseWithLogging(
-		new Promise(async (resolve, reject) => {
-			if (import.meta.env.MODE === 'development') {
-				resolve(`true`);
-			} else {
-				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
-				errno ? reject(stderr) : resolve(stdout);
-			}
-		}),
-		shellCommon,
-	);
-};
-
-export const updateRule = (): Promise<string> => {
+export const updateRule = (targetService?: 'miui_embedding_window' | 'miui_auto_ui'): Promise<string> => {
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -874,7 +950,7 @@ export const updateRule = (): Promise<string> => {
 					stdout: UpdateRuleStdout,
 					stderr: UpdateRuleStderr,
 				}: ExecResults = await exec(
-					`sh /data/adb/modules/MIUI_MagicWindow+/common/source/update_rule/update_rule.sh`,
+					`sh /data/adb/modules/MIUI_MagicWindow+/common/source/update_rule/update_rule.sh${targetService ? ` ${targetService}` : ''}`,
 				);
 				if (UpdateRuleErrno) {
 					reject(UpdateRuleStderr);
@@ -1552,6 +1628,81 @@ export const openNotificationStationActivity = (): Promise<string> => {
 
 export const openMemorySettingsActivity = (): Promise<string> => {
 	const shellCommon = `am start 'intent://settings/#Intent;action=android.intent.action.VIEW;launchFlags=0x14400000;component=com.android.settings/.Settings$MemorySettingsActivity;end'`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`am start command executed successfully.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const openAiWallpaperList = (): Promise<string> => {
+	const shellCommon = `am start 'intent://settings/#Intent;action=android.intent.action.VIEW;launchFlags=0x14400000;component=com.android.thememanager/.activity.ai.AiWallpaperListActivity;end'`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`am start command executed successfully.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const openAiCRClient = (): Promise<string> => {
+	const shellCommon = `am start 'intent://settings/#Intent;action=android.intent.action.VIEW;launchFlags=0x14400000;component=com.xiaomi.aicr/.dist.client.activity.DistComputeClientActivity;end'`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`am start command executed successfully.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const openAiWallpaperGuide = (): Promise<string> => {
+	const shellCommon = `am start 'intent://settings/#Intent;action=android.intent.action.VIEW;launchFlags=0x14400000;component=com.android.thememanager/.activity.AiWallpaperGuideActivity;end'`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`am start command executed successfully.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const openAiTranslationChat = (): Promise<string> => {
+	const shellCommon = `am start 'intent://settings/#Intent;action=android.intent.action.VIEW;launchFlags=0x14400000;component=com.miui.voiceassist/com.xiaomi.voiceassistant.instruction.card.translation.TranslationChatActivity;end'`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`am start command executed successfully.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const openAiTranslationSynchronize = (): Promise<string> => {
+	const shellCommon = `am start 'intent://settings/#Intent;action=android.intent.action.VIEW;launchFlags=0x14400000;component=com.miui.voiceassist/com.xiaomi.voiceassistant.instruction.card.translation.TranslationSynchronizeActivity;end'`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
