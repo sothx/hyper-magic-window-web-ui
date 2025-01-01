@@ -891,7 +891,7 @@
 							</n-switch>
 						</dd>
 					</div>
-					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+					<!-- <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
 							<p>自动开启 USB 调试</p>
@@ -927,7 +927,7 @@
 								<p>开启后每次开机会自动开启无线调试，需要保持开发者模式开关处于启用状态</p>
 							</n-alert>
 						</dd>
-					</div>
+					</div> -->
 					<!-- <div
 						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
