@@ -1656,8 +1656,23 @@ export const openAiWallpaperList = (): Promise<string> => {
 	);
 };
 
-export const openAiCRClient = (): Promise<string> => {
+export const openAiDistComputeClient = (): Promise<string> => {
 	const shellCommon = `am start 'intent://settings/#Intent;action=android.intent.action.VIEW;launchFlags=0x14400000;component=com.xiaomi.aicr/.dist.client.activity.DistComputeClientActivity;end'`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`am start command executed successfully.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const openAiDistComputeServer = (): Promise<string> => {
+	const shellCommon = `am start 'intent://settings/#Intent;action=android.intent.action.VIEW;launchFlags=0x14400000;component=com.xiaomi.aicr/.dist.client.activity.DistComputeServerActivity;end'`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {

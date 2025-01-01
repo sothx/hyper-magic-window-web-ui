@@ -891,6 +891,43 @@
 							</n-switch>
 						</dd>
 					</div>
+					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+						<dt
+							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
+							<p>自动开启 USB 调试</p>
+						</dt>
+						<dd
+							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
+							<n-switch @update:value="(value: boolean) => miuiDesktopModeHook.changeMiuiDktMode(value)"
+								:rail-style="railStyle" :disabled="!deviceStore.enabledMiuiDesktopMode"
+								:value="miuiDesktopModeHook.currentMiuiDktMode" :loading="deviceStore.loading">
+								<template #checked>启用自动开启 USB 调试</template>
+								<template #unchecked>关闭自动开启 USB 调试</template>
+							</n-switch>
+							<n-alert class="mt-5" type="info" :show-icon="false" :bordered="false">
+								<p>开启后每次开机会自动开启无线调试，需要保持开发者模式开关处于启用状态</p>
+							</n-alert>
+						</dd>
+					</div>
+					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+						<dt
+							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
+							<p>自动开启无线调试</p>
+						</dt>
+						<dd
+							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
+							<n-switch @update:value="(value: boolean) => miuiDesktopModeHook.changeMiuiDktMode(value)"
+								:rail-style="railStyle" :disabled="!deviceStore.enabledMiuiDesktopMode"
+								:value="miuiDesktopModeHook.currentMiuiDktMode" :loading="deviceStore.loading">
+								<template #checked>启用自动开启无线调试</template>
+								<template #unchecked>关闭自动开启无线调试</template>
+							</n-switch>
+							<div></div>
+							<n-alert class="mt-5" type="info" :show-icon="false" :bordered="false">
+								<p>开启后每次开机会自动开启无线调试，需要保持开发者模式开关处于启用状态</p>
+							</n-alert>
+						</dd>
+					</div>
 					<!-- <div
 						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
@@ -1125,7 +1162,7 @@
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
 							<n-button size="small" type="info" secondary :loading="deviceStore.loading"
-								@click="() => deviceApi.openAiCRClient()">
+								@click="() => deviceApi.openAiDistComputeClient()">
 								<template #icon>
 									<img src="/images/icons/aicr.png" />
 								</template>
@@ -1133,6 +1170,25 @@
 							</n-button>
 							<n-alert class="mt-5" type="info" :show-icon="false" :bordered="false">
 								<p>在附近高算力设备提供的算力支持下，平板获得部分 AI 功能</p>
+							</n-alert>
+						</dd>
+					</div>
+					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0" v-if="deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.deviceCharacteristics !== 'tablet'">
+						<dt
+							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
+							算力共享
+						</dt>
+						<dd
+							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
+							<n-button size="small" type="info" secondary :loading="deviceStore.loading"
+								@click="() => deviceApi.openAiDistComputeServer()">
+								<template #icon>
+									<img src="/images/icons/aicr.png" />
+								</template>
+								算力共享
+							</n-button>
+							<n-alert class="mt-5" type="info" :show-icon="false" :bordered="false">
+								<p>将设备的 AI 算力共享给平板设备，让平板设备获得部分 AI 功能</p>
 							</n-alert>
 						</dd>
 					</div>
