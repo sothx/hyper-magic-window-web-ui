@@ -929,10 +929,10 @@ function createColumns(): DataTableColumns<DotBlackListMergeItem> {
 			</div>
 		</div>
 		<n-card size="small">
-			<div class="mb-3 flex flex-wrap">
+			<div v-if="deviceStore.MIOSVersion && deviceStore.MIOSVersion === 1" class="mb-3 flex flex-wrap">
 				<n-alert :show-icon="true" type="warning">
-					<p>经过测试效果体验不佳，极易被云控覆盖。</p>
-					<p>功能可以继续使用，但是不再维护，且不接受该功能的缺陷和需求反馈。</p>
+					<p>经过测试效果在Hyper OS 1体验不佳，极易被云控覆盖。</p>
+					<p>功能可以继续使用，但是不再对Hyper OS 1下窗口控制器的缺陷和需求进行响应。</p>
 				</n-alert>
 			</div>
 			<div class="flex flex-wrap">
