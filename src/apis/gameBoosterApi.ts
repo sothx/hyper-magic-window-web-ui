@@ -59,22 +59,6 @@ export const openAddGame = ():Promise<string> => {
 	);
 }
 
-
-export const getHasGameBoosterDataBase = (): Promise<string> => {
-	const shellCommon = `ls /data/data/com.miui.securitycenter/databases/gamebooster.db &>/dev/null && echo "exists" || echo "not exists"`;
-	return handlePromiseWithLogging(
-		new Promise(async (resolve, reject) => {
-			if (import.meta.env.MODE === 'development') {
-				resolve(`exists`);
-			} else {
-				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
-				errno ? reject(stderr) : stdout === 'exists' ? resolve(stdout) : reject(stdout);
-			}
-		}),
-		shellCommon,
-	);
-};
-
 export const updateGameRatioSetting = (packageName:GameBoosterTableItem['package_name'],gameRatio: GameBoosterTableItem['game_ratio'], gameGravity:GameBoosterTableItem['game_gravity']): Promise<string> => {
 	const sqlite3 = '/data/adb/modules/MIUI_MagicWindow+/common/utils/sqlite3';
 	const GameBoosterDataBase = `/data/data/com.miui.securitycenter/databases/gamebooster.db`;

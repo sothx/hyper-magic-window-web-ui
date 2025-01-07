@@ -1,509 +1,523 @@
 <script setup lang="tsx">
-	import { useDeviceStore } from '@/stores/device';
-	import { computed, h, ref, type CSSProperties } from 'vue';
-	import * as xmlFormat from '@/utils/xmlFormat';
-	import { createDiscreteApi, darkTheme, lightTheme, NInput, type ConfigProviderProps } from 'naive-ui';
-	import { useGameMode } from '@/hooks/useGameMode';
-	import { useABTestActivation } from '@/hooks/useABTestActivation';
-	import * as deviceApi from '@/apis/deviceApi';
-	import $to from 'await-to-js';
-	import { useEmbeddedStore } from '@/stores/embedded';
-	import { keyBy } from 'lodash-es';
-	import { useFontStore } from '@/stores/font';
-	import { findBase64InString } from '@/utils/common';
-	import { arrayBufferToBase64, base64ToArrayBuffer } from '@/utils/format';
-	import * as embeddedApi from '@/apis/embeddedApi';
-	import pako from 'pako';
-	import { useAmktiao, type KeyboardModeOptions } from '@/hooks/useAmktiao';
-	import { useMiuiDesktopMode } from '@/hooks/useMiuiDesktopMode';
-	import { useShowNotificationIcon } from '@/hooks/useShowNotificationIconNum';
-	import { useRealQuantity } from '@/hooks/useRealQuantity';
-	import { useHideGestureLine } from '@/hooks/useHideGestureLine';
-	import { useInVisibleMode } from '@/hooks/useInVisibleMode';
-	import { useDisabledOS2SystemAppOptimize } from '@/hooks/useDisabledOS2SystemAppOptimize';
-	import {
-		BoltIcon,
-		CpuChipIcon,
-		ArrowDownCircleIcon,
-		FilmIcon,
-		ScissorsIcon,
-		BanknotesIcon,
-		ServerIcon,
-		CalendarIcon,
-		EyeSlashIcon,
-		ViewfinderCircleIcon,
-		PhoneIcon,
-		BellAlertIcon,
-		ServerStackIcon,
-		QuestionMarkCircleIcon
-	} from '@heroicons/vue/24/solid';
-	import { useDisplayModeRecord, type DisplayModeItem } from '@/hooks/useDisplayModeRecord';
-	import { useMiuiCursorStyle, type miuiCursorStyleType } from '@/hooks/useMiuiCursorStyle';
-	import { useMouseGestureNaturalscroll } from '@/hooks/useMouseGestureNaturalscroll';
-	import { usePointerSpeed } from '@/hooks/usePointerSpeed';
-	const deviceStore = useDeviceStore();
-	const embeddedStore = useEmbeddedStore();
-	const miuiDesktopModeHook = useMiuiDesktopMode();
-	const showNotificationIconHook = useShowNotificationIcon();
-	const realQuantityHook = useRealQuantity();
-	const displayModeRecordHook = useDisplayModeRecord();
-	const hideGestureLineHook = useHideGestureLine();
-	const inVisibleModeHook = useInVisibleMode();
-	const miuiCursorStyleHook = useMiuiCursorStyle();
-	const mouseGestureNaturalscrollHook = useMouseGestureNaturalscroll();
-	const pointerSpeedHook = usePointerSpeed();
-	const disabledOS2SystemAppOptimizeHook = useDisabledOS2SystemAppOptimize();
-	const { activateABTest, loading: activateABTestLoading } = useABTestActivation();
-	const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
-		theme: deviceStore.isDarkMode ? darkTheme : lightTheme,
-	}));
-	const { message, modal } = createDiscreteApi(['message', 'modal'], {
-		configProviderProps: configProviderPropsRef,
-	});
-	const gameMode = useGameMode();
-	const fontStore = useFontStore();
-	const amktiaoHook = useAmktiao();
-	const handleSmartFocusIOChange = (value: boolean) => {
-		message.info('功能尚未上线，无任何实际效果，请等待后续更新！');
-	};
-	const rhythmModeOptions = [
-		{
-			label: '跟随系统',
-			key: 'autoRhythm',
-		},
-		{
-			label: '浅色模式',
-			key: 'lightMode',
-		},
-		{
-			label: '深色模式',
-			key: 'dartMode',
-		},
-	];
+import { useDeviceStore } from '@/stores/device';
+import { computed, h, ref, type CSSProperties } from 'vue';
+import * as xmlFormat from '@/utils/xmlFormat';
+import { createDiscreteApi, darkTheme, lightTheme, NInput, type ConfigProviderProps } from 'naive-ui';
+import { useGameMode } from '@/hooks/useGameMode';
+import { useABTestActivation } from '@/hooks/useABTestActivation';
+import * as deviceApi from '@/apis/deviceApi';
+import $to from 'await-to-js';
+import { useEmbeddedStore } from '@/stores/embedded';
+import { keyBy } from 'lodash-es';
+import { useFontStore } from '@/stores/font';
+import { findBase64InString } from '@/utils/common';
+import { arrayBufferToBase64, base64ToArrayBuffer } from '@/utils/format';
+import * as embeddedApi from '@/apis/embeddedApi';
+import pako from 'pako';
+import { useAmktiao, type KeyboardModeOptions } from '@/hooks/useAmktiao';
+import { useMiuiDesktopMode } from '@/hooks/useMiuiDesktopMode';
+import { useShowNotificationIcon } from '@/hooks/useShowNotificationIconNum';
+import { useRealQuantity } from '@/hooks/useRealQuantity';
+import { useHideGestureLine } from '@/hooks/useHideGestureLine';
+import { useInVisibleMode } from '@/hooks/useInVisibleMode';
+import { useMIUIContentExtension } from '@/hooks/useMIUIContentExtension';
+import { useDisabledOS2SystemAppOptimize } from '@/hooks/useDisabledOS2SystemAppOptimize';
+import {
+	BoltIcon,
+	CpuChipIcon,
+	ArrowDownCircleIcon,
+	FilmIcon,
+	ScissorsIcon,
+	BanknotesIcon,
+	ServerIcon,
+	CalendarIcon,
+	EyeSlashIcon,
+	ViewfinderCircleIcon,
+	PhoneIcon,
+	BellAlertIcon,
+	ServerStackIcon,
+	QuestionMarkCircleIcon,
+} from '@heroicons/vue/24/solid';
+import { useDisplayModeRecord, type DisplayModeItem } from '@/hooks/useDisplayModeRecord';
+import { useMiuiCursorStyle, type miuiCursorStyleType } from '@/hooks/useMiuiCursorStyle';
+import { useMouseGestureNaturalscroll } from '@/hooks/useMouseGestureNaturalscroll';
+import { usePointerSpeed } from '@/hooks/usePointerSpeed';
+const deviceStore = useDeviceStore();
+const embeddedStore = useEmbeddedStore();
+const miuiDesktopModeHook = useMiuiDesktopMode();
+const showNotificationIconHook = useShowNotificationIcon();
+const MIUIContentExtensionHook = useMIUIContentExtension();
+const realQuantityHook = useRealQuantity();
+const displayModeRecordHook = useDisplayModeRecord();
+const hideGestureLineHook = useHideGestureLine();
+const inVisibleModeHook = useInVisibleMode();
+const miuiCursorStyleHook = useMiuiCursorStyle();
+const mouseGestureNaturalscrollHook = useMouseGestureNaturalscroll();
+const pointerSpeedHook = usePointerSpeed();
+const disabledOS2SystemAppOptimizeHook = useDisabledOS2SystemAppOptimize();
+const { activateABTest, loading: activateABTestLoading } = useABTestActivation();
+const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
+	theme: deviceStore.isDarkMode ? darkTheme : lightTheme,
+}));
+const { message, modal } = createDiscreteApi(['message', 'modal'], {
+	configProviderProps: configProviderPropsRef,
+});
+const gameMode = useGameMode();
+const fontStore = useFontStore();
+const amktiaoHook = useAmktiao();
+const handleSmartFocusIOChange = (value: boolean) => {
+	message.info('功能尚未上线，无任何实际效果，请等待后续更新！');
+};
+const rhythmModeOptions = [
+	{
+		label: '跟随系统',
+		key: 'autoRhythm',
+	},
+	{
+		label: '浅色模式',
+		key: 'lightMode',
+	},
+	{
+		label: '深色模式',
+		key: 'dartMode',
+	},
+];
 
-	const fontModeOptions = ref([
-		{
-			label: 'MiSans',
-			key: 'MiSans',
-			type: 'info',
-		},
-		{
-			label: 'HarmonyOS Sans',
-			key: 'HarmonyOS Sans',
+const fontModeOptions = ref([
+	{
+		label: 'MiSans',
+		key: 'MiSans',
+		type: 'info',
+	},
+	{
+		label: 'HarmonyOS Sans',
+		key: 'HarmonyOS Sans',
+		type: 'error',
+	},
+	{
+		label: 'OPPO Sans',
+		key: 'OPPO Sans',
+		type: 'success',
+	},
+]);
+
+const fontModeMap = computed(() => {
+	return keyBy(fontModeOptions.value, 'key');
+});
+
+const handleSelectFontMode = (item: string) => {
+	fontStore.currentFont = item;
+};
+
+const handleSelectRhythmMode = (item: string) => {
+	deviceStore.rhythmMode = item;
+	if (item === 'lightMode') {
+		deviceStore.isDarkMode = false;
+	}
+	if (item === 'dartMode') {
+		deviceStore.isDarkMode = true;
+	}
+};
+const activateABTestTextarea = ref<string>('');
+const handleActivateABTest = async () => {
+	const ABTestontent = {
+		GAME_BOOSTER_CUSTOM_RATIO: true,
+	};
+	const jsonString = JSON.stringify(ABTestontent);
+	const deflate = pako.deflate(jsonString, {
+		level: 9,
+		memLevel: 9,
+		windowBits: 15,
+	});
+	const compressedData = new Uint8Array(deflate);
+	const base64String: string = arrayBufferToBase64(compressedData);
+	console.log(base64String, 'base64String');
+	activateABTestTextarea.value = '';
+	const [activateABTestTextareaModalErr, activateABTestTextareaModalRes] = await $to(
+		new Promise((resolve, reject) => {
+			modal.create({
+				title: '请粘贴激活口令',
+				preset: 'dialog',
+				style: 'min-width:500px; width:50%;',
+				content: () =>
+					h(NInput, {
+						type: 'textarea',
+						value: activateABTestTextarea.value,
+						'onUpdate:value': newValue => {
+							activateABTestTextarea.value = newValue;
+						},
+						autosize: { minRows: 8, maxRows: 8 },
+						placeholder: '在此处粘贴激活口令',
+					}),
+				positiveText: '确定提交',
+				negativeText: '取消',
+				onPositiveClick() {
+					resolve('positiveClick');
+				},
+			});
+		}),
+	);
+	if (activateABTestTextareaModalRes) {
+		activateABTestLoading.value = true;
+		const base64StringFromClipboard: string = activateABTestTextarea.value;
+		const getBase64String = findBase64InString(base64StringFromClipboard);
+		if (!getBase64String?.length) {
+			modal.create({
+				title: '导入激活口令失败',
+				type: 'error',
+				preset: 'dialog',
+				content: () => <p>导入激活口令失败了QwQ，解析口令发生错误，无法正常解析。</p>,
+				negativeText: '确定',
+			});
+			activateABTestLoading.value = false;
+			return;
+		}
+		try {
+			const uint8Array: Uint8Array = base64ToArrayBuffer(getBase64String);
+			const inflate = pako.inflate(uint8Array, {
+				to: 'string',
+			});
+			const activateABTestRuleContent = JSON.parse(inflate);
+			activateABTest(activateABTestRuleContent);
+		} catch (error) {
+			// 解析失败，处理错误
+			modal.create({
+				title: '解析激活口令失败',
+				type: 'error',
+				preset: 'dialog',
+				content: () => <p>解析激活口令失败了QwQ，请检查激活口令是否有误</p>,
+				negativeText: '确定',
+			});
+			activateABTestLoading.value = false;
+		}
+	}
+};
+const switchPatchModeLoading = ref<boolean>(false);
+const changeShowRotationSuggestions = async (value: boolean) => {
+	const [setRotationSuggestionsErr] = await $to(deviceApi.setRotationSuggestions(value ? 1 : 0));
+	if (setRotationSuggestionsErr) {
+		modal.create({
+			title: '操作失败',
 			type: 'error',
-		},
-		{
-			label: 'OPPO Sans',
-			key: 'OPPO Sans',
-			type: 'success',
-		},
-	]);
-
-	const fontModeMap = computed(() => {
-		return keyBy(fontModeOptions.value, 'key');
-	});
-
-	const handleSelectFontMode = (item: string) => {
-		fontStore.currentFont = item;
-	};
-
-	const handleSelectRhythmMode = (item: string) => {
-		deviceStore.rhythmMode = item;
-		if (item === 'lightMode') {
-			deviceStore.isDarkMode = false;
-		}
-		if (item === 'dartMode') {
-			deviceStore.isDarkMode = true;
-		}
-	};
-	const activateABTestTextarea = ref<string>('');
-	const handleActivateABTest = async () => {
-		const ABTestontent = {
-			GAME_BOOSTER_CUSTOM_RATIO: true,
-		};
-		const jsonString = JSON.stringify(ABTestontent);
-		const deflate = pako.deflate(jsonString, {
-			level: 9,
-			memLevel: 9,
-			windowBits: 15,
+			preset: 'dialog',
+			content: () => <p>无法 {value ? '开启' : '关闭'} 旋转建议提示按钮，详情请查看日志记录~</p>,
+			negativeText: '确定',
 		});
-		const compressedData = new Uint8Array(deflate);
-		const base64String: string = arrayBufferToBase64(compressedData);
-		console.log(base64String, 'base64String');
-		activateABTestTextarea.value = '';
-		const [activateABTestTextareaModalErr, activateABTestTextareaModalRes] = await $to(
-			new Promise((resolve, reject) => {
-				modal.create({
-					title: '请粘贴激活口令',
-					preset: 'dialog',
-					style: 'min-width:500px; width:50%;',
-					content: () =>
-						h(NInput, {
-							type: 'textarea',
-							value: activateABTestTextarea.value,
-							'onUpdate:value': newValue => {
-								activateABTestTextarea.value = newValue;
-							},
-							autosize: { minRows: 8, maxRows: 8 },
-							placeholder: '在此处粘贴激活口令',
-						}),
-					positiveText: '确定提交',
-					negativeText: '取消',
-					onPositiveClick() {
-						resolve('positiveClick');
-					},
-				});
-			}),
-		);
-		if (activateABTestTextareaModalRes) {
-			activateABTestLoading.value = true;
-			const base64StringFromClipboard: string = activateABTestTextarea.value;
-			const getBase64String = findBase64InString(base64StringFromClipboard);
-			if (!getBase64String?.length) {
-				modal.create({
-					title: '导入激活口令失败',
-					type: 'error',
-					preset: 'dialog',
-					content: () => <p>导入激活口令失败了QwQ，解析口令发生错误，无法正常解析。</p>,
-					negativeText: '确定',
-				});
-				activateABTestLoading.value = false;
-				return;
-			}
-			try {
-				const uint8Array: Uint8Array = base64ToArrayBuffer(getBase64String);
-				const inflate = pako.inflate(uint8Array, {
-					to: 'string',
-				});
-				const activateABTestRuleContent = JSON.parse(inflate);
-				activateABTest(activateABTestRuleContent);
-			} catch (error) {
-				// 解析失败，处理错误
-				modal.create({
-					title: '解析激活口令失败',
-					type: 'error',
-					preset: 'dialog',
-					content: () => <p>解析激活口令失败了QwQ，请检查激活口令是否有误</p>,
-					negativeText: '确定',
-				});
-				activateABTestLoading.value = false;
-			}
-		}
-	};
-	const switchPatchModeLoading = ref<boolean>(false);
-	const changeShowRotationSuggestions = async (value: boolean) => {
-		const [setRotationSuggestionsErr] = await $to(deviceApi.setRotationSuggestions(value ? 1 : 0));
-		if (setRotationSuggestionsErr) {
+		return;
+	}
+	deviceStore.showRotationSuggestions = value;
+};
+const changeShamikoMode = async (value: boolean) => {
+	deviceApi
+		.putShamikoMode(value ? 'whitelist' : 'blacklist')
+		.then(res => {
+			deviceStore.shamikoInfo.mode = value ? 'whitelist' : 'blacklist';
+			modal.create({
+				title: '操作成功',
+				type: 'success',
+				preset: 'dialog',
+				content: () => (
+					<div>
+						{value && (
+							<p>
+								好耶w，Shamiko的工作模式已成功切换为{' '}
+								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+									白名单模式
+								</span>{' '}
+							</p>
+						)}
+						{!value && (
+							<p>
+								好耶w，Shamiko的工作模式已成功切换为{' '}
+								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+									黑名单模式
+								</span>{' '}
+							</p>
+						)}
+					</div>
+				),
+				negativeText: '确定',
+			});
+		})
+		.catch(err => {
 			modal.create({
 				title: '操作失败',
 				type: 'error',
 				preset: 'dialog',
-				content: () => <p>无法 {value ? '开启' : '关闭'} 旋转建议提示按钮，详情请查看日志记录~</p>,
+				content: () => <p>无法切换Shamiko的工作模式，详情请查看日志记录~</p>,
 				negativeText: '确定',
 			});
+		});
+};
+const getAppDownload = async (title: string, url: string, type: 'system' | 'revision' | 'original') => {
+	modal.create({
+		title: `获取${title}`,
+		type: 'info',
+		preset: 'dialog',
+		content: () => (
+			<div>
+				<p>
+					确定要下载{title}么？请注意核对部分应用的兼容性。
+					{type === 'system' && (
+						<span>（Tips: 系统应用无法通过小米自带的应用包管理器安装，请通过MT管理器安装！）</span>
+					)}
+					{type === 'revision' && <span>（Tips: 修改版需搭配核心破解并通过MT管理器安装）</span>}
+				</p>
+				<p>下载地址:</p>
+				<p>{url}</p>
+			</div>
+		),
+		positiveText: '复制下载链接到剪切板',
+		negativeText: '取消',
+		onPositiveClick: () => {
+			navigator.clipboard.writeText(`${url}`);
+		},
+		onNegativeClick: () => {},
+	});
+};
+const changePatchMode = async (value: boolean) => {
+	const [negativeRes, positiveRes] = await $to(
+		new Promise((resolve, reject) => {
+			modal.create({
+				title: value ? '想切换为定制模式吗？' : '想切换为完整模式吗？',
+				type: 'info',
+				preset: 'dialog',
+				content: () => (
+					<div>
+						{value && (
+							<p>
+								切换为{' '}
+								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+									定制模式
+								</span>{' '}
+								后，模块会以您设备的整体应用情况{' '}
+								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+									修剪模块应用适配列表
+								</span>{' '}
+								，以解决老机型由于系统优化不佳而导致的卡顿、掉帧等问题，后续每次更新模块或者安装新的应用后，建议前往{' '}
+								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+									应用横屏布局
+								</span>{' '}
+								重新{' '}
+								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+									生成定制应用数据
+								</span>{' '}
+								，确定要继续吗？
+							</p>
+						)}
+						{!value && (
+							<p>
+								切换为{' '}
+								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+									完整模式
+								</span>{' '}
+								后，可以获得模块提供的大量应用适配，同时可能会导致部分老机型由于系统优化不佳而导致的卡顿、掉帧等问题，确定要继续吗？
+							</p>
+						)}
+					</div>
+				),
+				positiveText: '确定继续',
+				negativeText: '我再想想',
+				onPositiveClick: () => {
+					resolve('positiveClick');
+				},
+				onNegativeClick: () => {
+					reject('negativeClick');
+				},
+			});
+		}),
+	);
+	if (positiveRes) {
+		switchPatchModeLoading.value = true;
+		const [removeIsPatchModeErr] = await $to(deviceApi.removeIsPatchMode());
+		if (removeIsPatchModeErr) {
+			modal.create({
+				title: '操作失败',
+				type: 'error',
+				preset: 'dialog',
+				content: () => <p>无法移除定制模式的配置项，详情请查看日志记录~</p>,
+				negativeText: '确定',
+			});
+			switchPatchModeLoading.value = false;
 			return;
 		}
-		deviceStore.showRotationSuggestions = value;
-	};
-	const changeShamikoMode = async (value: boolean) => {
-		deviceApi
-			.putShamikoMode(value ? 'whitelist' : 'blacklist')
-			.then(res => {
-				deviceStore.shamikoInfo.mode = value ? 'whitelist' : 'blacklist';
-				modal.create({
-					title: '操作成功',
-					type: 'success',
-					preset: 'dialog',
-					content: () => (
-						<div>
-							{value && (
-								<p>
-									好耶w，Shamiko的工作模式已成功切换为{' '}
-									<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-										白名单模式
-									</span>{' '}
-								</p>
-							)}
-							{!value && (
-								<p>
-									好耶w，Shamiko的工作模式已成功切换为{' '}
-									<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-										黑名单模式
-									</span>{' '}
-								</p>
-							)}
-						</div>
-					),
-					negativeText: '确定',
-				});
-			})
-			.catch(err => {
+		if (value) {
+			const [addIsPatchModeErr] = await $to(deviceApi.addIsPatchMode());
+			if (addIsPatchModeErr) {
 				modal.create({
 					title: '操作失败',
 					type: 'error',
 					preset: 'dialog',
-					content: () => <p>无法切换Shamiko的工作模式，详情请查看日志记录~</p>,
-					negativeText: '确定',
-				});
-			});
-	};
-	const getAppDownload = async (title: string, url: string, type: 'system' | 'revision' | 'original') => {
-		modal.create({
-			title: `获取${title}`,
-			type: 'info',
-			preset: 'dialog',
-			content: () => (
-				<div>
-					<p>
-						确定要下载{title}么？请注意核对部分应用的兼容性。
-						{type === 'system' && (
-							<span>（Tips: 系统应用无法通过小米自带的应用包管理器安装，请通过MT管理器安装！）</span>
-						)}
-						{type === 'revision' && <span>（Tips: 修改版需搭配核心破解并通过MT管理器安装）</span>}
-					</p>
-					<p>下载地址:</p>
-					<p>{url}</p>
-				</div>
-			),
-			positiveText: '复制下载链接到剪切板',
-			negativeText: '取消',
-			onPositiveClick: () => {
-				navigator.clipboard.writeText(`${url}`);
-			},
-			onNegativeClick: () => { },
-		});
-	};
-	const changePatchMode = async (value: boolean) => {
-		const [negativeRes, positiveRes] = await $to(
-			new Promise((resolve, reject) => {
-				modal.create({
-					title: value ? '想切换为定制模式吗？' : '想切换为完整模式吗？',
-					type: 'info',
-					preset: 'dialog',
-					content: () => (
-						<div>
-							{value && (
-								<p>
-									切换为{' '}
-									<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-										定制模式
-									</span>{' '}
-									后，模块会以您设备的整体应用情况{' '}
-									<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-										修剪模块应用适配列表
-									</span>{' '}
-									，以解决老机型由于系统优化不佳而导致的卡顿、掉帧等问题，后续每次更新模块或者安装新的应用后，建议前往{' '}
-									<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-										应用横屏布局
-									</span>{' '}
-									重新{' '}
-									<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-										生成定制应用数据
-									</span>{' '}
-									，确定要继续吗？
-								</p>
-							)}
-							{!value && (
-								<p>
-									切换为{' '}
-									<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-										完整模式
-									</span>{' '}
-									后，可以获得模块提供的大量应用适配，同时可能会导致部分老机型由于系统优化不佳而导致的卡顿、掉帧等问题，确定要继续吗？
-								</p>
-							)}
-						</div>
-					),
-					positiveText: '确定继续',
-					negativeText: '我再想想',
-					onPositiveClick: () => {
-						resolve('positiveClick');
-					},
-					onNegativeClick: () => {
-						reject('negativeClick');
-					},
-				});
-			}),
-		);
-		if (positiveRes) {
-			switchPatchModeLoading.value = true;
-			const [removeIsPatchModeErr] = await $to(deviceApi.removeIsPatchMode());
-			if (removeIsPatchModeErr) {
-				modal.create({
-					title: '操作失败',
-					type: 'error',
-					preset: 'dialog',
-					content: () => <p>无法移除定制模式的配置项，详情请查看日志记录~</p>,
+					content: () => <p>无法切换为定制模式，详情请查看日志记录~</p>,
 					negativeText: '确定',
 				});
 				switchPatchModeLoading.value = false;
 				return;
 			}
-			if (value) {
-				const [addIsPatchModeErr] = await $to(deviceApi.addIsPatchMode());
-				if (addIsPatchModeErr) {
-					modal.create({
-						title: '操作失败',
-						type: 'error',
-						preset: 'dialog',
-						content: () => <p>无法切换为定制模式，详情请查看日志记录~</p>,
-						negativeText: '确定',
-					});
-					switchPatchModeLoading.value = false;
-					return;
-				}
-				embeddedStore.isPatchMode = true;
-			} else {
-				switchPatchModeLoading.value = false;
-				embeddedStore.isPatchMode = false;
-			}
-			await deviceStore.getAndroidApplicationPackageNameList();
-			const [submitUpdateEmbeddedAppErr, submitUpdateEmbeddedAppRes] = await $to(
-				embeddedApi.updateEmbeddedApp({
-					isPatchMode: embeddedStore.isPatchMode,
-					patchEmbeddedRulesListXML: xmlFormat.objectToXML(
-						embeddedStore.patchEmbeddedRulesList,
-						'package',
-						'package_config',
-					),
-					patchFixedOrientationListXML: xmlFormat.objectToXML(
-						embeddedStore.patchFixedOrientationList,
-						'package',
-						'package_config',
-					),
-					patchEmbeddedSettingConfigXML: xmlFormat.objectToXML(
-						embeddedStore.patchEmbeddedSettingConfig,
-						'setting',
-						'setting_rule',
-					),
-					customEmbeddedRulesListXML: xmlFormat.objectToXML(
-						embeddedStore.customConfigEmbeddedRulesList,
-						'package',
-						undefined,
-					),
-					customFixedOrientationListXML: xmlFormat.objectToXML(
-						embeddedStore.customConfigFixedOrientationList,
-						'package',
-						undefined,
-					),
-					...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2
-						? {
+			embeddedStore.isPatchMode = true;
+		} else {
+			switchPatchModeLoading.value = false;
+			embeddedStore.isPatchMode = false;
+		}
+		await deviceStore.getAndroidApplicationPackageNameList();
+		const [submitUpdateEmbeddedAppErr, submitUpdateEmbeddedAppRes] = await $to(
+			embeddedApi.updateEmbeddedApp({
+				isPatchMode: embeddedStore.isPatchMode,
+				patchEmbeddedRulesListXML: xmlFormat.objectToXML(
+					embeddedStore.patchEmbeddedRulesList,
+					'package',
+					'package_config',
+				),
+				patchFixedOrientationListXML: xmlFormat.objectToXML(
+					embeddedStore.patchFixedOrientationList,
+					'package',
+					'package_config',
+				),
+				patchEmbeddedSettingConfigXML: xmlFormat.objectToXML(
+					embeddedStore.patchEmbeddedSettingConfig,
+					'setting',
+					'setting_rule',
+				),
+				customEmbeddedRulesListXML: xmlFormat.objectToXML(
+					embeddedStore.customConfigEmbeddedRulesList,
+					'package',
+					undefined,
+				),
+				customFixedOrientationListXML: xmlFormat.objectToXML(
+					embeddedStore.customConfigFixedOrientationList,
+					'package',
+					undefined,
+				),
+				...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2
+					? {
 							settingConfigXML: xmlFormat.objectToXML(
 								embeddedStore.customConfigEmbeddedSettingConfig,
 								'setting',
 								undefined,
 							),
 						}
-						: {
+					: {
 							settingConfigXML: xmlFormat.objectToXML(
 								embeddedStore.systemEmbeddedSettingConfig,
 								'setting',
 								'setting_rule',
 							),
 						}),
-				}),
-			);
-			if (submitUpdateEmbeddedAppErr) {
-				modal.create({
-					title: '操作失败',
-					type: 'error',
-					preset: 'dialog',
-					content: () => <p>发生异常错误，更新失败了QwQ，详细错误请查看错误日志~</p>,
-				});
-				embeddedStore.isPatchMode = !embeddedStore.isPatchMode;
-				switchPatchModeLoading.value = false;
-			} else {
-				modal.create({
-					title: '操作成功',
-					type: 'success',
-					preset: 'dialog',
-					content: () => (
-						<div>
-							{value && (
-								<p>
-									好耶w，已成功切换为{' '}
-									<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-										定制模式
-									</span>{' '}
-									，模块已根据您设备当前的整体应用情况{' '}
-									<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-										修剪模块应用适配列表
-									</span>{' '}
-									，以解决老机型由于系统优化不佳而导致的卡顿、掉帧等问题，建议每次更新模块或者安装新的应用后，均需要在前往{' '}
-									<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-										应用横屏布局
-									</span>{' '}
-									界面重新生成{' '}
-									<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-										生成定制应用数据
-									</span>{' '}
-									。
-								</p>
-							)}
-							{!value && (
-								<p>
-									好耶w，已成功切换为{' '}
-									<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-										完整模式
-									</span>{' '}
-									，可以获得模块提供的大量应用适配，同时可能会导致部分老机型由于系统优化不佳而导致的卡顿、掉帧等问题。
-								</p>
-							)}
-						</div>
-					),
-					negativeText: '确定',
-				});
-				switchPatchModeLoading.value = false;
-				embeddedStore.updateMergeRuleList();
-			}
-		}
-	};
-	const changeGameMode = async (value: boolean) => {
-		const [negativeRes, positiveRes] = await $to(
-			new Promise((resolve, reject) => {
-				modal.create({
-					title: value ? '想开启游戏显示布局吗？' : '想关闭游戏显示布局吗？',
-					type: 'info',
-					preset: 'dialog',
-					content: () => (
-						<div>
-							<p>
-								{value ? '开启' : '关闭'}{' '}
-								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-									游戏显示布局
-								</span>{' '}
-								后需要设备重启才会生效~
-							</p>
-							{value &&
-								deviceStore.deviceCharacteristics === 'tablet' &&
-								deviceStore.MIOSVersion &&
-								deviceStore.MIOSVersion >= 2 && (
-									<p>
-										从Hyper OS 2.0开始，小米平板需要搭配配套的{' '}
-										<span
-											class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-											修改版平板/手机管家
-										</span>{' '}
-										才能使用游戏显示布局，详情请前往模块首页了解~
-									</p>
-								)}
-							<p>是否立即重启？</p>
-						</div>
-					),
-					positiveText: '确认并立即重启',
-					negativeText: '取消',
-					onPositiveClick: () => {
-						resolve('positiveClick');
-					},
-					onNegativeClick: () => {
-						reject('negativeClick');
-					},
-				});
 			}),
 		);
+		if (submitUpdateEmbeddedAppErr) {
+			modal.create({
+				title: '操作失败',
+				type: 'error',
+				preset: 'dialog',
+				content: () => <p>发生异常错误，更新失败了QwQ，详细错误请查看错误日志~</p>,
+			});
+			embeddedStore.isPatchMode = !embeddedStore.isPatchMode;
+			switchPatchModeLoading.value = false;
+		} else {
+			modal.create({
+				title: '操作成功',
+				type: 'success',
+				preset: 'dialog',
+				content: () => (
+					<div>
+						{value && (
+							<p>
+								好耶w，已成功切换为{' '}
+								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+									定制模式
+								</span>{' '}
+								，模块已根据您设备当前的整体应用情况{' '}
+								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+									修剪模块应用适配列表
+								</span>{' '}
+								，以解决老机型由于系统优化不佳而导致的卡顿、掉帧等问题，建议每次更新模块或者安装新的应用后，均需要在前往{' '}
+								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+									应用横屏布局
+								</span>{' '}
+								界面重新生成{' '}
+								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+									生成定制应用数据
+								</span>{' '}
+								。
+							</p>
+						)}
+						{!value && (
+							<p>
+								好耶w，已成功切换为{' '}
+								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+									完整模式
+								</span>{' '}
+								，可以获得模块提供的大量应用适配，同时可能会导致部分老机型由于系统优化不佳而导致的卡顿、掉帧等问题。
+							</p>
+						)}
+					</div>
+				),
+				negativeText: '确定',
+			});
+			switchPatchModeLoading.value = false;
+			embeddedStore.updateMergeRuleList();
+		}
+	}
+};
+const changeGameMode = async (value: boolean) => {
+	const [negativeRes, positiveRes] = await $to(
+		new Promise((resolve, reject) => {
+			modal.create({
+				title: value ? '想开启游戏显示布局吗？' : '想关闭游戏显示布局吗？',
+				type: 'info',
+				preset: 'dialog',
+				content: () => (
+					<div>
+						<p>
+							{value ? '开启' : '关闭'}{' '}
+							<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+								游戏显示布局
+							</span>{' '}
+							后需要设备重启才会生效~
+						</p>
+						{value &&
+							deviceStore.deviceCharacteristics === 'tablet' &&
+							deviceStore.MIOSVersion &&
+							deviceStore.MIOSVersion >= 2 && (
+								<p>
+									从Hyper OS 2.0开始，小米平板需要搭配配套的{' '}
+									<span
+										class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+										修改版平板/手机管家
+									</span>{' '}
+									才能使用游戏显示布局，详情请前往模块首页了解~
+								</p>
+							)}
+						<p>是否立即重启？</p>
+					</div>
+				),
+				positiveText: '确认并立即重启',
+				negativeText: '取消',
+				onPositiveClick: () => {
+					resolve('positiveClick');
+				},
+				onNegativeClick: () => {
+					reject('negativeClick');
+				},
+			});
+		}),
+	);
 
-		const [deleteGameModeErr] = await $to(deviceApi.deleteGameMode());
-		if (deleteGameModeErr) {
+	const [deleteGameModeErr] = await $to(deviceApi.deleteGameMode());
+	if (deleteGameModeErr) {
+		modal.create({
+			title: '操作失败',
+			type: 'error',
+			preset: 'dialog',
+			content: () => <p>无法修改模块配置文件，详情请查看日志记录~</p>,
+			negativeText: '确定',
+		});
+		return;
+	}
+	if (value) {
+		const [addGameModeErr] = await $to(deviceApi.addGameMode());
+		if (addGameModeErr) {
 			modal.create({
 				title: '操作失败',
 				type: 'error',
@@ -513,55 +527,45 @@
 			});
 			return;
 		}
-		if (value) {
-			const [addGameModeErr] = await $to(deviceApi.addGameMode());
-			if (addGameModeErr) {
-				modal.create({
-					title: '操作失败',
-					type: 'error',
-					preset: 'dialog',
-					content: () => <p>无法修改模块配置文件，详情请查看日志记录~</p>,
-					negativeText: '确定',
-				});
-				return;
-			}
+	}
+	if (positiveRes) {
+		const [rebootDeviceErr] = await $to(deviceApi.rebootDevice());
+		if (rebootDeviceErr) {
+			modal.create({
+				title: '操作失败',
+				type: 'error',
+				preset: 'dialog',
+				content: () => <p>无法重启设备，详情请查看日志记录~</p>,
+				negativeText: '确定',
+			});
+			return;
 		}
-		if (positiveRes) {
-			const [rebootDeviceErr] = await $to(deviceApi.rebootDevice());
-			if (rebootDeviceErr) {
-				modal.create({
-					title: '操作失败',
-					type: 'error',
-					preset: 'dialog',
-					content: () => <p>无法重启设备，详情请查看日志记录~</p>,
-					negativeText: '确定',
-				});
-				return;
-			}
+	}
+};
+const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean }) => {
+	const style: CSSProperties = {};
+	if (checked) {
+		style.background = '#d03050';
+		if (focused) {
+			style.boxShadow = '0 0 0 2px #d0305040';
 		}
-	};
-	const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean }) => {
-		const style: CSSProperties = {};
-		if (checked) {
-			style.background = '#d03050';
-			if (focused) {
-				style.boxShadow = '0 0 0 2px #d0305040';
-			}
-		} else {
-			style.background = '#2080f0';
-			if (focused) {
-				style.boxShadow = '0 0 0 2px #2080f040';
-			}
+	} else {
+		style.background = '#2080f0';
+		if (focused) {
+			style.boxShadow = '0 0 0 2px #2080f040';
 		}
-		return style;
-	};
+	}
+	return style;
+};
 </script>
 <template>
 	<div class="setting">
 		<div class="mt-3">
 			<div class="px-3 sm:px-0">
 				<h3 :class="`text-base font-semibold leading-7`">
-					<span class="animated-bg bg-clip-text font-semibold text-transparent" style="
+					<span
+						class="animated-bg bg-clip-text font-semibold text-transparent"
+						style="
 							background-image: linear-gradient(
 								101.22deg,
 								rgb(255, 182, 133) -18.32%,
@@ -571,7 +575,9 @@
 								rgb(60, 112, 255) 91.35%,
 								rgb(60, 112, 255) 110.17%
 							);
-						">模块设置</span>
+						"
+						>模块设置</span
+					>
 				</h3>
 				<p
 					:class="`mt-1 max-w-2xl text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-500'}`">
@@ -602,7 +608,8 @@
 							{{ deviceStore.moduleInfo.dir || '获取失败' }}
 						</dd>
 					</div>
-					<div v-if="deviceStore.moduleInfo?.version"
+					<div
+						v-if="deviceStore.moduleInfo?.version"
 						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
@@ -613,7 +620,8 @@
 							{{ deviceStore.moduleInfo.version || '获取失败' }}
 						</dd>
 					</div>
-					<div v-if="deviceStore.moduleInfo?.versionCode"
+					<div
+						v-if="deviceStore.moduleInfo?.versionCode"
 						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
@@ -631,15 +639,19 @@
 						</dt>
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							<n-switch @update:value="(value: boolean) => changePatchMode(value)" :rail-style="railStyle"
-								:value="embeddedStore.isPatchMode" :loading="switchPatchModeLoading"
+							<n-switch
+								@update:value="(value: boolean) => changePatchMode(value)"
+								:rail-style="railStyle"
+								:value="embeddedStore.isPatchMode"
+								:loading="switchPatchModeLoading"
 								:disabled="deviceStore.androidTargetSdk && deviceStore.androidTargetSdk < 32">
 								<template #checked>定制模式</template>
 								<template #unchecked>完整模式</template>
 							</n-switch>
 						</dd>
 					</div>
-					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0"
+					<div
+						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0"
 						v-if="deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
@@ -647,14 +659,17 @@
 						</dt>
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							<n-switch @update:value="(value: boolean) => disabledOS2SystemAppOptimizeHook.change(value)"
-								:rail-style="railStyle" :value="disabledOS2SystemAppOptimizeHook.status"
+							<n-switch
+								@update:value="(value: boolean) => disabledOS2SystemAppOptimizeHook.change(value)"
+								:rail-style="railStyle"
+								:value="disabledOS2SystemAppOptimizeHook.status"
 								:loading="deviceStore.loading">
 								<template #checked>已禁用系统应用横屏优化</template>
 								<template #unchecked>已启用系统应用横屏优化</template>
 							</n-switch>
 							<n-alert class="mt-5" type="warning" :show-icon="false" :bordered="false">
-								<p>由于小米「应用横屏布局」BUG，Hyper OS 2
+								<p
+									>由于小米「应用横屏布局」BUG，Hyper OS 2
 									下部分系统应用可无法完全横屏工作，模块可以修复这个问题，但每次设备重启或修改模块规则，这些系统应用都将被强制重启，该功能默认启用，如「启用」将代表已接纳并知晓此副作用影响。
 								</p>
 								<p>受此影响的系统应用：</p>
@@ -684,7 +699,8 @@
 							{{ deviceStore.currentRootManager || '获取失败' }}
 						</dd>
 					</div>
-					<div v-if="deviceStore.currentRootManager === 'KernelSU'"
+					<div
+						v-if="deviceStore.currentRootManager === 'KernelSU'"
 						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
@@ -695,7 +711,8 @@
 							{{ deviceStore.rootManagerInfo.KSU_VER || '获取失败' }}
 						</dd>
 					</div>
-					<div v-if="deviceStore.currentRootManager === 'KernelSU'"
+					<div
+						v-if="deviceStore.currentRootManager === 'KernelSU'"
 						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
@@ -706,7 +723,8 @@
 							{{ deviceStore.rootManagerInfo.KSU_VER_CODE || '获取失败' }}
 						</dd>
 					</div>
-					<div v-if="deviceStore.currentRootManager === 'KernelSU'"
+					<div
+						v-if="deviceStore.currentRootManager === 'KernelSU'"
 						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
@@ -717,7 +735,8 @@
 							{{ deviceStore.rootManagerInfo.KSU_KERNEL_VER_CODE || '获取失败' }}
 						</dd>
 					</div>
-					<div v-if="deviceStore.currentRootManager === 'APatch'"
+					<div
+						v-if="deviceStore.currentRootManager === 'APatch'"
 						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
@@ -728,7 +747,8 @@
 							{{ deviceStore.rootManagerInfo.APATCH_VER || '获取失败' }}
 						</dd>
 					</div>
-					<div v-if="deviceStore.currentRootManager === 'APatch'"
+					<div
+						v-if="deviceStore.currentRootManager === 'APatch'"
 						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
@@ -739,7 +759,8 @@
 							{{ deviceStore.rootManagerInfo.APATCH_VER_CODE || '获取失败' }}
 						</dd>
 					</div>
-					<div v-if="deviceStore.currentRootManager === 'Magisk'"
+					<div
+						v-if="deviceStore.currentRootManager === 'Magisk'"
 						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
@@ -750,7 +771,8 @@
 							{{ deviceStore.rootManagerInfo.MAGISK_VER || '获取失败' }}
 						</dd>
 					</div>
-					<div v-if="deviceStore.currentRootManager === 'Magisk'"
+					<div
+						v-if="deviceStore.currentRootManager === 'Magisk'"
 						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
@@ -768,14 +790,22 @@
 						</dt>
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							<n-dropdown size="large" trigger="click" :options="rhythmModeOptions"
+							<n-dropdown
+								size="large"
+								trigger="click"
+								:options="rhythmModeOptions"
 								@select="handleSelectRhythmMode">
-								<n-button size="small" strong secondary
-									:type="deviceStore.rhythmMode === 'autoRhythm' ? 'error' : 'success'">{{
+								<n-button
+									size="small"
+									strong
+									secondary
+									:type="deviceStore.rhythmMode === 'autoRhythm' ? 'error' : 'success'"
+									>{{
 										(deviceStore.rhythmMode === 'autoRhythm' && '跟随系统') ||
 										(deviceStore.rhythmMode === 'lightMode' && '浅色模式') ||
 										(deviceStore.rhythmMode === 'dartMode' && '深色模式')
-									}}</n-button>
+									}}</n-button
+								>
 							</n-dropdown>
 						</dd>
 					</div>
@@ -786,11 +816,18 @@
 						</dt>
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							<n-dropdown size="large" trigger="click" :options="fontModeOptions"
+							<n-dropdown
+								size="large"
+								trigger="click"
+								:options="fontModeOptions"
 								@select="handleSelectFontMode">
-								<n-button size="small" strong secondary
-									:type="fontModeMap[fontStore.currentFont].type">{{
-										fontStore.currentFont }}</n-button>
+								<n-button
+									size="small"
+									strong
+									secondary
+									:type="fontModeMap[fontStore.currentFont].type"
+									>{{ fontStore.currentFont }}</n-button
+								>
 							</n-dropdown>
 						</dd>
 					</div>
@@ -801,7 +838,10 @@
 						</dt>
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							<n-button size="small" type="warning" secondary
+							<n-button
+								size="small"
+								type="warning"
+								secondary
 								:loading="deviceStore.loading || embeddedStore.loading || activateABTestLoading"
 								@click="handleActivateABTest()">
 								<template #icon>
@@ -813,7 +853,8 @@
 							</n-button>
 						</dd>
 					</div>
-					<div v-if="deviceStore.shamikoInfo.installed"
+					<div
+						v-if="deviceStore.shamikoInfo.installed"
 						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
@@ -821,7 +862,8 @@
 						</dt>
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							<n-switch @update:value="(value: boolean) => changeShamikoMode(value)"
+							<n-switch
+								@update:value="(value: boolean) => changeShamikoMode(value)"
 								:rail-style="railStyle"
 								:value="deviceStore.shamikoInfo.mode === 'whitelist' ? true : false"
 								:loading="deviceStore.loading">
@@ -837,7 +879,11 @@
 						</dt>
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							<n-button size="small" type="error" secondary :loading="deviceStore.loading"
+							<n-button
+								size="small"
+								type="error"
+								secondary
+								:loading="deviceStore.loading"
 								@click="() => deviceApi.openCodeDialer()">
 								<template #icon>
 									<n-icon>
@@ -849,7 +895,10 @@
 							<n-alert class="mt-5" type="error" :show-icon="false" :bordered="false">
 								<p>Tips: 暗码必须以*#*#开头，且以#*#*结尾</p>
 								<p>eg: 开启 LSPosed 管理器的暗码：*#*#5776733#*#*</p>
-								<p>「安全警示: 暗码拨号器是面向开发者调试的功能，用于打开一些隐藏设定，如果您不了解暗码作用与功能建议不要轻易尝试，可能会导致您的设备数据丢失！」</p>
+								<p
+									>「安全警示:
+									暗码拨号器是面向开发者调试的功能，用于打开一些隐藏设定，如果您不了解暗码作用与功能建议不要轻易尝试，可能会导致您的设备数据丢失！」</p
+								>
 							</n-alert>
 						</dd>
 					</div>
@@ -860,35 +909,82 @@
 						</dt>
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							<n-button size="small" type="info" secondary :loading="deviceStore.loading"
+							<n-button
+								size="small"
+								type="info"
+								secondary
+								:loading="deviceStore.loading"
 								@click="() => deviceApi.openLSPosedManger()">
 								LSPosed 管理器
 							</n-button>
 						</dd>
 					</div>
-					<div v-if="
-						deviceStore.MIOSVersion &&
-						deviceStore.MIOSVersion >= 1 &&
-						deviceStore.deviceCharacteristics === 'tablet'
-					" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+					<div
+						v-if="
+							deviceStore.MIOSVersion &&
+							deviceStore.MIOSVersion >= 1 &&
+							deviceStore.deviceCharacteristics === 'tablet'
+						"
+						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
 							<p>工作台模式</p>
 							<p v-if="!deviceStore.enabledMiuiDesktopMode" class="mt-2">
-								<n-button strong secondary size="small"
-									@click="() => miuiDesktopModeHook.changeMiuiDesktopModeEnabled()" type="warning">
+								<n-button
+									strong
+									secondary
+									size="small"
+									@click="() => miuiDesktopModeHook.changeMiuiDesktopModeEnabled()"
+									type="warning">
 									启用功能
 								</n-button>
 							</p>
 						</dt>
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							<n-switch @update:value="(value: boolean) => miuiDesktopModeHook.changeMiuiDktMode(value)"
-								:rail-style="railStyle" :disabled="!deviceStore.enabledMiuiDesktopMode"
-								:value="miuiDesktopModeHook.currentMiuiDktMode" :loading="deviceStore.loading">
+							<n-switch
+								@update:value="(value: boolean) => miuiDesktopModeHook.changeMiuiDktMode(value)"
+								:rail-style="railStyle"
+								:disabled="!deviceStore.enabledMiuiDesktopMode"
+								:value="miuiDesktopModeHook.currentMiuiDktMode"
+								:loading="deviceStore.loading">
 								<template #checked>工作台模式</template>
 								<template #unchecked>默认桌面模式</template>
 							</n-switch>
+						</dd>
+					</div>
+					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+						<dt
+							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
+							<p>传送门</p>
+						</dt>
+						<dd
+							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
+							<div>
+								<n-button
+									size="small"
+									type="info"
+									secondary
+									:loading="deviceStore.loading"
+									@click="() => MIUIContentExtensionHook.open()">
+									<template #icon>
+										<img src="/images/icons/miui_content_extension_app.webp" />
+									</template>
+									传送门
+								</n-button>
+							</div>
+							<n-alert v-if="MIUIContentExtensionHook.isInstallMIUIContentExtension.value" class="mt-5" type="info" :show-icon="false" :bordered="false">
+								<p
+									>您可以通过 
+									<n-button
+										size="small"
+										type="info"
+										secondary
+										:loading="deviceStore.loading"
+										@click="() => MIUIContentExtensionHook.fix()">
+										传送门异常修复
+									</n-button> 移除「游戏工具箱」内的「传送门」</p>
+							</n-alert>
 						</dd>
 					</div>
 					<!-- <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
@@ -964,13 +1060,18 @@
 							</div>
 						</dd>
 					</div> -->
-					<div v-if="deviceStore.hasPenEnableControl"
+					<div
+						v-if="deviceStore.hasPenEnableControl"
 						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
 							第三方触控笔管理（水龙）
 							<p class="mt-2" v-if="!deviceStore.showThirdPartySetting.amktiaoROMInterface">
-								<n-button strong secondary size="small" @click="() => amktiaoHook.enableSetting()"
+								<n-button
+									strong
+									secondary
+									size="small"
+									@click="() => amktiaoHook.enableSetting()"
 									type="warning">
 									启用功能
 								</n-button>
@@ -978,7 +1079,8 @@
 						</dt>
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							<n-switch @update:value="(value: boolean) => amktiaoHook.changePenEnableMode(value)"
+							<n-switch
+								@update:value="(value: boolean) => amktiaoHook.changePenEnableMode(value)"
 								:rail-style="railStyle"
 								:disabled="!deviceStore.showThirdPartySetting.amktiaoROMInterface"
 								:value="amktiaoHook.currentPenEnable.value ? true : false"
@@ -986,19 +1088,24 @@
 								<template #checked>已启用</template>
 								<template #unchecked>未启用</template>
 							</n-switch>
-							<n-alert class="mt-5" type="warning" :show-icon="false"
-								:bordered="false">Tips:仅兼容水龙(Amktiao)的移植包，存在
-								/sys/touchpanel/pen_enable
-								开关映射时生效</n-alert>
+							<n-alert class="mt-5" type="warning" :show-icon="false" :bordered="false"
+								>Tips:仅兼容水龙(Amktiao)的移植包，存在 /sys/touchpanel/pen_enable
+								开关映射时生效</n-alert
+							>
 						</dd>
 					</div>
-					<div v-if="deviceStore.hasPenUpdateControl"
+					<div
+						v-if="deviceStore.hasPenUpdateControl"
 						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
 							手写笔驱动管理（水龙）
 							<p class="mt-2" v-if="!deviceStore.showThirdPartySetting.amktiaoROMInterface">
-								<n-button strong secondary size="small" @click="() => amktiaoHook.enableSetting()"
+								<n-button
+									strong
+									secondary
+									size="small"
+									@click="() => amktiaoHook.enableSetting()"
 									type="warning">
 									启用功能
 								</n-button>
@@ -1006,7 +1113,8 @@
 						</dt>
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							<n-switch @update:value="(value: boolean) => amktiaoHook.changePenUpdateMode(value)"
+							<n-switch
+								@update:value="(value: boolean) => amktiaoHook.changePenUpdateMode(value)"
 								:rail-style="railStyle"
 								:disabled="!deviceStore.showThirdPartySetting.amktiaoROMInterface"
 								:value="amktiaoHook.currentPenUpdate.value ? true : false"
@@ -1019,13 +1127,18 @@
 							</n-alert>
 						</dd>
 					</div>
-					<div v-if="deviceStore.hasKeyboardControl"
+					<div
+						v-if="deviceStore.hasKeyboardControl"
 						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
 							键盘连接器管理（水龙）
 							<p class="mt-2" v-if="!deviceStore.showThirdPartySetting.amktiaoROMInterface">
-								<n-button strong secondary size="small" @click="() => amktiaoHook.enableSetting()"
+								<n-button
+									strong
+									secondary
+									size="small"
+									@click="() => amktiaoHook.enableSetting()"
 									type="warning">
 									启用功能
 								</n-button>
@@ -1033,18 +1146,24 @@
 						</dt>
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							<n-dropdown :value="amktiaoHook.currentKeyboardModeSelect" size="large" trigger="click"
+							<n-dropdown
+								:value="amktiaoHook.currentKeyboardModeSelect"
+								size="large"
+								trigger="click"
 								:options="amktiaoHook.keyboardModeOptions.value"
 								@select="amktiaoHook.changeKeyboardMode">
-								<n-button strong secondary
-									:disabled="!deviceStore.showThirdPartySetting.amktiaoROMInterface" size="small"
+								<n-button
+									strong
+									secondary
+									:disabled="!deviceStore.showThirdPartySetting.amktiaoROMInterface"
+									size="small"
 									:type="amktiaoHook.currentKeyboardModeSelect.value.type">
 									{{ amktiaoHook.currentKeyboardModeSelect.value.label }}
 								</n-button>
 							</n-dropdown>
-							<n-alert class="mt-5" type="warning" :show-icon="false"
-								:bordered="false">Tips:仅兼容水龙(Amktiao)的移植包，存在
-								/sys/touchpanel/keyboard 开关映射时生效</n-alert>
+							<n-alert class="mt-5" type="warning" :show-icon="false" :bordered="false"
+								>Tips:仅兼容水龙(Amktiao)的移植包，存在 /sys/touchpanel/keyboard 开关映射时生效</n-alert
+							>
 						</dd>
 					</div>
 					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
@@ -1054,12 +1173,20 @@
 						</dt>
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							<n-dropdown size="large" trigger="click" :options="[
-								{ label: '箭头', key: 3 },
-								{ label: '圆点', key: 1 },
-								{ label: '空心圆', key: 0 },
-							]" @select="(key: miuiCursorStyleType) => { miuiCursorStyleHook.changeMiuiCursorStyleType(key) }">
-								<n-button size="small" class="mb-3 mr-3" type="success" secondary
+							<n-dropdown
+								size="large"
+								trigger="click"
+								:options="[
+									{ label: '箭头', key: 3 },
+									{ label: '圆点', key: 1 },
+									{ label: '空心圆', key: 0 },
+								]"
+								@select="(key: miuiCursorStyleType) => { miuiCursorStyleHook.changeMiuiCursorStyleType(key) }">
+								<n-button
+									size="small"
+									class="mb-3 mr-3"
+									type="success"
+									secondary
 									:loading="deviceStore.loading">
 									{{ (miuiCursorStyleHook.currentMiuiCursorStyleType.value === 3 && '箭头') || '' }}
 									{{ (miuiCursorStyleHook.currentMiuiCursorStyleType.value === 1 && '圆点') || '' }}
@@ -1077,10 +1204,12 @@
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
 							<n-switch
 								@update:value="(value: boolean) => mouseGestureNaturalscrollHook.changeMouseGestureNaturalscroll(value)"
-								:rail-style="railStyle" :value="mouseGestureNaturalscrollHook.currentMouseGestureNaturalscroll.value === 1
-									? true
-									: false
-									">
+								:rail-style="railStyle"
+								:value="
+									mouseGestureNaturalscrollHook.currentMouseGestureNaturalscroll.value === 1
+										? true
+										: false
+								">
 								<template #checked>已开启鼠标自然滚动</template>
 								<template #unchecked>未开启鼠标自然滚动</template>
 							</n-switch>
@@ -1096,12 +1225,22 @@
 						</dt>
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							<n-slider size="small" :min="-7"
-								@update:value="(value: number) => deviceApi.setPointerSpeed(value)" :max="7"
-								v-model:value="pointerSpeedHook.currentPointerSpeed.value" :step="1" />
-							<n-input-number :show-button="false" class="pt-3" readonly
-								v-model:value="pointerSpeedHook.currentPointerSpeed.value" placeholder="请输入鼠标指针速度"
-								:min="-7" :max="7" :step="1" />
+							<n-slider
+								size="small"
+								:min="-7"
+								@update:value="(value: number) => deviceApi.setPointerSpeed(value)"
+								:max="7"
+								v-model:value="pointerSpeedHook.currentPointerSpeed.value"
+								:step="1" />
+							<n-input-number
+								:show-button="false"
+								class="pt-3"
+								readonly
+								v-model:value="pointerSpeedHook.currentPointerSpeed.value"
+								placeholder="请输入鼠标指针速度"
+								:min="-7"
+								:max="7"
+								:step="1" />
 						</dd>
 					</div>
 					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
@@ -1111,7 +1250,11 @@
 						</dt>
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							<n-button size="small" type="warning" secondary :loading="deviceStore.loading"
+							<n-button
+								size="small"
+								type="warning"
+								secondary
+								:loading="deviceStore.loading"
 								@click="() => deviceApi.openImportThemeManger()">
 								<template #icon>
 									<img src="/images/apps/mi_theme.webp" />
@@ -1119,33 +1262,57 @@
 								导入个性化主题
 							</n-button>
 							<n-alert class="mt-5" type="warning" :show-icon="false" :bordered="false">
-								<p>需要搭配 LSPosed
-									模块[主题破解]，才能够正常导入[个性化主题]，导入按钮位于界面最底部[从SD卡导入]~</p>
-								<n-button class="mt-2" strong size="small" secondary type="warning" @click="() =>
-									getAppDownload(
-										'主题破解',
-										'https://caiyun.139.com/m/i?135CmXA9aKh8Y',
-										'original',
-									)
-									">获取主题破解</n-button>
+								<p
+									>需要搭配 LSPosed
+									模块[主题破解]，才能够正常导入[个性化主题]，导入按钮位于界面最底部[从SD卡导入]~</p
+								>
+								<n-button
+									class="mt-2"
+									strong
+									size="small"
+									secondary
+									type="warning"
+									@click="
+										() =>
+											getAppDownload(
+												'主题破解',
+												'https://caiyun.139.com/m/i?135CmXA9aKh8Y',
+												'original',
+											)
+									"
+									>获取主题破解</n-button
+								>
 							</n-alert>
 						</dd>
 					</div>
-					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0" v-if="deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2">
+					<div
+						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0"
+						v-if="deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
 							AI 动态壁纸
 						</dt>
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							<n-button size="small" type="error" secondary :loading="deviceStore.loading"
+							<n-button
+								size="small"
+								type="error"
+								secondary
+								:loading="deviceStore.loading"
 								@click="() => deviceApi.openAiWallpaperList()">
 								<template #icon>
 									<img src="/images/apps/mi_theme.webp" />
 								</template>
 								AI 动态壁纸
 							</n-button>
-							<n-button strong secondary size="small" circle type="error" class="ml-2" @click="() => deviceApi.openAiWallpaperGuide()">
+							<n-button
+								strong
+								secondary
+								size="small"
+								circle
+								type="error"
+								class="ml-2"
+								@click="() => deviceApi.openAiWallpaperGuide()">
 								<template #icon>
 									<n-icon>
 										<QuestionMarkCircleIcon />
@@ -1154,14 +1321,24 @@
 							</n-button>
 						</dd>
 					</div>
-					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0" v-if="deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.deviceCharacteristics === 'tablet'">
+					<div
+						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0"
+						v-if="
+							deviceStore.MIOSVersion &&
+							deviceStore.MIOSVersion >= 2 &&
+							deviceStore.deviceCharacteristics === 'tablet'
+						">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
 							算力共享
 						</dt>
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							<n-button size="small" type="info" secondary :loading="deviceStore.loading"
+							<n-button
+								size="small"
+								type="info"
+								secondary
+								:loading="deviceStore.loading"
 								@click="() => deviceApi.openAiDistComputeClient()">
 								<template #icon>
 									<img src="/images/icons/aicr.png" />
@@ -1173,14 +1350,24 @@
 							</n-alert>
 						</dd>
 					</div>
-					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0" v-if="deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.deviceCharacteristics !== 'tablet'">
+					<div
+						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0"
+						v-if="
+							deviceStore.MIOSVersion &&
+							deviceStore.MIOSVersion >= 2 &&
+							deviceStore.deviceCharacteristics !== 'tablet'
+						">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
 							算力共享
 						</dt>
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							<n-button size="small" type="info" secondary :loading="deviceStore.loading"
+							<n-button
+								size="small"
+								type="info"
+								secondary
+								:loading="deviceStore.loading"
 								@click="() => deviceApi.openAiDistComputeServer()">
 								<template #icon>
 									<img src="/images/icons/aicr.png" />
@@ -1199,7 +1386,11 @@
 						</dt>
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							<n-button size="small" type="error" secondary :loading="deviceStore.loading"
+							<n-button
+								size="small"
+								type="error"
+								secondary
+								:loading="deviceStore.loading"
 								@click="() => deviceApi.openAiTranslationChat()">
 								<template #icon>
 									<img src="/images/icons/ai_icon.png" />
@@ -1215,7 +1406,11 @@
 						</dt>
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							<n-button size="small" type="error" secondary :loading="deviceStore.loading"
+							<n-button
+								size="small"
+								type="error"
+								secondary
+								:loading="deviceStore.loading"
 								@click="() => deviceApi.openAiTranslationSynchronize()">
 								<template #icon>
 									<img src="/images/icons/ai_icon.png" />
@@ -1223,7 +1418,10 @@
 								AI 同声传译
 							</n-button>
 							<n-alert class="mt-5" type="error" :show-icon="false" :bordered="false">
-								<p>打电话或开会时，打开"AI 同声传译，可以将双方的说话内容实时翻译给对方，帮助跨语言聊天。</p>
+								<p
+									>打电话或开会时，打开"AI
+									同声传译，可以将双方的说话内容实时翻译给对方，帮助跨语言聊天。</p
+								>
 								<p>Tips: 如无法打开请将"小爱翻译"和"超级小爱"升级到最新版</p>
 							</n-alert>
 						</dd>
@@ -1235,15 +1433,22 @@
 						</dt>
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							<n-switch @update:value="(value: boolean) => changeGameMode(value)"
-								:value="gameMode.isSupportGameMode" :rail-style="railStyle" :disabled="deviceStore.deviceCharacteristics !== 'tablet' ||
+							<n-switch
+								@update:value="(value: boolean) => changeGameMode(value)"
+								:value="gameMode.isSupportGameMode"
+								:rail-style="railStyle"
+								:disabled="
+									deviceStore.deviceCharacteristics !== 'tablet' ||
 									(deviceStore.androidTargetSdk && deviceStore.androidTargetSdk < 32)
-									">
+								">
 								<template #checked>已开启游戏显示布局</template>
 								<template #unchecked>
 									{{
-										deviceStore.androidTargetSdk && deviceStore.androidTargetSdk < 32 ? '不支持游戏显示布局'
-											: '未开启游戏显示布局' }} </template>
+										deviceStore.androidTargetSdk && deviceStore.androidTargetSdk < 32
+											? '不支持游戏显示布局'
+											: '未开启游戏显示布局'
+									}}
+								</template>
 							</n-switch>
 						</dd>
 					</div>
@@ -1254,18 +1459,22 @@
 						</dt>
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							<n-switch @update:value="(value: boolean) => changeShowRotationSuggestions(value)"
-								:rail-style="railStyle" :value="deviceStore.showRotationSuggestions">
+							<n-switch
+								@update:value="(value: boolean) => changeShowRotationSuggestions(value)"
+								:rail-style="railStyle"
+								:value="deviceStore.showRotationSuggestions">
 								<template #checked>已启用旋转建议提示按钮</template>
 								<template #unchecked>已关闭旋转建议提示按钮</template>
 							</n-switch>
 						</dd>
 					</div>
-					<div v-if="
-						deviceStore.deviceCharacteristics === 'tablet' &&
-						deviceStore.MIOSVersion &&
-						deviceStore.MIOSVersion >= 2
-					" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+					<div
+						v-if="
+							deviceStore.deviceCharacteristics === 'tablet' &&
+							deviceStore.MIOSVersion &&
+							deviceStore.MIOSVersion >= 2
+						"
+						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
 							手势提示线（小白条）
@@ -1288,7 +1497,11 @@
 						</dt>
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							<n-button size="small" type="info" secondary :loading="deviceStore.loading"
+							<n-button
+								size="small"
+								type="info"
+								secondary
+								:loading="deviceStore.loading"
 								@click="() => deviceApi.openGoogleSettings()">
 								<template #icon>
 									<img src="/images/icons/google.png" />
@@ -1307,7 +1520,11 @@
 						</dt>
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							<n-button size="small" type="info" secondary :loading="deviceStore.loading"
+							<n-button
+								size="small"
+								type="info"
+								secondary
+								:loading="deviceStore.loading"
 								@click="() => deviceApi.openInVisibleMode()">
 								<template #icon>
 									<EyeSlashIcon />
@@ -1326,7 +1543,11 @@
 						</dt>
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							<n-button size="small" type="success" secondary :loading="deviceStore.loading"
+							<n-button
+								size="small"
+								type="success"
+								secondary
+								:loading="deviceStore.loading"
 								@click="() => deviceApi.openAutoTask()">
 								<template #icon>
 									<n-icon>
@@ -1344,7 +1565,11 @@
 						</dt>
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							<n-button size="small" type="info" secondary :loading="deviceStore.loading"
+							<n-button
+								size="small"
+								type="info"
+								secondary
+								:loading="deviceStore.loading"
 								@click="() => deviceApi.openAITranslation()">
 								<template #icon>
 									<n-icon>
@@ -1365,7 +1590,11 @@
 						</dt>
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							<n-button size="small" type="error" secondary :loading="deviceStore.loading"
+							<n-button
+								size="small"
+								type="error"
+								secondary
+								:loading="deviceStore.loading"
 								@click="() => deviceApi.openMiFilm()">
 								<template #icon>
 									<n-icon>
@@ -1383,7 +1612,11 @@
 						</dt>
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							<n-button size="small" type="info" secondary :loading="deviceStore.loading"
+							<n-button
+								size="small"
+								type="info"
+								secondary
+								:loading="deviceStore.loading"
 								@click="() => deviceApi.openBrightColors()">
 								<template #icon>
 									<n-icon>
@@ -1401,7 +1634,11 @@
 						</dt>
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							<n-button size="small" type="info" secondary :loading="deviceStore.loading"
+							<n-button
+								size="small"
+								type="info"
+								secondary
+								:loading="deviceStore.loading"
 								@click="() => deviceApi.openAccessibilityInversion()">
 								<template #icon>
 									<n-icon>
@@ -1419,7 +1656,11 @@
 						</dt>
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							<n-button size="small" type="info" secondary :loading="deviceStore.loading"
+							<n-button
+								size="small"
+								type="info"
+								secondary
+								:loading="deviceStore.loading"
 								@click="() => deviceApi.openManageApplicationsActivity()">
 								<template #icon>
 									<n-icon>
@@ -1437,7 +1678,11 @@
 						</dt>
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							<n-button size="small" type="info" secondary :loading="deviceStore.loading"
+							<n-button
+								size="small"
+								type="info"
+								secondary
+								:loading="deviceStore.loading"
 								@click="() => deviceApi.openMemorySettingsActivity()">
 								<template #icon>
 									<n-icon>
@@ -1455,7 +1700,11 @@
 						</dt>
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							<n-button size="small" type="info" secondary :loading="deviceStore.loading"
+							<n-button
+								size="small"
+								type="info"
+								secondary
+								:loading="deviceStore.loading"
 								@click="() => deviceApi.openNotificationStationActivity()">
 								<template #icon>
 									<n-icon>
@@ -1521,7 +1770,8 @@
 							{{ deviceStore.deviceCharacteristics === 'tablet' ? '平板(Pad)' : '折叠屏(Fold)' }}
 						</dd>
 					</div>
-					<div v-if="deviceStore.deviceInfo.socModel"
+					<div
+						v-if="deviceStore.deviceInfo.socModel"
 						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
@@ -1532,7 +1782,8 @@
 							{{ deviceStore.deviceInfo.socModel || '获取失败' }}
 						</dd>
 					</div>
-					<div v-if="deviceStore.deviceInfo.socName"
+					<div
+						v-if="deviceStore.deviceInfo.socName"
 						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
@@ -1543,7 +1794,8 @@
 							{{ deviceStore.deviceInfo.socName || '获取失败' }}
 						</dd>
 					</div>
-					<div v-if="deviceStore.deviceInfo.display0Panel"
+					<div
+						v-if="deviceStore.deviceInfo.display0Panel"
 						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
@@ -1555,7 +1807,8 @@
 							<p>{{ deviceStore.deviceInfo.display0Panel }}</p>
 						</dd>
 					</div>
-					<div v-if="deviceStore.deviceInfo.memoryInfo"
+					<div
+						v-if="deviceStore.deviceInfo.memoryInfo"
 						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
@@ -1573,11 +1826,20 @@
 						</dt>
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							<n-dropdown size="large" trigger="click" :options="[
-								{ label: '打开性能监视器', key: 'start' },
-								{ label: '关闭性能监视器', key: 'stop' },
-							]" @select="(key: 'start' | 'stop') => { deviceApi.frameRateService(key) }">
-								<n-button size="small" class="mb-3 mr-3" type="info" color="#8a2be2" secondary
+							<n-dropdown
+								size="large"
+								trigger="click"
+								:options="[
+									{ label: '打开性能监视器', key: 'start' },
+									{ label: '关闭性能监视器', key: 'stop' },
+								]"
+								@select="(key: 'start' | 'stop') => { deviceApi.frameRateService(key) }">
+								<n-button
+									size="small"
+									class="mb-3 mr-3"
+									type="info"
+									color="#8a2be2"
+									secondary
 									:loading="deviceStore.loading">
 									<template #icon>
 										<n-icon>
@@ -1596,11 +1858,19 @@
 						</dt>
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							<n-dropdown size="large" trigger="click" :options="[
-								{ label: '打开帧率监视器', key: 'open' },
-								{ label: '关闭帧率监视器', key: 'close' },
-							]" @select="(key: string) => { key === 'open' ? deviceApi.setFpsFrameService(true) : deviceApi.setFpsFrameService(false) }">
-								<n-button size="small" class="mb-3 mr-3" type="info" secondary
+							<n-dropdown
+								size="large"
+								trigger="click"
+								:options="[
+									{ label: '打开帧率监视器', key: 'open' },
+									{ label: '关闭帧率监视器', key: 'close' },
+								]"
+								@select="(key: string) => { key === 'open' ? deviceApi.setFpsFrameService(true) : deviceApi.setFpsFrameService(false) }">
+								<n-button
+									size="small"
+									class="mb-3 mr-3"
+									type="info"
+									secondary
 									:loading="deviceStore.loading">
 									<template #icon>
 										<n-icon>
@@ -1612,7 +1882,9 @@
 							</n-dropdown>
 						</dd>
 					</div>
-					<div v-if="displayModeRecordHook.formatDisplayModeList.value.length" id="displayModeSettings"
+					<div
+						v-if="displayModeRecordHook.formatDisplayModeList.value.length"
+						id="displayModeSettings"
 						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
@@ -1620,19 +1892,26 @@
 						</dt>
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							<div class="mb-3 flex" v-for="item in displayModeRecordHook.formatDisplayModeList.value"
+							<div
+								class="mb-3 flex"
+								v-for="item in displayModeRecordHook.formatDisplayModeList.value"
 								:key="item.id">
 								<p class="mr-3">ID: {{ item.id }}</p>
 								<p class="mr-3">分辨率: {{ `${item.width}x${item.height}` }}</p>
 								<p class="mr-3">刷新率: {{ `${item.fps} Hz` }}</p>
-								<n-button size="small" type="info" secondary :loading="deviceStore.loading"
+								<n-button
+									size="small"
+									type="info"
+									secondary
+									:loading="deviceStore.loading"
 									@click="() => displayModeRecordHook.selectDisplayMode(item)">
 									应用该配置
 								</n-button>
 							</div>
 						</dd>
 					</div>
-					<div v-if="realQuantityHook.qcomBatteryFg1RSocInfo.current"
+					<div
+						v-if="realQuantityHook.qcomBatteryFg1RSocInfo.current"
 						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
@@ -1640,10 +1919,19 @@
 						</dt>
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							<p>{{ `${realQuantityHook.qcomBatteryFg1RSocInfo.current} %` }}
-								<n-button class="ml-1" strong secondary size="small" type="success"
-									@click="realQuantityHook.qcomBatteryFg1RSocInfo.reload()">手动刷新</n-button>
-								<n-switch class="ml-2"
+							<p
+								>{{ `${realQuantityHook.qcomBatteryFg1RSocInfo.current} %` }}
+								<n-button
+									class="ml-1"
+									strong
+									secondary
+									size="small"
+									type="success"
+									@click="realQuantityHook.qcomBatteryFg1RSocInfo.reload()"
+									>手动刷新</n-button
+								>
+								<n-switch
+									class="ml-2"
 									v-model:value="realQuantityHook.qcomBatteryFg1RSocInfo.autoReload"
 									:rail-style="railStyle">
 									<template #checked>开启自动刷新</template>
@@ -1653,16 +1941,27 @@
 							<div v-if="realQuantityHook.qcomBatteryFg1RSocInfo.autoReload">
 								<p class="my-2"> 隔多少秒刷新一次 </p>
 								<p>
-									<n-slider v-model:value="realQuantityHook.qcomBatteryFg1RSocInfo.timer" size="small"
-										:min="1" :max="30" :step="1" />
-									<n-input-number :show-button="false" class="pt-3" readonly placeholder="请输入刷新频率间隔时间"
-										v-model:value="realQuantityHook.qcomBatteryFg1RSocInfo.timer" :min="0" :max="30"
+									<n-slider
+										v-model:value="realQuantityHook.qcomBatteryFg1RSocInfo.timer"
+										size="small"
+										:min="1"
+										:max="30"
+										:step="1" />
+									<n-input-number
+										:show-button="false"
+										class="pt-3"
+										readonly
+										placeholder="请输入刷新频率间隔时间"
+										v-model:value="realQuantityHook.qcomBatteryFg1RSocInfo.timer"
+										:min="0"
+										:max="30"
 										:step="1" />
 								</p>
 							</div>
 						</dd>
 					</div>
-					<div v-if="realQuantityHook.capacityRawInfo.current"
+					<div
+						v-if="realQuantityHook.capacityRawInfo.current"
 						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
@@ -1670,10 +1969,20 @@
 						</dt>
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							<p>{{ `${realQuantityHook.capacityRawInfo.current / 100} %` }}
-								<n-button class="ml-1" strong secondary size="small" type="success"
-									@click="realQuantityHook.capacityRawInfo.reload()">手动刷新</n-button>
-								<n-switch class="ml-2" v-model:value="realQuantityHook.capacityRawInfo.autoReload"
+							<p
+								>{{ `${realQuantityHook.capacityRawInfo.current / 100} %` }}
+								<n-button
+									class="ml-1"
+									strong
+									secondary
+									size="small"
+									type="success"
+									@click="realQuantityHook.capacityRawInfo.reload()"
+									>手动刷新</n-button
+								>
+								<n-switch
+									class="ml-2"
+									v-model:value="realQuantityHook.capacityRawInfo.autoReload"
 									:rail-style="railStyle">
 									<template #checked>开启自动刷新</template>
 									<template #unchecked>未开启自动刷新</template>
@@ -1682,16 +1991,27 @@
 							<div v-if="realQuantityHook.capacityRawInfo.autoReload">
 								<p class="my-2"> 隔多少秒刷新一次 </p>
 								<p>
-									<n-slider v-model:value="realQuantityHook.capacityRawInfo.timer" size="small"
-										:min="1" :max="30" :step="1" />
-									<n-input-number :show-button="false" class="pt-3" readonly placeholder="请输入刷新频率间隔时间"
-										v-model:value="realQuantityHook.capacityRawInfo.timer" :min="0" :max="30"
+									<n-slider
+										v-model:value="realQuantityHook.capacityRawInfo.timer"
+										size="small"
+										:min="1"
+										:max="30"
+										:step="1" />
+									<n-input-number
+										:show-button="false"
+										class="pt-3"
+										readonly
+										placeholder="请输入刷新频率间隔时间"
+										v-model:value="realQuantityHook.capacityRawInfo.timer"
+										:min="0"
+										:max="30"
 										:step="1" />
 								</p>
 							</div>
 						</dd>
 					</div>
-					<div v-if="deviceStore.batteryInfo.chargeFullDesign"
+					<div
+						v-if="deviceStore.batteryInfo.chargeFullDesign"
 						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
@@ -1702,7 +2022,8 @@
 							<p>{{ `${deviceStore.batteryInfo.chargeFullDesign / 1000} mAh` }}</p>
 						</dd>
 					</div>
-					<div v-if="deviceStore.batteryInfo.chargeFull"
+					<div
+						v-if="deviceStore.batteryInfo.chargeFull"
 						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
@@ -1713,7 +2034,8 @@
 							<p>{{ `${deviceStore.batteryInfo.chargeFull / 1000} mAh` }}</p>
 						</dd>
 					</div>
-					<div v-if="deviceStore.batteryInfo.cycleCount"
+					<div
+						v-if="deviceStore.batteryInfo.cycleCount"
 						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
@@ -1724,7 +2046,8 @@
 							<p>{{ `${deviceStore.batteryInfo.cycleCount} 次` }}</p>
 						</dd>
 					</div>
-					<div v-if="deviceStore.batteryInfo.chargeFullDesign && deviceStore.batteryInfo.chargeFull"
+					<div
+						v-if="deviceStore.batteryInfo.chargeFullDesign && deviceStore.batteryInfo.chargeFull"
 						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
@@ -1733,12 +2056,15 @@
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
 							<p>{{
-								`${((deviceStore.batteryInfo.chargeFull / deviceStore.batteryInfo.chargeFullDesign) *
-									100).toFixed(2)} %`
+								`${(
+									(deviceStore.batteryInfo.chargeFull / deviceStore.batteryInfo.chargeFullDesign) *
+									100
+								).toFixed(2)} %`
 							}}</p>
 						</dd>
 					</div>
-					<div v-if="deviceStore.batteryInfo.sohQcom"
+					<div
+						v-if="deviceStore.batteryInfo.sohQcom"
 						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
@@ -1748,16 +2074,19 @@
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
 							<p>{{ `${deviceStore.batteryInfo.sohQcom} %` }}</p>
 							<p>{{
-								`≈ ${Math.round((deviceStore.batteryInfo.chargeFullDesign *
-									(deviceStore.batteryInfo.sohQcom / 100)) /
-									1000)} mAh`
+								`≈ ${Math.round(
+									(deviceStore.batteryInfo.chargeFullDesign *
+										(deviceStore.batteryInfo.sohQcom / 100)) /
+										1000,
+								)} mAh`
 							}}</p>
 							<n-alert class="mt-5" type="info" :show-icon="false" :bordered="false">
 								<p>Tips:在设备保修期内健康度低于80%可以申请电池质保</p>
 							</n-alert>
 						</dd>
 					</div>
-					<div v-if="deviceStore.batteryInfo.sohMTK"
+					<div
+						v-if="deviceStore.batteryInfo.sohMTK"
 						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
@@ -1767,8 +2096,11 @@
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
 							<p>{{ `${deviceStore.batteryInfo.sohMTK} %` }}</p>
 							<p>{{
-								`≈ ${Math.round((deviceStore.batteryInfo.chargeFullDesign *
-									(deviceStore.batteryInfo.sohMTK / 100)) / 1000)}
+								`≈ ${Math.round(
+									(deviceStore.batteryInfo.chargeFullDesign *
+										(deviceStore.batteryInfo.sohMTK / 100)) /
+										1000,
+								)}
 								mAh`
 							}}</p>
 							<n-alert class="mt-5" type="info" :show-icon="false" :bordered="false">
@@ -1776,7 +2108,8 @@
 							</n-alert>
 						</dd>
 					</div>
-					<div v-if="deviceStore.batteryInfo.sohXMPower"
+					<div
+						v-if="deviceStore.batteryInfo.sohXMPower"
 						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
@@ -1786,9 +2119,11 @@
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
 							<p>{{ `${deviceStore.batteryInfo.sohXMPower} %` }}</p>
 							<p>{{
-								`≈ ${Math.round((deviceStore.batteryInfo.chargeFullDesign *
-									(deviceStore.batteryInfo.sohXMPower / 100)) /
-									1000)} mAh`
+								`≈ ${Math.round(
+									(deviceStore.batteryInfo.chargeFullDesign *
+										(deviceStore.batteryInfo.sohXMPower / 100)) /
+										1000,
+								)} mAh`
 							}}</p>
 							<n-alert class="mt-5" type="info" :show-icon="false" :bordered="false">
 								<p>Tips:在设备保修期内健康度低于80%可以申请电池质保</p>

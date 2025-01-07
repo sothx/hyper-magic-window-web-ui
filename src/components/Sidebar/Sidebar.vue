@@ -1,5 +1,5 @@
 <script setup lang="tsx">
-import { computed, onBeforeUnmount, onMounted, reactive, ref } from 'vue';
+import { computed, onBeforeUnmount, onMounted, reactive, ref, type FunctionalComponent, type HTMLAttributes, type VNodeProps } from 'vue';
 import { RouterLink } from 'vue-router';
 import { useGameBoosterStore } from '@/stores/gameBooster';
 import { Dialog, DialogPanel, TransitionChild, TransitionRoot } from '@headlessui/vue';
@@ -32,6 +32,7 @@ import { useDeviceStore } from '@/stores/device';
 import handlePromiseWithLogging from '@/utils/handlePromiseWithLogging';
 import * as deviceApi from '@/apis/deviceApi';
 import { useMIUIContentExtension } from '@/hooks/useMIUIContentExtension';
+import type { JSX } from 'vue/jsx-runtime';
 const route = useRoute();
 const gameMode = useGameMode();
 const deviceStore = useDeviceStore();
@@ -43,13 +44,21 @@ const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
 const { message, modal } = createDiscreteApi(['message', 'modal'], {
 	configProviderProps: configProviderPropsRef,
 });
-const navigation = reactive([
+interface NavigationItem {
+  name: string; // 导航项的名称
+  routeName?: string; // Vue Router 中的路由名称
+  href?: string; // 导航的链接地址
+  icon?: FunctionalComponent | string | (() => JSX.Element); // 图标：Vue 组件、字符串路径或 JSX 函数
+  isShow?: () => boolean | Promise<boolean> | Function; // 是否显示，支持同步、异步、或普通函数
+  click?: () => Promise<void> | Function; // 点击事件，支持同步、异步、或普通函数
+}
+const navigation = reactive<NavigationItem[]>([
 	{ name: '应用横屏布局', routeName: 'home', href: '/', icon: Squares2X2Icon },
 	{
 		name: '应用布局优化',
 		routeName: 'autoui',
 		isShow() {
-			return deviceStore.androidTargetSdk && deviceStore.androidTargetSdk >= 33;
+			return Boolean(deviceStore.androidTargetSdk && deviceStore.androidTargetSdk >= 33);
 		},
 		href: '/autoui',
 		icon: Square3Stack3DIcon,
@@ -59,7 +68,7 @@ const navigation = reactive([
 		routeName: 'game-booster',
 		href: '/game-booster',
 		isShow() {
-			return (
+			return Boolean(
 				deviceStore.androidTargetSdk &&
 				deviceStore.androidTargetSdk >= 32 &&
 				gameBoosterStore.hasGameBoosterDataBase
@@ -67,80 +76,80 @@ const navigation = reactive([
 		},
 		icon: LifebuoyIcon,
 	},
-	{
-		name: '传送门',
-		async click() {
-			if (!MIUIContentExtension.isInstallMIUIContentExtension.value) {
-				await navigator.clipboard.writeText(`https://caiyun.139.com/m/i?135CdxVMTx4nf`);
-				modal.create({
-					title: '无法打开传送门',
-					type: 'error',
-					preset: 'dialog',
-					content: () => (
-						<div>
-							<p>未检测到系统存在传送门，请先通过模块修补传送门再进入~</p>
-							<p>已经复制模块下载链接到剪切板了，请务必选择固化并修复传送门~</p>
-						</div>
-					),
-					negativeText: '确定',
-				});
-				return;
-			}
-			modal.create({
-				title: '确认打开传送门吗？',
-				type: 'info',
-				preset: 'dialog',
-				content: () => (
-					<div>
-						<p>
-							即将打开{' '}
-							<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-								传送门
-							</span>{' '}
-							管理界面，确定要继续吗？
-						</p>
-					</div>
-				),
-				positiveText: '确定打开',
-				negativeText: '我再想想',
-				onPositiveClick: async () => {
-					deviceApi.openMIUIContentExtension().then(
-						res => {
-							modal.create({
-								title: '已开启',
-								type: 'success',
-								preset: 'dialog',
-								content: () => (
-									<div>
-										<p>好耶OwO~</p>
-										<p>
-											已经成功开启{' '}
-											<span
-												class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-												传送门
-											</span>{' '}
-											的管理界面了~
-										</p>
-									</div>
-								),
-								positiveText: '确定',
-							});
-						},
-						err => {
-							modal.create({
-								title: '无法打开传送门',
-								type: 'error',
-								preset: 'dialog',
-								content: () => <p>出现异常，无法正常打开传送门QwQ，详细问题可浏览日志记录~</p>,
-								negativeText: '确定',
-							});
-						},
-					);
-				},
-			});
-		},
-		icon: NewspaperIcon,
-	},
+	// {
+	// 	name: '传送门',
+	// 	async click() {
+	// 		if (!MIUIContentExtension.isInstallMIUIContentExtension.value) {
+	// 			await navigator.clipboard.writeText(`https://caiyun.139.com/m/i?135CdxVMTx4nf`);
+	// 			modal.create({
+	// 				title: '无法打开传送门',
+	// 				type: 'error',
+	// 				preset: 'dialog',
+	// 				content: () => (
+	// 					<div>
+	// 						<p>未检测到系统存在传送门，请先通过模块修补传送门再进入~</p>
+	// 						<p>已经复制模块下载链接到剪切板了，请务必选择固化并修复传送门~</p>
+	// 					</div>
+	// 				),
+	// 				negativeText: '确定',
+	// 			});
+	// 			return;
+	// 		}
+	// 		modal.create({
+	// 			title: '确认打开传送门吗？',
+	// 			type: 'info',
+	// 			preset: 'dialog',
+	// 			content: () => (
+	// 				<div>
+	// 					<p>
+	// 						即将打开{' '}
+	// 						<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+	// 							传送门
+	// 						</span>{' '}
+	// 						管理界面，确定要继续吗？
+	// 					</p>
+	// 				</div>
+	// 			),
+	// 			positiveText: '确定打开',
+	// 			negativeText: '我再想想',
+	// 			onPositiveClick: async () => {
+	// 				deviceApi.openMIUIContentExtension().then(
+	// 					res => {
+	// 						modal.create({
+	// 							title: '已开启',
+	// 							type: 'success',
+	// 							preset: 'dialog',
+	// 							content: () => (
+	// 								<div>
+	// 									<p>好耶OwO~</p>
+	// 									<p>
+	// 										已经成功开启{' '}
+	// 										<span
+	// 											class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+	// 											传送门
+	// 										</span>{' '}
+	// 										的管理界面了~
+	// 									</p>
+	// 								</div>
+	// 							),
+	// 							positiveText: '确定',
+	// 						});
+	// 					},
+	// 					err => {
+	// 						modal.create({
+	// 							title: '无法打开传送门',
+	// 							type: 'error',
+	// 							preset: 'dialog',
+	// 							content: () => <p>出现异常，无法正常打开传送门QwQ，详细问题可浏览日志记录~</p>,
+	// 							negativeText: '确定',
+	// 						});
+	// 					},
+	// 				);
+	// 			},
+	// 		});
+	// 	},
+	// 	icon: NewspaperIcon,
+	// },
 	{
 		name: '百宝箱',
 		routeName: 'tools',
@@ -156,7 +165,7 @@ const navigation = reactive([
 		routeName: 'dot-black-list',
 		href: '/dot-black-list',
 		isShow() {
-			return (
+			return Boolean(
 				deviceStore.MIOSVersion &&
 				deviceStore.MIOSVersion >= 1
 			);

@@ -2,6 +2,7 @@ import { ref, computed, reactive, type ComputedRef } from 'vue';
 import { defineStore } from 'pinia';
 import $to from 'await-to-js';
 import * as gameBoosterApi from '@/apis/gameBoosterApi';
+import * as deviceApi from '@/apis/deviceApi';
 import type { ErrorLogging } from '@/types/ErrorLogging';
 import type GameBoosterTableItem from '@/types/GameBoosterTableItem';
 
@@ -51,7 +52,7 @@ export const useGameBoosterStore = defineStore(
 		async function initDefault() {
 			loading.value = true;
 
-			const [getHasGameBoosterDataBaseErr, getHasGameBoosterDataBaseRes] = await $to<string>(gameBoosterApi.getHasGameBoosterDataBase())
+			const [getHasGameBoosterDataBaseErr, getHasGameBoosterDataBaseRes] = await $to<string>(deviceApi.getHasGameBoosterDataBase())
 
 			if (getHasGameBoosterDataBaseErr) {
 				loading.value = false;

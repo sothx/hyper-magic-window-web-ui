@@ -7,6 +7,7 @@ import { useLogsStore } from '@/stores/logs';
 import type DotBlackListItem from '@/types/DotBlackListItem';
 import type { KeyboardMode, PenEnable, PenUpdate } from '@/hooks/useAmktiao';
 import type { DisplayModeItem } from '@/hooks/useDisplayModeRecord';
+import type GameBoosterTableItem from '@/types/GameBoosterTableItem';
 
 export interface SmartFocusIOResult extends ExecResults {
 	stdout: 'on' | 'off';
@@ -1805,3 +1806,44 @@ export const openAllAppList = (): Promise<string> => {
 		shellCommon,
 	);
 }
+
+export const getHasGameBoosterDataBase = (): Promise<string> => {
+	const shellCommon = `ls /data/data/com.miui.securitycenter/databases/gamebooster.db &>/dev/null && echo "exists" || echo "not exists"`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`exists`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : stdout === 'exists' ? resolve(stdout) : reject(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const deleteMIUIContentExtensionSettings = (): Promise<string> => {
+	const sqlite3 = '/data/adb/modules/MIUI_MagicWindow+/common/utils/sqlite3';
+	const GameBoosterDataBase = `/data/data/com.miui.securitycenter/databases/gamebooster.db`;
+	const shellCommon = `echo "$(${sqlite3} ${GameBoosterDataBase} "DELETE FROM gamebooster_table WHERE package_name='com.miui.contentextension'; SELECT changes();")"`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`1`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = (await exec(
+					shellCommon,
+				)) as unknown as ExecResults;
+				if (errno) {
+					reject(stderr);
+				} else {
+					if (stderr) {
+						reject(stderr)
+					}
+					resolve(stdout)
+				}
+			}
+		}),
+		shellCommon,
+	);
+};
