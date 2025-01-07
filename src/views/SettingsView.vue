@@ -974,6 +974,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 								</n-button>
 							</div>
 							<n-alert v-if="MIUIContentExtensionHook.isInstallMIUIContentExtension.value" class="mt-5" type="info" :show-icon="false" :bordered="false">
+								<!-- <p>「传送门」可能会导致部分应用出现「断触」或者「不跟手」的问题，请将不需要「传送门」的应用添加到「传送门」的「应用黑名单」</p> -->
 								<p
 									>您可以通过 
 									<n-button
