@@ -52,7 +52,10 @@ import {
   NGrid,
   NPageHeader,
   NConfigProvider,
-  NLog
+  NLog,
+  NCollapse,
+  NCollapseItem,
+  NCollapseTransition
 } from "naive-ui";
 
 import App from "./App.vue";
@@ -100,7 +103,10 @@ const naive = create({
     NGi,
     NGrid,
     NIcon,
-    NBadge
+    NBadge,
+    NCollapse,
+    NCollapseItem,
+    NCollapseTransition
   ],
 });
 
