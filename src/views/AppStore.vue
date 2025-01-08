@@ -90,7 +90,7 @@
               <p>悬浮球是小米的一个系统应用，可以通过单手手势提升日常的使用体验。</p>
               <p>兼容性:  MIUI14 / Hyper OS 1 / Hyper OS 2</p>
               <p>注意事项:  Magisk模块请通过对应的 ROOT管理器 进行安装！传送门管理入口位于[模块设置]，悬浮球管理入口位于[系统设置-更多设置-悬浮球]。</p>
-              <n-button class="mt-2" strong secondary type="info" @click="() => getAppDownload('WinPlay Mobile', 'https://caiyun.139.com/m/i?135Ce8FLLcLm8', 'system')">获取WinPlay Mobile</n-button>
+              <n-button class="mt-2" strong secondary type="info" @click="() => getAppDownload('WinPlay Mobile', 'https://caiyun.139.com/m/i?135Ce8FLLcLm8', 'magisk')">获取WinPlay Mobile</n-button>
             </n-alert>
           </div>
           <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="deviceStore.MIOSVersion && deviceStore.MIOSVersion === 1 && deviceStore.deviceCharacteristics === 'tablet'">
