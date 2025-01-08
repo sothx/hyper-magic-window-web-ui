@@ -521,16 +521,30 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 								rgb(60, 112, 255) 110.17%
 							);
 						"
-						>百宝箱</span
+						>外设按键映射</span
 					>
 				</h3>
 				<p
 					:class="`mt-1 max-w-2xl text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-500'}`">
-					百宝箱，汇集了丰富的实用工具
+					管理有关外设按键映射的配置
 				</p>
 			</div>
+			<n-watermark
+				content="开发中，尚未上线"
+				cross
+				fullscreen
+				:font-size="16"
+				:line-height="16"
+				:width="384"
+				:height="384"
+				:x-offset="12"
+				:z-index="999"
+				:y-offset="60"
+				:rotate="-15" />
 			<div class="mt-3">
-				<n-alert title="极暗模式" class="cursor-pointer" :show-icon="false" type="info">点击可以快速打开支付宝的扫码界面</n-alert>
+				<n-alert class="cursor-pointer" :show-icon="false" type="info"
+					>该功能暂时仅兼容 [小米灵感触控笔 二代] ，其他外设暂无适配计划，请等待后续更新。</n-alert
+				>
 			</div>
 		</div>
 	</div>

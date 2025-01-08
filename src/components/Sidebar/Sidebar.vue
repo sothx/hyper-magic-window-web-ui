@@ -23,6 +23,7 @@ import {
 	Square2StackIcon,
 	LifebuoyIcon,
 	Square3Stack3DIcon,
+	PaintBrushIcon,
 } from '@heroicons/vue/24/outline';
 import { useRoute } from 'vue-router';
 import { ChevronDownIcon, MagnifyingGlassIcon } from '@heroicons/vue/20/solid';
@@ -151,16 +152,6 @@ const navigation = reactive<NavigationItem[]>([
 	// 	icon: NewspaperIcon,
 	// },
 	{
-		name: '百宝箱',
-		routeName: 'tools',
-		href: '/tools',
-		icon: CubeIcon,
-		isShow() {
-			return false;
-			// return import.meta.env.MODE === 'development';
-		},
-	},
-	{
 		name: '窗口控制器',
 		routeName: 'dot-black-list',
 		href: '/dot-black-list',
@@ -171,6 +162,15 @@ const navigation = reactive<NavigationItem[]>([
 			);
 		},
 		icon: WindowIcon,
+	},
+	{
+		name: '外设按键映射',
+		routeName: 'magic-control',
+		href: '/magic-control',
+		icon: PaintBrushIcon,
+		isShow() {
+			return Boolean(deviceStore.deviceCharacteristics === 'tablet')
+		}
 	},
 	{
 		name: '精选应用',

@@ -63,9 +63,9 @@ const router = createRouter({
       component: () => import('../views/DotBlackListView.vue'),
     },
     {
-      path: '/tools',
-      name: 'tools',
-      component: () => import('../views/ToolsView.vue'),
+      path: '/magic-control',
+      name: 'magic-control',
+      component: () => import('../views/MagicControlView.vue'),
     },
     {
       path: '/eggs',
