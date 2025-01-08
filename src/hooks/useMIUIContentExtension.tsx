@@ -40,6 +40,7 @@ export function useMIUIContentExtension() {
                     <div>
                         <p>未检测到系统存在传送门，请先通过模块修补传送门再进入~</p>
                         <p>已经复制模块下载链接到剪切板了，请务必选择固化并修复传送门~</p>
+                        <p>下载链接:https://caiyun.139.com/m/i?135CdxVMTx4nf</p>
                     </div>
                 ),
                 negativeText: '确定',

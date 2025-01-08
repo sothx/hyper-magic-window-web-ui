@@ -9,7 +9,7 @@
   const { message, modal, notification } = createDiscreteApi(['message', 'modal', 'notification'], {
 	configProviderProps: configProviderPropsRef,
 });
-  const getAppDownload = async (title:string,url:string, type: 'system' | 'revision' | 'original') => {
+  const getAppDownload = async (title:string,url:string, type: 'system' | 'revision' | 'original' | 'magisk') => {
 	modal.create({
 		title: `获取${title}`,
 		type: 'info',
@@ -19,6 +19,7 @@
         <p>确定要下载{title}么？请注意核对部分应用的兼容性。
         { type === 'system' && <span>（Tips: 系统应用无法通过小米自带的应用包管理器安装，请通过MT管理器安装！）</span> }
         { type === 'revision' && <span>（Tips: 修改版需搭配核心破解并通过MT管理器安装）</span> }
+        { type === 'magisk' && <span>（Tips: Magisk模块请通过ROOT管理器进行安装）</span> }
       </p>
 				<p>下载地址:</p>
         <p>{url}</p>
@@ -77,6 +78,21 @@
               <n-button class="mt-2" strong secondary type="error" @click="() => getAppDownload('超级小爱', 'https://caiyun.139.com/m/i?135CmDfhvmaxV', 'system')">获取超级小爱</n-button>
             </n-alert>
           </div>
+          <div v-if="deviceStore.deviceCharacteristics === 'tablet'" class="px-4 flex sm:grid sm:px-0 mt-5">
+            <n-alert
+              title="小米平板系统应用补全 - 传送门/悬浮球"
+              type="info"
+            >
+            <template #icon>
+              <img src="/images/icons/miui_content_extension_app.webp" />
+            </template>
+              <p>传送门是小米的一个系统应用，可以方便地识别屏幕上的文字和图片，触发系统的分词、识图、搜索、复制、翻译等能力。</p>
+              <p>悬浮球是小米的一个系统应用，可以通过单手手势提升日常的使用体验。</p>
+              <p>兼容性:  MIUI14 / Hyper OS 1 / Hyper OS 2</p>
+              <p>注意事项:  Magisk模块请通过对应的 ROOT管理器 进行安装！传送门管理入口位于[模块设置]，悬浮球管理入口位于[系统设置-更多设置-悬浮球]。</p>
+              <n-button class="mt-2" strong secondary type="info" @click="() => getAppDownload('WinPlay Mobile', 'https://caiyun.139.com/m/i?135Ce8FLLcLm8', 'system')">获取WinPlay Mobile</n-button>
+            </n-alert>
+          </div>
           <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="deviceStore.MIOSVersion && deviceStore.MIOSVersion === 1 && deviceStore.deviceCharacteristics === 'tablet'">
             <n-alert
               title="小米平板系统桌面 - Hyper OS 1"
@@ -103,6 +119,20 @@
               <p>兼容性:  Hyper OS 2</p>
               <p>注意事项:  如提示系统应用无法安装请从文件管理安装</p>
               <n-button class="mt-2" strong secondary type="error" @click="() => getAppDownload('小米平板系统桌面', 'https://caiyun.139.com/m/i?135CmXZPQXz3d', 'system')">获取小米平板系统桌面</n-button>
+            </n-alert>
+          </div>
+          <div v-if="deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.deviceCharacteristics === 'tablet'" class="px-4 flex sm:grid sm:px-0 mt-5">
+            <n-alert
+              title="WinPlay Mobile"
+              type="info"
+            >
+            <template #icon>
+              <img src="/images/icons/win_play_mobile.webp" />
+            </template>
+              <p>「WinPlay Mobile」是为小米平板量身定做的「游戏虚拟机」，可以运行市面上常见的 Windows 游戏。</p>
+              <p>兼容性:  小米平板6S Pro - Hyper OS 2</p>
+              <p>注意事项:  需要同时安装 AI百宝箱 和 WAE Display，当前仅兼容小米平板6S Pro，且需要运行在最新版的Hyper OS 2.0</p>
+              <n-button class="mt-2" strong secondary type="info" @click="() => getAppDownload('WinPlay Mobile', 'https://caiyun.139.com/m/i?135CdoBoOMICY', 'system')">获取WinPlay Mobile</n-button>
             </n-alert>
           </div>
           <div class="px-4 flex sm:grid sm:px-0 mt-5">
@@ -142,7 +172,7 @@
             <template #icon>
               <img src="/images/apps/starNote.webp" />
             </template>
-              <p>笔尖所到，文星高照！文石出品的平板笔记软件，截止 2025-1-1 前登录账号即可领取永久的笔记Pro会员！</p>
+              <p>笔尖所到，文星高照！文石出品的平板笔记软件，截止 2025-2-1 前登录账号即可领取永久的笔记Pro会员！</p>
               <p>兼容性:  Hyper OS 1 / Hyper OS 2 / MIUI 14</p>
               <p>注意事项:  领取会员的位置比较隐蔽，位于首页左上角~</p>
               <n-button class="mt-2" strong secondary type="info" @click="() => getAppDownload('StarNote', 'https://yun.139.com/sharewap/#/m/i?135CmrnDyIHP2', 'original')">获取StarNote</n-button>

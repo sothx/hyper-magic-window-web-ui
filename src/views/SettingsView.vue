@@ -973,7 +973,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 									传送门
 								</n-button>
 							</div>
-							<n-alert v-if="MIUIContentExtensionHook.isInstallMIUIContentExtension.value" class="mt-5" type="info" :show-icon="false" :bordered="false">
+							<n-alert v-if="MIUIContentExtensionHook.isInstallMIUIContentExtension.value && deviceStore.deviceCharacteristics === 'tablet'" class="mt-5" type="info" :show-icon="false" :bordered="false">
 								<!-- <p>「传送门」可能会导致部分应用出现「断触」或者「不跟手」的问题，请将不需要「传送门」的应用添加到「传送门」的「应用黑名单」</p> -->
 								<p
 									>您可以通过 
@@ -985,6 +985,33 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 										@click="() => MIUIContentExtensionHook.fix()">
 										传送门异常修复
 									</n-button> 移除「游戏工具箱」内的「传送门」</p>
+							</n-alert>
+						</dd>
+					</div>
+					<div v-if="deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.deviceCharacteristics === 'tablet'" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+						<dt
+							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
+							<p>WinPlay Mobile</p>
+						</dt>
+						<dd
+							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
+							<div>
+								<n-button
+									size="small"
+									type="info"
+									secondary
+									:loading="deviceStore.loading"
+									@click="() => deviceApi.openGameEngineLauncherActivity()">
+									<template #icon>
+										<img src="/images/icons/win_play_mobile.webp" />
+									</template>
+									WinPlay Mobile
+								</n-button>
+							</div>
+							<n-alert class="mt-5" type="info" :show-icon="false" :bordered="false">
+								<p>「WinPlay Mobile」是为小米平板量身定做的「游戏虚拟机」，可以运行市面上常见的 Windows 游戏。</p>
+								<p>目前尚处于测试阶段，暂时仅支持小米平板6S Pro ~</p>
+								<p>该功能依赖「AI百宝箱」和「WAE Display」，请确保已经安装这两个系统应用。</p>
 							</n-alert>
 						</dd>
 					</div>

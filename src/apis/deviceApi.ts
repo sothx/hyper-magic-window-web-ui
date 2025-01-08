@@ -1807,6 +1807,21 @@ export const openAllAppList = (): Promise<string> => {
 	);
 }
 
+export const openGameEngineLauncherActivity = (): Promise<string> => {
+	const shellCommon = `am start -n com.hyperos.aitoolbox/com.xiaomi.windowsgame.ui.GameEngineLauncherActivity`;;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`am start command executed successfully.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+}
+
 export const getHasGameBoosterDataBase = (): Promise<string> => {
 	const shellCommon = `ls /data/data/com.miui.securitycenter/databases/gamebooster.db &>/dev/null && echo "exists" || echo "not exists"`;
 	return handlePromiseWithLogging(
