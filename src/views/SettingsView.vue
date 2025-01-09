@@ -973,10 +973,18 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 									传送门
 								</n-button>
 							</div>
-							<n-alert v-if="MIUIContentExtensionHook.isInstallMIUIContentExtension.value && deviceStore.deviceCharacteristics === 'tablet'" class="mt-5" type="info" :show-icon="false" :bordered="false">
+							<n-alert
+								v-if="
+									MIUIContentExtensionHook.isInstallMIUIContentExtension.value &&
+									deviceStore.deviceCharacteristics === 'tablet'
+								"
+								class="mt-5"
+								type="info"
+								:show-icon="false"
+								:bordered="false">
 								<!-- <p>「传送门」可能会导致部分应用出现「断触」或者「不跟手」的问题，请将不需要「传送门」的应用添加到「传送门」的「应用黑名单」</p> -->
 								<p
-									>您可以通过 
+									>您可以通过
 									<n-button
 										size="small"
 										type="info"
@@ -984,11 +992,19 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 										:loading="deviceStore.loading"
 										@click="() => MIUIContentExtensionHook.fix()">
 										传送门异常修复
-									</n-button> 移除「游戏工具箱」内的「传送门」</p>
+									</n-button>
+									移除「游戏工具箱」内的「传送门」</p
+								>
 							</n-alert>
 						</dd>
 					</div>
-					<div v-if="deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.deviceCharacteristics === 'tablet'" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+					<div
+						v-if="
+							deviceStore.MIOSVersion &&
+							deviceStore.MIOSVersion >= 2 &&
+							deviceStore.deviceCharacteristics === 'tablet'
+						"
+						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
 							<p>WinPlay Mobile</p>
@@ -1009,7 +1025,10 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 								</n-button>
 							</div>
 							<n-alert class="mt-5" type="info" :show-icon="false" :bordered="false">
-								<p>「WinPlay Mobile」是为小米平板量身定做的「游戏虚拟机」，可以运行市面上常见的 Windows 游戏。</p>
+								<p
+									>「WinPlay Mobile」是为小米平板量身定做的「游戏虚拟机」，可以运行市面上常见的
+									Windows 游戏。</p
+								>
 								<p>目前尚处于测试阶段，暂时仅支持小米平板6S Pro ~</p>
 								<p>该功能依赖「AI百宝箱」和「WAE Display」，请确保已经安装这两个系统应用。</p>
 							</n-alert>
@@ -1518,6 +1537,85 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							</n-switch>
 						</dd>
 					</div>
+					<n-watermark
+						content="开发中，未上线"
+						cross
+						selectable
+						:font-size="16"
+						:line-height="16"
+						:width="192"
+						:height="128"
+						:x-offset="12"
+						:y-offset="28"
+						:rotate="-15">
+						<div
+							v-if="deviceStore.shamikoInfo.installed"
+							class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+							<dt
+								:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
+								焕新存储
+							</dt>
+							<dd
+								:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
+								<n-button
+									size="small"
+									type="info"
+									secondary
+									:loading="deviceStore.loading"
+									@click="() => {}">
+									打开 焕新存储信息面板
+								</n-button>
+								<n-alert class="mb-5 mt-5" type="success" :show-icon="false" :bordered="false">
+									<div>
+										<p
+											>焕新存储启用状态:<n-tag
+												size="small"
+												class="ml-3"
+												type="success"
+												:loading="deviceStore.loading"
+												@click="() => {}">
+												已启用
+											</n-tag></p
+										>
+										<p
+											>启用状态通常由小米云控控制，模块支持强制启用焕新存储，但该功能受系统底层支持情况而异，不支持的设备即使启用也不会生效。</p
+										>
+										<n-switch
+											@update:value="() => {}"
+											:rail-style="railStyle"
+											:disabled="!deviceStore.enabledMiuiDesktopMode"
+											:value="miuiDesktopModeHook.currentMiuiDktMode"
+											:loading="deviceStore.loading">
+											<template #checked>已强制启用焕新存储</template>
+											<template #unchecked>跟随系统默认云控规则</template>
+										</n-switch>
+									</div>
+								</n-alert>
+								<n-alert class="mt-5" type="info" :show-icon="false" :bordered="false">
+									<p
+										>焕新存储激活状态:
+										<n-button
+											size="small"
+											type="success"
+											secondary
+											:loading="deviceStore.loading"
+											@click="() => {}">
+											已激活
+										</n-button>
+									</p>
+									<p>激活后仍然需要满足以下条件才会在特定时间触发焕新存储：</p>
+									<p>①夜间12点半-凌晨5点</p>
+									<p>②息屏状态</p>
+									<p>③电量大于75%(或保持手机充电)</p>
+									<p>④电池温度小于40℃</p>
+									<p
+										>进行焕新存储期间检测到其中任意条件不满足，焕新存储会被中断，待满足后继续执行。</p
+									>
+									<p>（焕新存储流程结束后，激活状态会被关闭，您可以前往Web UI 重新激活。）</p>
+								</n-alert>
+							</dd>
+						</div>
+					</n-watermark>
 					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">

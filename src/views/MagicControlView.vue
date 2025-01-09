@@ -543,8 +543,10 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 				:rotate="-15" />
 			<div class="mt-3">
 				<n-alert class="cursor-pointer" :show-icon="false" type="info"
+					>该功能开发中，不会这么快上线，请勿催更，请期待后续更新。</n-alert>
+				<!-- <n-alert class="cursor-pointer" :show-icon="false" type="info"
 					>该功能暂时仅兼容 [小米灵感触控笔 二代] ，其他外设暂无适配计划，请等待后续更新。</n-alert
-				>
+				> -->
 			</div>
 		</div>
 	</div>
