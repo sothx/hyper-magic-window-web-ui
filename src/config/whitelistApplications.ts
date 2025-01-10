@@ -41,6 +41,7 @@ const topApplicationList = [
     'com.tencent.androidqqmail', // QQ邮箱
     'com.jingdong.app.mall', // 京东
     'com.tencent.wework', // 企业微信
+    'com.tencent.weworkenterprise', // 企业微信独立部署版
     'com.taobao.trip', // 飞猪
     'com.fenbi.android.leo', // 小猿口算
     'com.duokan.reader',// 多看阅读
@@ -199,6 +200,15 @@ const topApplicationList = [
     'com.hurantech.cherrysleep', // 樱桃睡眠
     'tech.caicheng.youshi', // 有诗
     'org.panda.words', // 熊猫在学
+    'com.tencent.phoenix', // 秒剪
+    'com.tencent.wetype', // 微信输入法
+    'com.tencent.wehear', // 微信听书
+    'com.tencent.weishi', // 腾讯微视
+    'com.ctg.itrdc.clouddesk', // 天翼云电脑
+    'com.oppo.store', // OPPO 商城
+    'com.pupumall.customer', // 朴朴超市
+    'me.tangke.gamecores', // 机核
+    'com.xunmeng.pinduoduo', // 拼多多
 ]
 
 
