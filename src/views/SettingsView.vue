@@ -2037,6 +2037,27 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 						</dd>
 					</div>
 					<div
+						v-if="displayModeRecordHook.supportHDRTypes.value.length"
+						id="displayModeSettings"
+						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+						<dt
+							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
+							支持的 HDR 类型
+						</dt>
+						<dd
+							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
+							<div
+								class="mb-3 flex"
+								v-for="(item,index) in displayModeRecordHook.supportHDRTypes.value"
+								:key="index">
+								<p v-if="item === 1" class="mr-3">{{ 'HLG'  }}</p>
+								<p v-if="item === 2" class="mr-3">{{ 'HDR10'  }}</p>
+								<p v-if="item === 3" class="mr-3">{{ 'HDR10+'  }}</p>
+								<p v-if="item === 4" class="mr-3">{{ 'Dolby Vision'  }}</p>
+							</div>
+						</dd>
+					</div>
+					<div
 						v-if="realQuantityHook.qcomBatteryFg1RSocInfo.current"
 						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt

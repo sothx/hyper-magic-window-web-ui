@@ -28,6 +28,14 @@ export function useDisplayModeRecord() {
 
     const displayModeList = ref<DisplayModeItem[]>([])
 
+    const supportHDRTypes = computed(() => {
+        if (Array.isArray(displayModeList.value) && displayModeList.value.length) {
+            return displayModeList.value[0].supportedHdrTypes
+        }
+
+        return []
+    })
+
     const formatDisplayModeList = computed(() => {
         return displayModeList.value.map(item => ({
             ...item,
@@ -35,6 +43,8 @@ export function useDisplayModeRecord() {
             alternativeRefreshRates: item.alternativeRefreshRates.map(rate => Math.round(rate)) // 将 alternativeRefreshRates 转换为整数数组
           }));
     })
+
+    
 
     const selectDisplayMode = async (data:DisplayModeItem) => {
         modal.create({
@@ -93,6 +103,7 @@ export function useDisplayModeRecord() {
 
     return {
         displayModeList,
+        supportHDRTypes,
         formatDisplayModeList,
         setDisplayMode,
         selectDisplayMode
