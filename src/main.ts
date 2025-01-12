@@ -1,6 +1,7 @@
 import "./assets/fonts.css";
 import "./assets/main.css";
 import "./style.css";
+import "./assets/iconfont.js";
 // 通用字体
 import "vfonts/Lato.css";
 // 等宽字体

@@ -1,5 +1,14 @@
 <script setup lang="tsx">
-import { computed, onBeforeUnmount, onMounted, reactive, ref, type FunctionalComponent, type HTMLAttributes, type VNodeProps } from 'vue';
+import {
+	computed,
+	onBeforeUnmount,
+	onMounted,
+	reactive,
+	ref,
+	type FunctionalComponent,
+	type HTMLAttributes,
+	type VNodeProps,
+} from 'vue';
 import { RouterLink } from 'vue-router';
 import { useGameBoosterStore } from '@/stores/gameBooster';
 import { Dialog, DialogPanel, TransitionChild, TransitionRoot } from '@headlessui/vue';
@@ -46,15 +55,24 @@ const { message, modal } = createDiscreteApi(['message', 'modal'], {
 	configProviderProps: configProviderPropsRef,
 });
 interface NavigationItem {
-  name: string; // 导航项的名称
-  routeName?: string; // Vue Router 中的路由名称
-  href?: string; // 导航的链接地址
-  icon?: FunctionalComponent | string | (() => JSX.Element); // 图标：Vue 组件、字符串路径或 JSX 函数
-  isShow?: () => boolean | Promise<boolean> | Function; // 是否显示，支持同步、异步、或普通函数
-  click?: () => Promise<void> | Function; // 点击事件，支持同步、异步、或普通函数
+	name: string; // 导航项的名称
+	routeName?: string; // Vue Router 中的路由名称
+	href?: string; // 导航的链接地址
+	icon?: FunctionalComponent | string | (() => JSX.Element); // 图标：Vue 组件、字符串路径或 JSX 函数
+	isShow?: () => boolean | Promise<boolean> | Function; // 是否显示，支持同步、异步、或普通函数
+	click?: () => Promise<void> | Function; // 点击事件，支持同步、异步、或普通函数
 }
 const navigation = reactive<NavigationItem[]>([
-	{ name: '应用横屏布局', routeName: 'home', href: '/', icon: Squares2X2Icon },
+	{
+		name: '应用横屏布局',
+		routeName: 'home',
+		href: '/',
+		icon: () => (
+			<svg class='icon' aria-hidden='true'>
+				<use xlinkHref='#icon-putong'></use>
+			</svg>
+		),
+	},
 	{
 		name: '应用布局优化',
 		routeName: 'autoui',
@@ -62,7 +80,11 @@ const navigation = reactive<NavigationItem[]>([
 			return Boolean(deviceStore.androidTargetSdk && deviceStore.androidTargetSdk >= 33);
 		},
 		href: '/autoui',
-		icon: Square3Stack3DIcon,
+		icon: () => (
+			<svg class='icon' aria-hidden='true'>
+				<use xlinkHref='#icon-morenbuju-mobanliebiao'></use>
+			</svg>
+		),
 	},
 	{
 		name: '游戏显示布局',
@@ -71,11 +93,15 @@ const navigation = reactive<NavigationItem[]>([
 		isShow() {
 			return Boolean(
 				deviceStore.androidTargetSdk &&
-				deviceStore.androidTargetSdk >= 32 &&
-				gameBoosterStore.hasGameBoosterDataBase
+					deviceStore.androidTargetSdk >= 32 &&
+					gameBoosterStore.hasGameBoosterDataBase,
 			);
 		},
-		icon: LifebuoyIcon,
+		icon: () => (
+			<svg class='icon' aria-hidden='true'>
+				<use xlinkHref='#icon-youxi7'></use>
+			</svg>
+		),
 	},
 	// {
 	// 	name: '传送门',
@@ -156,34 +182,57 @@ const navigation = reactive<NavigationItem[]>([
 		routeName: 'dot-black-list',
 		href: '/dot-black-list',
 		isShow() {
-			return Boolean(
-				deviceStore.MIOSVersion &&
-				deviceStore.MIOSVersion >= 1
-			);
+			return Boolean(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 1);
 		},
-		icon: WindowIcon,
+		icon: () => (
+			<svg class='icon' aria-hidden='true'>
+				<use xlinkHref='#icon-danyemianbuju'></use>
+			</svg>
+		),
 	},
 	{
 		name: '外设按键映射',
 		routeName: 'magic-control',
 		href: '/magic-control',
-		icon: PaintBrushIcon,
+		icon: () => (
+			<svg class='icon' aria-hidden='true'>
+				<use xlinkHref='#icon-youxi8'></use>
+			</svg>
+		),
 		isShow() {
-			return Boolean(deviceStore.deviceCharacteristics === 'tablet')
-		}
+			return Boolean(deviceStore.deviceCharacteristics === 'tablet');
+		},
 	},
 	{
 		name: '精选应用',
 		routeName: 'appStore',
 		href: '/appStore',
-		icon: CubeIcon
+		icon: () => (
+			<svg class='icon' aria-hidden='true'>
+				<use xlinkHref='#icon-linggan'></use>
+			</svg>
+		),
 	},
-	{ name: '日志记录', routeName: 'logs', href: '/logs', icon: DocumentDuplicateIcon },
-	{ name: '新春彩蛋', routeName: 'eggs', href: '/eggs', icon: () =>(
-		<n-icon>
-			<img src="/images/icons/happy_new_year.png" />
-		</n-icon>
-	) },
+	{
+		name: '日志记录',
+		routeName: 'logs',
+		href: '/logs',
+		icon: () => (
+			<svg class='icon' aria-hidden='true'>
+				<use xlinkHref='#icon-biaoji'></use>
+			</svg>
+		),
+	},
+	{
+		name: '新春彩蛋',
+		routeName: 'eggs',
+		href: '/eggs',
+		icon: () => (
+			<svg class='icon' aria-hidden='true'>
+				<use xlinkHref='#icon-chunjie'></use>
+			</svg>
+		),
+	},
 ]);
 const teams = [
 	{
@@ -380,7 +429,9 @@ onBeforeUnmount(() => {
 															: 'text-gray-700 hover:bg-[#E8E8E8] hover:text-teal-600',
 													'group-mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6',
 												]">
-												<Cog6ToothIcon class="h-6 w-6 shrink-0" aria-hidden="true" />
+												<svg class="icon h-6 w-6 shrink-0" aria-hidden="true">
+													<use xlink:href="#icon-shezhi"></use>
+												</svg>
 												模块设置
 											</router-link>
 										</li>
@@ -494,7 +545,9 @@ onBeforeUnmount(() => {
 											: 'text-gray-700 hover:bg-[#E8E8E8] hover:text-teal-600',
 									'group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6',
 								]">
-								<Cog6ToothIcon class="h-6 w-6 shrink-0" aria-hidden="true" />
+								<svg class="icon h-6 w-6 shrink-0" aria-hidden="true">
+									<use xlink:href="#icon-shezhi"></use>
+								</svg>
 								模块设置
 							</router-link>
 						</li>
@@ -534,8 +587,7 @@ onBeforeUnmount(() => {
 								"
 								>完美横屏应用计划 For Web UI</h1
 							>
-							<n-badge v-if="false" value="发现新版本" type="info" :offset="[40,-8]">
-							</n-badge>
+							<n-badge v-if="false" value="发现新版本" type="info" :offset="[40, -8]"> </n-badge>
 						</div>
 						<div class="flex items-center gap-x-4 lg:gap-x-6"></div>
 					</div>
