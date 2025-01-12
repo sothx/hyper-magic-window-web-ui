@@ -82,7 +82,7 @@ const navigation = reactive<NavigationItem[]>([
 		href: '/autoui',
 		icon: () => (
 			<svg class='icon' aria-hidden='true'>
-				<use xlinkHref='#icon-morenbuju-mobanliebiao'></use>
+				<use xlinkHref='#icon-yingyong2'></use>
 			</svg>
 		),
 	},
@@ -186,7 +186,7 @@ const navigation = reactive<NavigationItem[]>([
 		},
 		icon: () => (
 			<svg class='icon' aria-hidden='true'>
-				<use xlinkHref='#icon-danyemianbuju'></use>
+				<use xlinkHref='#icon-kongzhitai'></use>
 			</svg>
 		),
 	},
@@ -565,7 +565,6 @@ onBeforeUnmount(() => {
 						<span class="sr-only">Open sidebar</span>
 						<Bars3Icon class="h-6 w-6" aria-hidden="true" />
 					</button>
-
 					<div class="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
 						<div class="flex h-full w-full content-center items-center justify-center">
 							<h1
@@ -589,7 +588,14 @@ onBeforeUnmount(() => {
 							>
 							<n-badge v-if="false" value="发现新版本" type="info" :offset="[40, -8]"> </n-badge>
 						</div>
-						<div class="flex items-center gap-x-4 lg:gap-x-6"></div>
+						<div class="flex items-center gap-x-4 lg:gap-x-6">
+							<button @click="() => message.warning('此区域尚未开放，请以后再来探索吧~')" type="button" class="m-2.5 p-2.5 text-gray-400 hover:text-gray-500">
+								<span class="sr-only">消息中心</span>
+								<svg class="icon h-7 w-7" aria-hidden="true">
+									<use xlink:href="#icon-xiaoxi"></use>
+								</svg>
+							</button>
+						</div>
 					</div>
 				</div>
 			</div>
