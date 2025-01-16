@@ -859,6 +859,8 @@ const parseDisplayModeRecords = (output: string): DisplayModeItem[] => {
 					width,
 					height,
 					fps,
+					vsync,
+					synthetic,
 					alternativeRefreshRates,
 					supportedHdrTypes
 				] = match;
@@ -868,6 +870,8 @@ const parseDisplayModeRecords = (output: string): DisplayModeItem[] => {
 					width: parseInt(width, 10),
 					height: parseInt(height, 10),
 					fps: parseFloat(fps),
+					vsync: parseInt(vsync),
+					synthetic: synthetic === 'true' ? true : false,
 					alternativeRefreshRates: alternativeRefreshRates
 						? alternativeRefreshRates.split(",").map(rate => parseFloat(rate.trim()))
 						: [],
@@ -884,8 +888,6 @@ const parseDisplayModeRecords = (output: string): DisplayModeItem[] => {
 					width,
 					height,
 					fps,
-					vsync,
-					synthetic,
 					alternativeRefreshRates,
 					supportedHdrTypes
 				] = match;
@@ -895,8 +897,6 @@ const parseDisplayModeRecords = (output: string): DisplayModeItem[] => {
 					width: parseInt(width, 10),
 					height: parseInt(height, 10),
 					fps: parseFloat(fps),
-					vsync: parseInt(vsync, 10),
-					synthetic: synthetic === 'true' ? true : false,
 					alternativeRefreshRates: alternativeRefreshRates
 						? alternativeRefreshRates.split(",").map(rate => parseFloat(rate.trim()))
 						: [],
@@ -914,7 +914,6 @@ const parseDisplayModeRecords = (output: string): DisplayModeItem[] => {
 };
 
 export const getDisplayModeRecord = (): Promise<DisplayModeItem[]> => {
-	const jq = '/data/adb/modules/MIUI_MagicWindow+/common/utils/jq';
 	const shellCommon = `dumpsys display | grep 'DisplayModeRecord'`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
