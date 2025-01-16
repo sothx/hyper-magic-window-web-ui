@@ -102,7 +102,6 @@ export function useMIUIContentExtension() {
     }
 
     const fix = async () => {
-        console.log('进来了修复')
         const [deleteErr,deleteRes] = await $to<string,string>(deviceApi.deleteMIUIContentExtensionSettings())
         if (deleteErr) {
             logsStore.error('修复传送门失败',deleteErr)
@@ -151,6 +150,62 @@ export function useMIUIContentExtension() {
         });
     }
 
+    const setAuthIsOnlyRead = async () => {
+        modal.create({
+            title: '确认固化应用黑名单吗？',
+            type: 'info',
+            preset: 'dialog',
+            content: () => (
+                <div>
+                    <p>
+                        固化{' '}
+                        <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+                            应用黑名单
+                        </span>{' '}
+                        后可以避免被系统异常重置，但是后续添加{' '}
+                        <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+                            应用黑名单
+                        </span>{' '}需要先解除固化，确定要继续吗？
+                    </p>
+                </div>
+            ),
+            positiveText: '确定固化',
+            negativeText: '我再想想',
+            onPositiveClick: async () => {
+                deviceApi.setMIUIContentExtensionAuth(400)
+            },
+        });
+    }
+
+    const setAuthIsReadAndWrite = async () => {
+        modal.create({
+            title: '确认解除应用黑名单的固化吗？',
+            type: 'info',
+            preset: 'dialog',
+            content: () => (
+                <div>
+                    <p>
+                        解除{' '}
+                        <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+                            应用黑名单
+                        </span>{' '}
+                        固化后可以修改应用黑名单列表，修改完毕后建议重新固化{' '}
+                        <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+                            应用黑名单
+                        </span>{' '}，以避免被系统异常重置，确定要继续吗？
+                    </p>
+                </div>
+            ),
+            positiveText: '确定解除',
+            negativeText: '我再想想',
+            onPositiveClick: async () => {
+                deviceApi.setMIUIContentExtensionAuth(600)
+            },
+        });
+    }
+
+
+
 
     onMounted(() => {
         deviceApi.getHasInstalledMIUIContentExtension().then((res) => {
@@ -164,7 +219,9 @@ export function useMIUIContentExtension() {
     return {
         open,
         fix,
-        isInstallMIUIContentExtension
+        isInstallMIUIContentExtension,
+        setAuthIsOnlyRead,
+        setAuthIsReadAndWrite
     }
 
 

@@ -768,6 +768,8 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 						const hasDisable = currentFixedOrientation.value.hasOwnProperty('disable');
 						if (hasDisable) {
 							delete currentFixedOrientation.value.disable;
+							currentFixedOrientation.value.supportModes = 'full,fo'
+							currentFixedOrientation.value.defaultSettings = 'full'
 						}
 						const hasCompatChange = currentFixedOrientation.value.hasOwnProperty('compatChange');
 						if (hasCompatChange) {

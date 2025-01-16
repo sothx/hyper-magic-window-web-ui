@@ -982,9 +982,8 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 								type="info"
 								:show-icon="false"
 								:bordered="false">
-								<!-- <p>「传送门」可能会导致部分应用出现「断触」或者「不跟手」的问题，请将不需要「传送门」的应用添加到「传送门」的「应用黑名单」</p> -->
 								<p
-									>您可以通过
+									>模块安装后可能会导致「传送门」被异常添加到「游戏工具箱」，您可以通过
 									<n-button
 										size="small"
 										type="info"
@@ -993,8 +992,28 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 										@click="() => MIUIContentExtensionHook.fix()">
 										传送门异常修复
 									</n-button>
-									移除「游戏工具箱」内的「传送门」</p
-								>
+									移除「游戏工具箱」内的「传送门」</p>
+								<p
+								 class="mt-5"
+									>由于小米「传送门」存在「应用黑名单」不定期重置的BUG，您可以通过
+									<n-dropdown
+								size="large"
+								trigger="click"
+								:options="[
+									{ label: '应用黑名单固化', key: 'onlyRead' },
+									{ label: '解除应用黑名单固化', key: 'readAndWrite' },
+								]"
+								@select="(key: 'onlyRead' | 'readAndWrite') => { key === 'onlyRead' ? MIUIContentExtensionHook.setAuthIsOnlyRead() : MIUIContentExtensionHook.setAuthIsReadAndWrite() }">
+								<n-button
+									size="small"
+									type="info"
+									color="#8a2be2"
+									secondary
+									:loading="deviceStore.loading">
+									应用黑名单固化管理
+								</n-button>
+							</n-dropdown>
+									来固化「应用黑名单」的权限，避免被系统重置。</p>
 							</n-alert>
 						</dd>
 					</div>

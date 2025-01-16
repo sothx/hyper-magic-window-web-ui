@@ -1862,3 +1862,18 @@ export const deleteMIUIContentExtensionSettings = (): Promise<string> => {
 		shellCommon,
 	);
 };
+
+export const setMIUIContentExtensionAuth = (authCode: number): Promise<string> => {
+	const shellCommon = `chmod ${authCode} /data/user/0/com.miui.contentextension/files/blacklistConfig`;;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`chmod command executed successfully.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+}

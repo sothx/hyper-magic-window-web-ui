@@ -209,6 +209,10 @@ const topApplicationList = [
     'com.pupumall.customer', // 朴朴超市
     'me.tangke.gamecores', // 机核
     'com.xunmeng.pinduoduo', // 拼多多
+    'com.vblast.flipaclip', // FlipaClip
+    'com.gstarmc.android', // CAD看图王
+    'com.quickview3d', // 快视3D看图
+    'com.aihuishou.opt', // 拍机堂
 ]
 
 

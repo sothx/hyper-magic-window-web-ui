@@ -200,7 +200,7 @@
               <img src="/images/apps/samsung_browser.png" />
             </template>
               <p>三星出品的安全、私密且经优化的移动网络浏览器！</p>
-              <p>注意事项:  没有PC版，如果需要跨PC端书签同步可能需要搭配第三方插件。</p>
+              <p>注意事项:  没有PC版，如果需要跨PC端书签同步可能需要搭配"三星浏览器"插件。</p>
               <n-button class="mt-2" strong secondary type="info" @click="() => getAppDownload('三星浏览器', 'https://caiyun.139.com/m/i?135CmXZb9D6PP', 'original')">获取三星浏览器</n-button>
             </n-alert>
           </div>
@@ -227,6 +227,19 @@
               <p>荣耀音乐 X 网易云音乐，跟普通网易云音乐不同的大屏适配体验！</p>
               <p>注意事项:  请使用绑定了网易云音乐的手机账号登录，必须安装荣耀基础服务，荣耀应用市场方便追踪应用更新。</p>
               <n-button class="mt-2" strong secondary type="error" @click="() => getAppDownload('荣耀音乐', 'https://caiyun.139.com/m/i?135CmrVUbH2y3', 'original')">获取荣耀音乐</n-button>
+            </n-alert>
+          </div>
+          <div class="px-4 flex sm:grid sm:px-0 mt-5">
+            <n-alert
+              title="FlipaClip"
+              type="default"
+            >
+            <template #icon>
+              <img src="/images/apps/flipaclip.png" />
+            </template>
+            <p>用动画把你的梦想带进现实！</p>
+            <p>FlipaClip 强大而有趣的工具可以让你一帧一帧地轻松制作动画，无论你是要打草稿、做脚本、做动画或者至少想要学习，FlipaClip足以实现您的创意。</p>
+              <n-button class="mt-2" strong secondary type="default" @click="() => getAppDownload('FlipaClip', 'https://caiyun.139.com/m/i?135Ce7Ou7DwWV', 'original')">获取FlipaClip</n-button>
             </n-alert>
           </div>
           <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="deviceStore.deviceCharacteristics === 'tablet'">
