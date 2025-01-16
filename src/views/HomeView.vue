@@ -1437,7 +1437,7 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 			},
 		},
 		{
-			title: '应用兼容性',
+			title: '应用规则修复',
 			minWidth: 100,
 			key: 'setting',
 			render(row, index) {
@@ -1446,19 +1446,19 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 				};
 				const handleClickAppCompatReset = (row: EmbeddedMergeRuleItem, index: number) => {
 					modal.create({
-						title: '想重置应用兼容性吗？',
+						title: '想修复应用规则吗？',
 						type: 'warning',
 						preset: 'dialog',
 						content: () => (
 							<p>
-								重置后，可以解决{' '}
+								由于小米的BUG，部分情况下会导致应用当前适配规则与实际显示效果不符，模块可以主动修复{' '}
 								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
 									{renderApplicationName(row.name, row.applicationName)}
 								</span>{' '}
-								由于系统错误的应用兼容性配置导致应用布局异常的问题（正常情况下不需要重置），确定要继续吗？
+								由于系统错误的兼容性配置导致应用布局异常的问题，确定要继续吗？
 							</p>
 						),
-						positiveText: '确定重置',
+						positiveText: '确定修复',
 						negativeText: '我再想想',
 						onPositiveClick: async () => {
 							const [resetCompatErr, resetCompatRes] = await $to(
@@ -1466,26 +1466,57 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 							);
 							if (resetCompatErr) {
 								modal.create({
-									title: '重置应用兼容性失败',
+									title: '修复应用规则失败',
 									type: 'error',
 									preset: 'dialog',
 									content: () => (
-										<p>发生异常错误，重置应用兼容性失败了QwQ，详细错误请查看错误日志~</p>
+										<p>发生异常错误，修复应用规则失败了QwQ，详细错误请查看错误日志~</p>
 									),
 								});
 							} else {
+								if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2) {
+									const [setAppModeErr, setAppModeRes] = await $to<string,string>(
+										embeddedApi.setAppMode(row.name, getAppModeCode(row.settingMode)),
+									);
+									if (setAppModeErr) {
+										logsStore.error('SetAppModeErr',setAppModeErr)
+										modal.create({
+											title: '修复应用规则失败',
+											type: 'error',
+											preset: 'dialog',
+											content: () => (
+												<p>发生异常错误，修复应用规则失败了QwQ，详细错误请查看错误日志~</p>
+											),
+										});
+									}
+								} else {
+									const [switchActionErr, switchActionRes] = await $to<string,string>(
+										embeddedApi.switchAction(row.name, ['embedded', 'fullScreen'].includes(row.settingMode) ? 'enable' : 'disable'),
+									);
+									if (switchActionErr) {
+										logsStore.error('SwitchActionErr',switchActionErr)
+										modal.create({
+											title: '修复应用规则失败',
+											type: 'error',
+											preset: 'dialog',
+											content: () => (
+												<p>发生异常错误，修复应用规则失败了QwQ，详细错误请查看错误日志~</p>
+											),
+										});
+									}
+								}
 								modal.create({
-									title: '重置应用兼容性成功',
+									title: '修复应用规则成功',
 									type: 'success',
 									preset: 'dialog',
 									content: () => (
 										<p>
-											好耶w，重置{' '}
+											好耶w，修复{' '}
 											<span
 												class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
 												{renderApplicationName(row.name, row.applicationName)}
 											</span>{' '}
-											的应用兼容性成功了OwO~
+											的应用规则成功了OwO~
 										</p>
 									),
 								});
@@ -1501,7 +1532,7 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 							v-slots={slots}
 							type='warning'
 							onClick={() => handleClickAppCompatReset(row, index)}>
-							兼容性重置
+							应用规则修复
 						</n-button>
 					</div>
 				);

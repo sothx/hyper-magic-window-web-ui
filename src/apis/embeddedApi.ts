@@ -48,6 +48,38 @@ export const getSystemEmbeddedRulesList = (): Promise<string> => {
 	);
 };
 
+export const setAppMode = (name: string, action: 0 | 1 | 2 | 3 | null): Promise<string> => {
+	const shellCommon = `cmd miui_embedding_window set-appMode ${name} ${action}`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve('success');
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+
+
+export const switchAction = (name: string, action: 'enable' | 'disable'): Promise<string> => {
+	const shellCommon = `cmd miui_embedding_window ${action} ${name}`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve('success');
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
 export const getSourceFixedOrientationList = (): Promise<string> => {
 	const shellCommon = `cat /data/adb/modules/MIUI_MagicWindow+/common/source/fixed_orientation_list.xml`;
 	return handlePromiseWithLogging(
