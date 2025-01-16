@@ -8,6 +8,7 @@ import type DotBlackListItem from '@/types/DotBlackListItem';
 import type { KeyboardMode, PenEnable, PenUpdate } from '@/hooks/useAmktiao';
 import type { DisplayModeItem } from '@/hooks/useDisplayModeRecord';
 import type GameBoosterTableItem from '@/types/GameBoosterTableItem';
+import type { miuiCursorStyleType } from '@/hooks/useMiuiCursorStyle';
 
 export interface SmartFocusIOResult extends ExecResults {
 	stdout: 'on' | 'off';
@@ -62,20 +63,20 @@ export const getMIOSVersion = (): Promise<number> => {
 	);
 };
 
-export const getSmartFocusIO = (): Promise<SmartFocusIOResult['stdout']> => {
-	const shellCommon = `getprop persist.sys.stability.smartfocusio`;
-	return handlePromiseWithLogging(
-		new Promise(async (resolve, reject) => {
-			if (import.meta.env.MODE === 'development') {
-				resolve('on');
-			} else {
-				const { errno, stdout, stderr }: SmartFocusIOResult = (await exec(shellCommon)) as SmartFocusIOResult;
-				errno ? reject(stderr) : resolve(stdout);
-			}
-		}),
-		shellCommon,
-	);
-};
+// export const getSmartFocusIO = (): Promise<SmartFocusIOResult['stdout']> => {
+// 	const shellCommon = `getprop persist.sys.stability.smartfocusio`;
+// 	return handlePromiseWithLogging(
+// 		new Promise(async (resolve, reject) => {
+// 			if (import.meta.env.MODE === 'development') {
+// 				resolve('on');
+// 			} else {
+// 				const { errno, stdout, stderr }: SmartFocusIOResult = (await exec(shellCommon)) as SmartFocusIOResult;
+// 				errno ? reject(stderr) : resolve(stdout);
+// 			}
+// 		}),
+// 		shellCommon,
+// 	);
+// };
 
 export const getDeviceSocName = (): Promise<string> => {
 	const shellCommon = `getprop ro.vendor.qti.soc_name`;
@@ -1863,7 +1864,7 @@ export const deleteMIUIContentExtensionSettings = (): Promise<string> => {
 };
 
 export const setMIUIContentExtensionAuth = (authCode: number): Promise<string> => {
-	const shellCommon = `chmod ${authCode} /data/user/0/com.miui.contentextension/files/blacklistConfig`;;
+	const shellCommon = `chmod ${authCode} /data/user/0/com.miui.contentextension/files/blacklistConfig`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -1876,3 +1877,79 @@ export const setMIUIContentExtensionAuth = (authCode: number): Promise<string> =
 		shellCommon,
 	);
 }
+
+export const getSmartFocusIOForBuild = (): Promise<SmartFocusIOResult['stdout']> => {
+	const toolsFunc = `/data/adb/modules/MIUI_MagicWindow+/common/utils/tools_functions.sh`
+	const shellCommon = `source ${toolsFunc} && grep_prop persist.sys.stability.smartfocusio /system/product/etc/build.prop`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`on`);
+			} else {
+				const { errno, stdout, stderr }: SmartFocusIOResult = (await exec(shellCommon)) as SmartFocusIOResult;
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+}
+
+export const getSmartFocusIO = (): Promise<SmartFocusIOResult['stdout']> => {
+	const shellCommon = `getprop persist.sys.stability.smartfocusio`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`on`);
+			} else {
+				const { errno, stdout, stderr }: SmartFocusIOResult = (await exec(shellCommon)) as SmartFocusIOResult;
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+}
+
+export const getAutoStartMiuiCursorStyleType = (): Promise<string> => {
+	const shellCommon = `grep 'is_auto_start_miui_cursor_style_type=' /data/adb/MIUI_MagicWindow+/config.prop | awk -F'=' '{print $2}'`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`3`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const removeAutoStartMiuiCursorStyleType = (): Promise<string> => {
+	const shellCommon = `sed -i '/^is_auto_start_miui_cursor_style_type=/d' //data/adb/MIUI_MagicWindow+/config.prop && echo "Remove is_auto_start_miui_cursor_style_type successfully." || echo "Remove is_auto_start_miui_cursor_style_type failed."`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`Remove is_auto_start_miui_cursor_style_type successfully.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const addAutoStartMiuiCursorStyleType = (type: miuiCursorStyleType): Promise<string> => {
+	const shellCommon = `grep -q '^is_auto_start_miui_cursor_style_type=' /data/adb/MIUI_MagicWindow+/config.prop || (echo "is_auto_start_miui_cursor_style_type=${type}" | tee -a /data/adb/MIUI_MagicWindow+/config.prop > /dev/null && echo "Command executed successfully." || echo "Command failed.")`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`Command executed successfully.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : stdout === 'Command executed successfully.' ? resolve(stdout) : reject(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};

@@ -65,9 +65,6 @@ const { message, modal } = createDiscreteApi(['message', 'modal'], {
 const gameMode = useGameMode();
 const fontStore = useFontStore();
 const amktiaoHook = useAmktiao();
-const handleSmartFocusIOChange = (value: boolean) => {
-	message.info('功能尚未上线，无任何实际效果，请等待后续更新！');
-};
 const rhythmModeOptions = [
 	{
 		label: '跟随系统',
@@ -249,7 +246,7 @@ const changeShamikoMode = async (value: boolean) => {
 			});
 		});
 };
-const getAppDownload = async (title: string, url: string, type: 'system' | 'revision' | 'original') => {
+const getAppDownload = async (title: string, url: string, type: 'system' | 'revision' | 'original' | 'magisk') => {
 	modal.create({
 		title: `获取${title}`,
 		type: 'info',
@@ -262,6 +259,7 @@ const getAppDownload = async (title: string, url: string, type: 'system' | 'revi
 						<span>（Tips: 系统应用无法通过小米自带的应用包管理器安装，请通过MT管理器安装！）</span>
 					)}
 					{type === 'revision' && <span>（Tips: 修改版需搭配核心破解并通过MT管理器安装）</span>}
+					{type === 'magisk' && <span>（Tips: Magisk模块请通过ROOT管理器进行安装）</span>}
 				</p>
 				<p>下载地址:</p>
 				<p>{url}</p>
@@ -679,6 +677,49 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							</n-alert>
 						</dd>
 					</div>
+					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+						<dt
+							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`"
+							v-if="deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 1"
+							>智能IO调度</dt
+						>
+						<dd
+							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
+							<n-tag v-if="deviceStore.smartFocusIO === 'on'" type="success">已启用智能IO调度</n-tag>
+							<n-tag v-else type="info">已启用系统默认调度</n-tag>
+							<n-alert
+								class="mt-5"
+								v-if="
+									deviceStore.deviceInfo.socModel === 'SM8475' &&
+									deviceStore.androidTargetSdk &&
+									deviceStore.androidTargetSdk >= 34 &&
+									deviceStore.smartFocusIO !== 'on'
+								"
+								type="warning"
+								:show-icon="false"
+								:bordered="false">
+								<p
+									>您当前未启用「智能IO调度」，由于小米「磁盘IO调度」BUG，骁龙8+Gen1机型存在IO调度异常的问题，容易导致系统卡顿或者无响应，您可以通过安装「小米平板系统功能补全模块」来启用「智能IO调度」，提升系统IO性能体验。</p
+								>
+								<n-button
+									class="mt-2"
+									strong
+									size="small"
+									secondary
+									type="warning"
+									@click="
+										() =>
+											getAppDownload(
+												'小米平板系统功能补全模块',
+												'https://caiyun.139.com/m/i?135CmUuWuqGsk',
+												'original',
+											)
+									"
+									>获取小米平板系统功能补全模块</n-button
+								>
+							</n-alert>
+						</dd>
+					</div>
 					<div v-if="deviceStore.deviceName" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
@@ -992,28 +1033,29 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 										@click="() => MIUIContentExtensionHook.fix()">
 										传送门异常修复
 									</n-button>
-									移除「游戏工具箱」内的「传送门」</p>
-								<p
-								 class="mt-5"
+									移除「游戏工具箱」内的「传送门」</p
+								>
+								<p class="mt-5"
 									>由于小米「传送门」存在「应用黑名单」不定期重置的BUG，您可以通过
 									<n-dropdown
-								size="large"
-								trigger="click"
-								:options="[
-									{ label: '应用黑名单固化', key: 'onlyRead' },
-									{ label: '解除应用黑名单固化', key: 'readAndWrite' },
-								]"
-								@select="(key: 'onlyRead' | 'readAndWrite') => { key === 'onlyRead' ? MIUIContentExtensionHook.setAuthIsOnlyRead() : MIUIContentExtensionHook.setAuthIsReadAndWrite() }">
-								<n-button
-									size="small"
-									type="info"
-									color="#8a2be2"
-									secondary
-									:loading="deviceStore.loading">
-									应用黑名单固化管理
-								</n-button>
-							</n-dropdown>
-									来固化「应用黑名单」的权限，避免被系统重置。</p>
+										size="large"
+										trigger="click"
+										:options="[
+											{ label: '应用黑名单固化', key: 'onlyRead' },
+											{ label: '解除应用黑名单固化', key: 'readAndWrite' },
+										]"
+										@select="(key: 'onlyRead' | 'readAndWrite') => { key === 'onlyRead' ? MIUIContentExtensionHook.setAuthIsOnlyRead() : MIUIContentExtensionHook.setAuthIsReadAndWrite() }">
+										<n-button
+											size="small"
+											type="info"
+											color="#8a2be2"
+											secondary
+											:loading="deviceStore.loading">
+											应用黑名单固化管理
+										</n-button>
+									</n-dropdown>
+									来固化「应用黑名单」的权限，避免被系统重置。</p
+								>
 							</n-alert>
 						</dd>
 					</div>
@@ -1259,6 +1301,23 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 									{{ (miuiCursorStyleHook.currentMiuiCursorStyleType.value === 0 && '空心圆') || '' }}
 								</n-button>
 							</n-dropdown>
+							<n-alert class="mt-5" type="info" :show-icon="false" :bordered="false">
+								<div
+									>
+									<p>由于小米BUG，部分系统存在开机后「鼠标光标样式」被异常重置的问题，模块提供「鼠标光标样式开机自配置」来解决这个问题，开启后每次开机会被配置为指定的「鼠标光标样式」，系统设置内的修改会在重启后失效。</p>
+									<n-switch
+										@update:value="(value: boolean) => miuiCursorStyleHook.changeAutoStartMiuiCursorStyleType(value)"
+										:rail-style="railStyle"
+										class="mt-5"
+										:value="
+											miuiCursorStyleHook.currentAutoStartMiuiCursorStyleType.value ? true : false
+										"
+										:loading="deviceStore.loading">
+										<template #checked>已启用开机自配置</template>
+										<template #unchecked>未启用开机自配置</template>
+									</n-switch>
+									</div>
+							</n-alert>
 						</dd>
 					</div>
 					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
@@ -2066,12 +2125,12 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
 							<div
 								class="mb-3 flex"
-								v-for="(item,index) in displayModeRecordHook.supportHDRTypes.value"
+								v-for="(item, index) in displayModeRecordHook.supportHDRTypes.value"
 								:key="index">
-								<p v-if="item === 1" class="mr-3">{{ 'HLG'  }}</p>
-								<p v-if="item === 2" class="mr-3">{{ 'HDR10'  }}</p>
-								<p v-if="item === 3" class="mr-3">{{ 'HDR10+'  }}</p>
-								<p v-if="item === 4" class="mr-3">{{ 'Dolby Vision'  }}</p>
+								<p v-if="item === 1" class="mr-3">{{ 'HLG' }}</p>
+								<p v-if="item === 2" class="mr-3">{{ 'HDR10' }}</p>
+								<p v-if="item === 3" class="mr-3">{{ 'HDR10+' }}</p>
+								<p v-if="item === 4" class="mr-3">{{ 'Dolby Vision' }}</p>
 							</div>
 						</dd>
 					</div>
@@ -2295,26 +2354,6 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							</n-alert>
 						</dd>
 					</div>
-
-					<!-- <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-            <dt :class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">游戏显示布局</dt>
-            <dd :class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">启用(*Android 15+ 需额外搭配修改版手机/平板管家)</dd>
-          </div>
-          <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-            <dt :class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">智能IO调度</dt>
-            <dd :class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-              <n-switch :rail-style="railStyle" @update:value="handleSmartFocusIOChange" v-if="deviceStore.smartFocusIO"
-                checked-value="on" unchecked-value="off">
-                <template #checked>
-                  已启用智能IO调度
-                </template>
-                <template #unchecked>
-                  使用系统默认调度
-                </template>
-              </n-switch>
-              <div v-else>设备不支持</div>
-            </dd>
-          </div> -->
 					<!-- <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
             <dt :class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">Salary expectation</dt>
             <dd :class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">$120,000</dd>
