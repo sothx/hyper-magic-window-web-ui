@@ -194,6 +194,18 @@
             <n-button class="mt-2" strong secondary type="error" @click="() => getAppDownload('小米录音机', 'https://caiyun.139.com/m/i?135Ce9CYAY0YN', 'revision')">获取小米录音机</n-button>
             </n-alert>
           </div>
+          <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="deviceStore.deviceCharacteristics === 'tablet'">
+            <n-alert
+              title="QQ音乐 HD"
+              type="success"
+            >
+            <template #icon>
+              <img src="/images/apps/qq_music.jpg" />
+            </template>
+              <p>QQ 音乐 HD 6.0，全新版本已增加对平板的大屏适配！</p>
+              <n-button class="mt-2" strong secondary type="success" @click="() => getAppDownload('QQ音乐 HD', 'https://caiyun.139.com/m/i?135CmomGWJWB1', 'original')">获取QQ音乐 HD</n-button>
+            </n-alert>
+          </div>
           <div class="px-4 flex sm:grid sm:px-0 mt-5">
             <n-alert
               title="StarNote"

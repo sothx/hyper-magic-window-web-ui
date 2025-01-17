@@ -213,6 +213,9 @@ const topApplicationList = [
     'com.gstarmc.android', // CAD看图王
     'com.quickview3d', // 快视3D看图
     'com.aihuishou.opt', // 拍机堂
+    'com.duolingo', // 多邻国
+    'cn.etouch.ecalendar.life', // 微鲤万年历
+    'cn.etouch.ecalendar', // 中华万年历
 ]
 
 
