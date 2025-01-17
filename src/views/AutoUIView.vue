@@ -740,7 +740,7 @@ const modeMap = reactive({
 	CUSTOM_VIEW_POLICY: {
 		type: '',
 		color: '#8a2be2',
-		name: '精确适配',
+		name: '详细适配',
 		onClick(row: AutoUIMergeRuleItem, index: number) {},
 	},
 });

@@ -75,7 +75,7 @@ configProviderProps: configProviderPropsRef
       rule: '*:6',
     },
     {
-      label: '精确适配',
+      label: '详细适配',
       key: 'CUSTOM_VIEW_POLICY',
     },
   ];
