@@ -22,6 +22,7 @@ import { useHideGestureLine } from '@/hooks/useHideGestureLine';
 import { useInVisibleMode } from '@/hooks/useInVisibleMode';
 import { useMIUIContentExtension } from '@/hooks/useMIUIContentExtension';
 import { useDisabledOS2SystemAppOptimize } from '@/hooks/useDisabledOS2SystemAppOptimize';
+import { useMiuiExtmDmOpt } from '@/hooks/useMiuiExtmDmOpt';
 import {
 	BoltIcon,
 	CpuChipIcon,
@@ -55,6 +56,7 @@ const miuiCursorStyleHook = useMiuiCursorStyle();
 const mouseGestureNaturalscrollHook = useMouseGestureNaturalscroll();
 const pointerSpeedHook = usePointerSpeed();
 const disabledOS2SystemAppOptimizeHook = useDisabledOS2SystemAppOptimize();
+const miuiExtmDmOptHook = useMiuiExtmDmOpt();
 const { activateABTest, loading: activateABTestLoading } = useABTestActivation();
 const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
 	theme: deviceStore.isDarkMode ? darkTheme : lightTheme,
@@ -717,6 +719,22 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 									"
 									>获取小米平板系统功能补全模块</n-button
 								>
+							</n-alert>
+						</dd>
+					</div>
+					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+						<dt
+							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`"
+							v-if="deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2"
+							>dm设备映射器</dt
+						>
+						<dd
+							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
+							<div class="mb-3"><n-tag type="success">已回写: {{  miuiExtmDmOptHook.hasWriteBack  }} MB</n-tag></div>
+							<div class="mb-3"><n-tag type="info">总读取: {{  miuiExtmDmOptHook.totalRead  }} MB</n-tag></div>
+							<div><n-tag type="warning">总回写: {{  miuiExtmDmOptHook.totalWriteBack  }} MB</n-tag></div>
+							<n-alert class="mt-5" type="warning" :show-icon="false" :bordered="false">
+								<p>该功能依赖「内存扩展」，请确保已经开启「内存扩展」</p>
 							</n-alert>
 						</dd>
 					</div>

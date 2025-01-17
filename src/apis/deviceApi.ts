@@ -1953,3 +1953,63 @@ export const addAutoStartMiuiCursorStyleType = (type: miuiCursorStyleType): Prom
 		shellCommon,
 	);
 };
+
+export const getMiuiExtmDmOptEnable = (): Promise<string> => {
+	const shellCommon = `getprop persist.miui.extm.dm_opt.enable`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`true`);
+			} else {
+				const { errno, stdout, stderr }: SmartFocusIOResult = (await exec(shellCommon)) as SmartFocusIOResult;
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+}
+
+export const getMiuiExtmDmOptTotalWriteBack = (): Promise<string> => {
+	const shellCommon = `echo $(awk '{print int($3 * 4096 / 1024 / 1024)}' /sys/block/zram0/bd_stat)`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`5653`);
+			} else {
+				const { errno, stdout, stderr }: SmartFocusIOResult = (await exec(shellCommon)) as SmartFocusIOResult;
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+}
+
+export const getMiuiExtmDmOptTotalRead = (): Promise<string> => {
+	const shellCommon = `echo $(awk '{print int($2 * 4096 / 1024 / 1024)}' /sys/block/zram0/bd_stat)`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`1503`);
+			} else {
+				const { errno, stdout, stderr }: SmartFocusIOResult = (await exec(shellCommon)) as SmartFocusIOResult;
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+}
+
+export const getMiuiExtmDmOptHasWriteBack = (): Promise<string> => {
+	const shellCommon = `echo $(awk '{print int($1 * 4096 / 1024 / 1024)}' /sys/block/zram0/bd_stat)`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`2047`);
+			} else {
+				const { errno, stdout, stderr }: SmartFocusIOResult = (await exec(shellCommon)) as SmartFocusIOResult;
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+}
