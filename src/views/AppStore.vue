@@ -80,7 +80,7 @@
           </div>
           <div v-if="deviceStore.deviceCharacteristics === 'tablet'" class="px-4 flex sm:grid sm:px-0 mt-5">
             <n-alert
-              title="小米平板系统应用补全 - 传送门/悬浮球"
+              title="小米平板系统应用补全模块 - 传送门/悬浮球"
               type="info"
             >
             <template #icon>
@@ -91,6 +91,36 @@
               <p>兼容性:  MIUI14 / Hyper OS 1 / Hyper OS 2</p>
               <p>注意事项:  Magisk模块请通过对应的 ROOT管理器 进行安装！传送门管理入口位于[模块设置]，悬浮球管理入口位于[系统设置-更多设置-悬浮球]。</p>
               <n-button class="mt-2" strong secondary type="info" @click="() => getAppDownload('传送门/悬浮球补全模块', 'https://caiyun.139.com/m/i?135Ce8FLLcLm8', 'magisk')">获取传送门/悬浮球补全模块</n-button>
+            </n-alert>
+          </div>
+          <div class="px-4 flex sm:grid sm:px-0 mt-5">
+            <n-alert
+              title="小米平板系统功能补全模块"
+              type="success"
+            >
+            <template #icon>
+              <img src="/images/apps/magisk.webp" />
+            </template>
+              <p>支持对小米平板/小米折叠屏设备进行以下功能的补全:</p>
+              <ul>
+                <li class="ml-3">ZRAM:RAM=1:1优化(Hyper OS 2+，仅部分机型支持)</li>
+                <li class="ml-3">启用dm设备映射器(Hyper OS 2+，仅部分机型支持)</li>
+                <li class="ml-3">解除GMS区域限制</li>
+                <li class="ml-3">PC级WPS字体目录自动创建(仅小米/红米平板机型支持)</li>
+                <li class="ml-3">解锁熄屏挂机/熄屏听剧</li>
+                <li class="ml-3">解锁视频工具箱智能刷新率</li>
+                <li class="ml-3">解锁节律护眼(Hyper OS 1+，仅部分机型支持)</li>
+                <li class="ml-3">开启屏幕旋转建议提示按钮</li>
+                <li class="ml-3">开启极致模式</li>
+                <li class="ml-3">开启进游戏三倍速(部分腾讯系游戏)</li>
+                <li class="ml-3">解锁游戏工具箱狂暴引擎UI界面(仅UI效果)</li>
+                <li class="ml-3">解锁游戏音质优化开关</li>
+                <li class="ml-3">隐藏/优化手势提示线(部分机型效果可能不佳)</li>
+                <li class="ml-3">开启平滑圆角</li>
+                <li class="ml-3">开启高级材质(最高支持到高级材质3.0，部分被阉割了大文件夹模糊的机型，可以自行通过Hyper Ceiler强制启用桌面大文件夹的模糊)</li>
+              </ul>
+              <p>注意事项: Magisk模块请通过对应的 ROOT管理器 进行安装！高级材质在[显示与亮度-高级材质]，极致模式在[开发者选项-极致模式]。</p>
+              <n-button class="mt-2" strong secondary type="success" @click="() => getAppDownload('小米平板系统功能补全模块', 'https://caiyun.139.com/m/i?135Ce7Jx2e5nZ', 'magisk')">获取小米平板系统功能补全模块</n-button>
             </n-alert>
           </div>
           <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="deviceStore.MIOSVersion && deviceStore.MIOSVersion === 1 && deviceStore.deviceCharacteristics === 'tablet'">
