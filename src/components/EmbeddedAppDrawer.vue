@@ -170,6 +170,49 @@ const handleTextAreaBlur = (ref: string) => {
 	}
 };
 
+const changeSkipSelfAdaptive = async (value: boolean) => {
+	if (value && deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2) {
+		const [changeSkipSelfAdaptiveCancel,changeSkipSelfAdaptiveSuccess] = await $to(
+			new Promise<string>((resolve, reject) => {
+				modal.create({
+					title: '确认跳过应用自适配声明吗？',
+					type: 'warning',
+					preset: 'dialog',
+					content: () => {
+						return (
+								<p>
+									由于小米的BUG，部分应用即使配置了横屏，在系统重启后仍然会丢失横屏配置，开启此项可以保证该应用的横屏规则不会丢失，但每次设备重启或修改模块规则，该应用都将被强制重启（非特殊情况强烈不推荐开启）确定要继续吗？
+								</p>
+							);
+					},
+					positiveText: '确定继续',
+					negativeText: '我再想想',
+					onPositiveClick: () => {
+						resolve('positiveClick');
+					},
+					onNegativeClick: () => {
+						reject('negativeClick');
+					},
+				});
+			}),
+		);
+		if (changeSkipSelfAdaptiveCancel) {
+			return;
+		}
+		if (changeSkipSelfAdaptiveSuccess) {
+			modal.create({
+				title: '功能尚在开发中',
+				type: 'info',
+				preset: 'dialog',
+				content: () => '功能尚未上线，请期待后续更新'
+			})
+			return;
+		}
+	}
+
+	currentSkipSelfAdaptive.value = value;
+}
+
 const embeddedAppDrawer = ref({
 	openDrawer: (initialParams?: EmbeddedMergeRuleItem): Promise<EmbeddedAppDrawerSubmitResult> => {
 		return new Promise((resolve, reject) => {
@@ -627,24 +670,6 @@ defineExpose({
 								placeholder="请输入横屏规则" />
 						</n-input-group>
 					</n-card>
-					<n-card
-						class=""
-						v-if="!deviceStore.MIOSVersion || deviceStore.MIOSVersion < 2"
-						:bordered="false"
-						title="跳过应用自适配声明"
-						size="small">
-						<div class="mb-4">
-							<n-tag :bordered="false" type="success">
-								适用于即使设置了
-								<span class="font-bold">横屏规则</span>
-								仍无法横屏的应用
-							</n-tag>
-						</div>
-						<n-switch :rail-style="railStyle" v-model:value="currentSkipSelfAdaptive" size="large">
-							<template #checked>跳过自适配声明</template>
-							<template #unchecked>不跳过自适配声明</template>
-						</n-switch>
-					</n-card>
 					<n-card :bordered="false" title="平行窗口滑动条" size="small">
 						<div class="mb-4">
 							<n-tag :bordered="false" type="success">
@@ -669,6 +694,23 @@ defineExpose({
 						<n-switch :rail-style="railStyle" v-model:value="currentSupportFullSize" size="large">
 							<template #checked>平行窗口可滑动至全屏</template>
 							<template #unchecked>平行窗口不可滑动至全屏</template>
+						</n-switch>
+					</n-card>
+					<n-card
+						class=""
+						:bordered="false"
+						title="跳过应用自适配声明"
+						size="small">
+						<div class="mb-4">
+							<n-tag :bordered="false" type="success">
+								适用于即使设置了
+								<span class="font-bold">横屏规则</span>
+								仍无法横屏的应用
+							</n-tag>
+						</div>
+						<n-switch :rail-style="railStyle" @update:value="(value: boolean) => changeSkipSelfAdaptive(value)" :value="currentSkipSelfAdaptive" size="large">
+							<template #checked>跳过自适配声明</template>
+							<template #unchecked>不跳过自适配声明</template>
 						</n-switch>
 					</n-card>
 				</n-tab-pane>
