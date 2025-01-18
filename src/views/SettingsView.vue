@@ -735,6 +735,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							<div><n-tag type="warning">总回写: {{  miuiExtmDmOptHook.totalWriteBack  }} MB</n-tag></div>
 							<n-alert class="mt-5" type="warning" :show-icon="false" :bordered="false">
 								<p>通常用于将设备上的冷数据压缩并迁移到磁盘上，是基于「内存扩展」的回写块，该功能依赖「内存扩展」，请确保已经开启「内存扩展」</p>
+								<p>初始状态下显示 0 MB是正常现象，请持续使用一段时间再观察是否有变化</p>
 							</n-alert>
 						</dd>
 					</div>

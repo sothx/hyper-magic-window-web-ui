@@ -54,3 +54,9 @@ body {
 		color: #fff;
 	}
 }
+
+@media (prefers-color-scheme: dark) {
+	body {
+		background-color: #18181A;
+	}
+}

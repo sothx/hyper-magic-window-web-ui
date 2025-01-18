@@ -132,6 +132,7 @@ export const useDeviceStore = defineStore(
 			MIUIContentExt: false,
 			lowWebViewVersion: false,
 			patchModeAlert: false,
+			needInstalledKsuWebUiApk: false
 		});
 		const showThirdPartySetting = reactive({
 			amktiaoROMInterface: false

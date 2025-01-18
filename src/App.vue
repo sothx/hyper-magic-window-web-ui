@@ -135,6 +135,25 @@ onMounted(async () => {
 				},
 			});
 		}
+		if (['KernelSU','APatch'].includes(deviceStore.currentRootManager) && !deviceStore.skipConfirm.needInstalledKsuWebUiApk) {
+			modal.create({
+				title: 'Web UI 升级提醒',
+				type: 'warning',
+				preset: 'dialog',
+				content: () => <div>
+					<p>KernelSU/APatch 自带的 Web UI 存在部分问题，可能导致模块功能显示不全，建议可以安装波奇大佬提取制作的 「KsuWebUI」，取代自带的 Web UI，这不是必选项，您可以选择忽略此条建议，但可能导致模块部分功能无法正常工作。</p>
+					<p>下载地址:https://caiyun.139.com/m/i?135Ce7C7omgXj</p>
+				</div>,
+				positiveText: '复制下载链接到剪切板',
+				negativeText: '已安装，不再提醒',
+				onPositiveClick: () => {
+					navigator.clipboard.writeText(`https://caiyun.139.com/m/i?135Ce7C7omgXj`)
+				},
+				onNegativeClick: () => {
+						deviceStore.skipConfirm.needInstalledKsuWebUiApk = true;
+				},
+			});
+		}
 		embeddedStore.initDefault();
 		autoUIStore.initDefault();
 		gameBoosterStore.initDefault();
@@ -159,7 +178,7 @@ onMounted(async () => {
     </div>
   </header> -->
 	<div class="app-container h-full" :class="`${deviceStore.isDarkMode ? 'bg-zinc-900 theme-dark-mode' : 'bg-white'}`">
-		<n-config-provider :theme="deviceStore.isDarkMode ? darkTheme : undefined">
+		<n-config-provider :theme="deviceStore.isDarkMode ? darkTheme : lightTheme">
 			<Sidebar>
 				<RouterView />
 			</Sidebar>
