@@ -299,6 +299,19 @@
           </div>
           <div class="px-4 flex sm:grid sm:px-0 mt-5">
             <n-alert
+              title="机核"
+              type="default"
+            >
+            <template #icon>
+              <img src="/images/apps/gamecores.webp" />
+            </template>
+            <p>次世代游戏文化社区，机核从2010年开始一直致力于分享游戏玩家的生活，以及深入探讨游戏相关的文化。</p>
+            <p>完美横屏应用计划已为机核通过应用横屏布局适配大屏，欢迎体验！</p>
+              <n-button class="mt-2" strong secondary type="default" @click="() => getAppDownload('机核', 'https://caiyun.139.com/m/i?135CmUfDZ6yV8', 'original')">获取机核</n-button>
+            </n-alert>
+          </div>
+          <div class="px-4 flex sm:grid sm:px-0 mt-5">
+            <n-alert
               title="Redmi Pad Pro X 哈利·波特 联动主题"
               type="warning"
             >
@@ -322,7 +335,21 @@
             </template>
             <p>生活不止眼前的苟且，还有诗和远方的田野。</p>
             <p>有诗，你的口袋诗库，这里收录了数十万首传统诗词与现代诗词，每日自动推荐最适合您的作品，让您在忙碌的生活中也能轻松欣赏诗词之美。我们希望，所有渴望被触碰心灵的、真实而纯粹的灵魂，在诗歌里获得片刻自由，远方未远，诗歌正好，让我们一起拥抱诗意生活。</p>
+            <p>完美横屏应用计划已为有诗通过应用横屏布局适配大屏，欢迎体验！</p>
               <n-button class="mt-2" strong secondary type="default" @click="() => getAppDownload('有诗', 'https://caiyun.139.com/m/i?135CmCz8VCpu0', 'original')">获取有诗</n-button>
+            </n-alert>
+          </div>
+          <div class="px-4 flex sm:grid sm:px-0 mt-5">
+            <n-alert
+              title="少数派"
+              type="error"
+            >
+            <template #icon>
+              <img src="/images/apps/sspai.png" />
+            </template>
+            <p>高效工作，品质生活，少数派是一个帮你发现优质 App 和数字产品、学习有效方法论，从而大大提高效率和生活品质的内容平台。</p>
+            <p>完美横屏应用计划已为少数派通过应用横屏布局和第三方应用横屏优化适配大屏，欢迎体验！</p>
+              <n-button class="mt-2" strong secondary type="error" @click="() => getAppDownload('少数派', 'https://caiyun.139.com/m/i?135Clqi1SPjAp', 'original')">获取少数派</n-button>
             </n-alert>
           </div>
         </dl>
