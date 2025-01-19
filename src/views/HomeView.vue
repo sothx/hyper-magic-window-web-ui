@@ -51,7 +51,7 @@ import {
 } from '@heroicons/vue/24/solid';
 import { arrayBufferToBase64, base64ToArrayBuffer } from '@/utils/format';
 import { findBase64InString, renderApplicationName } from '@/utils/common';
-import { getAppModeCode, getSettingEnableMode, getSettingMode } from '@/utils/embeddedFun';
+import { getAppMode, getAppModeCode, getSettingEnableMode, getSettingMode, thirdPartyAppOptimizeJSONFormatToProp, thirdPartyAppOptimizeJSONFormatToRunnerShell } from '@/utils/embeddedFun';
 import { cloneDeep, isEqual } from 'lodash-es';
 type EmbeddedAppDrawerInstance = InstanceType<typeof EmbeddedAppDrawer>;
 type SearchKeyWordInputInstance = InstanceType<typeof NInput>;
@@ -240,7 +240,7 @@ const importShareRule = async () => {
 				return;
 			}
 			// Android 15 以上机型处理逻辑
-			if (importRuleContent.comp === 2 && (!deviceStore.MIOSVersion || deviceStore.MIOSVersion === 1)) {
+			if (importRuleContent.comp === 2 && (!deviceStore.MIOSVersion || deviceStore.MIOSVersion < 2)) {
 				modal.create({
 					title: '导入分享规则失败',
 					type: 'error',
@@ -251,7 +251,7 @@ const importShareRule = async () => {
 							<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
 								自定义规则
 							</span>{' '}
-							仅兼容Hyper OS 2.0的小米机型。
+							仅兼容Hyper OS 2+的小米机型。
 						</p>
 					),
 					negativeText: '确定',
@@ -262,6 +262,15 @@ const importShareRule = async () => {
 			embeddedStore.customConfigEmbeddedRulesList[importRuleContent.name] = importRuleContent.em;
 			embeddedStore.customConfigFixedOrientationList[importRuleContent.name] = importRuleContent.fo;
 			if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2) {
+				if (importRuleContent.thirdPartyAppOptimize) {
+					embeddedStore.customThirdPartyAppOptimizeConfig[importRuleContent.name] = getAppModeCode(importRuleContent.mode)
+				} else {
+					if (embeddedStore.sourceThirdPartyAppOptimizeConfig[importRuleContent.name]) {
+						embeddedStore.customThirdPartyAppOptimizeConfig[importRuleContent.name] = -1;
+					} else {
+						delete embeddedStore.customThirdPartyAppOptimizeConfig[importRuleContent.name]
+					}
+				}
 				embeddedStore.customConfigEmbeddedSettingConfig[importRuleContent.name] = {
 					name: importRuleContent.name,
 					...getSettingEnableMode(
@@ -278,6 +287,10 @@ const importShareRule = async () => {
 			}
 			const [submitUpdateEmbeddedAppErr, submitUpdateEmbeddedAppRes] = await $to(
 				embeddedApi.updateEmbeddedApp({
+					...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 ? {
+						customThirdPartyAppOptimizeConfigProp: thirdPartyAppOptimizeJSONFormatToProp(embeddedStore.customThirdPartyAppOptimizeConfig),
+						thirdPartyAppOptimizeConfigRunnerShell: thirdPartyAppOptimizeJSONFormatToRunnerShell(embeddedStore.mergeThirdPartyAppOptimizeConfig)
+					} : undefined),
 					isPatchMode: embeddedStore.isPatchMode,
 					patchEmbeddedRulesListXML: xmlFormat.objectToXML(
 						embeddedStore.patchEmbeddedRulesList,
@@ -439,6 +452,10 @@ const reloadPatchModeConfigList = async () => {
 	reloadPatchModeConfigLoading.value = true;
 	const [submitUpdateEmbeddedAppErr, submitUpdateEmbeddedAppRes] = await $to(
 		embeddedApi.updateEmbeddedApp({
+			...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 ? {
+				customThirdPartyAppOptimizeConfigProp: thirdPartyAppOptimizeJSONFormatToProp(embeddedStore.customThirdPartyAppOptimizeConfig),
+				thirdPartyAppOptimizeConfigRunnerShell: thirdPartyAppOptimizeJSONFormatToRunnerShell(embeddedStore.mergeThirdPartyAppOptimizeConfig)
+			} : undefined),
 			isPatchMode: embeddedStore.isPatchMode,
 			patchEmbeddedRulesListXML: xmlFormat.objectToXML(
 				embeddedStore.patchEmbeddedRulesList,
@@ -533,6 +550,17 @@ const openAddEmbeddedApp = async () => {
 		if (addEmbeddedAppCancel) {
 			console.log('操作取消:', addEmbeddedAppCancel);
 		} else {
+			if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2) {
+				if (addEmbeddedAppRes.thirdPartyAppOptimize) {
+					embeddedStore.customThirdPartyAppOptimizeConfig[addEmbeddedAppRes.name] = getAppModeCode(addEmbeddedAppRes.settingMode)
+				} else {
+					if (embeddedStore.sourceThirdPartyAppOptimizeConfig[addEmbeddedAppRes.name]) {
+						embeddedStore.customThirdPartyAppOptimizeConfig[addEmbeddedAppRes.name] = -1;
+					} else {
+						delete embeddedStore.customThirdPartyAppOptimizeConfig[addEmbeddedAppRes.name]
+					}
+				}
+			}
 			if (addEmbeddedAppRes.settingMode === 'fullScreen') {
 				if (addEmbeddedAppRes.modePayload.fullRule) {
 					embeddedStore.customConfigEmbeddedRulesList[addEmbeddedAppRes.name] = {
@@ -601,6 +629,10 @@ const openAddEmbeddedApp = async () => {
 			}
 			const [submitAddEmbeddedAppErr, submitAddEmbeddedAppRes] = await $to(
 				embeddedApi.updateEmbeddedApp({
+					...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 ? {
+						customThirdPartyAppOptimizeConfigProp: thirdPartyAppOptimizeJSONFormatToProp(embeddedStore.customThirdPartyAppOptimizeConfig),
+						thirdPartyAppOptimizeConfigRunnerShell: thirdPartyAppOptimizeJSONFormatToRunnerShell(embeddedStore.mergeThirdPartyAppOptimizeConfig)
+					} : undefined),
 					isPatchMode: embeddedStore.isPatchMode,
 					patchEmbeddedRulesListXML: xmlFormat.objectToXML(
 						embeddedStore.patchEmbeddedRulesList,
@@ -714,11 +746,21 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 		return;
 	}
 	if (updateEmbeddedApp.value) {
-		logsStore.info(JSON.stringify(row), 'rowww');
 		const [updateEmbeddedAppCancel, updateEmbeddedAppRes] = await $to(updateEmbeddedApp.value.openDrawer(row));
 		if (updateEmbeddedAppCancel) {
 			console.log('操作取消:', updateEmbeddedAppCancel);
 		} else {
+			if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2) {
+				if (updateEmbeddedAppRes.thirdPartyAppOptimize) {
+					embeddedStore.customThirdPartyAppOptimizeConfig[updateEmbeddedAppRes.name] = getAppModeCode(updateEmbeddedAppRes.settingMode)
+				} else {
+					if (embeddedStore.sourceThirdPartyAppOptimizeConfig[updateEmbeddedAppRes.name]) {
+						embeddedStore.customThirdPartyAppOptimizeConfig[updateEmbeddedAppRes.name] = -1;
+					} else {
+						delete embeddedStore.customThirdPartyAppOptimizeConfig[updateEmbeddedAppRes.name]
+					}
+				}
+			}
 			if (updateEmbeddedAppRes.settingMode === 'fullScreen') {
 				const { moduleEmbeddedRules, currentEmbeddedRules, moduleFixedOrientation, currentFixedOrientation } =
 					useEmbedded(row.name);
@@ -1014,6 +1056,10 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 			}
 			const [submitUpdateEmbeddedAppErr, submitUpdateEmbeddedAppRes] = await $to(
 				embeddedApi.updateEmbeddedApp({
+					...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 ? {
+						customThirdPartyAppOptimizeConfigProp: thirdPartyAppOptimizeJSONFormatToProp(embeddedStore.customThirdPartyAppOptimizeConfig),
+						thirdPartyAppOptimizeConfigRunnerShell: thirdPartyAppOptimizeJSONFormatToRunnerShell(embeddedStore.mergeThirdPartyAppOptimizeConfig)
+					} : undefined),
 					isPatchMode: embeddedStore.isPatchMode,
 					patchEmbeddedRulesListXML: xmlFormat.objectToXML(
 						embeddedStore.patchEmbeddedRulesList,
@@ -1160,8 +1206,16 @@ const handleCustomRuleDropdown = async (
 				if (embeddedStore.customConfigEmbeddedSettingConfig[row.name]) {
 					delete embeddedStore.customConfigEmbeddedSettingConfig[row.name];
 				}
+				if (embeddedStore.customThirdPartyAppOptimizeConfig[row.name]) {
+					delete embeddedStore.customThirdPartyAppOptimizeConfig[row.name];
+				}
+
 				const [submitUpdateEmbeddedAppErr, submitUpdateEmbeddedAppRes] = await $to(
 					embeddedApi.updateEmbeddedApp({
+						...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 ? {
+							customThirdPartyAppOptimizeConfigProp: thirdPartyAppOptimizeJSONFormatToProp(embeddedStore.customThirdPartyAppOptimizeConfig),
+							thirdPartyAppOptimizeConfigRunnerShell: thirdPartyAppOptimizeJSONFormatToRunnerShell(embeddedStore.mergeThirdPartyAppOptimizeConfig)
+						} : undefined),
 						isPatchMode: embeddedStore.isPatchMode,
 						patchEmbeddedRulesListXML: xmlFormat.objectToXML(
 							embeddedStore.patchEmbeddedRulesList,
@@ -1271,6 +1325,9 @@ const handleCustomRuleDropdown = async (
 			type: 'embedded',
 			device: deviceStore.deviceCharacteristics === 'tablet' ? 'pad' : 'fold',
 			mode: row.settingMode,
+			...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 ? {
+				thirdPartyAppOptimize: row.thirdPartyAppOptimize
+			} : undefined)
 		};
 		const jsonString = JSON.stringify(shareContent);
 		const deflate = pako.deflate(jsonString, {

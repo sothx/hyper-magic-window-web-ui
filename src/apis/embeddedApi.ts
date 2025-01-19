@@ -199,6 +199,40 @@ export const getCustomConfigEmbeddedSettingConfig = (): Promise<string> => {
 	);
 };
 
+export const getSourceThirdPartyAppOptimizeConfig = (): Promise<string> => {
+	const shellCommon = `cat /data/adb/modules/MIUI_MagicWindow+/common/source/os2_third_party_app_optimize/third_party_app_optimize.prop`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				const response = await axios.get('/data/origin/third_party_app_optimize.prop');
+				const xmlText = response.data; // 这是 XML 内容
+				resolve(xmlText);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const getCustomThirdPartyAppOptimizeConfig = (): Promise<string> => {
+	const shellCommon = `cat /data/adb/MIUI_MagicWindow+/config/third_party_app_optimize.prop`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				const response = await axios.get('/data/custom/third_party_app_optimize.prop');
+				const xmlText = response.data; // 这是 XML 内容
+				resolve(xmlText);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
 
 
 export const resetApplicationCompat = (packageName: string): Promise<string> => {
@@ -217,6 +251,8 @@ export const resetApplicationCompat = (packageName: string): Promise<string> => 
 
 
 export interface updateEmbeddedAppParams {
+	customThirdPartyAppOptimizeConfigProp?: string;
+	thirdPartyAppOptimizeConfigRunnerShell?: string;
 	isPatchMode: boolean;
 	patchEmbeddedRulesListXML: string;
 	patchFixedOrientationListXML: string;
@@ -268,6 +304,53 @@ export const updateEmbeddedApp = (
 				const errorLogging: updateEmbeddedAppErrorLoggingItem[] = [];
 				const successLogging: updateEmbeddedAppSuccessLoggingItem[] = [];
 				const deviceStore = useDeviceStore();
+				if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2) {
+					if (params.customThirdPartyAppOptimizeConfigProp) {
+						const {
+							errno: PatchEmErrno,
+							stdout: PatchEmStdout,
+							stderr: PatchEmStderr,
+						}: ExecResults = await exec(
+							`echo '${params.customThirdPartyAppOptimizeConfigProp}' > /data/adb/MIUI_MagicWindow+/config/third_party_app_optimize.prop`,
+						);
+						if (PatchEmErrno) {
+							errorLogging.push({
+								type: 'customThirdPartyAppOptimizeConfigProp',
+								name: '[第三方应用横屏优化]第三方应用横屏优化配置文件',
+								message: PatchEmStderr,
+							});
+						} else {
+							successLogging.push({
+								type: 'customThirdPartyAppOptimizeConfigProp',
+								name: '[第三方应用横屏优化]第三方应用横屏优化配置文件',
+								message: '更新成功',
+							});
+						}
+					}
+
+					if (params.thirdPartyAppOptimizeConfigRunnerShell) {
+						const {
+							errno: PatchEmErrno,
+							stdout: PatchEmStdout,
+							stderr: PatchEmStderr,
+						}: ExecResults = await exec(
+							`echo '${params.thirdPartyAppOptimizeConfigRunnerShell}' > /data/adb/MIUI_MagicWindow+/config/third_party_app_optimize_runner.sh`,
+						);
+						if (PatchEmErrno) {
+							errorLogging.push({
+								type: 'thirdPartyAppOptimizeConfigRunnerShell',
+								name: '[第三方应用横屏优化]第三方应用横屏优化运行脚本',
+								message: PatchEmStderr,
+							});
+						} else {
+							successLogging.push({
+								type: 'thirdPartyAppOptimizeConfigRunnerShell',
+								name: '[第三方应用横屏优化]第三方应用横屏优化运行脚本',
+								message: '更新成功',
+							});
+						}
+					}
+				}
 				if (params.isPatchMode) {
 					const {
 						errno: PatchEmErrno,

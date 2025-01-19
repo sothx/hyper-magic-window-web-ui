@@ -14,8 +14,9 @@ import { useDeviceStore } from './device';
 import eventBus from '@/utils/eventBus';
 import { useLogsStore } from './logs';
 import { debounce } from 'lodash-es';
+import { thirdPartyAppOptimizeConfigFormatToJSON } from '@/utils/embeddedFun';
 type ApplicationName = Record<string, string>;
-
+export type ThirdPartyAppOptimizeAppModeType = -1 | 0 | 1 | 2 | 3;
 export const useEmbeddedStore = defineStore(
 	'embedded',
 	() => {
@@ -36,6 +37,27 @@ export const useEmbeddedStore = defineStore(
 		const systemEmbeddedSettingConfig = ref<Record<string, EmbeddedSettingRuleItem>>({});
 		const sourceEmbeddedSettingConfig = ref<Record<string, EmbeddedSettingRuleItem>>({});
 		const customConfigEmbeddedSettingConfig = ref<Record<string, EmbeddedSettingRuleItem>>({});
+		// 第三方应用横屏优化
+		const sourceThirdPartyAppOptimizeConfig = ref<Record<string, ThirdPartyAppOptimizeAppModeType>>({});
+		const customThirdPartyAppOptimizeConfig = ref<Record<string, ThirdPartyAppOptimizeAppModeType>>({});
+		const mergeThirdPartyAppOptimizeConfig = computed(() => {
+			// 合并逻辑
+			const mergedConfig = { ...sourceThirdPartyAppOptimizeConfig.value };
+
+			for (const key in customThirdPartyAppOptimizeConfig.value) {
+				const customValue = customThirdPartyAppOptimizeConfig.value[key];
+
+				if (customValue === -1) {
+					// 如果值为 -1，则移除该键
+					delete mergedConfig[key];
+				} else {
+					// 否则更新或新增值
+					mergedConfig[key] = customValue;
+				}
+			}
+
+			return mergedConfig;
+		});
 		// diff后的平行窗口配置
 		const patchEmbeddedRulesList = computed((): Record<EmbeddedRuleItem['name'], EmbeddedRuleItem> => {
 			const deviceStore = useDeviceStore();
@@ -139,18 +161,25 @@ export const useEmbeddedStore = defineStore(
 			const isFilterInstalledApps = filterInstalledApps.value;
 			const currentSearchValue = searchValue.value;
 			const currentApplicationName = applicationName.value;
+			const currentMergeThirdPartyAppOptimizeConfig = mergeThirdPartyAppOptimizeConfig.value;
 			const installedAppName = deviceStore.installedAppNameList;
 			return cachedMergeRuleList
 				.reduce((result: EmbeddedMergeRuleItem[], item) => {
 					const itemName = item.name.trim().toLowerCase();
-					
+
 					// 先更新 applicationName
-					
+
 					if (installedAppName[item.name] && !item.applicationName) {
 						item.applicationName = installedAppName[item.name];
 					}
 					if (currentApplicationName[item.name] && !item.applicationName) {
 						item.applicationName = currentApplicationName[item.name];
+					}
+
+					if (currentMergeThirdPartyAppOptimizeConfig[item.name]) {
+						item.thirdPartyAppOptimize = true;
+					} else {
+						item.thirdPartyAppOptimize = false;
 					}
 
 					const itemApplicationName = item.applicationName ? item.applicationName.toLowerCase() : '';
@@ -249,6 +278,8 @@ export const useEmbeddedStore = defineStore(
 				embeddedApi.getSourceEmbeddedSettingConfig(),
 				embeddedApi.getSystemEmbeddedSettingConfig(),
 				embeddedApi.getCustomConfigEmbeddedSettingConfig(),
+				embeddedApi.getSourceThirdPartyAppOptimizeConfig(),
+				embeddedApi.getCustomThirdPartyAppOptimizeConfig(),
 			];
 
 			const [
@@ -261,6 +292,8 @@ export const useEmbeddedStore = defineStore(
 				[getSourceEmbeddedSettingConfigErr, getSourceEmbeddedSettingConfigRes],
 				[getSystemEmbeddedSettingConfigErr, getSystemEmbeddedSettingConfigRes],
 				[getCustomConfigEmbeddedSettingConfigErr, getCustomConfigEmbeddedSettingConfigRes],
+				[getSourceThirdPartyAppOptimizeConfigErr, getSourceThirdPartyAppOptimizeConfigRes],
+				[getCustomThirdCustomPartyAppOptimizeConfigErr, getCustomThirdPartyAppOptimizeConfigRes],
 			] = await Promise.all(seriesRequests.map(req => $to<string, string>(req)));
 
 			// 获取源平行窗口列表
@@ -391,6 +424,24 @@ export const useEmbeddedStore = defineStore(
 					true,
 				);
 			}
+			// 获取源第三方应用横屏优化
+			if (getSourceThirdPartyAppOptimizeConfigErr) {
+				sourceThirdPartyAppOptimizeConfig.value = {};
+			}
+			if (getSourceThirdPartyAppOptimizeConfigRes) {
+				sourceThirdPartyAppOptimizeConfig.value = thirdPartyAppOptimizeConfigFormatToJSON(
+					getSourceThirdPartyAppOptimizeConfigRes,
+				);
+			}
+			// 获取自定义第三方应用横屏优化
+			if (getCustomThirdCustomPartyAppOptimizeConfigErr) {
+				customThirdPartyAppOptimizeConfig.value = {};
+			}
+			if (getCustomThirdPartyAppOptimizeConfigRes) {
+				customThirdPartyAppOptimizeConfig.value = thirdPartyAppOptimizeConfigFormatToJSON(
+					getCustomThirdPartyAppOptimizeConfigRes,
+				);
+			}
 
 			// 合并最终配置
 			const logsStore = useLogsStore();
@@ -438,6 +489,9 @@ export const useEmbeddedStore = defineStore(
 			customConfigEmbeddedRulesList,
 			customConfigFixedOrientationList,
 			customConfigEmbeddedSettingConfig,
+			sourceThirdPartyAppOptimizeConfig,
+			customThirdPartyAppOptimizeConfig,
+			mergeThirdPartyAppOptimizeConfig,
 			filterSetAppModeAppList,
 			filterResetAppCompatAppList,
 			systemEmbeddedSettingConfig,
@@ -456,7 +510,7 @@ export const useEmbeddedStore = defineStore(
 			isPatchMode,
 			initDefault,
 			updateMergeRuleList,
-			isNeedShowReloadPathModeDialog
+			isNeedShowReloadPathModeDialog,
 		};
 	},
 	{

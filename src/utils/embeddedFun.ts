@@ -1,3 +1,4 @@
+import type { ThirdPartyAppOptimizeAppModeType } from '@/stores/embedded';
 import type EmbeddedMergeRuleItem from '@/types/EmbeddedMergeRuleItem';
 import type EmbeddedRuleItem from '@/types/EmbeddedRuleItem';
 import type FixedOrientationRuleItem from '@/types/FixedOrientationRuleItem';
@@ -85,3 +86,44 @@ export const getAppModeCode = (settingMode: EmbeddedMergeRuleItem['settingMode']
 
 	throw new Error('wrong error AppModeCode!');
 };
+
+export const getAppMode = (settingMode: 0 | 1 | 2 | 3) => {
+	if (settingMode === 0) {
+		return 'disabled';
+	}
+
+	if (settingMode === 1) {
+		return 'embedded';
+	}
+
+	if (settingMode === 2) {
+		return 'fixedOrientation';
+	}
+
+	if (settingMode === 3) {
+		return 'fullScreen';
+	}
+
+	throw new Error('wrong error AppMode!');
+};
+
+
+export const thirdPartyAppOptimizeConfigFormatToJSON = (data: string) => {
+	return data.trim().split('\n').reduce((acc, line) => {
+		const [name, mode] = line.split(':');
+		acc[name] = Number(mode) as ThirdPartyAppOptimizeAppModeType; // 将数字映射为对应的 settingMode
+		return acc;
+	}, {} as Record<string, ThirdPartyAppOptimizeAppModeType>);
+}
+
+export const thirdPartyAppOptimizeJSONFormatToProp = (jsonData: Record<string,ThirdPartyAppOptimizeAppModeType>) => {
+	return Object.entries(jsonData).map(([key, value]) => {
+		return `${key}:${value}`;
+	  }).join('\n');
+}
+
+export const thirdPartyAppOptimizeJSONFormatToRunnerShell = (jsonData: Record<string,ThirdPartyAppOptimizeAppModeType>) => {
+	return Object.entries(jsonData)
+	.map(([packageName, mode]) => `cmd miui_embedding_window set-appMode ${packageName} ${mode}`)
+	.join('\n');
+}

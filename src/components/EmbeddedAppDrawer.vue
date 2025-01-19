@@ -29,6 +29,7 @@ const { message, modal } = createDiscreteApi(['message', 'modal'], {
 export interface EmbeddedAppDrawerSubmitResult {
 	name: string;
 	settingMode: EmbeddedMergeRuleItem['settingMode'];
+	thirdPartyAppOptimize?: boolean;
 	modePayload: {
 		fullRule?: string;
 		skipSelfAdaptive?: boolean;
@@ -170,18 +171,18 @@ const handleTextAreaBlur = (ref: string) => {
 	}
 };
 
-const changeSkipSelfAdaptive = async (value: boolean) => {
+const changeThirdPartyAppOptimize = async (value: boolean) => {
 	if (value && deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2) {
-		const [changeSkipSelfAdaptiveCancel,changeSkipSelfAdaptiveSuccess] = await $to(
+		const [changeThirdPartyAppOptimizeCancel] = await $to(
 			new Promise<string>((resolve, reject) => {
 				modal.create({
-					title: '确认跳过应用自适配声明吗？',
+					title: '确认启用第三方横屏优化吗？',
 					type: 'warning',
 					preset: 'dialog',
 					content: () => {
 						return (
 								<p>
-									由于小米的BUG，部分应用即使配置了横屏，在系统重启后仍然会丢失横屏配置，开启此项可以保证该应用的横屏规则不会丢失，但每次设备重启或修改模块规则，该应用都将被强制重启（非特殊情况强烈不推荐开启）确定要继续吗？
+									由于小米的BUG，部分应用即使配置了横屏，在系统重启后仍然会丢失横屏配置，开启此项可以保证该应用的横屏规则不会丢失，但每次设备重启或修改模块规则，该应用都将被强制重启，确定要继续吗？
 								</p>
 							);
 					},
@@ -196,21 +197,12 @@ const changeSkipSelfAdaptive = async (value: boolean) => {
 				});
 			}),
 		);
-		if (changeSkipSelfAdaptiveCancel) {
-			return;
-		}
-		if (changeSkipSelfAdaptiveSuccess) {
-			modal.create({
-				title: '功能尚在开发中',
-				type: 'info',
-				preset: 'dialog',
-				content: () => '功能尚未上线，请期待后续更新'
-			})
+		if (changeThirdPartyAppOptimizeCancel) {
 			return;
 		}
 	}
 
-	currentSkipSelfAdaptive.value = value;
+	currentThirdPartyAppOptimize.value = value;
 }
 
 const embeddedAppDrawer = ref({
@@ -255,7 +247,12 @@ const embeddedAppDrawer = ref({
 					currentFixedOrientationRelaunch.value = true;
 				}
 				currentSettingMode.value = initialParams.settingMode;
-				currentSkipSelfAdaptive.value = initialParams.fixedOrientationRule?.disable ?? false;
+				if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2) {
+					currentThirdPartyAppOptimize.value = initialParams.thirdPartyAppOptimize ?? false;
+				}
+				if (!deviceStore.MIOSVersion || deviceStore.MIOSVersion && deviceStore.MIOSVersion < 2) {
+					currentSkipSelfAdaptive.value = initialParams.fixedOrientationRule?.disable ?? false;
+				}
 				currentIsShowDivider.value = initialParams.fixedOrientationRule?.isShowDivider ?? false;
 				currentFullRule.value = initialParams.embeddedRules?.fullRule ?? undefined;
 				currentForceFixedOrientation.value =
@@ -348,6 +345,8 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 const currentSettingMode = ref<EmbeddedMergeRuleItem['settingMode']>('fullScreen');
 
 const currentSkipSelfAdaptive = ref<boolean>(false);
+
+const currentThirdPartyAppOptimize= ref<boolean>(false);
 
 const currentIsShowDivider = ref<boolean>(true);
 
@@ -509,14 +508,17 @@ const handleDrawerSubmit = async () => {
 	const result: EmbeddedAppDrawerSubmitResult = {
 		name: currentAppName.value,
 		settingMode: currentSettingMode.value,
+		...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && {
+				thirdPartyAppOptimize: currentThirdPartyAppOptimize.value && currentSettingMode.value === 'fullScreen' ? true : false
+		}),
 		modePayload: {
 			...(currentSettingMode.value === 'fullScreen' && {
 				fullRule: currentFullRule.value,
 			}),
 			...(currentSettingMode.value === 'fullScreen' &&
-				(!deviceStore.MIOSVersion || deviceStore.MIOSVersion < 2) && {
+				(!deviceStore.MIOSVersion || deviceStore.MIOSVersion && deviceStore.MIOSVersion < 2) && {
 					skipSelfAdaptive: currentSkipSelfAdaptive.value,
-				}),
+			}),
 			...(currentSettingMode.value === 'fullScreen' && {
 				isShowDivider: currentIsShowDivider.value,
 			}),
@@ -699,6 +701,7 @@ defineExpose({
 					<n-card
 						class=""
 						:bordered="false"
+						v-if="!deviceStore.MIOSVersion || deviceStore.MIOSVersion && deviceStore.MIOSVersion < 2"
 						title="跳过应用自适配声明"
 						size="small">
 						<div class="mb-4">
@@ -708,9 +711,27 @@ defineExpose({
 								仍无法横屏的应用
 							</n-tag>
 						</div>
-						<n-switch :rail-style="railStyle" @update:value="(value: boolean) => changeSkipSelfAdaptive(value)" :value="currentSkipSelfAdaptive" size="large">
+						<n-switch :rail-style="railStyle" v-model:value="currentSkipSelfAdaptive" size="large">
 							<template #checked>跳过自适配声明</template>
 							<template #unchecked>不跳过自适配声明</template>
+						</n-switch>
+					</n-card>
+					<n-card
+						class=""
+						:bordered="false"
+						v-if="deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2"
+						title="第三方应用横屏优化"
+						size="small">
+						<div class="mb-4">
+							<n-tag :bordered="false" type="success">
+								适用于即使设置了
+								<span class="font-bold">横屏规则</span>
+								仍无法横屏的应用
+							</n-tag>
+						</div>
+						<n-switch :rail-style="railStyle" @update:value="(value: boolean) => changeThirdPartyAppOptimize(value)" :value="currentThirdPartyAppOptimize" size="large">
+							<template #checked>已开启第三方应用横屏优化</template>
+							<template #unchecked>未开启第三方应用横屏优化</template>
 						</n-switch>
 					</n-card>
 				</n-tab-pane>
