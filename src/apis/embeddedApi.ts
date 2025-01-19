@@ -216,6 +216,23 @@ export const getSourceThirdPartyAppOptimizeConfig = (): Promise<string> => {
 	);
 };
 
+export const getSystemAppOptimizeConfig = (): Promise<string> => {
+	const shellCommon = `cat /data/adb/modules/MIUI_MagicWindow+/common/source/os2_system_app_optimize/system_app_optimize.prop`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				const response = await axios.get('/data/origin/system_app_optimize.prop');
+				const xmlText = response.data; // 这是 XML 内容
+				resolve(xmlText);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
 export const getCustomThirdPartyAppOptimizeConfig = (): Promise<string> => {
 	const shellCommon = `cat /data/adb/MIUI_MagicWindow+/config/third_party_app_optimize.prop`;
 	return handlePromiseWithLogging(

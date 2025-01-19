@@ -37,6 +37,8 @@ export const useEmbeddedStore = defineStore(
 		const systemEmbeddedSettingConfig = ref<Record<string, EmbeddedSettingRuleItem>>({});
 		const sourceEmbeddedSettingConfig = ref<Record<string, EmbeddedSettingRuleItem>>({});
 		const customConfigEmbeddedSettingConfig = ref<Record<string, EmbeddedSettingRuleItem>>({});
+		// 系统应用横屏优化
+		const systemAppOptimizeConfig = ref<Record<string, ThirdPartyAppOptimizeAppModeType>>({});
 		// 第三方应用横屏优化
 		const sourceThirdPartyAppOptimizeConfig = ref<Record<string, ThirdPartyAppOptimizeAppModeType>>({});
 		const customThirdPartyAppOptimizeConfig = ref<Record<string, ThirdPartyAppOptimizeAppModeType>>({});
@@ -280,6 +282,7 @@ export const useEmbeddedStore = defineStore(
 				embeddedApi.getCustomConfigEmbeddedSettingConfig(),
 				embeddedApi.getSourceThirdPartyAppOptimizeConfig(),
 				embeddedApi.getCustomThirdPartyAppOptimizeConfig(),
+				embeddedApi.getSystemAppOptimizeConfig()
 			];
 
 			const [
@@ -294,6 +297,7 @@ export const useEmbeddedStore = defineStore(
 				[getCustomConfigEmbeddedSettingConfigErr, getCustomConfigEmbeddedSettingConfigRes],
 				[getSourceThirdPartyAppOptimizeConfigErr, getSourceThirdPartyAppOptimizeConfigRes],
 				[getCustomThirdCustomPartyAppOptimizeConfigErr, getCustomThirdPartyAppOptimizeConfigRes],
+				[getSystemAppOptimizeConfigErr, getSystemAppOptimizeConfigRes],
 			] = await Promise.all(seriesRequests.map(req => $to<string, string>(req)));
 
 			// 获取源平行窗口列表
@@ -442,6 +446,15 @@ export const useEmbeddedStore = defineStore(
 					getCustomThirdPartyAppOptimizeConfigRes,
 				);
 			}
+			// 获取系统应用横屏优化
+			if (getSystemAppOptimizeConfigErr) {
+				systemAppOptimizeConfig.value = {}
+			}
+			if (getSystemAppOptimizeConfigRes) {
+				systemAppOptimizeConfig.value = thirdPartyAppOptimizeConfigFormatToJSON(
+					getSystemAppOptimizeConfigRes
+				)
+			}
 
 			// 合并最终配置
 			const logsStore = useLogsStore();
@@ -492,6 +505,7 @@ export const useEmbeddedStore = defineStore(
 			sourceThirdPartyAppOptimizeConfig,
 			customThirdPartyAppOptimizeConfig,
 			mergeThirdPartyAppOptimizeConfig,
+			systemAppOptimizeConfig,
 			filterSetAppModeAppList,
 			filterResetAppCompatAppList,
 			systemEmbeddedSettingConfig,

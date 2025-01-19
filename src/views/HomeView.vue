@@ -745,6 +745,24 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 		logsStore.info('应用横屏布局-添加应用', '该功能仅兼容平板设备，暂时不兼容折叠屏设备，请等待后续更新情况！');
 		return;
 	}
+	if (embeddedStore.systemAppOptimizeConfig[row.name] && deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2) {
+		modal.create({
+			title: '该应用已受模块保护',
+			type: 'warning',
+			preset: 'dialog',
+			content: () => <p>为确保{' '}
+					<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+						{renderApplicationName(row.name, row.applicationName)}
+					</span>{' '}正常横屏工作，模块已保护该应用不允许修改任何配置，如需修改请先前往{' '}
+					<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+						模块设置
+					</span>{' '}禁用{' '}
+					<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+						系统应用横屏优化
+					</span>{' '}。</p>,
+		});
+		return;
+	}
 	if (updateEmbeddedApp.value) {
 		const [updateEmbeddedAppCancel, updateEmbeddedAppRes] = await $to(updateEmbeddedApp.value.openDrawer(row));
 		if (updateEmbeddedAppCancel) {
@@ -1507,13 +1525,7 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 						type: 'warning',
 						preset: 'dialog',
 						content: () => (
-							<p>
-								由于小米的BUG，部分情况下会导致应用当前适配规则与实际显示效果不符，模块可以主动修复{' '}
-								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-									{renderApplicationName(row.name, row.applicationName)}
-								</span>{' '}
-								由于系统错误的兼容性配置导致应用布局异常的问题，确定要继续吗？
-							</p>
+							<p>由于系统BUG，部分情况下会导致应用当前适配与实际不符，模块可以主动修复{' '}<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>{renderApplicationName(row.name, row.applicationName)}</span>{' '}由于系统错误的兼容性配置导致应用布局异常的问题，确定要继续吗？</p>
 						),
 						positiveText: '确定修复',
 						negativeText: '我再想想',
