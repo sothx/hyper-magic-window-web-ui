@@ -366,7 +366,7 @@ const importShareRule = async () => {
 					type: 'success',
 					preset: 'dialog',
 					content: () => (
-						<p>
+						deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 ? (<p>
 							好耶w，{' '}
 							<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
 								{renderApplicationName(
@@ -375,7 +375,17 @@ const importShareRule = async () => {
 										embeddedStore.applicationName[importRuleContent.name],
 								)}
 							</span>{' '}
-							的应用配置成功了OwO~如果应用更新后的规则不生效，可以尝试重启平板并且在{' '}
+							的应用导入成功了OwO~如果应用更新后的规则不生效，可以尝试重启平板再做尝试~
+						</p>) : (<p>
+							好耶w，{' '}
+							<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+								{renderApplicationName(
+									importRuleContent.name,
+									deviceStore.installedAppNameList[importRuleContent.name] ||
+										embeddedStore.applicationName[importRuleContent.name],
+								)}
+							</span>{' '}
+							的应用导入成功了OwO~如果应用更新后的规则不生效，可以尝试重启平板并且在{' '}
 							<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
 								平板专区-平行窗口
 							</span>{' '}
@@ -384,7 +394,7 @@ const importShareRule = async () => {
 								{['embedded', 'fullScreen'].includes(importRuleContent.mode) ? '打开' : '关闭'}
 							</span>{' '}
 							该应用的开关再做尝试~
-						</p>
+						</p>)
 					),
 					positiveText: '确定',
 				});
@@ -705,7 +715,18 @@ const openAddEmbeddedApp = async () => {
 					type: 'success',
 					preset: 'dialog',
 					content: () => (
-						<p>
+						deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 ? (<p>
+							好耶w，{' '}
+							<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+								{renderApplicationName(
+									addEmbeddedAppRes.name,
+									deviceStore.installedAppNameList[addEmbeddedAppRes.name] ||
+										embeddedStore.applicationName[addEmbeddedAppRes.name],
+								)}
+							</span>{' '}
+							的应用配置添加成功了OwO~如果应用添加后的规则不生效，可以尝试重启平板再做尝试~
+						</p>) : (
+							<p>
 							好耶w，{' '}
 							<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
 								{renderApplicationName(
@@ -724,6 +745,7 @@ const openAddEmbeddedApp = async () => {
 							</span>{' '}
 							该应用的开关再做尝试~
 						</p>
+						)
 					),
 				});
 				embeddedStore.updateMergeRuleList();
@@ -1150,7 +1172,13 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 					type: 'success',
 					preset: 'dialog',
 					content: () => (
-						<p>
+						deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 ? (<p>
+							好耶w，{' '}
+							<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+								{renderApplicationName(row.name, row.applicationName)}
+							</span>{' '}
+							的应用配置更新成功了OwO~如果应用更新后的规则不生效，可以尝试重启平板再做尝试~
+						</p>) : (<p>
 							好耶w，{' '}
 							<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
 								{renderApplicationName(row.name, row.applicationName)}
@@ -1166,7 +1194,7 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 									: '关闭'}
 							</span>{' '}
 							该应用的开关再做尝试~
-						</p>
+						</p>)
 					),
 				});
 				embeddedStore.updateMergeRuleList();
