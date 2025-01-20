@@ -105,6 +105,9 @@
               <ul>
                 <li class="ml-3">ZRAM:RAM=1:1优化(Hyper OS 2+，仅部分机型支持)</li>
                 <li class="ml-3">启用dm设备映射器(Hyper OS 2+，仅部分机型支持)</li>
+                <li class="ml-3">启用多档高刷(仅部分机型支持)</li>
+                <li class="ml-3">补全120hz高刷(仅部分机型支持)</li>
+                <li class="ml-3">强开小米平板工作台模式(仅部分机型支持)</li>
                 <li class="ml-3">解除GMS区域限制</li>
                 <li class="ml-3">PC级WPS字体目录自动创建(仅小米/红米平板机型支持)</li>
                 <li class="ml-3">解锁熄屏挂机/熄屏听剧</li>
@@ -161,7 +164,7 @@
             </template>
               <p>「WinPlay Mobile」是为小米平板量身定做的「游戏虚拟机」，可以运行市面上常见的 Windows 游戏。</p>
               <p>兼容性:  小米平板6S Pro - Hyper OS 2</p>
-              <p>注意事项:  需要同时安装 AI百宝箱 和 WAE Display，当前仅兼容小米平板6S Pro，且需要运行在最新版的Hyper OS 2.0</p>
+              <p>注意事项:  需要同时安装 AI百宝箱 和 WAE Display，当前仅兼容小米平板6S Pro，且需要运行在最新版的Hyper OS 2.0 Beta，[模块设置-WinPlay Mobile]可以快捷打开小米平板的「游戏虚拟机」界面~</p>
               <n-button class="mt-2" strong secondary type="info" @click="() => getAppDownload('WinPlay Mobile', 'https://caiyun.139.com/m/i?135CdoBoOMICY', 'system')">获取WinPlay Mobile</n-button>
             </n-alert>
           </div>
