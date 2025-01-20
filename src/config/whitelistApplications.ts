@@ -216,6 +216,8 @@ const topApplicationList = [
     'com.duolingo', // 多邻国
     'cn.etouch.ecalendar.life', // 微鲤万年历
     'cn.etouch.ecalendar', // 中华万年历
+    'com.gamestar.pianoperfect', // 随身乐队
+    'me.yoopu.app.songbook', // 有谱么
 ]
 
 

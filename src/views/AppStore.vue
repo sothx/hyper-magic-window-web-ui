@@ -271,6 +271,20 @@
               <n-button class="mt-2" strong secondary type="error" @click="() => getAppDownload('荣耀音乐', 'https://caiyun.139.com/m/i?135CmrVUbH2y3', 'original')">获取荣耀音乐</n-button>
             </n-alert>
           </div>
+          <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="deviceStore.deviceCharacteristics === 'tablet'">
+            <n-alert
+              title="随身乐队"
+              type="info"
+            >
+            <template #icon>
+              <img src="/images/apps/pianoperfect.webp" />
+            </template>
+              <p>随身乐队是一款为手机/平板设计的支持多音轨录音，乐器弹奏的APP。</p>
+              <p>支持键盘、吉他、架子鼓、电子鼓、贝斯多种乐器，并且带有多音轨录音功能。</p>
+              <p>注意事项: 建议关闭该应用的联网权限，可以避免出现广告。</p>
+              <n-button class="mt-2" strong secondary type="info" @click="() => getAppDownload('随身乐队', 'https://caiyun.139.com/m/i?135Cdn7Uss9KJ', 'original')">获取随身乐队</n-button>
+            </n-alert>
+          </div>
           <div class="px-4 flex sm:grid sm:px-0 mt-5">
             <n-alert
               title="FlipaClip"
