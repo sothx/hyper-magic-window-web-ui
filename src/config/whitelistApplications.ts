@@ -218,6 +218,9 @@ const topApplicationList = [
     'cn.etouch.ecalendar', // 中华万年历
     'com.gamestar.pianoperfect', // 随身乐队
     'me.yoopu.app.songbook', // 有谱么
+    'com.autonavi.minimap', // 高德地图
+    'com.tencent.map', // 腾讯地图
+    'com.baidu.BaiduMap', // 百度地图
 ]
 
 
