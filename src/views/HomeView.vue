@@ -54,6 +54,7 @@ import { findBase64InString, renderApplicationName } from '@/utils/common';
 import { getAppMode, getAppModeCode, getSettingEnableMode, getSettingMode, thirdPartyAppOptimizeJSONFormatToProp, thirdPartyAppOptimizeJSONFormatToRunnerShell } from '@/utils/embeddedFun';
 import { cloneDeep, isEqual } from 'lodash-es';
 import { incompatibleApplicationList } from '@/config/blacklistApplications';
+import { embeddedPerceptionApplications } from '@/config/rulePerceptionApplications';
 type EmbeddedAppDrawerInstance = InstanceType<typeof EmbeddedAppDrawer>;
 type SearchKeyWordInputInstance = InstanceType<typeof NInput>;
 type NDataTabletInstance = InstanceType<typeof NDataTable>;
@@ -1493,7 +1494,10 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 							</p>
 						)}
 						{
-							incompatibleApplicationList[row.name] && (<n-button class="mt-1" size="tiny" ghost type="warning" onClick={() => incompatibleApplicationList[row.name] && incompatibleApplicationList[row.name](row)}>不兼容应用感知</n-button>)
+							incompatibleApplicationList[row.name] && (<n-button class="mt-1" size="tiny" ghost type="warning" onClick={() => incompatibleApplicationList[row.name] && incompatibleApplicationList[row.name](row)}>应用不兼容感知</n-button>)
+						}
+						{
+							embeddedPerceptionApplications[row.name] && embeddedPerceptionApplications[row.name].isShow && embeddedPerceptionApplications[row.name].isShow() && (<n-button class="mt-1" size="tiny" ghost type="info" onClick={() => embeddedPerceptionApplications[row.name] && embeddedPerceptionApplications[row.name].onClick && embeddedPerceptionApplications[row.name].onClick(row)}>应用规则感知</n-button>)
 						}
 					</div>
 				);

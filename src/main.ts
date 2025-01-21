@@ -50,6 +50,7 @@ import {
   NIcon,
   NStatistic,
   NThemeEditor,
+  NCode,
   NGrid,
   NPageHeader,
   NConfigProvider,
@@ -107,7 +108,8 @@ const naive = create({
     NBadge,
     NCollapse,
     NCollapseItem,
-    NCollapseTransition
+    NCollapseTransition,
+    NCode
   ],
 });
 

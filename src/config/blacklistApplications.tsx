@@ -13,7 +13,7 @@ export const incompatibleApplicationList: Record<string, (row: EmbeddedMergeRule
 			configProviderProps: configProviderPropsRef,
 		});
 		modal.create({
-			title: '不兼容应用感知',
+			title: '应用不兼容感知',
 			type: 'warning',
 			preset: 'dialog',
 			content: () => (
@@ -42,7 +42,7 @@ export const incompatibleApplicationList: Record<string, (row: EmbeddedMergeRule
 		});
 		const url = 'https://caiyun.139.com/m/i?135ClWdvL9xtB';
 		modal.create({
-			title: '不兼容应用感知',
+			title: '应用不兼容感知',
 			type: 'warning',
 			preset: 'dialog',
 			content: () => (
@@ -80,7 +80,7 @@ export const incompatibleApplicationList: Record<string, (row: EmbeddedMergeRule
 		});
 		const url = 'https://caiyun.139.com/m/i?135CmUTZaefoj';
 		modal.create({
-			title: '不兼容应用感知',
+			title: '应用不兼容感知',
 			type: 'warning',
 			preset: 'dialog',
 			content: () => (
@@ -117,7 +117,7 @@ export const incompatibleApplicationList: Record<string, (row: EmbeddedMergeRule
 			configProviderProps: configProviderPropsRef,
 		});
 		modal.create({
-			title: '不兼容应用感知',
+			title: '应用不兼容感知',
 			type: 'warning',
 			preset: 'dialog',
 			content: () => (
@@ -146,7 +146,7 @@ export const incompatibleApplicationList: Record<string, (row: EmbeddedMergeRule
 		});
         const url = 'https://caiyun.139.com/m/i?135CmUTNrzYNh';
 		modal.create({
-			title: '不兼容应用感知',
+			title: '应用不兼容感知',
 			type: 'warning',
 			preset: 'dialog',
 			content: () => (
@@ -184,7 +184,7 @@ export const incompatibleApplicationList: Record<string, (row: EmbeddedMergeRule
 		});
         const url = 'https://caiyun.139.com/m/i?135ClWdevpbAN';
 		modal.create({
-			title: '不兼容应用感知',
+			title: '应用不兼容感知',
 			type: 'warning',
 			preset: 'dialog',
 			content: () => (
@@ -222,7 +222,7 @@ export const incompatibleApplicationList: Record<string, (row: EmbeddedMergeRule
 		});
         const url = 'https://caiyun.139.com/m/i?135ClqWyzHNVM';
 		modal.create({
-			title: '不兼容应用感知',
+			title: '应用不兼容感知',
 			type: 'warning',
 			preset: 'dialog',
 			content: () => (
