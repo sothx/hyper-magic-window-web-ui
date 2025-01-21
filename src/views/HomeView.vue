@@ -53,6 +53,7 @@ import { arrayBufferToBase64, base64ToArrayBuffer } from '@/utils/format';
 import { findBase64InString, renderApplicationName } from '@/utils/common';
 import { getAppMode, getAppModeCode, getSettingEnableMode, getSettingMode, thirdPartyAppOptimizeJSONFormatToProp, thirdPartyAppOptimizeJSONFormatToRunnerShell } from '@/utils/embeddedFun';
 import { cloneDeep, isEqual } from 'lodash-es';
+import { incompatibleApplicationList } from '@/config/blacklistApplications';
 type EmbeddedAppDrawerInstance = InstanceType<typeof EmbeddedAppDrawer>;
 type SearchKeyWordInputInstance = InstanceType<typeof NInput>;
 type NDataTabletInstance = InstanceType<typeof NDataTable>;
@@ -785,6 +786,9 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 		});
 		return;
 	}
+	if (incompatibleApplicationList[row.name]) {
+		incompatibleApplicationList[row.name] && incompatibleApplicationList[row.name](row);
+	}
 	if (updateEmbeddedApp.value) {
 		const [updateEmbeddedAppCancel, updateEmbeddedAppRes] = await $to(updateEmbeddedApp.value.openDrawer(row));
 		if (updateEmbeddedAppCancel) {
@@ -1488,6 +1492,9 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 								<span class={{ hidden: !row.applicationName }}>)</span>
 							</p>
 						)}
+						{
+							incompatibleApplicationList[row.name] && (<n-button class="mt-1" size="tiny" ghost type="warning" onClick={() => incompatibleApplicationList[row.name] && incompatibleApplicationList[row.name](row)}>不兼容应用感知</n-button>)
+						}
 					</div>
 				);
 			},

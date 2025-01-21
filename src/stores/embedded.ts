@@ -67,7 +67,7 @@ export const useEmbeddedStore = defineStore(
 				...Object.keys(systemEmbeddedRulesList.value),
 				...Object.keys(systemFixedOrientationList.value),
 				...deviceStore.installedAndroidApplicationPackageNameList,
-				...whitelistApplications,
+				...Object.keys(whitelistApplications),
 			]);
 
 			const filteredEntries = Object.entries(sourceEmbeddedRulesList.value).filter(([key]) =>
@@ -86,7 +86,7 @@ export const useEmbeddedStore = defineStore(
 					...Object.keys(systemEmbeddedRulesList.value),
 					...Object.keys(systemFixedOrientationList.value),
 					...deviceStore.installedAndroidApplicationPackageNameList,
-					...whitelistApplications,
+					...Object.keys(whitelistApplications),
 				]);
 
 				const filteredEntries = Object.entries(sourceFixedOrientationList.value).filter(([key]) =>
@@ -106,7 +106,7 @@ export const useEmbeddedStore = defineStore(
 					...Object.keys(systemEmbeddedRulesList.value),
 					...Object.keys(systemFixedOrientationList.value),
 					...deviceStore.installedAndroidApplicationPackageNameList,
-					...whitelistApplications,
+					...Object.keys(whitelistApplications),
 				]);
 
 				const filteredEntries = Object.entries(sourceEmbeddedSettingConfig.value).filter(([key]) =>
