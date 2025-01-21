@@ -1547,7 +1547,7 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 			},
 		},
 		{
-			title: '应用规则修复',
+			title: '规则修复',
 			minWidth: 100,
 			key: 'setting',
 			render(row, index) {
@@ -1636,7 +1636,7 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 							v-slots={slots}
 							type='warning'
 							onClick={() => handleClickAppCompatReset(row, index)}>
-							应用规则修复
+							规则修复
 						</n-button>
 					</div>
 				);
