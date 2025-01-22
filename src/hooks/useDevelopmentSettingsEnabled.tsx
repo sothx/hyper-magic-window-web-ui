@@ -25,19 +25,43 @@ export function useDevelopmentSettingsEnabled() {
 
 
     const change = async (value: 1 | 0) => {
-        const [putDevelopmentSettingsEnabledErr, putDevelopmentSettingsEnabledRes] = await $to(
-            deviceApi.putDevelopmentSettingsEnabled(value)
+        const [negativeRes, positiveRes] = await $to(
+            new Promise((resolve, reject) => {
+                modal.create({
+                    title: `确定${value ? '开启' : '关闭'}开发者模式吗？`,
+                    type: 'info',
+                    preset: 'dialog',
+                    content: () => (
+                        <div>
+                            <p>即将{value ? '开启': '关闭'}开发者模式，确定要继续吗？</p>
+                        </div>
+                    ),
+                    positiveText: '确认',
+                    negativeText: '取消',
+                    onPositiveClick: () => {
+                        resolve('positiveClick');
+                    },
+                    onNegativeClick: () => {
+                        reject('negativeClick');
+                    },
+                });
+            }),
         );
-        if (putDevelopmentSettingsEnabledErr) {
-            modal.create({
-                title: '操作失败',
-                type: 'error',
-                preset: 'dialog',
-                content: () => <p>修改失败，详情请查看日志记录~</p>,
-                negativeText: '确定',
-            });
-        } else {
-            isEnabled.value =  value === 1 ? true : false
+        if (positiveRes) {
+            const [putDevelopmentSettingsEnabledErr, putDevelopmentSettingsEnabledRes] = await $to(
+                deviceApi.putDevelopmentSettingsEnabled(value)
+            );
+            if (putDevelopmentSettingsEnabledErr) {
+                modal.create({
+                    title: '操作失败',
+                    type: 'error',
+                    preset: 'dialog',
+                    content: () => <p>修改失败，详情请查看日志记录~</p>,
+                    negativeText: '确定',
+                });
+            } else {
+                isEnabled.value =  value === 1 ? true : false
+            }
         }
     };
 
