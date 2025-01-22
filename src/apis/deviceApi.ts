@@ -1954,6 +1954,21 @@ export const addAutoStartMiuiCursorStyleType = (type: miuiCursorStyleType): Prom
 	);
 };
 
+export const getBackingDev = (): Promise<string> => {
+	const shellCommon = `cat /sys/block/zram0/backing_dev`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`/dev/block/dm-56`);
+			} else {
+				const { errno, stdout, stderr }: SmartFocusIOResult = (await exec(shellCommon)) as SmartFocusIOResult;
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+}
+
 export const getMiuiExtmDmOptEnable = (): Promise<string> => {
 	const shellCommon = `getprop persist.miui.extm.dm_opt.enable`;
 	return handlePromiseWithLogging(
