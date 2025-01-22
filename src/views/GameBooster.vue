@@ -450,6 +450,7 @@ function createColumns(): DataTableColumns<GameBoosterTableItem> {
 			<div class="flex flex-wrap">
 				<n-dropdown
 					size="large"
+					v-if="!deviceStore.MIOSVersion || deviceStore.MIOSVersion && deviceStore.MIOSVersion < 2"
 					trigger="click"
 					:options="[
 						{ label: '打开性能监视器', key: 'start' },

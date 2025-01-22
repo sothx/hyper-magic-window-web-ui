@@ -2028,3 +2028,33 @@ export const getMiuiExtmDmOptHasWriteBack = (): Promise<string> => {
 		shellCommon,
 	);
 }
+
+export const getDevelopmentSettingsEnabled = (): Promise<string> => {
+	const shellCommon = `settings get global development_settings_enabled`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`true`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : stdout === 'null' ? resolve('') : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const putDevelopmentSettingsEnabled = (type: 1 | 0): Promise<string> => {
+	const shellCommon = `settings put global development_settings_enabled ${type}`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`success`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : stdout === 'null' ? resolve('') : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};

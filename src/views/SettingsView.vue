@@ -43,6 +43,7 @@ import { useDisplayModeRecord, type DisplayModeItem } from '@/hooks/useDisplayMo
 import { useMiuiCursorStyle, type miuiCursorStyleType } from '@/hooks/useMiuiCursorStyle';
 import { useMouseGestureNaturalscroll } from '@/hooks/useMouseGestureNaturalscroll';
 import { usePointerSpeed } from '@/hooks/usePointerSpeed';
+import { useDevelopmentSettingsEnabled } from '@/hooks/useDevelopmentSettingsEnabled';
 const deviceStore = useDeviceStore();
 const embeddedStore = useEmbeddedStore();
 const miuiDesktopModeHook = useMiuiDesktopMode();
@@ -57,6 +58,7 @@ const mouseGestureNaturalscrollHook = useMouseGestureNaturalscroll();
 const pointerSpeedHook = usePointerSpeed();
 const disabledOS2SystemAppOptimizeHook = useDisabledOS2SystemAppOptimize();
 const ZRAMWritebackHook = useZRAMWriteback();
+const developmentSettingsEnabledHook = useDevelopmentSettingsEnabled();
 const { activateABTest, loading: activateABTestLoading } = useABTestActivation();
 const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
 	theme: deviceStore.isDarkMode ? darkTheme : lightTheme,
@@ -736,7 +738,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							<div class="mb-3"><n-tag type="info">总读取: {{  ZRAMWritebackHook.totalRead  }} MB</n-tag></div>
 							<div><n-tag type="warning">总回写: {{  ZRAMWritebackHook.totalWriteBack  }} MB</n-tag></div>
 							<n-alert class="mt-5" type="warning" :show-icon="false" :bordered="false">
-								<p>通常用于将设备上的冷数据压缩并迁移到磁盘上，是基于「内存扩展」的回写块，该功能依赖「内存扩展」，请确保已经开启「内存扩展」，初始状态下显示 0 MB是正常现象，请持续使用一段时间再观察是否有变化</p>
+								<p>通常用于将设备上的冷数据压缩并迁移到磁盘上，是基于「内存扩展」的回写块，该功能依赖「内存扩展」，请确保已经开启「内存扩展」，总回写可以大于「内存扩展」，初始状态下显示 0 MB是正常现象，请持续使用一段时间再观察是否有变化</p>
 							</n-alert>
 						</dd>
 					</div>
@@ -930,6 +932,25 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 								:loading="deviceStore.loading">
 								<template #checked>白名单模式</template>
 								<template #unchecked>黑名单模式</template>
+							</n-switch>
+						</dd>
+					</div>
+					<div
+						v-if="deviceStore.shamikoInfo.installed"
+						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+						<dt
+							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
+							开发者模式
+						</dt>
+						<dd
+							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
+							<n-switch
+								@update:value="(value: boolean) => developmentSettingsEnabledHook.change(value ? 1 : 0)"
+								:rail-style="railStyle"
+								:value="developmentSettingsEnabledHook.isEnabled"
+								:loading="deviceStore.loading">
+								<template #checked>已开启开发者模式</template>
+								<template #unchecked>已关闭开发者模式</template>
 							</n-switch>
 						</dd>
 					</div>
@@ -2042,7 +2063,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							<div class="whitespace-pre">{{ deviceStore.deviceInfo.memoryInfo || '获取失败' }}</div>
 						</dd>
 					</div>
-					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+					<div v-if="!deviceStore.MIOSVersion || deviceStore.MIOSVersion && deviceStore.MIOSVersion < 2" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
 							性能监视器
