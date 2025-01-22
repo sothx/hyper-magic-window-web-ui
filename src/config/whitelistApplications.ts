@@ -209,6 +209,8 @@ const topApplicationList = {
     'com.tencent.map': 1, // 腾讯地图
     'com.baidu.BaiduMap': 1, // 百度地图
     'com.yuzebin.pokemon': 1, // 神奇宝贝图鉴
+    'com.CDA.StructureMaster': 1, // 结构大师
+    'com.cxincx.xxjz': 1, // 小星记账
 }
 
 export default {
