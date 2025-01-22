@@ -48,7 +48,7 @@ export const embeddedPerceptionApplications: Record<string, EmbeddedPerceptionAp
                                 </span>{' '}
                                 {' '}进行了更详尽的应用规则适配，您可以将此自定义规则通过{' '}
                                 <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-                                    [应用横屏布局-从分享规则导入]
+                                    [应用横屏布局-从分享口令导入]
                                 </span>{' '}
                                 进行导入~
                             </p>
@@ -106,7 +106,7 @@ export const embeddedPerceptionApplications: Record<string, EmbeddedPerceptionAp
                                 </span>{' '}
                                 {' '}适配了应用布局优化，您可以将此自定义规则通过{' '}
                                 <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-                                    [应用横屏布局-从分享规则导入]
+                                    [应用横屏布局-从分享口令导入]
                                 </span>{' '}
                                 进行导入并开启{' '}
                                 <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
