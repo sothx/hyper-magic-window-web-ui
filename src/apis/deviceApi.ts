@@ -637,8 +637,23 @@ export const getMouseGestureNaturalscroll = (): Promise<string> => {
 };
 
 
-export const setVideoWallpaperLoop = (): Promise<string> => {
+export const setHomeVideoWallpaperLoop = (): Promise<string> => {
 	const shellCommon = `sed -i 's/loopVideo="false"/loopVideo="true"/g' /data/system/theme_magic/users/0/wallpaper/data/home.xml`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`success`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout)
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const setLockVideoWallpaperLoop = (): Promise<string> => {
+	const shellCommon = `sed -i 's/loopVideo="false"/loopVideo="true"/g' /data/system/theme_magic/users/0/wallpaper/data/lock.xml`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {

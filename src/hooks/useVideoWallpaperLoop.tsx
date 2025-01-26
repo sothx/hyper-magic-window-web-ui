@@ -23,10 +23,22 @@ export function useVideoWallpaperLoop() {
     });
 
     const change = async () => {
-        const [setVideoWallpaperLoopErr,setVideoWallpaperLoopRes] = await $to<string,string>(deviceApi.setVideoWallpaperLoop())
-        if (setVideoWallpaperLoopErr) {
+        const [setHomeVideoWallpaperLoopErr,setHomeVideoWallpaperLoopRes] = await $to<string,string>(deviceApi.setHomeVideoWallpaperLoop())
+        if (setHomeVideoWallpaperLoopErr) {
             modal.create({
-                title: '设置循环播放失败',
+                title: '设置桌面壁纸循环播放失败',
+                type: 'error',
+                preset: 'dialog',
+                content: () => (
+                    <p>发生异常错误，设置动态壁纸循环播放失败QwQ，详细错误请查看日志~</p>
+                ),
+            });
+            return;
+        }
+        const [setLockVideoWallpaperLoopErr,setLockVideoWallpaperLoopRes] = await $to<string,string>(deviceApi.setLockVideoWallpaperLoop())
+        if (setLockVideoWallpaperLoopErr) {
+            modal.create({
+                title: '设置锁屏壁纸循环播放失败',
                 type: 'error',
                 preset: 'dialog',
                 content: () => (
