@@ -88,7 +88,7 @@
             </template>
             <p>小米主题 2025 年 新春上新啦~</p>
             <p>全新萌宠系列动态壁纸，让你萌动整个新春~</p>
-            <p>注意事项:  如需动态壁纸自动循环播放，需要前往[模块设置-动态壁纸自动轮播]进行配置~</p>
+            <p>注意事项:  如需动态壁纸自动循环播放，需要前往[模块设置-动态壁纸循环播放]进行配置~</p>
               <n-button class="mt-2" strong secondary type="warning" @click="() => getAppDownload('小米萌宠系列动态壁纸', 'https://caiyun.139.com/m/i?135CmTzk7BYsS', 'original')">获取小米主题壁纸 - 萌宠系列动态壁纸</n-button>
             </n-alert>
           </div>
