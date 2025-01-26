@@ -1506,10 +1506,10 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 								<template #icon>
 									<img src="/images/apps/mi_theme.webp" />
 								</template>
-								动态壁纸自动轮播
+								动态壁纸循环播放
 							</n-button>
 							<n-alert class="mt-5" type="info" :show-icon="false" :bordered="false">
-							<p>配置后不支持自动轮播的「动态壁纸」将强制开启自动轮播，每次更换「动态壁纸」后会导致自动轮播失效，需要在此处重新配置</p>
+							<p>配置后不支持循环播放的「动态壁纸」将强制开启循环播放，每次更换「动态壁纸」后会导致循环播放失效，需要在此处重新配置</p>
 						</n-alert>
 						</dd>
 					</div>
