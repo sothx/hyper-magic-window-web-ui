@@ -23,6 +23,7 @@ import { useInVisibleMode } from '@/hooks/useInVisibleMode';
 import { useMIUIContentExtension } from '@/hooks/useMIUIContentExtension';
 import { useDisabledOS2SystemAppOptimize } from '@/hooks/useDisabledOS2SystemAppOptimize';
 import { useZRAMWriteback } from '@/hooks/useZRAMWriteback'
+import { useVideoWallpaperLoop } from '@/hooks/useVideoWallpaperLoop';
 import {
 	BoltIcon,
 	CpuChipIcon,
@@ -60,6 +61,7 @@ const disabledOS2SystemAppOptimizeHook = useDisabledOS2SystemAppOptimize();
 const ZRAMWritebackHook = useZRAMWriteback();
 const developmentSettingsEnabledHook = useDevelopmentSettingsEnabled();
 const { activateABTest, loading: activateABTestLoading } = useABTestActivation();
+const videoWallpaperLoopHook = useVideoWallpaperLoop();
 const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
 	theme: deviceStore.isDarkMode ? darkTheme : lightTheme,
 }));
@@ -1485,6 +1487,30 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 									</n-icon>
 								</template>
 							</n-button>
+						</dd>
+					</div>
+					<div
+						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+						<dt
+							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
+							动态壁纸自动轮播
+						</dt>
+						<dd
+							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
+							<n-button
+								size="small"
+								type="info"
+								secondary
+								:loading="deviceStore.loading"
+								@click="() => videoWallpaperLoopHook.change()">
+								<template #icon>
+									<img src="/images/apps/mi_theme.webp" />
+								</template>
+								动态壁纸自动轮播
+							</n-button>
+							<n-alert class="mt-5" type="info" :show-icon="false" :bordered="false">
+							<p>配置后不支持自动轮播的「动态壁纸」将强制开启自动轮播，每次更换「动态壁纸」后会导致自动轮播失效，需要在此处重新配置</p>
+						</n-alert>
 						</dd>
 					</div>
 					<div

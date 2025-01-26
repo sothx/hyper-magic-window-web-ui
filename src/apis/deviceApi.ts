@@ -636,6 +636,41 @@ export const getMouseGestureNaturalscroll = (): Promise<string> => {
 	);
 };
 
+
+export const setVideoWallpaperLoop = (): Promise<string> => {
+	const shellCommon = `sed -i 's/loopVideo="false"/loopVideo="true"/g' /data/system/theme_magic/users/0/wallpaper/data/home.xml`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`success`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout)
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const killMiWallpaper = (): Promise<string> => {
+	const shellCommon = `pkill -9 -f com.miui.miwallpaper && echo "kill command executed successfully." || echo "kill command failed."`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`kill command executed successfully.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno
+					? reject(stderr)
+					: stdout === 'kill command executed successfully.'
+						? resolve(stdout)
+						: reject(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
 export const setPointerSpeed = (value:number): Promise<string> => {
 	const shellCommon = `settings put system pointer_speed ${value}`;
 	return handlePromiseWithLogging(
