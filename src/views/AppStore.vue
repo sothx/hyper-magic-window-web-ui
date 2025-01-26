@@ -78,6 +78,20 @@
               <n-button class="mt-2" strong secondary type="error" @click="() => getAppDownload('超级小爱', 'https://caiyun.139.com/m/i?135CmDfhvmaxV', 'system')">获取超级小爱</n-button>
             </n-alert>
           </div>
+          <div class="px-4 flex sm:grid sm:px-0 mt-5">
+            <n-alert
+              title="小米主题壁纸 - 萌宠系列动态壁纸"
+              type="warning"
+            >
+            <template #icon>
+              <img src="/images/apps/mi_theme.webp" />
+            </template>
+            <p>小米主题 2025 年 新春上新啦~</p>
+            <p>全新萌宠系列动态壁纸，让你萌动整个新春~</p>
+            <p>注意事项:  如需动态壁纸自动循环播放，需要前往[模块设置-动态壁纸自动轮播]进行配置~</p>
+              <n-button class="mt-2" strong secondary type="warning" @click="() => getAppDownload('小米萌宠系列动态壁纸', 'https://caiyun.139.com/m/i?135CmTzk7BYsS', 'original')">获取小米主题壁纸 - 萌宠系列动态壁纸</n-button>
+            </n-alert>
+          </div>
           <div v-if="deviceStore.deviceCharacteristics === 'tablet'" class="px-4 flex sm:grid sm:px-0 mt-5">
             <n-alert
               title="小米平板系统应用补全模块 - 传送门/悬浮球"
@@ -183,6 +197,20 @@
             <n-button class="mt-2" strong secondary type="warning" @click="() => getAppDownload('小米笔记', 'https://caiyun.139.com/m/i?135Ce9CtGXcVc', 'revision')">获取小米笔记</n-button>
             </n-alert>
           </div>
+          <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="deviceStore.deviceCharacteristics === 'tablet'">
+            <n-alert
+              title="UU远程"
+              type="info"
+            >
+            <template #icon>
+              <img src="/images/apps/uu_remote.jpg" />
+            </template>
+              <p>网易出品的专为游戏打造的超低延迟远程工具</p>
+              <p>最高支持4K 蓝光 144帧</p>
+              <p>针对键鼠/手柄/多点触控进行针对优化</p>
+              <n-button class="mt-2" strong secondary type="info" @click="() => getAppDownload('UU远程', 'https://caiyun.139.com/m/i?135Cm9zLiXM7U', 'original')">获取UU远程</n-button>
+            </n-alert>
+          </div>
           <div class="px-4 flex sm:grid sm:px-0 mt-5">
             <n-alert
               title="小米录音机 - Hyper AI"
@@ -199,6 +227,19 @@
           </div>
           <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="deviceStore.deviceCharacteristics === 'tablet'">
             <n-alert
+              title="小米远程控制"
+              type="info"
+            >
+            <template #icon>
+              <img src="/images/apps/mi_remote.png" />
+            </template>
+              <p>Xiaomi Pad/Phone/Fold 与 Windows PC间的远程控制客户端</p>
+              <p>兼容性: Hyper OS 1 / Hyper OS 2 / MIUI 14</p>
+              <n-button class="mt-2" strong secondary type="info" @click="() => getAppDownload('小米远程控制', 'https://caiyun.139.com/m/i?135Cmo1bvo1XC', 'original')">获取小米远程控制</n-button>
+            </n-alert>
+          </div>
+          <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="deviceStore.deviceCharacteristics === 'tablet'">
+            <n-alert
               title="QQ音乐 HD"
               type="success"
             >
@@ -207,6 +248,21 @@
             </template>
               <p>QQ 音乐 HD 6.0，全新版本已增加对平板的大屏适配！</p>
               <n-button class="mt-2" strong secondary type="success" @click="() => getAppDownload('QQ音乐 HD', 'https://caiyun.139.com/m/i?135CmomGWJWB1', 'original')">获取QQ音乐 HD</n-button>
+            </n-alert>
+          </div>
+          <div class="px-4 flex sm:grid sm:px-0 mt-5">
+            <n-alert
+              title="盖世游戏"
+              type="default"
+            >
+            <template #icon>
+              <img src="/images/apps/egggame.png" />
+            </template>
+            <p>支持本地运行 3A 游戏，盖世小鸡「盖世游戏」App 开启公测</p>
+            <p>现提供三种游戏模式，包括：串流游戏、本地游戏和云游戏。除云游戏外，其他游戏模式均免费。其中串流游戏支持 PC Link 官方串流和 PS Link 官方串流；本地游戏提供游戏下载运行功能。</p>
+            <p>目前适配骁龙 865 及以上的安卓手机和安卓掌机，苹果因为系统封闭不支持，天玑和麒麟芯片，目前因为 GPU 驱动问题不支持，之后会部分支持。目前应用已适配盖世小鸡本品牌手柄。</p>
+            <p>需要注意的是，目前「盖世游戏」App 暂不支持登录 Steam 下载游戏，官方称“会在后续版本支持一键下载 Steam 游戏和运行，当前版本需要导入游戏”。</p>
+              <n-button class="mt-2" strong secondary type="default" @click="() => getAppDownload('盖世游戏', 'https://caiyun.139.com/m/i?135ClWBEBfVxW', 'original')">获取盖世游戏</n-button>
             </n-alert>
           </div>
           <div class="px-4 flex sm:grid sm:px-0 mt-5">
