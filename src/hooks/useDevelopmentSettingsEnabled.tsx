@@ -68,7 +68,7 @@ export function useDevelopmentSettingsEnabled() {
 
     onMounted(async () => {
         const [, getDevelopmentSettingsEnabledRes] = await $to<string, string>(deviceApi.getDevelopmentSettingsEnabled());
-        if (getDevelopmentSettingsEnabledRes === 'true') {
+        if (getDevelopmentSettingsEnabledRes === '1') {
             isEnabled.value = true
         } else {
             isEnabled.value = false
