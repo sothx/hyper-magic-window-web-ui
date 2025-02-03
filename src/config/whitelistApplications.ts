@@ -211,6 +211,7 @@ const topApplicationList = {
     'com.yuzebin.pokemon': 1, // 神奇宝贝图鉴
     'com.CDA.StructureMaster': 1, // 结构大师
     'com.cxincx.xxjz': 1, // 小星记账
+    'com.netease.uurouter': 1, // UU主机加速
 }
 
 export default {
