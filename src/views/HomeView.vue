@@ -855,13 +855,13 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 						const hasDisable = currentFixedOrientation.value.hasOwnProperty('disable');
 						if (hasDisable) {
 							delete currentFixedOrientation.value.disable;
-							currentFixedOrientation.value.supportModes = 'full,fo'
-							currentFixedOrientation.value.defaultSettings = 'full'
 						}
 						const hasCompatChange = currentFixedOrientation.value.hasOwnProperty('compatChange');
 						if (hasCompatChange) {
 							delete currentFixedOrientation.value.compatChange;
 						}
+						currentFixedOrientation.value.supportModes = 'full,fo'
+						currentFixedOrientation.value.defaultSettings = 'full'
 					} else {
 						if (updateEmbeddedAppRes.modePayload.hasOwnProperty('skipSelfAdaptive')) {
 							currentFixedOrientation.value.disable = updateEmbeddedAppRes.modePayload.skipSelfAdaptive;
@@ -874,6 +874,7 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 						};
 					}
 				} else {
+					console.log('进来了',deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2)
 					embeddedStore.customConfigFixedOrientationList[row.name] = {
 						name: row.name,
 						...(updateEmbeddedAppRes.modePayload.isShowDivider ? { isShowDivider: true } : {}),

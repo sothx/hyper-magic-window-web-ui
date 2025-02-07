@@ -9,6 +9,8 @@ const systemApplicationList = {
     'com.miui.misound': 1, // com.miui.misound
     'com.miui.voiceassist': 1, // com.miui.voiceassist
     'com.miui.securityadd': 1, // com.miui.securityadd
+    'com.mi.earphone': 1, // 小米耳机
+    'com.xiaomi.youpin': 1, // 小米有品
 }
 
 const topApplicationList = {
@@ -212,6 +214,15 @@ const topApplicationList = {
     'com.CDA.StructureMaster': 1, // 结构大师
     'com.cxincx.xxjz': 1, // 小星记账
     'com.netease.uurouter': 1, // UU主机加速
+    'com.yuewen.authorapp': 1, // 作家助手
+    'com.bytedance.writer_assistant_flutter': 1, // 番茄作家助手
+    'com.qihoo.namiso': 1, // 纳米AI搜索
+    'com.lizhiweike': 1, // 荔课
+    'com.qimao.writerassistant': 1, // 七猫作家助手
+    'com.hmz.koudaiwriting': 1, // 口袋写作
+    'com.xmyl.writing': 1, // 天天写作
+    'com.onemore.life': 1, // 1MORE MUSIC
+    'com.xianghu.organization': 1, //墨督督
 }
 
 export default {
