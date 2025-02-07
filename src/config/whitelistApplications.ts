@@ -241,6 +241,8 @@ const topApplicationList = {
     'com.vivo.easyshare': 1, // 互传
     'com.baidu.duer.superapp': 1, // 小度
     'com.orion.xiaoya.speakerclient': 1, // 小雅
+    'cn.com.langeasy.EasyListen': 1, // 轻听英语
+    'com.iflytek.sparkdoc': 1, // 讯飞文书
 }
 
 export default {
