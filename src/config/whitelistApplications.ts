@@ -230,6 +230,15 @@ const topApplicationList = {
     'com.yyzy.vivo': 1, // 月圆之夜
     'com.yyzy.honor': 1, // 月圆之夜
     'com.ztgame.yyzy.aligames': 1, // 月圆之夜
+    'com.vivo.vivotws': 1, // vivo耳机
+    'com.vivo.space': 1, // vivo官网
+    'com.realme.storecn': 1, // realme商城
+    'com.sony.store.china': 1, // 索尼中国
+    'com.coloros.backuprestore': 1, // 手机搬家
+    'com.heytap.health': 1, // 欢太健康
+    'com.heytap.smarthome': 1, // 欢太智能家居
+    'com.vivo.health': 1, // vivo健康
+    'com.vivo.easyshare': 1, // 互传
 }
 
 export default {

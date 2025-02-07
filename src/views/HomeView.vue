@@ -874,12 +874,11 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 						};
 					}
 				} else {
-					console.log('进来了',deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2)
 					embeddedStore.customConfigFixedOrientationList[row.name] = {
 						name: row.name,
 						...(updateEmbeddedAppRes.modePayload.isShowDivider ? { isShowDivider: true } : {}),
 						...(updateEmbeddedAppRes.modePayload.skipSelfAdaptive &&
-						(!deviceStore.MIOSVersion || deviceStore.MIOSVersion < 2)
+						(!deviceStore.MIOSVersion || (deviceStore.MIOSVersion && deviceStore.MIOSVersion < 2))
 							? { disable: true }
 							: {}),
 						...(updateEmbeddedAppRes.modePayload.supportFullSize ? { supportFullSize: true } : {}),
