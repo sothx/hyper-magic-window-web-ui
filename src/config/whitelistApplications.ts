@@ -239,6 +239,8 @@ const topApplicationList = {
     'com.heytap.smarthome': 1, // 欢太智能家居
     'com.vivo.health': 1, // vivo健康
     'com.vivo.easyshare': 1, // 互传
+    'com.baidu.duer.superapp': 1, // 小度
+    'com.orion.xiaoya.speakerclient': 1, // 小雅
 }
 
 export default {
