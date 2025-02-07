@@ -243,6 +243,11 @@ const topApplicationList = {
     'com.orion.xiaoya.speakerclient': 1, // 小雅
     'cn.com.langeasy.EasyListen': 1, // 轻听英语
     'com.iflytek.sparkdoc': 1, // 讯飞文书
+    'com.jifen.qukan': 1, // 趣头条
+    'com.taobao.litetao': 1, // 淘宝特价版
+    'com.sankuai.meituan': 1, // 美团
+    'com.netease.gl': 1, // 网易大神
+    
 }
 
 export default {
