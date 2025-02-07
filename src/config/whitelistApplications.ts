@@ -223,6 +223,13 @@ const topApplicationList = {
     'com.xmyl.writing': 1, // 天天写作
     'com.onemore.life': 1, // 1MORE MUSIC
     'com.xianghu.organization': 1, //墨督督
+    'com.ztgame.yyzy': 1, // 月圆之夜
+    'com.yyzy.mi': 1, // 月圆之夜
+    'com.yyzy.huawei': 1, // 月圆之夜
+    'com.yyzy.oppo': 1, // 月圆之夜
+    'com.yyzy.vivo': 1, // 月圆之夜
+    'com.yyzy.honor': 1, // 月圆之夜
+    'com.ztgame.yyzy.aligames': 1, // 月圆之夜
 }
 
 export default {
