@@ -12,7 +12,7 @@ export const embeddedPerceptionApplications: Record<string, EmbeddedPerceptionAp
     'com.coolapk.market': {
         isShow() {
             const deviceStore = useDeviceStore();
-            if (deviceStore.deviceCharacteristics === 'tablet' && deviceStore.MIOSVersion && deviceStore.MIOSVersion === 2) {
+            if (deviceStore.deviceCharacteristics === 'tablet' && deviceStore.MIOSVersion && deviceStore.MIOSVersion === 2 && deviceStore.androidTargetSdk >= 35) {
                 return true;
             }
             return false;
@@ -70,7 +70,7 @@ export const embeddedPerceptionApplications: Record<string, EmbeddedPerceptionAp
     'tv.danmaku.bili': {
         isShow() {
             const deviceStore = useDeviceStore();
-            if (deviceStore.deviceCharacteristics === 'tablet' && deviceStore.MIOSVersion && deviceStore.MIOSVersion === 2) {
+            if (deviceStore.deviceCharacteristics === 'tablet' && deviceStore.MIOSVersion && deviceStore.MIOSVersion === 2 && deviceStore.androidTargetSdk >= 35) {
                 return true;
             }
             return false;
