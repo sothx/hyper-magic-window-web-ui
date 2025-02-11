@@ -225,7 +225,7 @@ export const mergeEmbeddedRule = (
     let isSupportFullScreen = getSupportModes?.includes('full') ||  false
     let ruleMode: EmbeddedMergeRuleItem["ruleMode"] = customEmbeddedRules[pkgName] || customFixedOrientationRules[pkgName] || customConfigEmbeddedSettingConfig[pkgName] ? "custom" : "module";
 
-    if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2) {
+    if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35) {
       // 有设置优先设置
       if (settingConfig) {
         settingMode = 'disabled'

@@ -247,7 +247,10 @@ const topApplicationList = {
     'com.taobao.litetao': 1, // 淘宝特价版
     'com.sankuai.meituan': 1, // 美团
     'com.netease.gl': 1, // 网易大神
-    
+    'com.futuremark.dmandroid.application': 1, // 3DMark
+    'com.antutu.aibenchmark': 1, // 安兔兔AI评测
+    'com.xiaoji.emulator': 1, // 小鸡模拟器
+    'com.xiaoji.emulator64': 1, // 小鸡模拟器
 }
 
 export default {

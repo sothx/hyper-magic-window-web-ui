@@ -66,7 +66,7 @@ export const useDeviceStore = defineStore(
 	'device',
 	() => {
 		const deviceCharacteristics = ref<string>();
-		const androidTargetSdk = ref<number>();
+		const androidTargetSdk = ref<number>(0);
 		const MIOSVersion = ref<number>();
 		const deviceInfo = reactive<deviceInfo>({
 			socName: '',
@@ -356,7 +356,9 @@ export const useDeviceStore = defineStore(
 					msg: getAndroidTargetSdkErr,
 				});
 			} else {
-				androidTargetSdk.value = getAndroidTargetSdkRes;
+				if (getAndroidTargetSdkRes) {
+					androidTargetSdk.value = getAndroidTargetSdkRes;
+				}
 			}
 			// 设备Soc类型 *弱校验
 			if (getDeviceSocModelRes) {

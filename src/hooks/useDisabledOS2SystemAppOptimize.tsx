@@ -59,7 +59,7 @@ export function useDisabledOS2SystemAppOptimize() {
 
 
     onMounted(async () => {
-        if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2) {
+        if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35) {
             const [, getIsDisabledOS2SystemAppOptimizeRes] = await $to<string, string>(deviceApi.getIsDisabledOS2SystemAppOptimize());
             if (getIsDisabledOS2SystemAppOptimizeRes === 'true') {
                 status.value = true;

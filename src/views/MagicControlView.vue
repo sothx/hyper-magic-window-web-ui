@@ -333,7 +333,7 @@ const changePatchMode = async (value: boolean) => {
 					'package',
 					undefined,
 				),
-				...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2
+				...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35
 					? {
 							settingConfigXML: xmlFormat.objectToXML(
 								embeddedStore.customConfigEmbeddedSettingConfig,
@@ -424,7 +424,7 @@ const changeGameMode = async (value: boolean) => {
 						{value &&
 							deviceStore.deviceCharacteristics === 'tablet' &&
 							deviceStore.MIOSVersion &&
-							deviceStore.MIOSVersion >= 2 && (
+							deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35 && (
 								<p>
 									从Hyper OS 2.0开始，小米平板需要搭配配套的{' '}
 									<span

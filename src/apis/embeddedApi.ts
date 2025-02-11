@@ -321,7 +321,7 @@ export const updateEmbeddedApp = (
 				const errorLogging: updateEmbeddedAppErrorLoggingItem[] = [];
 				const successLogging: updateEmbeddedAppSuccessLoggingItem[] = [];
 				const deviceStore = useDeviceStore();
-				if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2) {
+				if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35) {
 					if (params.customThirdPartyAppOptimizeConfigProp) {
 						const {
 							errno: PatchEmErrno,
@@ -411,7 +411,7 @@ export const updateEmbeddedApp = (
 						});
 					}
 
-					if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2) {
+					if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35) {
 						const {
 							errno: PatchSettingsErrno,
 							stdout: PatchSettingsStdout,
@@ -477,7 +477,7 @@ export const updateEmbeddedApp = (
 					});
 				}
 
-				if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2) {
+				if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35) {
 					const {
 						errno: SettingsErrno,
 						stdout: SettingsStdout,

@@ -87,7 +87,7 @@ const fullScreenRuleOptions = computed<fullScreenRuleOptions[]>(() => {
 		},
 	];
 
-	if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2) {
+	if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35) {
 		return [...MI_OS2_OPTIONS, ...FULL_SCREEN_OPTIONS];
 	} else {
 		return FULL_SCREEN_OPTIONS;
@@ -172,7 +172,7 @@ const handleTextAreaBlur = (ref: string) => {
 };
 
 const changeThirdPartyAppOptimize = async (value: boolean) => {
-	if (value && deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2) {
+	if (value && deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2  && deviceStore.androidTargetSdk >= 35) {
 		const [changeThirdPartyAppOptimizeCancel] = await $to(
 			new Promise<string>((resolve, reject) => {
 				modal.create({
@@ -223,7 +223,7 @@ const embeddedAppDrawer = ref({
 				currentType.value = 'add';
 				currentFullScreenRuleOptions.value = fullScreenRuleOptions.value[0];
 				currentAppName.value = '';
-				currentFullRule.value = deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 ? '' : 'nra:cr:rcr:nr';
+				currentFullRule.value = deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35 ? '' : 'nra:cr:rcr:nr';
 				currentSupportModes.value = ['fullScreen', 'fixedOrientation', 'disabled'];
 				currentFixedOrientationRelaunch.value = false;
 				currentEmbeddedRelaunch.value = false;
@@ -247,7 +247,7 @@ const embeddedAppDrawer = ref({
 					currentFixedOrientationRelaunch.value = true;
 				}
 				currentSettingMode.value = initialParams.settingMode;
-				if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2) {
+				if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35) {
 					currentThirdPartyAppOptimize.value = initialParams.thirdPartyAppOptimize ?? false;
 				}
 				if (!deviceStore.MIOSVersion || deviceStore.MIOSVersion && deviceStore.MIOSVersion < 2) {
@@ -261,20 +261,20 @@ const embeddedAppDrawer = ref({
 						.includes('OVERRIDE_UNDEFINED_ORIENTATION_TO_PORTRAIT') ?? false;
 				if (currentFullRule.value === 'nra:cr:rcr:nr') {
 					currentFullScreenRuleOptions.value =
-						deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2
+						deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35
 							? fullScreenRuleOptions.value[1]
 							: fullScreenRuleOptions.value[0];
 				} else if (initialParams.embeddedRules && !initialParams.embeddedRules.hasOwnProperty('fullRule')) {
 					currentFullRule.value =
-						deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 ? undefined : 'nra:cr:rcr:nr';
+						deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2  && deviceStore.androidTargetSdk >= 35 ? undefined : 'nra:cr:rcr:nr';
 					currentFullScreenRuleOptions.value =
-						deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2
+						deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2  && deviceStore.androidTargetSdk >= 35
 							? fullScreenRuleOptions.value[0]
 							: fullScreenRuleOptions.value[1];
 				} else if (currentFullRule.value === '*') {
-					currentFullScreenRuleOptions.value = deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 ? fullScreenRuleOptions.value[2] : fullScreenRuleOptions.value[1];
+					currentFullScreenRuleOptions.value = deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2  && deviceStore.androidTargetSdk >= 35 ? fullScreenRuleOptions.value[2] : fullScreenRuleOptions.value[1];
 				} else {
-					currentFullScreenRuleOptions.value = deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 ? fullScreenRuleOptions.value[3] : fullScreenRuleOptions.value[2];
+					currentFullScreenRuleOptions.value = deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2  && deviceStore.androidTargetSdk >= 35 ? fullScreenRuleOptions.value[3] : fullScreenRuleOptions.value[2];
 				}
 				currentSupportFullSize.value = initialParams.embeddedRules?.supportFullSize ?? false;
 				if (
@@ -508,7 +508,7 @@ const handleDrawerSubmit = async () => {
 	const result: EmbeddedAppDrawerSubmitResult = {
 		name: currentAppName.value,
 		settingMode: currentSettingMode.value,
-		...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && {
+		...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2  && deviceStore.androidTargetSdk >= 35 &&  {
 				thirdPartyAppOptimize: currentThirdPartyAppOptimize.value && currentSettingMode.value === 'fullScreen' ? true : false
 		}),
 		modePayload: {
@@ -533,7 +533,7 @@ const handleDrawerSubmit = async () => {
 			}),
 			...(currentSettingMode.value === 'fixedOrientation' &&
 				deviceStore.MIOSVersion &&
-				deviceStore.MIOSVersion >= 2 && {
+				deviceStore.MIOSVersion >= 2  && deviceStore.androidTargetSdk >= 35 && {
 					forceFixedOrientation: currentForceFixedOrientation.value,
 				}),
 			...(currentSettingMode.value === 'embedded' &&
@@ -719,7 +719,7 @@ defineExpose({
 					<n-card
 						class=""
 						:bordered="false"
-						v-if="deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2"
+						v-if="deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35"
 						title="第三方应用横屏优化"
 						size="small">
 						<div class="mb-4">
@@ -775,7 +775,7 @@ defineExpose({
 					</n-card>
 					<n-card
 						class=""
-						v-if="deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2"
+						v-if="deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35"
 						:bordered="false"
 						title="强制应用居中显示"
 						size="small">

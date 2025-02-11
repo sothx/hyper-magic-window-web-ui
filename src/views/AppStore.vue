@@ -168,7 +168,7 @@
               <n-button class="mt-2" strong secondary type="error" @click="() => getAppDownload('小米平板系统桌面', 'https://caiyun.139.com/m/i?135CmXZPQXz3d', 'system')">获取小米平板系统桌面</n-button>
             </n-alert>
           </div>
-          <div v-if="deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.deviceCharacteristics === 'tablet'" class="px-4 flex sm:grid sm:px-0 mt-5">
+          <div v-if="deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2  && deviceStore.androidTargetSdk >= 35 && deviceStore.deviceCharacteristics === 'tablet'" class="px-4 flex sm:grid sm:px-0 mt-5">
             <n-alert
               title="WinPlay Mobile"
               type="info"

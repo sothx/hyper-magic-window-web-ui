@@ -392,7 +392,7 @@ const changePatchMode = async (value: boolean) => {
 					'package',
 					undefined,
 				),
-				...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2
+				...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35
 					? {
 							settingConfigXML: xmlFormat.objectToXML(
 								embeddedStore.customConfigEmbeddedSettingConfig,
@@ -483,7 +483,7 @@ const changeGameMode = async (value: boolean) => {
 						{value &&
 							deviceStore.deviceCharacteristics === 'tablet' &&
 							deviceStore.MIOSVersion &&
-							deviceStore.MIOSVersion >= 2 && (
+							deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35 && (
 								<p>
 									从Hyper OS 2.0开始，小米平板需要搭配配套的{' '}
 									<span
@@ -656,7 +656,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 					</div>
 					<div
 						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0"
-						v-if="deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2">
+						v-if="deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
 							系统应用横屏优化
@@ -729,12 +729,12 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`"
-							v-if="deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2"
+							v-if="deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35"
 							>ZRAM Writeback</dt
 						>
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							<div class="mb-3" v-if="deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2"><n-tag>dm设备映射器: {{  ZRAMWritebackHook.miuiExtmDmOptEnable ? '启用' : '未启用'  }} </n-tag></div>
+							<div class="mb-3" v-if="deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35"><n-tag>dm设备映射器: {{  ZRAMWritebackHook.miuiExtmDmOptEnable ? '启用' : '未启用'  }} </n-tag></div>
 							<div class="mb-3"><n-tag type="error">回写块: {{  ZRAMWritebackHook.backingDev  }} </n-tag></div>
 							<div class="mb-3"><n-tag type="success">已回写: {{  ZRAMWritebackHook.hasWriteBack  }} MB</n-tag></div>
 							<div class="mb-3"><n-tag type="info">总读取: {{  ZRAMWritebackHook.totalRead  }} MB</n-tag></div>
@@ -1106,6 +1106,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 						v-if="
 							deviceStore.MIOSVersion &&
 							deviceStore.MIOSVersion >= 2 &&
+							deviceStore.androidTargetSdk >= 35 &&
 							deviceStore.deviceCharacteristics === 'tablet'
 						"
 						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">

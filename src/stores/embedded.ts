@@ -236,7 +236,7 @@ export const useEmbeddedStore = defineStore(
 			mergeRuleList.value = xmlFormat.mergeEmbeddedRule(
 				isPatchMode.value ? patchEmbeddedRulesList.value : sourceEmbeddedRulesList.value,
 				isPatchMode.value ? patchFixedOrientationList.value : sourceFixedOrientationList.value,
-				deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2
+				deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35
 					? isPatchMode.value
 						? patchEmbeddedSettingConfig.value
 						: sourceEmbeddedSettingConfig.value
@@ -463,7 +463,7 @@ export const useEmbeddedStore = defineStore(
 			mergeRuleList.value = xmlFormat.mergeEmbeddedRule(
 				isPatchMode.value ? patchEmbeddedRulesList.value : sourceEmbeddedRulesList.value,
 				isPatchMode.value ? patchFixedOrientationList.value : sourceFixedOrientationList.value,
-				deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2
+				deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35
 					? isPatchMode.value
 						? patchEmbeddedSettingConfig.value
 						: sourceEmbeddedSettingConfig.value
