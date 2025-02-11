@@ -250,7 +250,7 @@ const embeddedAppDrawer = ref({
 				if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35) {
 					currentThirdPartyAppOptimize.value = initialParams.thirdPartyAppOptimize ?? false;
 				}
-				if (!deviceStore.MIOSVersion || deviceStore.MIOSVersion && deviceStore.MIOSVersion < 2) {
+				if (!deviceStore.MIOSVersion || deviceStore.MIOSVersion && deviceStore.MIOSVersion < 2 || deviceStore.androidTargetSdk < 35) {
 					currentSkipSelfAdaptive.value = initialParams.fixedOrientationRule?.disable ?? false;
 				}
 				currentIsShowDivider.value = initialParams.fixedOrientationRule?.isShowDivider ?? false;
@@ -372,7 +372,7 @@ const handleDrawerSubmit = async () => {
 	if (
 		currentSettingMode.value === 'fullScreen' &&
 		!currentFullRule.value &&
-		(!deviceStore.MIOSVersion || deviceStore.MIOSVersion < 2)
+		(!deviceStore.MIOSVersion || deviceStore.MIOSVersion < 2 || deviceStore.androidTargetSdk < 35)
 	) {
 		modal.create({
 			title: '应用全屏规则不能为空',
@@ -516,7 +516,7 @@ const handleDrawerSubmit = async () => {
 				fullRule: currentFullRule.value,
 			}),
 			...(currentSettingMode.value === 'fullScreen' &&
-				(!deviceStore.MIOSVersion || deviceStore.MIOSVersion && deviceStore.MIOSVersion < 2) && {
+				(!deviceStore.MIOSVersion || deviceStore.MIOSVersion && deviceStore.MIOSVersion < 2 || deviceStore.androidTargetSdk < 35) && {
 					skipSelfAdaptive: currentSkipSelfAdaptive.value,
 			}),
 			...(currentSettingMode.value === 'fullScreen' && {
@@ -701,7 +701,7 @@ defineExpose({
 					<n-card
 						class=""
 						:bordered="false"
-						v-if="!deviceStore.MIOSVersion || deviceStore.MIOSVersion && deviceStore.MIOSVersion < 2"
+						v-if="!deviceStore.MIOSVersion || deviceStore.MIOSVersion && deviceStore.MIOSVersion < 2 || deviceStore.androidTargetSdk < 35"
 						title="跳过应用自适配声明"
 						size="small">
 						<div class="mb-4">

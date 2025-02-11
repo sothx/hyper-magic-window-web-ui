@@ -242,7 +242,7 @@ const importShareRule = async () => {
 				return;
 			}
 			// Android 15 以上机型处理逻辑
-			if (importRuleContent.comp === 2 && (!deviceStore.MIOSVersion || deviceStore.MIOSVersion < 2)) {
+			if (importRuleContent.comp === 2 && (!deviceStore.MIOSVersion || deviceStore.MIOSVersion < 2 || deviceStore.androidTargetSdk < 35)) {
 				modal.create({
 					title: '导入分享规则失败',
 					type: 'error',
@@ -585,7 +585,7 @@ const openAddEmbeddedApp = async () => {
 					name: addEmbeddedAppRes.name,
 					...(addEmbeddedAppRes.modePayload.isShowDivider ? { isShowDivider: true } : {}),
 					...(addEmbeddedAppRes.modePayload.skipSelfAdaptive &&
-					(!deviceStore.MIOSVersion || deviceStore.MIOSVersion < 2)
+					(!deviceStore.MIOSVersion || deviceStore.MIOSVersion < 2 || deviceStore.androidTargetSdk < 35)
 						? { disable: true }
 						: {}),
 					...(addEmbeddedAppRes.modePayload.supportFullSize ? { supportFullSize: true } : {}),
@@ -878,7 +878,7 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 						name: row.name,
 						...(updateEmbeddedAppRes.modePayload.isShowDivider ? { isShowDivider: true } : {}),
 						...(updateEmbeddedAppRes.modePayload.skipSelfAdaptive &&
-						(!deviceStore.MIOSVersion || (deviceStore.MIOSVersion && deviceStore.MIOSVersion < 2))
+						(!deviceStore.MIOSVersion || (deviceStore.MIOSVersion && deviceStore.MIOSVersion < 2 || deviceStore.androidTargetSdk < 35))
 							? { disable: true }
 							: {}),
 						...(updateEmbeddedAppRes.modePayload.supportFullSize ? { supportFullSize: true } : {}),
