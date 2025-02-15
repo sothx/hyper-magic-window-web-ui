@@ -279,6 +279,19 @@
               <n-button class="mt-2" strong secondary type="info" @click="() => getAppDownload('StarNote', 'https://yun.139.com/sharewap/#/m/i?135CmrnDyIHP2', 'original')">获取StarNote</n-button>
             </n-alert>
           </div>
+          <div class="px-4 flex sm:grid sm:px-0 mt-5">
+            <n-alert
+              title="自由笔记"
+              type="default"
+            >
+            <template #icon>
+              <img src="/images/apps/freenote.png" />
+            </template>
+              <p>无纸化记笔记，重塑笔记体验！</p>
+              <p>修改系统日期为 2025-2-14 上午 10:30 分即可领取永久的自由笔记免费使用资格！</p>
+              <n-button class="mt-2" strong secondary type="default" @click="() => getAppDownload('自由笔记', 'https://caiyun.139.com/m/i?135Clo5BWejq9', 'original')">获取自由笔记</n-button>
+            </n-alert>
+          </div>
           <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="deviceStore.deviceCharacteristics === 'tablet'">
             <n-alert
               title="小米音乐(平板端)"

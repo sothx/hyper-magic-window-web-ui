@@ -253,7 +253,7 @@ const importShareRule = async () => {
 							<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
 								自定义规则
 							</span>{' '}
-							仅兼容Hyper OS 2+的小米机型。
+							仅兼容Android 15+的小米机型。
 						</p>
 					),
 					negativeText: '确定',
