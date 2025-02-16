@@ -156,16 +156,30 @@
           </div>
           <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="deviceStore.MIOSVersion && deviceStore.MIOSVersion === 2 && deviceStore.androidTargetSdk === 35 && deviceStore.deviceCharacteristics === 'tablet'">
             <n-alert
-              title="小米平板系统桌面 - Hyper OS 2"
+              title="小米平板系统桌面 - Android 15 Hyper OS 2"
               type="error"
             >
             <template #icon>
               <img src="/images/apps/mi_home.png" />
             </template>
               <p>小米 Hyper OS 系统桌面！该版本提取自小米平板7 Pro，包含九宫格、优化后的动画效果和全新超级小爱Dock便捷入口！</p>
-              <p>兼容性:  Hyper OS 2</p>
+              <p>兼容性:  Android 15 Hyper OS 2</p>
               <p>注意事项:  如提示系统应用无法安装请从文件管理安装</p>
               <n-button class="mt-2" strong secondary type="error" @click="() => getAppDownload('小米平板系统桌面', 'https://caiyun.139.com/m/i?135CmXZPQXz3d', 'system')">获取小米平板系统桌面</n-button>
+            </n-alert>
+          </div>
+          <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="deviceStore.MIOSVersion && deviceStore.MIOSVersion === 2 && deviceStore.androidTargetSdk === 34 && deviceStore.deviceCharacteristics === 'tablet'">
+            <n-alert
+              title="小米平板系统桌面 - Android 14 Hyper OS 2"
+              type="error"
+            >
+            <template #icon>
+              <img src="/images/apps/mi_home.png" />
+            </template>
+              <p>小米 Hyper OS 系统桌面！该版本提取自小米平板6，去除部分低端机型的模糊阉割！</p>
+              <p>兼容性:  Android 14 Hyper OS 2</p>
+              <p>注意事项:  如提示系统应用无法安装请从文件管理安装</p>
+              <n-button class="mt-2" strong secondary type="error" @click="() => getAppDownload('小米平板系统桌面', 'https://caiyun.139.com/m/i?135ClUAurszLD', 'system')">获取小米平板系统桌面</n-button>
             </n-alert>
           </div>
           <div v-if="deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2  && deviceStore.androidTargetSdk >= 35 && deviceStore.deviceCharacteristics === 'tablet'" class="px-4 flex sm:grid sm:px-0 mt-5">
