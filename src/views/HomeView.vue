@@ -1005,9 +1005,12 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 						embeddedStore.customConfigEmbeddedRulesList[row.name].splitRatio =
 							updateEmbeddedAppRes.modePayload.splitRatio;
 					}
-					if (updateEmbeddedAppRes.modePayload.hasOwnProperty('relaunch')) {
+					if (updateEmbeddedAppRes.modePayload.hasOwnProperty('emRelaunch')) {
 						embeddedStore.customConfigEmbeddedRulesList[row.name].relaunch =
 							updateEmbeddedAppRes.modePayload.emRelaunch;
+					}
+					if (updateEmbeddedAppRes.modePayload.hasOwnProperty('emIsDisabledPlaceholder') && updateEmbeddedAppRes.modePayload.emIsDisabledPlaceholder) {
+						delete embeddedStore.customConfigEmbeddedRulesList[row.name].placeholder
 					}
 				} else {
 					// 如果不存在自定义规则，但有 `splitRatio` 需要补充
@@ -1016,6 +1019,9 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 						isNeedPatchOrigin = true;
 					}
 					if (updateEmbeddedAppRes.modePayload.hasOwnProperty('emRelaunch')) {
+						isNeedPatchOrigin = true;
+					}
+					if (updateEmbeddedAppRes.modePayload.hasOwnProperty('placeholder')) {
 						isNeedPatchOrigin = true;
 					}
 					if (isNeedPatchOrigin) {
@@ -1030,6 +1036,9 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 								relaunch: updateEmbeddedAppRes.modePayload.emRelaunch,
 							}),
 						};
+						if (updateEmbeddedAppRes.modePayload.hasOwnProperty('emIsDisabledPlaceholder') && updateEmbeddedAppRes.modePayload.emIsDisabledPlaceholder) {
+							delete embeddedStore.customConfigEmbeddedRulesList[row.name].placeholder
+						}
 					}
 				}
 				if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35) {

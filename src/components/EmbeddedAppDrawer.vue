@@ -40,6 +40,7 @@ export interface EmbeddedAppDrawerSubmitResult {
 		foRelaunch?: boolean;
 		emRelaunch?: boolean;
 		forceFixedOrientation?: boolean;
+		emIsDisabledPlaceholder?: boolean;
 	};
 	loadingCallback: () => void;
 	closeCallback: () => void;
@@ -83,7 +84,7 @@ const fullScreenRuleOptions = computed<fullScreenRuleOptions[]>(() => {
 		{
 			label: '默认横屏规则',
 			key: 'fullScreen_default',
-			rule: ''
+			rule: '',
 		},
 	];
 
@@ -172,7 +173,7 @@ const handleTextAreaBlur = (ref: string) => {
 };
 
 const changeThirdPartyAppOptimize = async (value: boolean) => {
-	if (value && deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2  && deviceStore.androidTargetSdk >= 35) {
+	if (value && deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35) {
 		const [changeThirdPartyAppOptimizeCancel] = await $to(
 			new Promise<string>((resolve, reject) => {
 				modal.create({
@@ -181,10 +182,10 @@ const changeThirdPartyAppOptimize = async (value: boolean) => {
 					preset: 'dialog',
 					content: () => {
 						return (
-								<p>
-									由于小米的BUG，部分应用即使配置了横屏，在系统重启后仍然会丢失横屏配置，开启此项可以保证该应用的横屏规则不会丢失，但每次设备重启或修改模块规则，该应用都将被强制重启，确定要继续吗？
-								</p>
-							);
+							<p>
+								由于小米的BUG，部分应用即使配置了横屏，在系统重启后仍然会丢失横屏配置，开启此项可以保证该应用的横屏规则不会丢失，但每次设备重启或修改模块规则，该应用都将被强制重启，确定要继续吗？
+							</p>
+						);
 					},
 					positiveText: '确定继续',
 					negativeText: '我再想想',
@@ -203,7 +204,7 @@ const changeThirdPartyAppOptimize = async (value: boolean) => {
 	}
 
 	currentThirdPartyAppOptimize.value = value;
-}
+};
 
 const embeddedAppDrawer = ref({
 	openDrawer: (initialParams?: EmbeddedMergeRuleItem): Promise<EmbeddedAppDrawerSubmitResult> => {
@@ -223,11 +224,16 @@ const embeddedAppDrawer = ref({
 				currentType.value = 'add';
 				currentFullScreenRuleOptions.value = fullScreenRuleOptions.value[0];
 				currentAppName.value = '';
-				currentFullRule.value = deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35 ? '' : 'nra:cr:rcr:nr';
+				currentFullRule.value =
+					deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35
+						? ''
+						: 'nra:cr:rcr:nr';
 				currentSupportModes.value = ['fullScreen', 'fixedOrientation', 'disabled'];
 				currentFixedOrientationRelaunch.value = false;
 				currentEmbeddedRelaunch.value = false;
 				currentForceFixedOrientation.value = false;
+				currentIsSupportEmbeddedPlaceholder.value = false;
+				currentIsDisabledEmbeddedPlaceholder.value = false;
 			}
 
 			// 如果是update模式，初始化参数
@@ -246,11 +252,20 @@ const embeddedAppDrawer = ref({
 				} else {
 					currentFixedOrientationRelaunch.value = true;
 				}
+				if (initialParams.embeddedRules && initialParams.embeddedRules.hasOwnProperty('placeholder')) {
+					currentIsSupportEmbeddedPlaceholder.value = initialParams.embeddedRules.placeholder ? true : false;
+				} else {
+					currentIsSupportEmbeddedPlaceholder.value = false;
+				}
 				currentSettingMode.value = initialParams.settingMode;
 				if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35) {
 					currentThirdPartyAppOptimize.value = initialParams.thirdPartyAppOptimize ?? false;
 				}
-				if (!deviceStore.MIOSVersion || deviceStore.MIOSVersion && deviceStore.MIOSVersion < 2 || deviceStore.androidTargetSdk < 35) {
+				if (
+					!deviceStore.MIOSVersion ||
+					(deviceStore.MIOSVersion && deviceStore.MIOSVersion < 2) ||
+					deviceStore.androidTargetSdk < 35
+				) {
 					currentSkipSelfAdaptive.value = initialParams.fixedOrientationRule?.disable ?? false;
 				}
 				currentIsShowDivider.value = initialParams.fixedOrientationRule?.isShowDivider ?? false;
@@ -266,15 +281,23 @@ const embeddedAppDrawer = ref({
 							: fullScreenRuleOptions.value[0];
 				} else if (initialParams.embeddedRules && !initialParams.embeddedRules.hasOwnProperty('fullRule')) {
 					currentFullRule.value =
-						deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2  && deviceStore.androidTargetSdk >= 35 ? undefined : 'nra:cr:rcr:nr';
+						deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35
+							? undefined
+							: 'nra:cr:rcr:nr';
 					currentFullScreenRuleOptions.value =
-						deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2  && deviceStore.androidTargetSdk >= 35
+						deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35
 							? fullScreenRuleOptions.value[0]
 							: fullScreenRuleOptions.value[1];
 				} else if (currentFullRule.value === '*') {
-					currentFullScreenRuleOptions.value = deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2  && deviceStore.androidTargetSdk >= 35 ? fullScreenRuleOptions.value[2] : fullScreenRuleOptions.value[1];
+					currentFullScreenRuleOptions.value =
+						deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35
+							? fullScreenRuleOptions.value[2]
+							: fullScreenRuleOptions.value[1];
 				} else {
-					currentFullScreenRuleOptions.value = deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2  && deviceStore.androidTargetSdk >= 35 ? fullScreenRuleOptions.value[3] : fullScreenRuleOptions.value[2];
+					currentFullScreenRuleOptions.value =
+						deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35
+							? fullScreenRuleOptions.value[3]
+							: fullScreenRuleOptions.value[2];
 				}
 				currentSupportFullSize.value = initialParams.embeddedRules?.supportFullSize ?? false;
 				if (
@@ -346,13 +369,17 @@ const currentSettingMode = ref<EmbeddedMergeRuleItem['settingMode']>('fullScreen
 
 const currentSkipSelfAdaptive = ref<boolean>(false);
 
-const currentThirdPartyAppOptimize= ref<boolean>(false);
+const currentThirdPartyAppOptimize = ref<boolean>(false);
 
 const currentIsShowDivider = ref<boolean>(true);
 
 const currentFixedOrientationRelaunch = ref<boolean>(true);
 
 const currentEmbeddedRelaunch = ref<boolean>(false);
+
+const currentIsSupportEmbeddedPlaceholder = ref<boolean>(false);
+
+const currentIsDisabledEmbeddedPlaceholder = ref<boolean>(false);
 
 const currentAppName = ref<string>('');
 const currentAppNameInputStatus = ref<string>('');
@@ -508,17 +535,22 @@ const handleDrawerSubmit = async () => {
 	const result: EmbeddedAppDrawerSubmitResult = {
 		name: currentAppName.value,
 		settingMode: currentSettingMode.value,
-		...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2  && deviceStore.androidTargetSdk >= 35 &&  {
-				thirdPartyAppOptimize: currentThirdPartyAppOptimize.value && currentSettingMode.value === 'fullScreen' ? true : false
-		}),
+		...(deviceStore.MIOSVersion &&
+			deviceStore.MIOSVersion >= 2 &&
+			deviceStore.androidTargetSdk >= 35 && {
+				thirdPartyAppOptimize:
+					currentThirdPartyAppOptimize.value && currentSettingMode.value === 'fullScreen' ? true : false,
+			}),
 		modePayload: {
 			...(currentSettingMode.value === 'fullScreen' && {
 				fullRule: currentFullRule.value,
 			}),
 			...(currentSettingMode.value === 'fullScreen' &&
-				(!deviceStore.MIOSVersion || deviceStore.MIOSVersion && deviceStore.MIOSVersion < 2 || deviceStore.androidTargetSdk < 35) && {
+				(!deviceStore.MIOSVersion ||
+					(deviceStore.MIOSVersion && deviceStore.MIOSVersion < 2) ||
+					deviceStore.androidTargetSdk < 35) && {
 					skipSelfAdaptive: currentSkipSelfAdaptive.value,
-			}),
+				}),
 			...(currentSettingMode.value === 'fullScreen' && {
 				isShowDivider: currentIsShowDivider.value,
 			}),
@@ -533,7 +565,8 @@ const handleDrawerSubmit = async () => {
 			}),
 			...(currentSettingMode.value === 'fixedOrientation' &&
 				deviceStore.MIOSVersion &&
-				deviceStore.MIOSVersion >= 2  && deviceStore.androidTargetSdk >= 35 && {
+				deviceStore.MIOSVersion >= 2 &&
+				deviceStore.androidTargetSdk >= 35 && {
 					forceFixedOrientation: currentForceFixedOrientation.value,
 				}),
 			...(currentSettingMode.value === 'embedded' &&
@@ -545,6 +578,11 @@ const handleDrawerSubmit = async () => {
 				(currentRuleMode.value === 'custom' ||
 					(currentRuleMode.value === 'module' && currentIsSwitchEmbeddedCustom.value)) && {
 					emRelaunch: currentEmbeddedRelaunch.value,
+				}),
+			...(currentSettingMode.value === 'embedded' &&
+				(currentRuleMode.value === 'custom' ||
+					(currentRuleMode.value === 'module' && currentIsSwitchEmbeddedCustom.value)) && currentIsSupportEmbeddedPlaceholder.value && {
+					emIsDisabledPlaceholder: currentIsDisabledEmbeddedPlaceholder.value,
 				}),
 		},
 		loadingCallback,
@@ -606,6 +644,22 @@ defineExpose({
 						<n-switch :rail-style="railStyle" v-model:value="currentIsSwitchEmbeddedCustom" size="large">
 							<template #checked>使用自定义规则</template>
 							<template #unchecked>不使用自定义规则</template>
+						</n-switch>
+					</n-card>
+					<n-card
+						v-if="
+							(currentRuleMode === 'custom' || currentIsSwitchEmbeddedCustom) &&
+							currentIsSupportEmbeddedPlaceholder
+						"
+						:bordered="false"
+						title="平行窗口冷启动是否默认首页分屏"
+						size="small">
+						<n-switch
+							:rail-style="railStyle"
+							v-model:value="currentIsDisabledEmbeddedPlaceholder"
+							size="large">
+							<template #checked>平行窗口冷启动移除默认首页分屏</template>
+							<template #unchecked>平行窗口冷启动使用默认首页分屏</template>
 						</n-switch>
 					</n-card>
 					<n-card
@@ -701,7 +755,11 @@ defineExpose({
 					<n-card
 						class=""
 						:bordered="false"
-						v-if="!deviceStore.MIOSVersion || deviceStore.MIOSVersion && deviceStore.MIOSVersion < 2 || deviceStore.androidTargetSdk < 35"
+						v-if="
+							!deviceStore.MIOSVersion ||
+							(deviceStore.MIOSVersion && deviceStore.MIOSVersion < 2) ||
+							deviceStore.androidTargetSdk < 35
+						"
 						title="跳过应用自适配声明"
 						size="small">
 						<div class="mb-4">
@@ -719,7 +777,11 @@ defineExpose({
 					<n-card
 						class=""
 						:bordered="false"
-						v-if="deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35"
+						v-if="
+							deviceStore.MIOSVersion &&
+							deviceStore.MIOSVersion >= 2 &&
+							deviceStore.androidTargetSdk >= 35
+						"
 						title="第三方应用横屏优化"
 						size="small">
 						<div class="mb-4">
@@ -729,7 +791,11 @@ defineExpose({
 								仍无法横屏的应用
 							</n-tag>
 						</div>
-						<n-switch :rail-style="railStyle" @update:value="(value: boolean) => changeThirdPartyAppOptimize(value)" :value="currentThirdPartyAppOptimize" size="large">
+						<n-switch
+							:rail-style="railStyle"
+							@update:value="(value: boolean) => changeThirdPartyAppOptimize(value)"
+							:value="currentThirdPartyAppOptimize"
+							size="large">
 							<template #checked>已开启第三方应用横屏优化</template>
 							<template #unchecked>未开启第三方应用横屏优化</template>
 						</n-switch>
@@ -775,7 +841,11 @@ defineExpose({
 					</n-card>
 					<n-card
 						class=""
-						v-if="deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35"
+						v-if="
+							deviceStore.MIOSVersion &&
+							deviceStore.MIOSVersion >= 2 &&
+							deviceStore.androidTargetSdk >= 35
+						"
 						:bordered="false"
 						title="强制应用居中显示"
 						size="small">
