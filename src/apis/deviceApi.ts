@@ -261,7 +261,7 @@ export const deleteGameMode = (): Promise<string> => {
 };
 
 export const addGameMode = (): Promise<string> => {
-	const shellCommon = `grep -qxF "# 开启游戏显示布局" system.prop || echo -e "\n# 开启游戏显示布局\nro.config.miui_compat_enable=true\nro.config.miui_appcompat_enable=true" >> /data/adb/modules/MIUI_MagicWindow+/system.prop  && echo "Command executed successfully." || echo "Command failed."`;
+	const shellCommon = `grep -qxF "# 开启游戏显示布局" system.prop || echo -e "\n# 开启游戏显示布局\nro.config.miui_compat_enable=true\nro.config.miui_appcompat_enable=true\n" >> /data/adb/modules/MIUI_MagicWindow+/system.prop  && echo "Command executed successfully." || echo "Command failed."`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -2103,6 +2103,96 @@ export const putDevelopmentSettingsEnabled = (type: 1 | 0): Promise<string> => {
 			} else {
 				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
 				errno ? reject(stderr) : stdout === 'null' ? resolve('') : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const getDisabledOS2InstallModuleTips = (): Promise<string> => {
+	const shellCommon = `getprop ro.sothx.disabled_os2_install_module_tips`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve('true');
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const addDisabledOS2InstallModuleTips = (): Promise<string> => {
+	const shellCommon = `grep -q '^ro.sothx.disabled_os2_install_module_tips=' /data/adb/modules/MIUI_MagicWindow+/system.prop || (echo "ro.sothx.disabled_os2_install_module_tips=true" | tee -a /data/adb/modules/MIUI_MagicWindow+/system.prop > /dev/null && echo "Command executed successfully." || echo "Command failed.")`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`Command executed successfully.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : stdout === 'Command executed successfully.' ? resolve(stdout) : reject(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const removeDisabledOS2InstallModuleTips = (): Promise<string> => {
+	const shellCommon = `sed -i '/^ro.sothx.disabled_os2_install_module_tips=/d' //data/adb/modules/MIUI_MagicWindow+/system.prop && echo "Remove ro.sothx.disabled_os2_install_module_tips successfully." || echo "Remove ro.sothx.disabled_os2_install_module_tips failed."`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`Remove ro.sothx.disabled_os2_install_module_tips successfully.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const getAutoTurnOnDisplayMode = (): Promise<string> => {
+	const shellCommon = `getprop ro.sothx.auto_turn_on_display_mode`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve('1');
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const addAutoTurnOnDisplayMode = (inputType: number): Promise<string> => {
+	const shellCommon = `grep -q '^ro.sothx.auto_turn_on_display_mode=' /data/adb/modules/MIUI_MagicWindow+/system.prop || (echo "ro.sothx.auto_turn_on_display_mode=${inputType}" | tee -a /data/adb/modules/MIUI_MagicWindow+/system.prop > /dev/null && echo "Command executed successfully." || echo "Command failed.")`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`Command executed successfully.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : stdout === 'Command executed successfully.' ? resolve(stdout) : reject(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const removeAutoTurnOnDisplayMode = (): Promise<string> => {
+	const shellCommon = `sed -i '/^ro.sothx.auto_turn_on_display_mode=/d' //data/adb/modules/MIUI_MagicWindow+/system.prop && echo "Remove ro.sothx.auto_turn_on_display_mode successfully." || echo "Remove ro.sothx.auto_turn_on_display_mode failed."`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`Remove ro.sothx.auto_turn_on_display_mode successfully.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
 			}
 		}),
 		shellCommon,

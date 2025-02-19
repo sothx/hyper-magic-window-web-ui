@@ -24,6 +24,7 @@ import { useMIUIContentExtension } from '@/hooks/useMIUIContentExtension';
 import { useDisabledOS2SystemAppOptimize } from '@/hooks/useDisabledOS2SystemAppOptimize';
 import { useZRAMWriteback } from '@/hooks/useZRAMWriteback'
 import { useVideoWallpaperLoop } from '@/hooks/useVideoWallpaperLoop';
+import { useOS2InstallModuleTips } from '@/hooks/useOS2InstallModuleTips';
 import {
 	BoltIcon,
 	CpuChipIcon,
@@ -62,6 +63,7 @@ const ZRAMWritebackHook = useZRAMWriteback();
 const developmentSettingsEnabledHook = useDevelopmentSettingsEnabled();
 const { activateABTest, loading: activateABTestLoading } = useABTestActivation();
 const videoWallpaperLoopHook = useVideoWallpaperLoop();
+const OS2InstallModuleTipsHook = useOS2InstallModuleTips()
 const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
 	theme: deviceStore.isDarkMode ? darkTheme : lightTheme,
 }));
@@ -654,6 +656,24 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							</n-switch>
 						</dd>
 					</div>
+					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0" v-show="OS2InstallModuleTipsHook.isInit" v-if="deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35">
+						<dt
+							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
+							模块使用须知
+						</dt>
+						<dd
+							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
+							<n-switch
+								@update:value="(value: boolean) => OS2InstallModuleTipsHook.change(value)"
+								:rail-style="railStyle"
+								:value="OS2InstallModuleTipsHook.current.value"
+								:loading="OS2InstallModuleTipsHook.loading.value"
+								:disabled="deviceStore.androidTargetSdk && deviceStore.androidTargetSdk < 35">
+								<template #checked>禁用模块使用须知</template>
+								<template #unchecked>开启模块使用须知</template>
+							</n-switch>
+						</dd>
+					</div>
 					<div
 						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0"
 						v-if="deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35">
@@ -976,7 +996,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 								暗码拨号盘
 							</n-button>
 							<n-alert class="mt-5" type="error" :show-icon="false" :bordered="false">
-								<p>Tips: 暗码必须以*#*#开头，且以#*#*结尾</p>
+								<p>暗码必须以*#*#开头，且以#*#*结尾</p>
 								<p>eg: 开启 LSPosed 管理器的暗码：*#*#5776733#*#*</p>
 								<p
 									>「安全警示:
@@ -1240,7 +1260,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 								<template #unchecked>未启用</template>
 							</n-switch>
 							<n-alert class="mt-5" type="warning" :show-icon="false" :bordered="false"
-								>Tips:仅兼容水龙(Amktiao)的移植包，存在 /sys/touchpanel/pen_enable
+								>仅兼容水龙(Amktiao)的移植包，存在 /sys/touchpanel/pen_enable
 								开关映射时生效</n-alert
 							>
 						</dd>
@@ -1274,7 +1294,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 								<template #unchecked>一代笔驱动</template>
 							</n-switch>
 							<n-alert class="mt-5" type="warning" :show-icon="false" :bordered="false">
-								<p>Tips:仅兼容水龙(Amktiao)的移植包，存在 /sys/touchpanel/pen_update 开关映射时生效</p>
+								<p>仅兼容水龙(Amktiao)的移植包，存在 /sys/touchpanel/pen_update 开关映射时生效</p>
 							</n-alert>
 						</dd>
 					</div>
@@ -1313,7 +1333,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 								</n-button>
 							</n-dropdown>
 							<n-alert class="mt-5" type="warning" :show-icon="false" :bordered="false"
-								>Tips:仅兼容水龙(Amktiao)的移植包，存在 /sys/touchpanel/keyboard 开关映射时生效</n-alert
+								>仅兼容水龙(Amktiao)的移植包，存在 /sys/touchpanel/keyboard 开关映射时生效</n-alert
 							>
 						</dd>
 					</div>
@@ -1613,7 +1633,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 								<p
 									>打电话或开会时，打开"AI同声传译"，可以将双方的说话内容实时翻译给对方，帮助跨语言聊天。</p
 								>
-								<p>Tips: 如无法打开请将"小爱翻译"和"超级小爱"升级到最新版</p>
+								<p>如无法打开请将"小爱翻译"和"超级小爱"升级到最新版</p>
 							</n-alert>
 						</dd>
 					</div>
@@ -1849,7 +1869,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 								实时字幕
 							</n-button>
 							<n-alert class="mt-5" type="info" :show-icon="false" :bordered="false">
-								<p>Tips: 部分设备需要安装最新版"小爱翻译"或者强开「实时字幕」才能够正常使用！</p>
+								<p>部分设备需要安装最新版"小爱翻译"或者强开「实时字幕」才能够正常使用！</p>
 							</n-alert>
 						</dd>
 					</div>
@@ -2178,6 +2198,9 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 									应用该配置
 								</n-button>
 							</div>
+							<!-- <n-alert class="mt-5" type="info" :show-icon="false" :bordered="false">
+								<p>您已配置xxxx的自启动，如需重新配置请先【移除】该配置！</p>
+							</n-alert> -->
 						</dd>
 					</div>
 					<div
@@ -2372,7 +2395,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 								)} mAh`
 							}}</p>
 							<n-alert class="mt-5" type="info" :show-icon="false" :bordered="false">
-								<p>Tips:在设备保修期内健康度低于80%可以申请电池质保</p>
+								<p>在设备保修期内健康度低于80%可以申请电池质保</p>
 							</n-alert>
 						</dd>
 					</div>
@@ -2395,7 +2418,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 								mAh`
 							}}</p>
 							<n-alert class="mt-5" type="info" :show-icon="false" :bordered="false">
-								<p>Tips:在设备保修期内健康度低于80%可以申请电池质保</p>
+								<p>在设备保修期内健康度低于80%可以申请电池质保</p>
 							</n-alert>
 						</dd>
 					</div>
@@ -2417,7 +2440,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 								)} mAh`
 							}}</p>
 							<n-alert class="mt-5" type="info" :show-icon="false" :bordered="false">
-								<p>Tips:在设备保修期内健康度低于80%可以申请电池质保</p>
+								<p>在设备保修期内健康度低于80%可以申请电池质保</p>
 							</n-alert>
 						</dd>
 					</div>

@@ -1,8 +1,8 @@
-import { ref, computed, onMounted, reactive } from 'vue';
+import { ref, computed, onMounted, reactive, h, renderSlot, type CSSProperties } from 'vue';
 import { useDeviceStore } from '@/stores/device'
 import * as deviceApi from '@/apis/deviceApi';
 import $to from 'await-to-js';
-import { type ConfigProviderProps, darkTheme, lightTheme, createDiscreteApi } from 'naive-ui';
+import { type ConfigProviderProps, darkTheme, lightTheme, createDiscreteApi, NSwitch } from 'naive-ui';
 
 export interface DisplayModeItem {
     id: number,
@@ -16,6 +16,21 @@ export interface DisplayModeItem {
 }
 
 export function useDisplayModeRecord() {
+    const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean }) => {
+        const style: CSSProperties = {};
+        if (checked) {
+            style.background = '#2080f0';
+            if (focused) {
+                style.boxShadow = '0 0 0 2px #2080f040';
+            }
+        } else {
+            style.background = '#d03050';
+            if (focused) {
+                style.boxShadow = '0 0 0 2px #d0305040';
+            }
+        }
+        return style;
+    };
     const deviceStore = useDeviceStore();
 
     const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
@@ -47,11 +62,22 @@ export function useDisplayModeRecord() {
     
 
     const selectDisplayMode = async (data:DisplayModeItem) => {
+        const switchRender = () => h(
+            NSwitch, // 目标组件
+            {
+                class: 'mt-2',
+                railStyle: railStyle
+            },
+            {
+              checked: () => '开机自启动', // checked 插槽的内容
+              unchecked: () => '仅本次生效', // unchecked 插槽的内容
+            }
+        )
         modal.create({
             title: '想应用该配置吗?',
             type: 'info',
             preset: 'dialog',
-            content: () => <p>应用后设备分辨率将配置为{data.width}x{data.height}，刷新率将配置为{data.fps}Hz，在设备下次重启前将一直维持该配置，该功能可能受触控笔和其他第三方模块影响不一定生效，如需恢复系统设置内的默认分辨率及刷新率配置，请手动重启设备。{deviceStore.deviceCharacteristics === 'tablet' && <span>连接触控笔蓝牙期间，为了确保触控笔正常工作，系统也会强行重置该配置，断开触控笔蓝牙后需要重新配置，</span>}确定要继续应用该配置么？</p>,
+            content: () => <div>应用后设备分辨率将配置为{data.width}x{data.height}，刷新率将配置为{data.fps}Hz，在设备下次重启前将一直维持该配置，该功能可能受触控笔和其他第三方模块影响不一定生效，如需恢复系统设置内的默认分辨率及刷新率配置，请手动重启设备。{deviceStore.deviceCharacteristics === 'tablet' && <span>连接触控笔蓝牙期间，为了确保触控笔正常工作，系统也会强行重置该配置，断开触控笔蓝牙后需要重新配置，</span>}确定要继续应用该配置么？</div>,
             negativeText: '取消',
             positiveText: '确定',
             onPositiveClick() {

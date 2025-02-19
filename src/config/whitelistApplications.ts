@@ -251,6 +251,9 @@ const topApplicationList = {
     'com.antutu.aibenchmark': 1, // 安兔兔AI评测
     'com.xiaoji.emulator': 1, // 小鸡模拟器
     'com.xiaoji.emulator64': 1, // 小鸡模拟器
+    'com.manmanbuy.bijia': 1, // 慢慢买
+    'com.psyone.brainmusic': 1, // 小睡眠
+    'com.heartide.xinchao.stressandroid': 1, // 心潮
 }
 
 export default {

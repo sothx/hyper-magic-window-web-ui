@@ -452,6 +452,20 @@
               <n-button class="mt-2" strong secondary type="error" @click="() => getAppDownload('少数派', 'https://caiyun.139.com/m/i?135Clqi1SPjAp', 'original')">获取少数派</n-button>
             </n-alert>
           </div>
+          <div class="px-4 flex sm:grid sm:px-0 mt-5">
+            <n-alert
+              title="小睡眠"
+              type="info"
+            >
+            <template #icon>
+              <img src="/images/apps/brainmusic.jpg" />
+            </template>
+            <p>小睡眠提供白噪音、冥想练习、爱豆哄睡、睡眠监测、梦话录音和智能闹钟等功能。</p>
+            <p>专业、全面和暖心的睡眠服务，帮您睡得更好睡得更香。</p>
+            <p>完美横屏应用计划已为小睡眠通过应用横屏布局适配大屏，欢迎体验！</p>
+              <n-button class="mt-2" strong secondary type="info" @click="() => getAppDownload('小睡眠', 'https://caiyun.139.com/m/i?135ClnqRKur1n', 'original')">获取小睡眠</n-button>
+            </n-alert>
+          </div>
         </dl>
       </div>
     </div>
