@@ -72,7 +72,7 @@
   .webview-container {
     position: relative;
     width: 100%;
-    height: 100%;
+    height: calc(100%);
     /* 确保容器占满父元素的高度 */
     overflow: hidden;
     /* 确保没有外部的滚动条 */
@@ -83,7 +83,7 @@
     border: none;
     height: auto;
     /* 允许高度自适应 */
-    min-height: 100vh;
+    min-height: calc(100vh - 55px);
     /* 设置最小高度，确保 iframe 不会小于视口高度 */
   }
 

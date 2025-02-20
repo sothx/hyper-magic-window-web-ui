@@ -532,6 +532,29 @@ function createColumns(): DataTableColumns<GameBoosterTableItem> {
 					</template>
 					超级小爱
 				</n-button>
+				<n-button
+					class="mb-3 mr-3"
+					type="info"
+					secondary
+					:loading="deviceStore.loading || gameBoosterStore.loading"
+					@click="
+						() =>
+							router.push({
+								name: 'embedded-webview',
+								query: {
+									url: 'https://dhfs.heytapimage.com/userfiles/cms/ai_search/index.html?__pf__=detail&__barStyle__=3_2&immersive=0&enter_id=browser&enterMod=viewcard#/',
+								},
+							})
+					">
+					<template #icon>
+							<n-icon size="24">
+								<svg class="icon" aria-hidden="true">
+									<use xlink:href="#icon-deepseek"></use>
+								</svg>
+						</n-icon>
+					</template>
+					DeepSeek
+				</n-button>
 			</div>
 			<n-input-group>
 				<n-input

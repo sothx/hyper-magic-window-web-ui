@@ -73,8 +73,8 @@
               <img src="/images/icons/ai_icon.png" />
             </template>
               <p>超级小爱，全生态 AI 智能助手！超级小爱已经在小米平板全面公测，安装后即可体验超级小爱！</p>
-              <p>兼容性:  Hyper OS 1 / Hyper OS 2</p>
-              <p>注意事项:  需要同时安装 超级小爱 和 小米澎湃AI引擎</p>
+              <p>兼容性:  Hyper OS 2 / Hyper OS 1 / MIUI14</p>
+              <p>注意事项:  需要同时安装 超级小爱 和 小米澎湃AI引擎，Hyper OS 1和MIUI 14需要安装对应文件夹内的版本，否则存在无法使用的问题！</p>
               <n-button class="mt-2" strong secondary type="error" @click="() => getAppDownload('超级小爱', 'https://caiyun.139.com/m/i?135CmDfhvmaxV', 'system')">获取超级小爱</n-button>
             </n-alert>
           </div>
@@ -192,7 +192,7 @@
             </template>
               <p>「WinPlay Mobile」是为小米平板量身定做的「游戏虚拟机」，可以运行市面上常见的 Windows 游戏。</p>
               <p>兼容性:  小米平板6S Pro - Hyper OS 2</p>
-              <p>注意事项:  需要同时安装 AI百宝箱 和 WAE Display，当前仅兼容小米平板6S Pro，且需要运行在最新版的Hyper OS 2.0 Beta，[模块设置-WinPlay Mobile]可以快捷打开小米平板的「游戏虚拟机」界面~</p>
+              <p>注意事项:  需要同时安装 AI百宝箱 和 WAE Display，当前仅兼容小米平板6S Pro，且需要运行在最新版的Hyper OS 2.0，[模块设置-WinPlay Mobile]可以快捷打开小米平板的「游戏虚拟机」界面~(其他基于小米平板6S Pro Hyper OS 2.0的移植包，且作者表明内置了winplay的机型也可以使用！)</p>
               <n-button class="mt-2" strong secondary type="info" @click="() => getAppDownload('WinPlay Mobile', 'https://caiyun.139.com/m/i?135CdoBoOMICY', 'system')">获取WinPlay Mobile</n-button>
             </n-alert>
           </div>

@@ -51,14 +51,23 @@ import {
 } from '@heroicons/vue/24/solid';
 import { arrayBufferToBase64, base64ToArrayBuffer } from '@/utils/format';
 import { findBase64InString, renderApplicationName } from '@/utils/common';
-import { getAppMode, getAppModeCode, getSettingEnableMode, getSettingMode, thirdPartyAppOptimizeJSONFormatToProp, thirdPartyAppOptimizeJSONFormatToRunnerShell } from '@/utils/embeddedFun';
+import {
+	getAppMode,
+	getAppModeCode,
+	getSettingEnableMode,
+	getSettingMode,
+	thirdPartyAppOptimizeJSONFormatToProp,
+	thirdPartyAppOptimizeJSONFormatToRunnerShell,
+} from '@/utils/embeddedFun';
 import { cloneDeep, isEqual } from 'lodash-es';
 import { incompatibleApplicationList } from '@/config/blacklistApplications';
 import { embeddedPerceptionApplications } from '@/config/rulePerceptionApplications';
+import { useRouter } from 'vue-router';
 type EmbeddedAppDrawerInstance = InstanceType<typeof EmbeddedAppDrawer>;
 type SearchKeyWordInputInstance = InstanceType<typeof NInput>;
 type NDataTabletInstance = InstanceType<typeof NDataTable>;
 const shareRuleTextarea = ref('');
+const router = useRouter();
 const installedAppNames = useInstalledAppNames();
 const deviceStore = useDeviceStore();
 const embeddedStore = useEmbeddedStore();
@@ -242,7 +251,10 @@ const importShareRule = async () => {
 				return;
 			}
 			// Android 15 以上机型处理逻辑
-			if (importRuleContent.comp === 2 && (!deviceStore.MIOSVersion || deviceStore.MIOSVersion < 2 || deviceStore.androidTargetSdk < 35)) {
+			if (
+				importRuleContent.comp === 2 &&
+				(!deviceStore.MIOSVersion || deviceStore.MIOSVersion < 2 || deviceStore.androidTargetSdk < 35)
+			) {
 				modal.create({
 					title: '导入分享规则失败',
 					type: 'error',
@@ -265,12 +277,14 @@ const importShareRule = async () => {
 			embeddedStore.customConfigFixedOrientationList[importRuleContent.name] = importRuleContent.fo;
 			if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35) {
 				if (importRuleContent.thirdPartyAppOptimize) {
-					embeddedStore.customThirdPartyAppOptimizeConfig[importRuleContent.name] = getAppModeCode(importRuleContent.mode)
+					embeddedStore.customThirdPartyAppOptimizeConfig[importRuleContent.name] = getAppModeCode(
+						importRuleContent.mode,
+					);
 				} else {
 					if (embeddedStore.sourceThirdPartyAppOptimizeConfig[importRuleContent.name]) {
 						embeddedStore.customThirdPartyAppOptimizeConfig[importRuleContent.name] = -1;
 					} else {
-						delete embeddedStore.customThirdPartyAppOptimizeConfig[importRuleContent.name]
+						delete embeddedStore.customThirdPartyAppOptimizeConfig[importRuleContent.name];
 					}
 				}
 				embeddedStore.customConfigEmbeddedSettingConfig[importRuleContent.name] = {
@@ -289,10 +303,16 @@ const importShareRule = async () => {
 			}
 			const [submitUpdateEmbeddedAppErr, submitUpdateEmbeddedAppRes] = await $to(
 				embeddedApi.updateEmbeddedApp({
-					...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35 ? {
-						customThirdPartyAppOptimizeConfigProp: thirdPartyAppOptimizeJSONFormatToProp(embeddedStore.customThirdPartyAppOptimizeConfig),
-						thirdPartyAppOptimizeConfigRunnerShell: thirdPartyAppOptimizeJSONFormatToRunnerShell(embeddedStore.mergeThirdPartyAppOptimizeConfig)
-					} : undefined),
+					...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35
+						? {
+								customThirdPartyAppOptimizeConfigProp: thirdPartyAppOptimizeJSONFormatToProp(
+									embeddedStore.customThirdPartyAppOptimizeConfig,
+								),
+								thirdPartyAppOptimizeConfigRunnerShell: thirdPartyAppOptimizeJSONFormatToRunnerShell(
+									embeddedStore.mergeThirdPartyAppOptimizeConfig,
+								),
+							}
+						: undefined),
 					isPatchMode: embeddedStore.isPatchMode,
 					patchEmbeddedRulesListXML: xmlFormat.objectToXML(
 						embeddedStore.patchEmbeddedRulesList,
@@ -367,37 +387,42 @@ const importShareRule = async () => {
 					title: '导入分享规则成功',
 					type: 'success',
 					preset: 'dialog',
-					content: () => (
-						deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35 ? (<p>
-							好耶w，{' '}
-							<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-								{renderApplicationName(
-									importRuleContent.name,
-									deviceStore.installedAppNameList[importRuleContent.name] ||
-										embeddedStore.applicationName[importRuleContent.name],
-								)}
-							</span>{' '}
-							的应用导入成功了OwO~如果应用更新后的规则不生效，可以尝试重启平板再做尝试~
-						</p>) : (<p>
-							好耶w，{' '}
-							<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-								{renderApplicationName(
-									importRuleContent.name,
-									deviceStore.installedAppNameList[importRuleContent.name] ||
-										embeddedStore.applicationName[importRuleContent.name],
-								)}
-							</span>{' '}
-							的应用导入成功了OwO~如果应用更新后的规则不生效，可以尝试重启平板并且在{' '}
-							<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-								平板专区-平行窗口
-							</span>{' '}
-							内{' '}
-							<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-								{['embedded', 'fullScreen'].includes(importRuleContent.mode) ? '打开' : '关闭'}
-							</span>{' '}
-							该应用的开关再做尝试~
-						</p>)
-					),
+					content: () =>
+						deviceStore.MIOSVersion &&
+						deviceStore.MIOSVersion >= 2 &&
+						deviceStore.androidTargetSdk >= 35 ? (
+							<p>
+								好耶w，{' '}
+								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+									{renderApplicationName(
+										importRuleContent.name,
+										deviceStore.installedAppNameList[importRuleContent.name] ||
+											embeddedStore.applicationName[importRuleContent.name],
+									)}
+								</span>{' '}
+								的应用导入成功了OwO~如果应用更新后的规则不生效，可以尝试重启平板再做尝试~
+							</p>
+						) : (
+							<p>
+								好耶w，{' '}
+								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+									{renderApplicationName(
+										importRuleContent.name,
+										deviceStore.installedAppNameList[importRuleContent.name] ||
+											embeddedStore.applicationName[importRuleContent.name],
+									)}
+								</span>{' '}
+								的应用导入成功了OwO~如果应用更新后的规则不生效，可以尝试重启平板并且在{' '}
+								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+									平板专区-平行窗口
+								</span>{' '}
+								内{' '}
+								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+									{['embedded', 'fullScreen'].includes(importRuleContent.mode) ? '打开' : '关闭'}
+								</span>{' '}
+								该应用的开关再做尝试~
+							</p>
+						),
 					positiveText: '确定',
 				});
 			}
@@ -464,10 +489,16 @@ const reloadPatchModeConfigList = async () => {
 	reloadPatchModeConfigLoading.value = true;
 	const [submitUpdateEmbeddedAppErr, submitUpdateEmbeddedAppRes] = await $to(
 		embeddedApi.updateEmbeddedApp({
-			...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35 ? {
-				customThirdPartyAppOptimizeConfigProp: thirdPartyAppOptimizeJSONFormatToProp(embeddedStore.customThirdPartyAppOptimizeConfig),
-				thirdPartyAppOptimizeConfigRunnerShell: thirdPartyAppOptimizeJSONFormatToRunnerShell(embeddedStore.mergeThirdPartyAppOptimizeConfig)
-			} : undefined),
+			...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35
+				? {
+						customThirdPartyAppOptimizeConfigProp: thirdPartyAppOptimizeJSONFormatToProp(
+							embeddedStore.customThirdPartyAppOptimizeConfig,
+						),
+						thirdPartyAppOptimizeConfigRunnerShell: thirdPartyAppOptimizeJSONFormatToRunnerShell(
+							embeddedStore.mergeThirdPartyAppOptimizeConfig,
+						),
+					}
+				: undefined),
 			isPatchMode: embeddedStore.isPatchMode,
 			patchEmbeddedRulesListXML: xmlFormat.objectToXML(
 				embeddedStore.patchEmbeddedRulesList,
@@ -564,12 +595,14 @@ const openAddEmbeddedApp = async () => {
 		} else {
 			if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35) {
 				if (addEmbeddedAppRes.thirdPartyAppOptimize) {
-					embeddedStore.customThirdPartyAppOptimizeConfig[addEmbeddedAppRes.name] = getAppModeCode(addEmbeddedAppRes.settingMode)
+					embeddedStore.customThirdPartyAppOptimizeConfig[addEmbeddedAppRes.name] = getAppModeCode(
+						addEmbeddedAppRes.settingMode,
+					);
 				} else {
 					if (embeddedStore.sourceThirdPartyAppOptimizeConfig[addEmbeddedAppRes.name]) {
 						embeddedStore.customThirdPartyAppOptimizeConfig[addEmbeddedAppRes.name] = -1;
 					} else {
-						delete embeddedStore.customThirdPartyAppOptimizeConfig[addEmbeddedAppRes.name]
+						delete embeddedStore.customThirdPartyAppOptimizeConfig[addEmbeddedAppRes.name];
 					}
 				}
 			}
@@ -578,7 +611,11 @@ const openAddEmbeddedApp = async () => {
 					embeddedStore.customConfigEmbeddedRulesList[addEmbeddedAppRes.name] = {
 						name: addEmbeddedAppRes.name,
 						fullRule: addEmbeddedAppRes.modePayload.fullRule,
-						...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2  && deviceStore.androidTargetSdk >= 35 ? { skipSelfAdaptive: true } : {}),
+						...(deviceStore.MIOSVersion &&
+						deviceStore.MIOSVersion >= 2 &&
+						deviceStore.androidTargetSdk >= 35
+							? { skipSelfAdaptive: true }
+							: {}),
 					};
 				}
 				embeddedStore.customConfigFixedOrientationList[addEmbeddedAppRes.name] = {
@@ -589,17 +626,29 @@ const openAddEmbeddedApp = async () => {
 						? { disable: true }
 						: {}),
 					...(addEmbeddedAppRes.modePayload.supportFullSize ? { supportFullSize: true } : {}),
-					...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2  && deviceStore.androidTargetSdk >= 35 ? { supportModes: 'full,fo' } : {}),
-					...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2  && deviceStore.androidTargetSdk >= 35 ? { defaultSettings: 'full' } : {}),
-					...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2  && deviceStore.androidTargetSdk >= 35 ? { skipSelfAdaptive: true } : {}),
+					...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35
+						? { supportModes: 'full,fo' }
+						: {}),
+					...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35
+						? { defaultSettings: 'full' }
+						: {}),
+					...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35
+						? { skipSelfAdaptive: true }
+						: {}),
 				};
 			}
 			if (addEmbeddedAppRes.settingMode === 'fixedOrientation') {
 				embeddedStore.customConfigFixedOrientationList[addEmbeddedAppRes.name] = {
 					name: addEmbeddedAppRes.name,
-					...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2  && deviceStore.androidTargetSdk >= 35 ? { supportModes: 'full,fo' } : {}),
-					...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2  && deviceStore.androidTargetSdk >= 35 ? { defaultSettings: 'fo' } : {}),
-					...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2  && deviceStore.androidTargetSdk >= 35 ? { skipSelfAdaptive: true } : {}),
+					...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35
+						? { supportModes: 'full,fo' }
+						: {}),
+					...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35
+						? { defaultSettings: 'fo' }
+						: {}),
+					...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35
+						? { skipSelfAdaptive: true }
+						: {}),
 					...(addEmbeddedAppRes.modePayload.ratio !== undefined
 						? {
 								ratio: addEmbeddedAppRes.modePayload.ratio,
@@ -616,7 +665,9 @@ const openAddEmbeddedApp = async () => {
 				embeddedStore.customConfigFixedOrientationList[addEmbeddedAppRes.name] = {
 					name: addEmbeddedAppRes.name,
 					disable: true,
-					...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35 ? { skipSelfAdaptive: true } : {}),
+					...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35
+						? { skipSelfAdaptive: true }
+						: {}),
 					...(addEmbeddedAppRes.modePayload.foRelaunch !== undefined
 						? {
 								relaunch: addEmbeddedAppRes.modePayload.foRelaunch,
@@ -641,10 +692,16 @@ const openAddEmbeddedApp = async () => {
 			}
 			const [submitAddEmbeddedAppErr, submitAddEmbeddedAppRes] = await $to(
 				embeddedApi.updateEmbeddedApp({
-					...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35 ? {
-						customThirdPartyAppOptimizeConfigProp: thirdPartyAppOptimizeJSONFormatToProp(embeddedStore.customThirdPartyAppOptimizeConfig),
-						thirdPartyAppOptimizeConfigRunnerShell: thirdPartyAppOptimizeJSONFormatToRunnerShell(embeddedStore.mergeThirdPartyAppOptimizeConfig)
-					} : undefined),
+					...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35
+						? {
+								customThirdPartyAppOptimizeConfigProp: thirdPartyAppOptimizeJSONFormatToProp(
+									embeddedStore.customThirdPartyAppOptimizeConfig,
+								),
+								thirdPartyAppOptimizeConfigRunnerShell: thirdPartyAppOptimizeJSONFormatToRunnerShell(
+									embeddedStore.mergeThirdPartyAppOptimizeConfig,
+								),
+							}
+						: undefined),
 					isPatchMode: embeddedStore.isPatchMode,
 					patchEmbeddedRulesListXML: xmlFormat.objectToXML(
 						embeddedStore.patchEmbeddedRulesList,
@@ -716,39 +773,44 @@ const openAddEmbeddedApp = async () => {
 					title: '应用添加成功',
 					type: 'success',
 					preset: 'dialog',
-					content: () => (
-						deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35 ? (<p>
-							好耶w，{' '}
-							<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-								{renderApplicationName(
-									addEmbeddedAppRes.name,
-									deviceStore.installedAppNameList[addEmbeddedAppRes.name] ||
-										embeddedStore.applicationName[addEmbeddedAppRes.name],
-								)}
-							</span>{' '}
-							的应用配置添加成功了OwO~如果应用添加后的规则不生效，可以尝试重启平板再做尝试~
-						</p>) : (
+					content: () =>
+						deviceStore.MIOSVersion &&
+						deviceStore.MIOSVersion >= 2 &&
+						deviceStore.androidTargetSdk >= 35 ? (
 							<p>
-							好耶w，{' '}
-							<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-								{renderApplicationName(
-									addEmbeddedAppRes.name,
-									deviceStore.installedAppNameList[addEmbeddedAppRes.name] ||
-										embeddedStore.applicationName[addEmbeddedAppRes.name],
-								)}
-							</span>{' '}
-							的应用配置添加成功了OwO~如果应用添加后的规则不生效，可以尝试重启平板并且在{' '}
-							<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-								平板专区-平行窗口
-							</span>{' '}
-							内{' '}
-							<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-								{['embedded', 'fullScreen'].includes(addEmbeddedAppRes.settingMode) ? '打开' : '关闭'}
-							</span>{' '}
-							该应用的开关再做尝试~
-						</p>
-						)
-					),
+								好耶w，{' '}
+								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+									{renderApplicationName(
+										addEmbeddedAppRes.name,
+										deviceStore.installedAppNameList[addEmbeddedAppRes.name] ||
+											embeddedStore.applicationName[addEmbeddedAppRes.name],
+									)}
+								</span>{' '}
+								的应用配置添加成功了OwO~如果应用添加后的规则不生效，可以尝试重启平板再做尝试~
+							</p>
+						) : (
+							<p>
+								好耶w，{' '}
+								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+									{renderApplicationName(
+										addEmbeddedAppRes.name,
+										deviceStore.installedAppNameList[addEmbeddedAppRes.name] ||
+											embeddedStore.applicationName[addEmbeddedAppRes.name],
+									)}
+								</span>{' '}
+								的应用配置添加成功了OwO~如果应用添加后的规则不生效，可以尝试重启平板并且在{' '}
+								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+									平板专区-平行窗口
+								</span>{' '}
+								内{' '}
+								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+									{['embedded', 'fullScreen'].includes(addEmbeddedAppRes.settingMode)
+										? '打开'
+										: '关闭'}
+								</span>{' '}
+								该应用的开关再做尝试~
+							</p>
+						),
 				});
 				embeddedStore.updateMergeRuleList();
 				addEmbeddedAppRes.loadingCallback && addEmbeddedAppRes.loadingCallback();
@@ -769,21 +831,33 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 		logsStore.info('应用横屏布局-添加应用', '该功能仅兼容平板设备，暂时不兼容折叠屏设备，请等待后续更新情况！');
 		return;
 	}
-	if (embeddedStore.systemAppOptimizeConfig[row.name] && deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35) {
+	if (
+		embeddedStore.systemAppOptimizeConfig[row.name] &&
+		deviceStore.MIOSVersion &&
+		deviceStore.MIOSVersion >= 2 &&
+		deviceStore.androidTargetSdk >= 35
+	) {
 		modal.create({
 			title: '该应用已受模块保护',
 			type: 'warning',
 			preset: 'dialog',
-			content: () => <p>为确保{' '}
+			content: () => (
+				<p>
+					为确保{' '}
 					<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
 						{renderApplicationName(row.name, row.applicationName)}
-					</span>{' '}正常横屏工作，模块已保护该应用不允许修改任何配置，如需修改请先前往{' '}
+					</span>{' '}
+					正常横屏工作，模块已保护该应用不允许修改任何配置，如需修改请先前往{' '}
 					<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
 						模块设置
-					</span>{' '}禁用{' '}
+					</span>{' '}
+					禁用{' '}
 					<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
 						系统应用横屏优化
-					</span>{' '}。</p>,
+					</span>{' '}
+					。
+				</p>
+			),
 		});
 		return;
 	}
@@ -797,12 +871,14 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 		} else {
 			if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35) {
 				if (updateEmbeddedAppRes.thirdPartyAppOptimize) {
-					embeddedStore.customThirdPartyAppOptimizeConfig[updateEmbeddedAppRes.name] = getAppModeCode(updateEmbeddedAppRes.settingMode)
+					embeddedStore.customThirdPartyAppOptimizeConfig[updateEmbeddedAppRes.name] = getAppModeCode(
+						updateEmbeddedAppRes.settingMode,
+					);
 				} else {
 					if (embeddedStore.sourceThirdPartyAppOptimizeConfig[updateEmbeddedAppRes.name]) {
 						embeddedStore.customThirdPartyAppOptimizeConfig[updateEmbeddedAppRes.name] = -1;
 					} else {
-						delete embeddedStore.customThirdPartyAppOptimizeConfig[updateEmbeddedAppRes.name]
+						delete embeddedStore.customThirdPartyAppOptimizeConfig[updateEmbeddedAppRes.name];
 					}
 				}
 			}
@@ -830,12 +906,18 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 						embeddedStore.customConfigEmbeddedRulesList[row.name] = {
 							name: row.name,
 							fullRule: updateEmbeddedAppRes.modePayload.fullRule,
-							...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35
+							...(deviceStore.MIOSVersion &&
+							deviceStore.MIOSVersion >= 2 &&
+							deviceStore.androidTargetSdk >= 35
 								? { skipSelfAdaptive: true }
 								: {}),
 						};
 					} else {
-						if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35) {
+						if (
+							deviceStore.MIOSVersion &&
+							deviceStore.MIOSVersion >= 2 &&
+							deviceStore.androidTargetSdk >= 35
+						) {
 							embeddedStore.customConfigEmbeddedRulesList[row.name] = {
 								name: row.name,
 								skipSelfAdaptive: true,
@@ -860,8 +942,8 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 						if (hasCompatChange) {
 							delete currentFixedOrientation.value.compatChange;
 						}
-						currentFixedOrientation.value.supportModes = 'full,fo'
-						currentFixedOrientation.value.defaultSettings = 'full'
+						currentFixedOrientation.value.supportModes = 'full,fo';
+						currentFixedOrientation.value.defaultSettings = 'full';
 					} else {
 						if (updateEmbeddedAppRes.modePayload.hasOwnProperty('skipSelfAdaptive')) {
 							currentFixedOrientation.value.disable = updateEmbeddedAppRes.modePayload.skipSelfAdaptive;
@@ -878,13 +960,27 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 						name: row.name,
 						...(updateEmbeddedAppRes.modePayload.isShowDivider ? { isShowDivider: true } : {}),
 						...(updateEmbeddedAppRes.modePayload.skipSelfAdaptive &&
-						(!deviceStore.MIOSVersion || (deviceStore.MIOSVersion && deviceStore.MIOSVersion < 2 || deviceStore.androidTargetSdk < 35))
+						(!deviceStore.MIOSVersion ||
+							(deviceStore.MIOSVersion && deviceStore.MIOSVersion < 2) ||
+							deviceStore.androidTargetSdk < 35)
 							? { disable: true }
 							: {}),
 						...(updateEmbeddedAppRes.modePayload.supportFullSize ? { supportFullSize: true } : {}),
-						...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35 ? { supportModes: 'full,fo' } : {}),
-						...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35 ? { defaultSettings: 'full' } : {}),
-						...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35 ? { skipSelfAdaptive: true } : {}),
+						...(deviceStore.MIOSVersion &&
+						deviceStore.MIOSVersion >= 2 &&
+						deviceStore.androidTargetSdk >= 35
+							? { supportModes: 'full,fo' }
+							: {}),
+						...(deviceStore.MIOSVersion &&
+						deviceStore.MIOSVersion >= 2 &&
+						deviceStore.androidTargetSdk >= 35
+							? { defaultSettings: 'full' }
+							: {}),
+						...(deviceStore.MIOSVersion &&
+						deviceStore.MIOSVersion >= 2 &&
+						deviceStore.androidTargetSdk >= 35
+							? { skipSelfAdaptive: true }
+							: {}),
 					};
 				}
 			}
@@ -942,11 +1038,24 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 				} else {
 					embeddedStore.customConfigFixedOrientationList[row.name] = {
 						name: row.name,
-						...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35 ? { supportModes: 'full,fo' } : {}),
-						...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35 ? { defaultSettings: 'fo' } : {}),
-						...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35 ? { skipSelfAdaptive: true } : {}),
 						...(deviceStore.MIOSVersion &&
-						deviceStore.MIOSVersion >= 2  && deviceStore.androidTargetSdk >= 35 &&
+						deviceStore.MIOSVersion >= 2 &&
+						deviceStore.androidTargetSdk >= 35
+							? { supportModes: 'full,fo' }
+							: {}),
+						...(deviceStore.MIOSVersion &&
+						deviceStore.MIOSVersion >= 2 &&
+						deviceStore.androidTargetSdk >= 35
+							? { defaultSettings: 'fo' }
+							: {}),
+						...(deviceStore.MIOSVersion &&
+						deviceStore.MIOSVersion >= 2 &&
+						deviceStore.androidTargetSdk >= 35
+							? { skipSelfAdaptive: true }
+							: {}),
+						...(deviceStore.MIOSVersion &&
+						deviceStore.MIOSVersion >= 2 &&
+						deviceStore.androidTargetSdk >= 35 &&
 						updateEmbeddedAppRes.modePayload.forceFixedOrientation
 							? {
 									compatChange: 'OVERRIDE_UNDEFINED_ORIENTATION_TO_PORTRAIT',
@@ -988,7 +1097,11 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 					embeddedStore.customConfigFixedOrientationList[row.name] = {
 						name: row.name,
 						disable: true,
-						...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35 ? { skipSelfAdaptive: true } : {}),
+						...(deviceStore.MIOSVersion &&
+						deviceStore.MIOSVersion >= 2 &&
+						deviceStore.androidTargetSdk >= 35
+							? { skipSelfAdaptive: true }
+							: {}),
 					};
 				}
 			}
@@ -1009,8 +1122,11 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 						embeddedStore.customConfigEmbeddedRulesList[row.name].relaunch =
 							updateEmbeddedAppRes.modePayload.emRelaunch;
 					}
-					if (updateEmbeddedAppRes.modePayload.hasOwnProperty('emIsDisabledPlaceholder') && updateEmbeddedAppRes.modePayload.emIsDisabledPlaceholder) {
-						delete embeddedStore.customConfigEmbeddedRulesList[row.name].placeholder
+					if (
+						updateEmbeddedAppRes.modePayload.hasOwnProperty('emIsDisabledPlaceholder') &&
+						updateEmbeddedAppRes.modePayload.emIsDisabledPlaceholder
+					) {
+						delete embeddedStore.customConfigEmbeddedRulesList[row.name].placeholder;
 					}
 				} else {
 					// 如果不存在自定义规则，但有 `splitRatio` 需要补充
@@ -1036,8 +1152,11 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 								relaunch: updateEmbeddedAppRes.modePayload.emRelaunch,
 							}),
 						};
-						if (updateEmbeddedAppRes.modePayload.hasOwnProperty('emIsDisabledPlaceholder') && updateEmbeddedAppRes.modePayload.emIsDisabledPlaceholder) {
-							delete embeddedStore.customConfigEmbeddedRulesList[row.name].placeholder
+						if (
+							updateEmbeddedAppRes.modePayload.hasOwnProperty('emIsDisabledPlaceholder') &&
+							updateEmbeddedAppRes.modePayload.emIsDisabledPlaceholder
+						) {
+							delete embeddedStore.customConfigEmbeddedRulesList[row.name].placeholder;
 						}
 					}
 				}
@@ -1110,10 +1229,16 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 			}
 			const [submitUpdateEmbeddedAppErr, submitUpdateEmbeddedAppRes] = await $to(
 				embeddedApi.updateEmbeddedApp({
-					...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35 ? {
-						customThirdPartyAppOptimizeConfigProp: thirdPartyAppOptimizeJSONFormatToProp(embeddedStore.customThirdPartyAppOptimizeConfig),
-						thirdPartyAppOptimizeConfigRunnerShell: thirdPartyAppOptimizeJSONFormatToRunnerShell(embeddedStore.mergeThirdPartyAppOptimizeConfig)
-					} : undefined),
+					...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35
+						? {
+								customThirdPartyAppOptimizeConfigProp: thirdPartyAppOptimizeJSONFormatToProp(
+									embeddedStore.customThirdPartyAppOptimizeConfig,
+								),
+								thirdPartyAppOptimizeConfigRunnerShell: thirdPartyAppOptimizeJSONFormatToRunnerShell(
+									embeddedStore.mergeThirdPartyAppOptimizeConfig,
+								),
+							}
+						: undefined),
 					isPatchMode: embeddedStore.isPatchMode,
 					patchEmbeddedRulesListXML: xmlFormat.objectToXML(
 						embeddedStore.patchEmbeddedRulesList,
@@ -1185,31 +1310,36 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 					title: '应用更新成功',
 					type: 'success',
 					preset: 'dialog',
-					content: () => (
-						deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35 ? (<p>
-							好耶w，{' '}
-							<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-								{renderApplicationName(row.name, row.applicationName)}
-							</span>{' '}
-							的应用配置更新成功了OwO~如果应用更新后的规则不生效，可以尝试重启平板再做尝试~
-						</p>) : (<p>
-							好耶w，{' '}
-							<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-								{renderApplicationName(row.name, row.applicationName)}
-							</span>{' '}
-							的应用配置更新成功了OwO~如果应用更新后的规则不生效，可以尝试重启平板并且在{' '}
-							<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-								平板专区-平行窗口
-							</span>{' '}
-							内{' '}
-							<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-								{['embedded', 'fullScreen'].includes(updateEmbeddedAppRes.settingMode)
-									? '打开'
-									: '关闭'}
-							</span>{' '}
-							该应用的开关再做尝试~
-						</p>)
-					),
+					content: () =>
+						deviceStore.MIOSVersion &&
+						deviceStore.MIOSVersion >= 2 &&
+						deviceStore.androidTargetSdk >= 35 ? (
+							<p>
+								好耶w，{' '}
+								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+									{renderApplicationName(row.name, row.applicationName)}
+								</span>{' '}
+								的应用配置更新成功了OwO~如果应用更新后的规则不生效，可以尝试重启平板再做尝试~
+							</p>
+						) : (
+							<p>
+								好耶w，{' '}
+								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+									{renderApplicationName(row.name, row.applicationName)}
+								</span>{' '}
+								的应用配置更新成功了OwO~如果应用更新后的规则不生效，可以尝试重启平板并且在{' '}
+								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+									平板专区-平行窗口
+								</span>{' '}
+								内{' '}
+								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+									{['embedded', 'fullScreen'].includes(updateEmbeddedAppRes.settingMode)
+										? '打开'
+										: '关闭'}
+								</span>{' '}
+								该应用的开关再做尝试~
+							</p>
+						),
 				});
 				embeddedStore.updateMergeRuleList();
 				updateEmbeddedAppRes.loadingCallback && updateEmbeddedAppRes.loadingCallback();
@@ -1272,10 +1402,19 @@ const handleCustomRuleDropdown = async (
 
 				const [submitUpdateEmbeddedAppErr, submitUpdateEmbeddedAppRes] = await $to(
 					embeddedApi.updateEmbeddedApp({
-						...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35 ? {
-							customThirdPartyAppOptimizeConfigProp: thirdPartyAppOptimizeJSONFormatToProp(embeddedStore.customThirdPartyAppOptimizeConfig),
-							thirdPartyAppOptimizeConfigRunnerShell: thirdPartyAppOptimizeJSONFormatToRunnerShell(embeddedStore.mergeThirdPartyAppOptimizeConfig)
-						} : undefined),
+						...(deviceStore.MIOSVersion &&
+						deviceStore.MIOSVersion >= 2 &&
+						deviceStore.androidTargetSdk >= 35
+							? {
+									customThirdPartyAppOptimizeConfigProp: thirdPartyAppOptimizeJSONFormatToProp(
+										embeddedStore.customThirdPartyAppOptimizeConfig,
+									),
+									thirdPartyAppOptimizeConfigRunnerShell:
+										thirdPartyAppOptimizeJSONFormatToRunnerShell(
+											embeddedStore.mergeThirdPartyAppOptimizeConfig,
+										),
+								}
+							: undefined),
 						isPatchMode: embeddedStore.isPatchMode,
 						patchEmbeddedRulesListXML: xmlFormat.objectToXML(
 							embeddedStore.patchEmbeddedRulesList,
@@ -1302,7 +1441,9 @@ const handleCustomRuleDropdown = async (
 							'package',
 							undefined,
 						),
-						...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35
+						...(deviceStore.MIOSVersion &&
+						deviceStore.MIOSVersion >= 2 &&
+						deviceStore.androidTargetSdk >= 35
 							? {
 									settingConfigXML: xmlFormat.objectToXML(
 										embeddedStore.customConfigEmbeddedSettingConfig,
@@ -1317,7 +1458,9 @@ const handleCustomRuleDropdown = async (
 										'setting_rule',
 									),
 								}),
-						...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35
+						...(deviceStore.MIOSVersion &&
+						deviceStore.MIOSVersion >= 2 &&
+						deviceStore.androidTargetSdk >= 35
 							? {
 									setAppMode: {
 										name: row.name,
@@ -1385,9 +1528,11 @@ const handleCustomRuleDropdown = async (
 			type: 'embedded',
 			device: deviceStore.deviceCharacteristics === 'tablet' ? 'pad' : 'fold',
 			mode: row.settingMode,
-			...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35 ? {
-				thirdPartyAppOptimize: row.thirdPartyAppOptimize
-			} : undefined)
+			...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35
+				? {
+						thirdPartyAppOptimize: row.thirdPartyAppOptimize,
+					}
+				: undefined),
 		};
 		const jsonString = JSON.stringify(shareContent);
 		const deflate = pako.deflate(jsonString, {
@@ -1502,12 +1647,34 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 								<span class={{ hidden: !row.applicationName }}>)</span>
 							</p>
 						)}
-						{
-							incompatibleApplicationList[row.name] && (<n-button class="mt-1" size="tiny" ghost type="warning" onClick={() => incompatibleApplicationList[row.name] && incompatibleApplicationList[row.name](row)}>应用不兼容感知</n-button>)
-						}
-						{
-							embeddedPerceptionApplications[row.name] && embeddedPerceptionApplications[row.name].isShow && embeddedPerceptionApplications[row.name].isShow() && (<n-button class="mt-1" size="tiny" ghost type="info" onClick={() => embeddedPerceptionApplications[row.name] && embeddedPerceptionApplications[row.name].onClick && embeddedPerceptionApplications[row.name].onClick(row)}>应用规则感知</n-button>)
-						}
+						{incompatibleApplicationList[row.name] && (
+							<n-button
+								class='mt-1'
+								size='tiny'
+								ghost
+								type='warning'
+								onClick={() =>
+									incompatibleApplicationList[row.name] && incompatibleApplicationList[row.name](row)
+								}>
+								应用不兼容感知
+							</n-button>
+						)}
+						{embeddedPerceptionApplications[row.name] &&
+							embeddedPerceptionApplications[row.name].isShow &&
+							embeddedPerceptionApplications[row.name].isShow() && (
+								<n-button
+									class='mt-1'
+									size='tiny'
+									ghost
+									type='info'
+									onClick={() =>
+										embeddedPerceptionApplications[row.name] &&
+										embeddedPerceptionApplications[row.name].onClick &&
+										embeddedPerceptionApplications[row.name].onClick(row)
+									}>
+									应用规则感知
+								</n-button>
+							)}
 					</div>
 				);
 			},
@@ -1573,7 +1740,13 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 						type: 'warning',
 						preset: 'dialog',
 						content: () => (
-							<p>由于系统BUG，部分情况下会导致应用当前适配与实际不符，模块可以主动修复{' '}<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>{renderApplicationName(row.name, row.applicationName)}</span>{' '}由于系统错误的兼容性配置导致应用布局异常的问题，确定要继续吗？</p>
+							<p>
+								由于系统BUG，部分情况下会导致应用当前适配与实际不符，模块可以主动修复{' '}
+								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+									{renderApplicationName(row.name, row.applicationName)}
+								</span>{' '}
+								由于系统错误的兼容性配置导致应用布局异常的问题，确定要继续吗？
+							</p>
 						),
 						positiveText: '确定修复',
 						negativeText: '我再想想',
@@ -1586,17 +1759,19 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 									title: '修复应用规则失败',
 									type: 'error',
 									preset: 'dialog',
-									content: () => (
-										<p>发生异常错误，修复应用规则失败了QwQ，详细错误请查看错误日志~</p>
-									),
+									content: () => <p>发生异常错误，修复应用规则失败了QwQ，详细错误请查看错误日志~</p>,
 								});
 							} else {
-								if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35) {
-									const [setAppModeErr, setAppModeRes] = await $to<string,string>(
+								if (
+									deviceStore.MIOSVersion &&
+									deviceStore.MIOSVersion >= 2 &&
+									deviceStore.androidTargetSdk >= 35
+								) {
+									const [setAppModeErr, setAppModeRes] = await $to<string, string>(
 										embeddedApi.setAppMode(row.name, getAppModeCode(row.settingMode)),
 									);
 									if (setAppModeErr) {
-										logsStore.error('SetAppModeErr',setAppModeErr)
+										logsStore.error('SetAppModeErr', setAppModeErr);
 										modal.create({
 											title: '修复应用规则失败',
 											type: 'error',
@@ -1607,11 +1782,14 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 										});
 									}
 								} else {
-									const [switchActionErr, switchActionRes] = await $to<string,string>(
-										embeddedApi.switchAction(row.name, ['embedded', 'fullScreen'].includes(row.settingMode) ? 'enable' : 'disable'),
+									const [switchActionErr, switchActionRes] = await $to<string, string>(
+										embeddedApi.switchAction(
+											row.name,
+											['embedded', 'fullScreen'].includes(row.settingMode) ? 'enable' : 'disable',
+										),
 									);
 									if (switchActionErr) {
-										logsStore.error('SwitchActionErr',switchActionErr)
+										logsStore.error('SwitchActionErr', switchActionErr);
 										modal.create({
 											title: '修复应用规则失败',
 											type: 'error',
@@ -1913,7 +2091,7 @@ onMounted(() => {
 					从分享口令导入
 				</n-button>
 			</div>
-			<div class="flex">
+			<div class="flex flex-wrap">
 				<n-button
 					class="mb-3 mr-3"
 					:type="embeddedStore.filterInstalledApps ? 'success' : 'info'"
@@ -1954,6 +2132,29 @@ onMounted(() => {
 						</n-icon>
 					</template>
 					超级小爱
+				</n-button>
+				<n-button
+					class="mb-3 mr-3"
+					type="info"
+					secondary
+					:loading="deviceStore.loading || embeddedStore.loading"
+					@click="
+						() =>
+							router.push({
+								name: 'embedded-webview',
+								query: {
+									url: 'https://dhfs.heytapimage.com/userfiles/cms/ai_search/index.html?__pf__=detail&__barStyle__=3_2&immersive=0&enter_id=browser&enterMod=viewcard#/',
+								},
+							})
+					">
+					<template #icon>
+							<n-icon size="24">
+								<svg class="icon" aria-hidden="true">
+									<use xlink:href="#icon-deepseek"></use>
+								</svg>
+						</n-icon>
+					</template>
+					DeepSeek
 				</n-button>
 			</div>
 			<div class="flex">
