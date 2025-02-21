@@ -266,6 +266,19 @@
           </div>
           <div class="px-4 flex sm:grid sm:px-0 mt-5">
             <n-alert
+              title="流舟文件"
+              type="info"
+            >
+            <template #icon>
+              <img src="/images/apps/liuzhoufile.png" />
+            </template>
+            <p>流舟文件是功能强大且免费的本地&网络文件管理器，帮助你高效的管理文件以及应用。</p>
+            <p>支持将「文件夹」或者「文件」映射到「桌面快捷方式」，弥补小米平板文件管理的功能缺失！</p>
+              <n-button class="mt-2" strong secondary type="info" @click="() => getAppDownload('流舟文件', 'https://caiyun.139.com/m/i?135CmlYwYWyCJ', 'original')">获取流舟文件</n-button>
+            </n-alert>
+          </div>
+          <div class="px-4 flex sm:grid sm:px-0 mt-5">
+            <n-alert
               title="盖世游戏"
               type="default"
             >
@@ -317,6 +330,19 @@
               <p>小米音乐 X QQ音乐！该版本小米已经去除反向适配的平行窗口，拥有更好的大屏体验！</p>
               <p>注意事项:  如提示系统应用无法安装请从文件管理安装</p>
               <n-button class="mt-2" strong secondary type="success" @click="() => getAppDownload('小米音乐', 'https://caiyun.139.com/m/i?135CmXllwKaxM', 'system')">获取小米音乐</n-button>
+            </n-alert>
+          </div>
+          <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="deviceStore.deviceCharacteristics === 'tablet'">
+            <n-alert
+              title="网易爆米花"
+              type="warning"
+            >
+            <template #icon>
+              <img src="/images/apps/filmlytv.webp" />
+            </template>
+              <p>网易出品的智能媒体库，完全免费，无广告！</p>
+              <p>支持本地目录、WebDAV、SMB、中国移动云盘、阿里云盘等方式轻松导入你所有来源的影片！</p>
+              <n-button class="mt-2" strong secondary type="warning" @click="() => getAppDownload('网易爆米花', '链接:  https://caiyun.139.com/m/i?135ClnUmBJ1EA', 'original')">获取网易爆米花</n-button>
             </n-alert>
           </div>
           <div class="px-4 flex sm:grid sm:px-0 mt-5">

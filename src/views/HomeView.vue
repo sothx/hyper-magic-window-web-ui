@@ -1107,11 +1107,11 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 			}
 			if (updateEmbeddedAppRes.settingMode === 'embedded') {
 				// 如果 `row.settingMode` 不同且规则是自定义且模块规则支持平行窗口，则删除自定义规则
-				if (row.settingMode !== updateEmbeddedAppRes.settingMode) {
-					if (row.ruleMode === 'custom' && row.isSupportEmbedded) {
-						delete embeddedStore.customConfigEmbeddedRulesList[row.name];
-					}
-				}
+				// if (row.settingMode !== updateEmbeddedAppRes.settingMode) {
+				// 	if (row.ruleMode === 'custom' && row.isSupportEmbedded) {
+				// 		delete embeddedStore.customConfigEmbeddedRulesList[row.name];
+				// 	}
+				// }
 				// 如果自定义规则存在，更新 `splitRatio`
 				if (embeddedStore.customConfigEmbeddedRulesList[row.name]) {
 					if (updateEmbeddedAppRes.modePayload.hasOwnProperty('splitRatio')) {
@@ -1127,6 +1127,9 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 						updateEmbeddedAppRes.modePayload.emIsDisabledPlaceholder
 					) {
 						delete embeddedStore.customConfigEmbeddedRulesList[row.name].placeholder;
+					}
+					if (embeddedStore.customConfigEmbeddedRulesList[row.name].hasOwnProperty('fullRule')) {
+						delete embeddedStore.customConfigEmbeddedRulesList[row.name].fullRule;
 					}
 				} else {
 					// 如果不存在自定义规则，但有 `splitRatio` 需要补充
@@ -1157,6 +1160,10 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 							updateEmbeddedAppRes.modePayload.emIsDisabledPlaceholder
 						) {
 							delete embeddedStore.customConfigEmbeddedRulesList[row.name].placeholder;
+						}
+
+						if (embeddedStore.customConfigEmbeddedRulesList[row.name].hasOwnProperty('fullRule')) {
+							delete embeddedStore.customConfigEmbeddedRulesList[row.name].fullRule;
 						}
 					}
 				}

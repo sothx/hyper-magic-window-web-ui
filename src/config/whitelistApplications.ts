@@ -254,6 +254,24 @@ const topApplicationList = {
     'com.manmanbuy.bijia': 1, // 慢慢买
     'com.psyone.brainmusic': 1, // 小睡眠
     'com.heartide.xinchao.stressandroid': 1, // 心潮
+    'cn.eeo.classin': 1, //ClassIn
+    'com.qiekj.user': 1, //胖乖生活
+    'com.kurogame.kjq': 1, //库街区
+    'my.maya.android':1,//多闪
+    'com.evideo.MobileKTV': 1, // K米
+    'com.lehuoapp.mm': 1,// 乐活
+    'com.nice.main': 1, // nice
+    'bingdic.android.activity': 1, //微软必应词典
+    'com.youdao.hindict': 1, // U-Dictionary
+    'com.microsoft.bing': 1, // 微软必应
+    'com.microsoft.translator': 1, // 微软翻译
+    'com.naver.labs.translator': 1, // Papago
+    'com.zhihu.android.lite': 1, // 知乎盐选版
+    'com.zhihu.vip.android': 1, // 盐选故事
+    'com.zhihu.daily.android': 1, // 知乎日报
+    'com.zhihu.gongkao.android': 1, // 一起公考AI课
+    'com.molica.mainapp': 1, // Molica AI
+    'com.taige.mygold': 1, // 妙看极速版
 }
 
 export default {
