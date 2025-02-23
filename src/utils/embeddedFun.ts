@@ -29,6 +29,7 @@ export const getSettingEnableMode = (embeddedConfig: EmbeddedRuleItem, fixedOrie
 	if (settingMode === 'fullScreen') {
 		enableModes.ratio_fullScreenEnable = true;
 		if (embeddedConfig && embeddedConfig.hasOwnProperty('fullRule')) {
+			enableModes.ratio_fullScreenEnable = false;
 			enableModes.fullScreenEnable = true;
 		} else {
 			delete enableModes.fullScreenEnable
@@ -38,10 +39,12 @@ export const getSettingEnableMode = (embeddedConfig: EmbeddedRuleItem, fixedOrie
 		delete enableModes.fullScreenEnable
 	}
 
-	if (settingMode === 'fixedOrientation') {
-		enableModes.fixedOrientationEnable = true
-	} else {
-		delete enableModes.fixedOrientationEnable
+	if (fixedOrientationConfig) {
+		if (settingMode === 'fixedOrientation') {
+			enableModes.fixedOrientationEnable = true
+		} else {
+			enableModes.fixedOrientationEnable = false
+		}
 	}
 
 	return enableModes
