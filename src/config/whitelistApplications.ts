@@ -272,6 +272,8 @@ const topApplicationList = {
     'com.zhihu.gongkao.android': 1, // 一起公考AI课
     'com.molica.mainapp': 1, // Molica AI
     'com.taige.mygold': 1, // 妙看极速版
+    'com.ss.android.article.daziban': 1, // 爱看
+    'com.jihuanshe': 1, // 集换社
 }
 
 export default {
