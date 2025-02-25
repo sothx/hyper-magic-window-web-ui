@@ -381,10 +381,10 @@ export const useDeviceStore = defineStore(
 			if (getMiuiCompatEnableRes && getMiuiCompatEnableRes === 'true') {
 				miuiCompatEnable.value = true;
 			}
-			const [, getMiuiAppCompatEnableRes] = await $to(deviceApi.getMiuiAppCompatEnable());
-			if (getMiuiAppCompatEnableRes && getMiuiCompatEnableRes === 'true') {
-				miuiAppCompatEnable.value = true;
-			}
+			// const [, getMiuiAppCompatEnableRes] = await $to(deviceApi.getMiuiAppCompatEnable());
+			// if (getMiuiAppCompatEnableRes && getMiuiCompatEnableRes === 'true') {
+			// 	miuiAppCompatEnable.value = true;
+			// }
 			// Xiaomi Hyper OS 版本号 *弱校验
 			const [, getMIOSVersionRes] = await $to<number, string>(deviceApi.getMIOSVersion());
 			if (getMIOSVersionRes) {

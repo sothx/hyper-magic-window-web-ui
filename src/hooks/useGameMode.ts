@@ -3,7 +3,7 @@ import { useDeviceStore } from '@/stores/device'
 
 export function useGameMode() {
     const isSupportGameMode  = computed(() => {
-        return deviceStore.miuiCompatEnable && deviceStore.miuiAppCompatEnable && deviceStore.androidTargetSdk && deviceStore.androidTargetSdk > 31
+        return deviceStore.miuiCompatEnable && deviceStore.androidTargetSdk && deviceStore.androidTargetSdk > 31
     })
 
 

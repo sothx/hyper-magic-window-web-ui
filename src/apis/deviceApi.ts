@@ -190,7 +190,7 @@ export const getIsPatchMode = (): Promise<string> => {
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
-				resolve(`true`);
+				resolve(`false`);
 			} else {
 				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
 				errno ? reject(stderr) : resolve(stdout);
@@ -246,7 +246,7 @@ export const getIsDisabledOS2SystemAppOptimize = (): Promise<string> => {
 };
 
 export const deleteGameMode = (): Promise<string> => {
-	const shellCommon = `sed -i '/^# 开启游戏显示布局/d; /^ro.config.miui_compat_enable=/d; /^ro.config.miui_appcompat_enable=/d' /data/adb/modules/MIUI_MagicWindow+/system.prop  && echo "Command executed successfully." || echo "Command failed."`;
+	const shellCommon = `sed -i '/^# 开启游戏显示布局/d; /^ro.config.miui_compat_enable=/d' /data/adb/modules/MIUI_MagicWindow+/system.prop  && echo "Command executed successfully." || echo "Command failed."`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -261,7 +261,7 @@ export const deleteGameMode = (): Promise<string> => {
 };
 
 export const addGameMode = (): Promise<string> => {
-	const shellCommon = `grep -qxF "# 开启游戏显示布局" system.prop || echo -e "\n# 开启游戏显示布局\nro.config.miui_compat_enable=true\nro.config.miui_appcompat_enable=true\n" >> /data/adb/modules/MIUI_MagicWindow+/system.prop  && echo "Command executed successfully." || echo "Command failed."`;
+	const shellCommon = `grep -qxF "# 开启游戏显示布局" system.prop || echo -e "\n# 开启游戏显示布局\nro.config.miui_compat_enable=true\n" >> /data/adb/modules/MIUI_MagicWindow+/system.prop  && echo "Command executed successfully." || echo "Command failed."`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {

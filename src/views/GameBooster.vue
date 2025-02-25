@@ -51,11 +51,60 @@ const GAME_RATIO_OPTIONS = gameRatioOptions();
 const GAME_RATIO_VALUE_MAP = mapKeys(GAME_RATIO_OPTIONS, item => item.value);
 const GAME_GRAVITY_OPTIONS = gameGravityOptions();
 const GAME_GRAVITY_VALUE_MAP = mapKeys(GAME_GRAVITY_OPTIONS, item => item.value);
-const gameMode = useGameMode();
+const gameModeHook = useGameMode();
 const updateGameBoosterAppDrawer = ref<GameBoosterAppDrawerInstance | null>(null);
 
 const openAddGame = async () => {
-	if (!gameMode.isSupportGameMode.value) {
+	if (
+		deviceStore.androidTargetSdk >= 35 &&
+		deviceStore.MIOSVersion &&
+		deviceStore.MIOSVersion >= 2 &&
+		deviceStore.deviceCharacteristics === 'tablet'
+	) {
+		if (deviceStore.MIOSVersion === 2) {
+			if (
+				!['pad-ext-', 'pad-hyperos2-based-on-vanillaIceCream-'].some(item => (deviceStore.moduleInfo && deviceStore.moduleInfo.version || '').indexOf(item) === 0)
+			) {
+				modal.create({
+					title: '获取专版模块',
+					type: 'info',
+					preset: 'dialog',
+					content: () => (
+						<div>
+							<p>
+								需要安装{' '}
+								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+									小米平板安卓15澎湃2.0专版(pad-hyperos2-based-on-vanillaIceCream)
+								</span>{' '}
+								才可以正常使用{' '}
+								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+									游戏显示布局
+								</span>{' '}
+								，请先替换模块版本~
+							</p>
+							<p>下载地址:https://caiyun.139.com/m/i?135CeBMHACC6p</p>
+						</div>
+					),
+					positiveText: '复制下载链接到剪切板',
+					negativeText: '取消',
+					onPositiveClick: () => {
+						navigator.clipboard.writeText(`https://caiyun.139.com/m/i?135CeBMHACC6p`);
+					},
+					onNegativeClick: () => {},
+				});
+				return;
+			}
+		} else {
+			modal.create({
+				title: '未适配系统版本',
+				type: 'error',
+				preset: 'dialog',
+				content: () => <p>该系统版本尚未适配游戏显示布局，请等待模块后续更新~</p>,
+			});
+			return;
+		}
+	}
+	if (!gameModeHook.isSupportGameMode.value) {
 		modal.create({
 			title: '未开启游戏显示布局',
 			type: 'warning',
@@ -134,7 +183,56 @@ const goToDisplayModeSettings = () => {
 };
 
 const handleClickSetting = async (row: GameBoosterTableItem, index: number) => {
-	if (!gameMode.isSupportGameMode.value) {
+	if (
+		deviceStore.androidTargetSdk >= 35 &&
+		deviceStore.MIOSVersion &&
+		deviceStore.MIOSVersion >= 2 &&
+		deviceStore.deviceCharacteristics === 'tablet'
+	) {
+		if (deviceStore.MIOSVersion === 2) {
+			if (
+				!['pad-ext-', 'pad-hyperos2-based-on-vanillaIceCream-'].some(item => (deviceStore.moduleInfo && deviceStore.moduleInfo.version || '').indexOf(item) === 0)
+			) {
+				modal.create({
+					title: '获取专版模块',
+					type: 'info',
+					preset: 'dialog',
+					content: () => (
+						<div>
+							<p>
+								需要安装{' '}
+								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+									小米平板安卓15澎湃2.0专版(pad-hyperos2-based-on-vanillaIceCream)
+								</span>{' '}
+								才可以正常使用{' '}
+								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+									游戏显示布局
+								</span>{' '}
+								，请先替换模块版本~
+							</p>
+							<p>下载地址:https://caiyun.139.com/m/i?135CeBMHACC6p</p>
+						</div>
+					),
+					positiveText: '复制下载链接到剪切板',
+					negativeText: '取消',
+					onPositiveClick: () => {
+						navigator.clipboard.writeText(`https://caiyun.139.com/m/i?135CeBMHACC6p`);
+					},
+					onNegativeClick: () => {},
+				});
+				return;
+			}
+		} else {
+			modal.create({
+				title: '未适配系统版本',
+				type: 'error',
+				preset: 'dialog',
+				content: () => <p>该系统版本尚未适配游戏显示布局，请等待模块后续更新~</p>,
+			});
+			return;
+		}
+	}
+	if (!gameModeHook.isSupportGameMode.value) {
 		modal.create({
 			title: '未开启游戏显示布局',
 			type: 'warning',
@@ -450,7 +548,11 @@ function createColumns(): DataTableColumns<GameBoosterTableItem> {
 			<div class="flex flex-wrap">
 				<n-dropdown
 					size="large"
-					v-if="!deviceStore.MIOSVersion || deviceStore.MIOSVersion && deviceStore.MIOSVersion < 2 || deviceStore.androidTargetSdk < 35"
+					v-if="
+						!deviceStore.MIOSVersion ||
+						(deviceStore.MIOSVersion && deviceStore.MIOSVersion < 2) ||
+						deviceStore.androidTargetSdk < 35
+					"
 					trigger="click"
 					:options="[
 						{ label: '打开性能监视器', key: 'start' },
@@ -547,10 +649,10 @@ function createColumns(): DataTableColumns<GameBoosterTableItem> {
 							})
 					">
 					<template #icon>
-							<n-icon size="24">
-								<svg class="icon" aria-hidden="true">
-									<use xlink:href="#icon-deepseek"></use>
-								</svg>
+						<n-icon size="24">
+							<svg class="icon" aria-hidden="true">
+								<use xlink:href="#icon-deepseek"></use>
+							</svg>
 						</n-icon>
 					</template>
 					DeepSeek

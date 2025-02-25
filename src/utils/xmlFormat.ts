@@ -232,7 +232,7 @@ export const mergeEmbeddedRule = (
         if (settingConfig.fixedOrientationEnable) {
           settingMode = 'fixedOrientation'
         }
-        if (settingConfig.ratio_fullScreenEnable) {
+        if (settingConfig.ratio_fullScreenEnable || settingConfig.fullScreenEnable) {
           settingMode = 'fullScreen'
         }
         if (settingConfig.embeddedEnable) {
