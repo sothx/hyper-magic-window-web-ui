@@ -274,6 +274,7 @@ const topApplicationList = {
     'com.taige.mygold': 1, // 妙看极速版
     'com.ss.android.article.daziban': 1, // 爱看
     'com.jihuanshe': 1, // 集换社
+    'com.ydtx.camera': 1, // 元道经纬相机
 }
 
 export default {
