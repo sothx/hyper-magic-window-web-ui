@@ -1045,7 +1045,7 @@ function createColumns(): DataTableColumns<AutoUIMergeRuleItem> {
 					</template>
 					超级小爱
 				</n-button>
-				<n-button
+				<!-- <n-button
 					class="mb-3 mr-3"
 					type="info"
 					secondary
@@ -1067,7 +1067,7 @@ function createColumns(): DataTableColumns<AutoUIMergeRuleItem> {
 						</n-icon>
 					</template>
 					DeepSeek
-				</n-button>
+				</n-button> -->
 			</div>
 			<n-input-group>
 				<n-input
