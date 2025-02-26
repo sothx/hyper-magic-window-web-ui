@@ -281,6 +281,7 @@ const topApplicationList = {
     'com.shark.jizhang': 1, // 鲨鱼记账
     'com.android.miaoa.achai': 1, // 阿柴记账
     'com.candybook.secretplanetandroid': 1, // 秘密星球
+    'com.android.superli.btremote': 1, // 蓝牙遥控
 }
 
 export default {

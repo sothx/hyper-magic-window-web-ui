@@ -321,6 +321,18 @@
           </div>
           <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="deviceStore.deviceCharacteristics === 'tablet'">
             <n-alert
+              title="蓝牙遥控"
+              type="info"
+            >
+            <template #icon>
+              <img src="/images/apps/btremote.png" />
+            </template>
+              <p>蓝牙遥控是一款多功能遥控软件，可以通过蓝牙模拟键盘、鼠标、遥控器、手柄等功能。</p>
+              <n-button class="mt-2" strong secondary type="info" @click="() => getAppDownload('蓝牙遥控', 'https://caiyun.139.com/m/i?135CmQwFbuC1D', 'original')">获取蓝牙遥控</n-button>
+            </n-alert>
+          </div>
+          <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="deviceStore.deviceCharacteristics === 'tablet'">
+            <n-alert
               title="小米音乐(平板端)"
               type="success"
             >
