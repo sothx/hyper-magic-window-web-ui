@@ -282,6 +282,9 @@ const topApplicationList = {
     'com.android.miaoa.achai': 1, // 阿柴记账
     'com.candybook.secretplanetandroid': 1, // 秘密星球
     'com.android.superli.btremote': 1, // 蓝牙遥控
+    'com.boohee.box': 1, // 薄荷宝箱
+    'com.youdao.xiaop': 1, // 有道小P
+    'com.wandoujia.eyepetizer': 1, // 开眼
 }
 
 export default {
