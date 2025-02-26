@@ -334,6 +334,20 @@
           </div>
           <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="deviceStore.deviceCharacteristics === 'tablet'">
             <n-alert
+              title="Flix"
+              type="default"
+            >
+            <template #icon>
+              <img src="/images/apps/flix.png" />
+            </template>
+              <p>像聊天一样传文件，支持多种方式连接。同一局域网、同一WiFi，还可扫码快速热点连接。</p>
+              <p>多端同步支持，跨品牌无缝传输。全面支持 Windows，macOS，iOS，Android，Linux，不限系统，不限品牌；</p>
+              <p>Flix 支持后台传输、断点续传，让传输过程更流畅。</p>
+              <n-button class="mt-2" strong secondary type="default" @click="() => getAppDownload('Flix', 'https://caiyun.139.com/m/i?135ClTD8sxB0G', 'original')">获取Flix</n-button>
+            </n-alert>
+          </div>
+          <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="deviceStore.deviceCharacteristics === 'tablet'">
+            <n-alert
               title="小米音乐(平板端)"
               type="success"
             >
