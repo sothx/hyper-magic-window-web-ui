@@ -328,6 +328,7 @@
               <img src="/images/apps/btremote.png" />
             </template>
               <p>蓝牙遥控是一款多功能遥控软件，可以通过蓝牙模拟键盘、鼠标、遥控器、手柄等功能。</p>
+              <p>完美横屏应用计划已为蓝牙遥控通过应用横屏布局适配大屏，欢迎体验！</p>
               <n-button class="mt-2" strong secondary type="info" @click="() => getAppDownload('蓝牙遥控', 'https://caiyun.139.com/m/i?135CmQwFbuC1D', 'original')">获取蓝牙遥控</n-button>
             </n-alert>
           </div>
