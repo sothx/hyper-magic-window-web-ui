@@ -55,54 +55,9 @@ const gameModeHook = useGameMode();
 const updateGameBoosterAppDrawer = ref<GameBoosterAppDrawerInstance | null>(null);
 
 const openAddGame = async () => {
-	if (
-		deviceStore.androidTargetSdk >= 35 &&
-		deviceStore.MIOSVersion &&
-		deviceStore.MIOSVersion >= 2 &&
-		deviceStore.deviceCharacteristics === 'tablet'
-	) {
-		if (deviceStore.MIOSVersion === 2) {
-			if (
-				!['pad-ext-', 'pad-hyperos2-based-on-vanillaIceCream-'].some(item => (deviceStore.moduleInfo && deviceStore.moduleInfo.version || '').indexOf(item) === 0)
-			) {
-				modal.create({
-					title: '获取专版模块',
-					type: 'info',
-					preset: 'dialog',
-					content: () => (
-						<div>
-							<p>
-								需要安装{' '}
-								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-									小米平板安卓15澎湃2.0专版(pad-hyperos2-based-on-vanillaIceCream)
-								</span>{' '}
-								才可以正常使用{' '}
-								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-									游戏显示布局
-								</span>{' '}
-								，请先替换模块版本~
-							</p>
-							<p>下载地址:https://caiyun.139.com/m/i?135CeBMHACC6p</p>
-						</div>
-					),
-					positiveText: '复制下载链接到剪切板',
-					negativeText: '取消',
-					onPositiveClick: () => {
-						navigator.clipboard.writeText(`https://caiyun.139.com/m/i?135CeBMHACC6p`);
-					},
-					onNegativeClick: () => {},
-				});
-				return;
-			}
-		} else {
-			modal.create({
-				title: '未适配系统版本',
-				type: 'error',
-				preset: 'dialog',
-				content: () => <p>该系统版本尚未适配游戏显示布局，请等待模块后续更新~</p>,
-			});
-			return;
-		}
+	const [vaildModuleVersionErr] = await $to(gameModeHook.vaildModuleVersion());
+	if (vaildModuleVersionErr) {
+		return;
 	}
 	if (!gameModeHook.isSupportGameMode.value) {
 		modal.create({
@@ -183,54 +138,9 @@ const goToDisplayModeSettings = () => {
 };
 
 const handleClickSetting = async (row: GameBoosterTableItem, index: number) => {
-	if (
-		deviceStore.androidTargetSdk >= 35 &&
-		deviceStore.MIOSVersion &&
-		deviceStore.MIOSVersion >= 2 &&
-		deviceStore.deviceCharacteristics === 'tablet'
-	) {
-		if (deviceStore.MIOSVersion === 2) {
-			if (
-				!['pad-ext-', 'pad-hyperos2-based-on-vanillaIceCream-'].some(item => (deviceStore.moduleInfo && deviceStore.moduleInfo.version || '').indexOf(item) === 0)
-			) {
-				modal.create({
-					title: '获取专版模块',
-					type: 'info',
-					preset: 'dialog',
-					content: () => (
-						<div>
-							<p>
-								需要安装{' '}
-								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-									小米平板安卓15澎湃2.0专版(pad-hyperos2-based-on-vanillaIceCream)
-								</span>{' '}
-								才可以正常使用{' '}
-								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-									游戏显示布局
-								</span>{' '}
-								，请先替换模块版本~
-							</p>
-							<p>下载地址:https://caiyun.139.com/m/i?135CeBMHACC6p</p>
-						</div>
-					),
-					positiveText: '复制下载链接到剪切板',
-					negativeText: '取消',
-					onPositiveClick: () => {
-						navigator.clipboard.writeText(`https://caiyun.139.com/m/i?135CeBMHACC6p`);
-					},
-					onNegativeClick: () => {},
-				});
-				return;
-			}
-		} else {
-			modal.create({
-				title: '未适配系统版本',
-				type: 'error',
-				preset: 'dialog',
-				content: () => <p>该系统版本尚未适配游戏显示布局，请等待模块后续更新~</p>,
-			});
-			return;
-		}
+	const [vaildModuleVersionErr] = await $to(gameModeHook.vaildModuleVersion());
+	if (vaildModuleVersionErr) {
+		return;
 	}
 	if (!gameModeHook.isSupportGameMode.value) {
 		modal.create({

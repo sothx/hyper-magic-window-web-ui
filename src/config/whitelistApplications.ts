@@ -275,6 +275,12 @@ const topApplicationList = {
     'com.ss.android.article.daziban': 1, // 爱看
     'com.jihuanshe': 1, // 集换社
     'com.ydtx.camera': 1, // 元道经纬相机
+    'com.sx.xiaoai': 1, // Moo日记
+    'cn.missevan': 1, // 猫耳FM
+    'pro.youqian.bill': 1, // 小青账
+    'com.shark.jizhang': 1, // 鲨鱼记账
+    'com.android.miaoa.achai': 1, // 阿柴记账
+    'com.candybook.secretplanetandroid': 1, // 秘密星球
 }
 
 export default {
