@@ -5,12 +5,27 @@ const systemApplicationList = {
     'com.miui.hybrid': 1, // com.miui.hybrid
     'com.miui.securitycenter': 1, // com.miui.securitycenter
     'com.miui.compass': 1, // com.miui.compass
-    'com.miui.contentextension': 1, // com.miui.contentextension
+    'com.miui.contentextension': 1, // 传送门
     'com.miui.misound': 1, // com.miui.misound
     'com.miui.voiceassist': 1, // com.miui.voiceassist
     'com.miui.securityadd': 1, // com.miui.securityadd
     'com.mi.earphone': 1, // 小米耳机
     'com.xiaomi.youpin': 1, // 小米有品
+    'com.xiaomi.mico': 1, // 小米音箱
+    'com.xiaomi.mi_connect_service': 1, // 小米互联通信服务
+    'cn.wps.moffice_eng.xiaomi.lite': 1, // 小米文档查看器（WPS定制）
+    'com.android.providers.downloads.ui': 1, // 下载管理
+    'com.mi.android.globalFileexplorer': 1, // 小米文件管理国际版
+    'com.mi.car.mobile': 1, // 小米汽车
+    'com.mi.global.bbs': 1, // 小米社区国际版
+    'com.mi.global.pocobbs': 1, // 小米 POCO社区
+    'com.mi.global.shop': 1, // 小米商城
+    'com.mi.health': 1, // 小米运动健康
+    'com.mi.print': 1, // 小米打印
+    'com.baidu.input_mi': 1, //百度输入法小米版
+    'com.ifengyu.intercom': 1, // 小米对讲机
+    'com.mfashiongallery.emag': 1, // 小米画报
+    'com.miui.accessibility': 1, // 小米无障碍
 }
 
 const topApplicationList = {
@@ -288,6 +303,7 @@ const topApplicationList = {
     'com.youqi.fjjf': 1, // 饭橘
     'com.magicalstory.reader': 1, // 漫读
     'com.mankson.reader': 1, // 磁力猫
+    'com.gswxxn.unlockmilink': 1, // 小米不妙·享
 }
 
 export default {
