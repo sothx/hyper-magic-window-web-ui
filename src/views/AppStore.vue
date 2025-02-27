@@ -346,6 +346,19 @@
               <n-button class="mt-2" strong secondary type="default" @click="() => getAppDownload('Flix', 'https://caiyun.139.com/m/i?135ClTD8sxB0G', 'original')">获取Flix</n-button>
             </n-alert>
           </div>
+          <div class="px-4 flex sm:grid sm:px-0 mt-5">
+            <n-alert
+              title="快递100"
+              type="info"
+            >
+            <template #icon>
+              <img src="/images/apps/kingdee.webp" />
+            </template>
+            <p>查快递 寄快递 上快递100，支持直接输入或扫描单号、图片识别、添加手机号等多种查件方式，还可自动保存查件记录，支持多设备多平台同步物流信息。取件、派件、签收、异常等多类型快递状态实时跟踪展示！</p>
+            <p>完美横屏应用计划已为快递100通过应用横屏布局适配大屏，欢迎体验！</p>
+              <n-button class="mt-2" strong secondary type="info" @click="() => getAppDownload('快递100', 'https://caiyun.139.com/m/i?135ClmypRCpvN', 'original')">获取快递100</n-button>
+            </n-alert>
+          </div>
           <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="deviceStore.deviceCharacteristics === 'tablet'">
             <n-alert
               title="小米音乐(平板端)"
