@@ -285,6 +285,9 @@ const topApplicationList = {
     'com.boohee.box': 1, // 薄荷宝箱
     'com.youdao.xiaop': 1, // 有道小P
     'com.wandoujia.eyepetizer': 1, // 开眼
+    'com.youqi.fjjf': 1, // 饭橘
+    'com.magicalstory.reader': 1, // 漫读
+    'com.mankson.reader': 1, // 磁力猫
 }
 
 export default {

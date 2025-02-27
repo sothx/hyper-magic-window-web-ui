@@ -359,6 +359,30 @@
               <n-button class="mt-2" strong secondary type="success" @click="() => getAppDownload('小米音乐', 'https://caiyun.139.com/m/i?135CmXllwKaxM', 'system')">获取小米音乐</n-button>
             </n-alert>
           </div>
+          <div class="px-4 flex sm:grid sm:px-0 mt-5">
+            <n-alert
+              title="青盐云听"
+              type="default"
+            >
+            <template #icon>
+              <img src="/images/apps/qinalt.jpg" />
+            </template>
+              <p>椒盐音乐推出的云盘音乐播放器，可挂载阿里云盘内音乐进行播放！</p>
+              <n-button class="mt-2" strong secondary type="default" @click="() => getAppDownload('青盐云听', 'https://caiyun.139.com/m/i?135ClT9vdg00O', 'original')">获取青盐云听</n-button>
+            </n-alert>
+          </div>
+          <div class="px-4 flex sm:grid sm:px-0 mt-5">
+            <n-alert
+              title="屏幕一览"
+              type="info"
+            >
+            <template #icon>
+              <img src="/images/apps/iunistoolsdisplay.png" />
+            </template>
+              <p>通过屏幕一览，您可以详细了解设备的屏幕详细信息，支持测试触控采样率！</p>
+              <n-button class="mt-2" strong secondary type="info" @click="() => getAppDownload('屏幕一览', 'https://caiyun.139.com/m/i?135Cm6wzXEOyx', 'original')">获取屏幕一览</n-button>
+            </n-alert>
+          </div>
           <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="deviceStore.deviceCharacteristics === 'tablet'">
             <n-alert
               title="网易爆米花"
