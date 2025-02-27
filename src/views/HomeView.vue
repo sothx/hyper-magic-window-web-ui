@@ -63,11 +63,13 @@ import { cloneDeep, isEqual } from 'lodash-es';
 import { incompatibleApplicationList } from '@/config/blacklistApplications';
 import { embeddedPerceptionApplications } from '@/config/rulePerceptionApplications';
 import { useRouter } from 'vue-router';
+import { useDisabledOS2SystemAppOptimize } from '@/hooks/useDisabledOS2SystemAppOptimize';
 type EmbeddedAppDrawerInstance = InstanceType<typeof EmbeddedAppDrawer>;
 type SearchKeyWordInputInstance = InstanceType<typeof NInput>;
 type NDataTabletInstance = InstanceType<typeof NDataTable>;
 const shareRuleTextarea = ref('');
 const router = useRouter();
+const disabledOS2SystemAppOptimizeHook = useDisabledOS2SystemAppOptimize();
 const installedAppNames = useInstalledAppNames();
 const deviceStore = useDeviceStore();
 const embeddedStore = useEmbeddedStore();
@@ -835,7 +837,7 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 		embeddedStore.systemAppOptimizeConfig[row.name] &&
 		deviceStore.MIOSVersion &&
 		deviceStore.MIOSVersion >= 2 &&
-		deviceStore.androidTargetSdk >= 35
+		deviceStore.androidTargetSdk >= 35 && !disabledOS2SystemAppOptimizeHook.status
 	) {
 		modal.create({
 			title: '该应用已受模块保护',
