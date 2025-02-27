@@ -348,6 +348,19 @@
           </div>
           <div class="px-4 flex sm:grid sm:px-0 mt-5">
             <n-alert
+              title="小米白噪音"
+              type="success"
+            >
+            <template #icon>
+              <img src="/images/apps/mi_whitenoise.png" />
+            </template>
+              <p>小米白噪音能让你更专注，更好的入睡。在这里，您可以倾听大自然的声音，将嘈杂的噪音和噪音隔绝开来，沉浸在大自然的礼物中，享受着夏日的微风吹拂着自己的脸庞，海浪的温柔拍打着自己的脸庞，还有淅淅沥沥的小雨，这一切都是发自内心的快乐。</p>
+              <p>完美横屏应用计划已为小米白噪音通过应用横屏布局适配大屏，欢迎体验！</p>
+              <n-button class="mt-2" strong secondary type="success" @click="() => getAppDownload('小米白噪音', 'https://caiyun.139.com/m/i?135Ce3WtvUiKp', 'system')">获取小米白噪音</n-button>
+            </n-alert>
+          </div>
+          <div class="px-4 flex sm:grid sm:px-0 mt-5">
+            <n-alert
               title="快递100"
               type="info"
             >
