@@ -12,12 +12,13 @@ type ApplicationName = Record<string, string>;
 import { useDeviceStore } from './device';
 
 export const useAutoUIStore = defineStore(
-	'autoui',() => {
+	'autoui',
+	() => {
 		const filterInstalledApps = ref<boolean>(false);
 		// 应用布局优化
 		const sourceAutoUIList = ref<Record<AutoUIItem['name'], AutoUIItem>>({});
 		const customConfigAutoUIList = ref<Record<string, AutoUIItem>>({});
-    const applicationName = ref<ApplicationName>({});
+		const applicationName = ref<ApplicationName>({});
 		// 配置文件
 		const autoUISettingConfig = ref<Record<string, AutoUISettingRuleItem>>({});
 		// 合并后的配置
@@ -97,7 +98,7 @@ export const useAutoUIStore = defineStore(
 		async function initDefault() {
 			loading.value = true;
 			// 获取所有应用包名
-			const applicationNameRes = await import('@/assets/applicationName.json')
+			const applicationNameRes = await import('@/assets/applicationName.json');
 			const applicationNameData = applicationNameRes.default;
 			applicationName.value = applicationNameData;
 			// 获取源应用布局优化列表

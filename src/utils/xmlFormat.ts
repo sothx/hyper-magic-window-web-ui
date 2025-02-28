@@ -200,7 +200,9 @@ export const mergeEmbeddedRule = (
   settingRules: Record<string, EmbeddedSettingRuleItem>,
   customEmbeddedRules: Record<string, EmbeddedRuleItem> = {}, // 默认值为 {}
   customFixedOrientationRules: Record<string, FixedOrientationRuleItem> = {}, // 默认值为 {}
-  customConfigEmbeddedSettingConfig: Record<string, EmbeddedSettingRuleItem> = {} // 默认值为 {}
+  customConfigEmbeddedSettingConfig: Record<string, EmbeddedSettingRuleItem> = {}, // 默认值为 {}
+  systemEmbeddedRules: Record<string, EmbeddedRuleItem> = {},
+  systemFixedOrientationRules: Record<string, FixedOrientationRuleItem> = {},
 ): EmbeddedMergeRuleItem[] => {
   const deviceStore = useDeviceStore()
   const result: EmbeddedMergeRuleItem[] = [];
@@ -224,6 +226,7 @@ export const mergeEmbeddedRule = (
     let isSupportFixedOrientation = getSupportModes?.includes('fo') || (fixedOrientationConfig && !fixedOrientationConfig.hasOwnProperty('disable')) || false
     let isSupportFullScreen = getSupportModes?.includes('full') ||  false
     let ruleMode: EmbeddedMergeRuleItem["ruleMode"] = customEmbeddedRules[pkgName] || customFixedOrientationRules[pkgName] || customConfigEmbeddedSettingConfig[pkgName] ? "custom" : "module";
+    let isSupportSystemEmbedded = systemEmbeddedRules[pkgName] && !systemEmbeddedRules[pkgName].fullRule ? true : false
 
     if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35) {
       // 有设置优先设置
@@ -279,6 +282,7 @@ export const mergeEmbeddedRule = (
       isSupportEmbedded,
       isSupportFixedOrientation,
       isSupportFullScreen,
+      isSupportSystemEmbedded,
       ruleMode,
       embeddedRules: omitEmbeddedConfig ? omitEmbeddedConfig : undefined, // 排除 name 属性
       fixedOrientationRule: omitFixedOrientationConfig

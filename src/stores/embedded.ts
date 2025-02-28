@@ -244,6 +244,8 @@ export const useEmbeddedStore = defineStore(
 				customConfigEmbeddedRulesList.value,
 				customConfigFixedOrientationList.value,
 				customConfigEmbeddedSettingConfig.value,
+				systemEmbeddedRulesList.value,
+				systemFixedOrientationList.value
 			);
 		}
 
@@ -471,6 +473,8 @@ export const useEmbeddedStore = defineStore(
 				customConfigEmbeddedRulesList.value,
 				customConfigFixedOrientationList.value,
 				customConfigEmbeddedSettingConfig.value,
+				systemEmbeddedRulesList.value,
+				systemFixedOrientationList.value
 			);
 
 			// errorLogging.push({

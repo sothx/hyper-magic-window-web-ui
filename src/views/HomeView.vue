@@ -6,6 +6,8 @@ import pako from 'pako';
 import ErrorModal from '@/components/ErrorModal.vue';
 import { useEmbedded } from '@/hooks/useEmbedded';
 import EmbeddedAppDrawer from '@/components/EmbeddedAppDrawer.vue';
+import { useAutoUIStore } from '@/stores/autoui';
+const autoUIStore = useAutoUIStore();
 import { useInstalledAppNames } from '@/hooks/useInstalledAppNames';
 import {
 	NButton,
@@ -91,11 +93,19 @@ const columns = createColumns();
 const showErrorModal = ref(false);
 const embeddedTableRef = ref<NDataTabletInstance | null>(null);
 
-function renderIcon(icon: Component) {
+function renderIcon(icon: Component, size?: number) {
 	return () => {
-		return h(NIcon, null, {
-			default: () => h(icon),
-		});
+		return h(
+			NIcon,
+			size
+				? {
+						size,
+					}
+				: null,
+			{
+				default: () => h(icon),
+			},
+		);
 	};
 }
 
@@ -1382,8 +1392,11 @@ const handleCustomRuleDropdown = async (
 			preset: 'dialog',
 			content: () => <p>该功能仅兼容平板设备，不兼容折叠屏设备！</p>,
 		});
-		logsStore.info('应用横屏布局-添加应用', '该功能仅兼容平板设备，不兼容折叠屏设备！');
+		logsStore.info('应用横屏布局-自定义规则', '该功能仅兼容平板设备，不兼容折叠屏设备！');
 		return;
+	}
+	if (key === 'switchToSystemEmbedded') {
+		handleModuleRuleSwitchToSystemEmbedded(row, index);
 	}
 	if (key === 'cleanCustomRule') {
 		const cleanCustomModal = modal.create({
@@ -1624,7 +1637,26 @@ const handleCustomRuleDropdown = async (
 	}
 };
 
-const handleModuleRuleMode = (row: EmbeddedMergeRuleItem, index: number) => {
+const handleCanUseAutoUIRuleExplain = (row: EmbeddedMergeRuleItem, index: number) => {
+	modal.create({
+		title: '应用布局优化说明',
+		type: 'info',
+		preset: 'dialog',
+		content: () => (
+			<p>
+				{' '}
+				<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+					{renderApplicationName(row.name, row.applicationName)}
+				</span>{' '}
+				已存在应用布局优化的规则，规则仅在应用横屏冷启动全屏场景下才会生效，如果规则没有生效，建议将应用的横屏配置修改为{' '}
+            <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>全屏</span>
+            ，规则效果以应用个体差异而异，建议多多尝试。
+			</p>
+		),
+	});
+};
+
+const handleModuleRuleModeExplain = (row: EmbeddedMergeRuleItem, index: number, canUseSystemEmbedded?: boolean) => {
 	if (deviceStore.deviceCharacteristics !== 'tablet') {
 		modal.create({
 			title: '不兼容说明',
@@ -1638,15 +1670,221 @@ const handleModuleRuleMode = (row: EmbeddedMergeRuleItem, index: number) => {
 		title: '模块规则说明',
 		type: 'warning',
 		preset: 'dialog',
+		content: () =>
+			canUseSystemEmbedded ? (
+				<div>
+					<p>
+						模块已对{' '}
+						<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+							{renderApplicationName(row.name, row.applicationName)}
+						</span>{' '}
+						配置了合适的适配规则，且不可被移除，仅有自定义规则可以被移除哦~
+					</p>
+					<p>
+						由于小米也对{' '}
+						<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+							{renderApplicationName(row.name, row.applicationName)}
+						</span>{' '}
+						提供了系统规则，您可以选择切换系统规则作为{' '}
+						<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+							{renderApplicationName(row.name, row.applicationName)}
+						</span>{' '}
+						的自定义规则~
+					</p>
+				</div>
+			) : (
+				<p>
+					模块已对{' '}
+					<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+						{renderApplicationName(row.name, row.applicationName)}
+					</span>{' '}
+					配置了合适的适配规则，且不可被移除，仅有自定义规则可以被移除哦~
+				</p>
+			),
+	});
+};
+
+const handleModuleRuleDropdown = async (
+	key: string | number,
+	option: DropdownOption,
+	row: EmbeddedMergeRuleItem,
+	index: number,
+) => {
+	if (deviceStore.deviceCharacteristics !== 'tablet') {
+		modal.create({
+			title: '不兼容说明',
+			type: 'warning',
+			preset: 'dialog',
+			content: () => <p>该功能仅兼容平板设备，不兼容折叠屏设备！</p>,
+		});
+		logsStore.info('应用横屏布局-模块规则', '该功能仅兼容平板设备，不兼容折叠屏设备！');
+		return;
+	}
+	if (key === 'moduleRuleModeExplain') {
+		handleModuleRuleModeExplain(row, index, true);
+	}
+	if (key === 'switchToSystemEmbedded') {
+		handleModuleRuleSwitchToSystemEmbedded(row, index);
+	}
+};
+
+const handleModuleRuleSwitchToSystemEmbedded = async (row: EmbeddedMergeRuleItem, index: number) => {
+	const mduleRuleSwitchToSystemEmbeddedModal = modal.create({
+		title: '想切换为系统规则吗？',
+		type: 'warning',
+		preset: 'dialog',
 		content: () => (
 			<p>
-				模块已对{' '}
+				切换为系统规则后，模块将会使用{' '}
+				<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+					系统内置规则
+				</span>{' '}
+				作为{' '}
 				<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
 					{renderApplicationName(row.name, row.applicationName)}
 				</span>{' '}
-				配置了合适的适配规则，且不可被移除，仅有自定义规则可以被移除哦~
+				的自定义规则，如后续需要改回{' '}
+				<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+					平行窗口的模块规则
+				</span>{' '}
+				则需要先清除自定义规则，确定要继续吗？
 			</p>
 		),
+		positiveText: '确定切换',
+		negativeText: '我再想想',
+		onPositiveClick: async () => {
+			mduleRuleSwitchToSystemEmbeddedModal.loading = true;
+			if (embeddedStore.systemEmbeddedRulesList[row.name]) {
+				embeddedStore.customConfigEmbeddedRulesList[row.name] = embeddedStore.systemEmbeddedRulesList[row.name];
+				const [submitUpdateEmbeddedAppErr, submitUpdateEmbeddedAppRes] = await $to(
+					embeddedApi.updateEmbeddedApp({
+						...(deviceStore.MIOSVersion &&
+						deviceStore.MIOSVersion >= 2 &&
+						deviceStore.androidTargetSdk >= 35
+							? {
+									customThirdPartyAppOptimizeConfigProp: thirdPartyAppOptimizeJSONFormatToProp(
+										embeddedStore.customThirdPartyAppOptimizeConfig,
+									),
+									thirdPartyAppOptimizeConfigRunnerShell:
+										thirdPartyAppOptimizeJSONFormatToRunnerShell(
+											embeddedStore.mergeThirdPartyAppOptimizeConfig,
+										),
+								}
+							: undefined),
+						isPatchMode: embeddedStore.isPatchMode,
+						patchEmbeddedRulesListXML: xmlFormat.objectToXML(
+							embeddedStore.patchEmbeddedRulesList,
+							'package',
+							'package_config',
+						),
+						patchFixedOrientationListXML: xmlFormat.objectToXML(
+							embeddedStore.patchFixedOrientationList,
+							'package',
+							'package_config',
+						),
+						patchEmbeddedSettingConfigXML: xmlFormat.objectToXML(
+							embeddedStore.patchEmbeddedSettingConfig,
+							'setting',
+							'setting_rule',
+						),
+						customEmbeddedRulesListXML: xmlFormat.objectToXML(
+							embeddedStore.customConfigEmbeddedRulesList,
+							'package',
+							undefined,
+						),
+						customFixedOrientationListXML: xmlFormat.objectToXML(
+							embeddedStore.customConfigFixedOrientationList,
+							'package',
+							undefined,
+						),
+						...(deviceStore.MIOSVersion &&
+						deviceStore.MIOSVersion >= 2 &&
+						deviceStore.androidTargetSdk >= 35
+							? {
+									settingConfigXML: xmlFormat.objectToXML(
+										embeddedStore.customConfigEmbeddedSettingConfig,
+										'setting',
+										undefined,
+									),
+								}
+							: {
+									settingConfigXML: xmlFormat.objectToXML(
+										embeddedStore.systemEmbeddedSettingConfig,
+										'setting',
+										'setting_rule',
+									),
+								}),
+					}),
+				);
+				if (submitUpdateEmbeddedAppErr) {
+					modal.create({
+						title: '应用更新失败',
+						type: 'error',
+						preset: 'dialog',
+						content: () => <p>发生异常错误，更新失败了QwQ，详细错误请查看错误日志~</p>,
+					});
+					mduleRuleSwitchToSystemEmbeddedModal.loading = false;
+				} else {
+					modal.create({
+						title: '应用更新成功',
+						type: 'success',
+						preset: 'dialog',
+						content: () =>
+							deviceStore.MIOSVersion &&
+							deviceStore.MIOSVersion >= 2 &&
+							deviceStore.androidTargetSdk >= 35 ? (
+								<p>
+									好耶w，{' '}
+									<span
+										class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+										{renderApplicationName(row.name, row.applicationName)}
+									</span>{' '}
+									的应用配置更新成功了OwO~如果应用更新后的规则不生效，可以尝试重启平板再做尝试~
+								</p>
+							) : (
+								<p>
+									好耶w，{' '}
+									<span
+										class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+										{renderApplicationName(row.name, row.applicationName)}
+									</span>{' '}
+									的应用配置更新成功了OwO~如果应用更新后的规则不生效，可以尝试重启平板并且在{' '}
+									<span
+										class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+										平板专区-平行窗口
+									</span>{' '}
+									内{' '}
+									<span
+										class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+										{['embedded', 'fullScreen'].includes(row.settingMode) ? '打开' : '关闭'}
+									</span>{' '}
+									该应用的开关再做尝试~
+								</p>
+							),
+					});
+					embeddedStore.updateMergeRuleList();
+					mduleRuleSwitchToSystemEmbeddedModal.loading = false;
+				}
+			} else {
+				modal.create({
+					title: '切换系统规则失败',
+					type: 'error',
+					preset: 'dialog',
+					content: () => (
+						<p>
+							无法找到{' '}
+							<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+								{renderApplicationName(row.name, row.applicationName)}
+							</span>{' '}
+							的系统规则，切换系统规则失败~
+						</p>
+					),
+					negativeText: '确定',
+				});
+				mduleRuleSwitchToSystemEmbeddedModal.loading = false;
+				return;
+			}
+		},
 	});
 };
 
@@ -1667,9 +1905,19 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 								<span class={{ hidden: !row.applicationName }}>)</span>
 							</p>
 						)}
+						{autoUIStore.allPackageName.has(row.name) && (
+							<n-button
+								class='mr-1 mt-1'
+								size='tiny'
+								ghost
+								type='success'
+								onClick={() => handleCanUseAutoUIRuleExplain(row, index)}>
+								应用布局优化
+							</n-button>
+						)}
 						{incompatibleApplicationList[row.name] && (
 							<n-button
-								class='mt-1'
+								class='mr-1 mt-1'
 								size='tiny'
 								ghost
 								type='warning'
@@ -1683,7 +1931,7 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 							embeddedPerceptionApplications[row.name].isShow &&
 							embeddedPerceptionApplications[row.name].isShow() && (
 								<n-button
-									class='mt-1'
+									class='mr-1 mt-1'
 									size='tiny'
 									ghost
 									type='info'
@@ -1704,22 +1952,51 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 			minWidth: 100,
 			key: 'ruleMode',
 			render(row, index) {
+				const canUseSystemEmbedded = row.isSupportSystemEmbedded && row.settingMode === 'embedded';
 				const slots = {
-					icon: row.ruleMode === 'custom' ? EllipsisHorizontalCircleIcon : QuestionMarkCircleIcon,
+					icon:
+						row.ruleMode === 'custom' || canUseSystemEmbedded
+							? EllipsisHorizontalCircleIcon
+							: QuestionMarkCircleIcon,
 				};
 				if (row.ruleMode === 'custom') {
-					const rule = [
-						{
-							label: '分享自定义规则',
-							key: 'shareCustomRule',
-							icon: renderIcon(ShareIcon),
-						},
-						{
-							label: '清除自定义规则',
-							key: 'cleanCustomRule',
-							icon: renderIcon(TrashIcon),
-						},
-					];
+					const dropdownItemList = () => {
+						const itemList = [
+							{
+								label: '分享自定义规则',
+								key: 'shareCustomRule',
+								icon: renderIcon(
+									<svg class='icon' aria-hidden='true'>
+										<use xlinkHref='#icon-fenxiang'></use>
+									</svg>,
+									20,
+								),
+							},
+							{
+								label: '清除自定义规则',
+								key: 'cleanCustomRule',
+								icon: renderIcon(
+									<svg class='icon' aria-hidden='true'>
+										<use xlinkHref='#icon-qingchu'></use>
+									</svg>,
+									20,
+								),
+							},
+						];
+						if (canUseSystemEmbedded) {
+							itemList.unshift({
+								label: '切换为系统规则',
+								key: 'switchToSystemEmbedded',
+								icon: renderIcon(
+									<svg class='icon' aria-hidden='true'>
+										<use xlinkHref='#icon-chushihua'></use>
+									</svg>,
+									20,
+								),
+							});
+						}
+						return itemList;
+					};
 					return (
 						<n-dropdown
 							onSelect={(key: string | number, option: DropdownOption) =>
@@ -1727,23 +2004,62 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 							}
 							size='large'
 							trigger='click'
-							options={rule}>
+							options={dropdownItemList()}>
 							<n-button v-slots={slots} size='small' dashed type='info'>
 								自定义规则
 							</n-button>
 						</n-dropdown>
 					);
+				} else {
+					if (canUseSystemEmbedded) {
+						const rule = [
+							{
+								label: '模块规则说明',
+								key: 'moduleRuleModeExplain',
+								icon: renderIcon(
+									<svg class='icon' aria-hidden='true'>
+										<use xlinkHref='#icon-shuoming1'></use>
+									</svg>,
+									20,
+								),
+							},
+							{
+								label: '切换为系统规则',
+								key: 'switchToSystemEmbedded',
+								icon: renderIcon(
+									<svg class='icon' aria-hidden='true'>
+										<use xlinkHref='#icon-chushihua'></use>
+									</svg>,
+									20,
+								),
+							},
+						];
+						return (
+							<n-dropdown
+								onSelect={(key: string | number, option: DropdownOption) =>
+									handleModuleRuleDropdown(key, option, row, index)
+								}
+								size='large'
+								trigger='click'
+								options={rule}>
+								<n-button v-slots={slots} size='small' dashed type='error'>
+									模块规则
+								</n-button>
+							</n-dropdown>
+						);
+					} else {
+						return (
+							<n-button
+								v-slots={slots}
+								size='small'
+								dashed
+								type='error'
+								onClick={() => handleModuleRuleModeExplain(row, index)}>
+								模块规则
+							</n-button>
+						);
+					}
 				}
-				return (
-					<n-button
-						v-slots={slots}
-						size='small'
-						dashed
-						type='error'
-						onClick={() => handleModuleRuleMode(row, index)}>
-						模块规则
-					</n-button>
-				);
 			},
 		},
 		{

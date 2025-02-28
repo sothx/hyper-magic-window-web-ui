@@ -8,6 +8,7 @@ export default interface EmbeddedMergeRuleItem {
     settingMode: 'fullScreen' | 'embedded' | 'fixedOrientation' | 'disabled';
     isSupportEmbedded: boolean;
     isSupportFullScreen: boolean;
+    isSupportSystemEmbedded: boolean;
     isSupportFixedOrientation: boolean;
     thirdPartyAppOptimize?: boolean;
     ruleMode: 'module' | 'custom';

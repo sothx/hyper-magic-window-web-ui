@@ -308,7 +308,7 @@ configProviderProps: configProviderPropsRef
       content: () => {
         return (
           <p>
-            应用布局优化的规则仅在应用横屏全屏场景下才会生效，建议将应用的横屏配置修改为{' '}
+            应用布局优化的规则仅在应用横屏冷启动全屏场景下才会生效，建议将应用的横屏配置修改为{' '}
             <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>全屏</span>
             ，规则效果以应用个体差异而异，建议多多尝试。继续更新将会被更替为{' '}
             <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>自定义规则</span>{' '}

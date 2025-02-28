@@ -71,9 +71,11 @@ const logsStore = useLogsStore();
 const route = useRoute();
 const shareRuleTextarea = ref('');
 
-function renderIcon(icon: Component) {
+function renderIcon(icon: Component, size?: number) {
 	return () => {
-		return h(NIcon, null, {
+		return h(NIcon, size? {
+			size
+		} : null, {
 			default: () => h(icon),
 		});
 	};
@@ -864,12 +866,22 @@ function createColumns(): DataTableColumns<DotBlackListMergeItem> {
 						{
 							label: '分享自定义规则',
 							key: 'shareCustomRule',
-							icon: renderIcon(ShareIcon),
+							icon: renderIcon(
+								<svg class='icon' aria-hidden='true'>
+									<use xlinkHref='#icon-fenxiang'></use>
+								</svg>,
+								20
+							),
 						},
 						{
 							label: '清除自定义规则',
 							key: 'cleanCustomRule',
-							icon: renderIcon(TrashIcon),
+							icon: renderIcon(
+								<svg class='icon' aria-hidden='true'>
+									<use xlinkHref='#icon-qingchu'></use>
+								</svg>,
+								20
+							),
 						},
 					];
 					return (
