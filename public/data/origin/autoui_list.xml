@@ -19,7 +19,6 @@
   <package name="com.autohome.usedcar" enable="true" optimizeWebView="true"/>
   <package name="com.kuaiduizuoye.scan" enable="true" optimizeWebView="true"/>
   <package name="com.hipu.yidian" enable="true" optimizeWebView="true"/>
-  <package name="com.ophone.reader.ui" enable="true" optimizeWebView="true"/>
   <package name="com.hcc.app" enable="true" optimizeWebView="true"/>
   <package name="com.mengtuiapp.mall" enable="true" optimizeWebView="true"/>
   <package name="com.paem" enable="true" optimizeWebView="true"/>
@@ -52,6 +51,8 @@
   <package name="com.yitong.xian.mbank" enable="true" activityRule="com.yitong.mbank.app.android.activity.SplashActivity:2;com.yitong.mbank.app.android.activity.New_MainActivity:2:android.support.v7.widget.RecyclerView-2,login_again_fl_tuan_login-3,iv_integration_bg-3;com.yitong.mbank.app.android.activity.searchh.SearchActivityNew:2;com.yitong.mbank.app.android.fragment.fragment.home.HomeFragment:2;com.yitong.mbank.app.android.fragment.fragment.life.NewLifeFragment:2;com.yitong.mbank.app.android.activity.login.LoginActivity:2:login_again_fl_tuan_login-3"/>
   <package name="com.cntaiping.tpapp" enable="true" activityRule="com.basicapp.ui.SplashActivity:1;com.basicapp.ui.RootAct:1;com.basicapp.ui.H5Activity:1"/>
   <package name="com.plat.swhydyj.android.ShenWanHongYuanSecurity" enable="true" activityRule="com.hexin.plat.android.Hexin:1:textView-16;com.hexin.plat.android.AndroidLogoActivity:1"/>
+  <package name="com.outfit7.talkingtomgoldrun" enable="true" activityRule="*:6" skippedActivityRule=""/>
+  <package name="com.outfit7.talkingtomgoldrun.mi" enable="true" activityRule="*:6" skippedActivityRule=""/>
   <package name="com.facebook.katana" enable="true" activityRule="*:0"/>
   <package name="com.yunlan.xjlm" enable="true" activityRule="*:0" optimizeWebView="true"/>
   <package name="com.kugou.android.lite" enable="true" activityRule="*:0"/>
@@ -165,10 +166,26 @@
   <package name="com.MobileTicket" enable="true" activityRule="com.MobileTicket.ui.activity.MainActivity:8:rv_bottom_list-100,home_view_pager-100001804,img_ad_content-1205,ll_right_imags-70205"/>
   <package name="com.Qunar" enable="true" activityRule="com.mqunar.atom.alexhome.ui.activity.MainActivity:8:recyclerview-1900,HomeBannerView-303,tag_card_item_image_layout-300"/>
   <package name="com.dianping.v1" enable="true" activityRule="com.dianping.v1.NovaMainActivity:8:recycler_view-100,HomeFeedItemView-51034,LazyViewPager-530,picasso_view-1100,PopoverModule-1100"/>
-  <package name="com.baidu.netdisk" enable="true" activityRule="com.baidu.netdisk.homepage.HomeActivity:8;com.baidu.netdisk.ui.MainActivity:8:rv-100"/>
+  <package name="com.baidu.netdisk" enable="true" activityRule="com.baidu.netdisk.homepage.HomeActivity:7;com.baidu.netdisk.ui.MainActivity:7:rv-110"/>
   <package name="com.lianjia.beike" enable="true" activityRule="com.lianjia.activity.MainActivity:8:base_recyclerview-100,base_recycleview-100"/>
   <package name="cn.samsclub.app" enable="true" activityRule="cn.samsclub.app.ui.MainActivity:8:rr_fragment_recommend-100,pull_to_refresh_recycler_inner_id-100,DcImageAdsView-802,cart_iv_recommedation_icon-400"/>
-  <package name="tv.danmaku.bili" enable="true" optimizeWebView="true" activityRule="tv.danmaku.bili.MainActivityV2:8:recycler_view-100,recyclerView-100,V8Banner-100081404,indicator-100002000,com.bilibili.magicasakura.widgets.TintConstraintLayout-100001600,cover-100001700"/>
   <package name="com.netease.cloudmusic" enable="false" activityRule="*:0" optimizeWebView="true"/>
   <package name="cn.kuwo.kwmusichd" enable="true" activityRule="*:0" optimizeWebView="true"/>
+  <package name="tv.danmaku.bili" enable="false" optimizeWebView="true" activityRule="tv.danmaku.bili.MainActivityV2:8:recycler_view-100,recyclerView-100,V8Banner-100081404,indicator-100002000,com.bilibili.magicasakura.widgets.TintConstraintLayout-100001600,cover-100001700"/>
+  <package name="com.ophone.reader.ui" enable="true" activityRule="*:0" optimizeWebView="true"/>
+  <package name="com.mfcloudcalculate.networkdisk" enable="true" activityRule="*:0" optimizeWebView="true"/>
+  <package name="info.muge.appshare" enable="true" activityRule="*:0" optimizeWebView="true"/>
+  <package name="air.tv.douyu.android" enable="true" activityRule="com.douyu.module.home.pages.main.MainActivity:7:kag-100"/>
+  <package name="com.lofter.android" enable="true" activityRule="com.lofter.android.global.home.TabHomeActivity:7:recycler_view-110"/>
+  <package name="com.baidu.haokan" enable="true" activityRule="com.baidu.haokan.app.activity.HomeActivity:7:obfuscated-110"/>
+  <package name="com.duoduo.child.story" enable="true" activityRule="com.duoduo.child.story.ui.activity.MainActivity:7:content_rv-110"/>
+  <package name="com.gotokeep.keep" enable="true" activityRule="com.gotokeep.keep.refactor.business.main.activity.MainActivity:7:recyclerView-110"/>
+  <package name="com.realme.storecn" enable="true" activityRule="*:0" optimizeWebView="true"/>
+  <package name="com.sony.store.china" enable="true" activityRule="*:0" optimizeWebView="true"/>
+  <package name="com.qiekj.user" enable="true" activityRule="*:0" optimizeWebView="true"/>
+  <package name="com.lehuoapp.mm" enable="true" activityRule="*:0" optimizeWebView="true"/>
+  <package name="com.nice.main" enable="true" activityRule="*:0" optimizeWebView="true"/>
+  <package name="com.sina.wbsupergroup" enable="true" activityRule="*:0" optimizeWebView="true"/>
+  <package name="cn.kuwo.tingshu.lite" enable="true" activityRule="*:0" optimizeWebView="true"/>
+  <package name="com.cmschina.stock" enable="true" activityRule="*:6" optimizeWebView="true"/>
 </packageRules>
