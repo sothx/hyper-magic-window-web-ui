@@ -304,6 +304,7 @@ const topApplicationList = {
     'com.magicalstory.reader': 1, // 漫读
     'com.mankson.reader': 1, // 磁力猫
     'com.gswxxn.unlockmilink': 1, // 小米不妙·享
+    'com.lanjinger.choiassociatedpress': 1, // 财联社
 }
 
 export default {

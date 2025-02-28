@@ -5,6 +5,7 @@ import * as deviceApi from '@/apis/deviceApi';
 import * as autouiApi from '@/apis/autouiApi';
 import * as xmlFormat from '@/utils/xmlFormat';
 import { useDeviceStore } from '@/stores/device';
+import { useQQDoc } from '@/hooks/useQQDoc';
 import $to from 'await-to-js';
 import * as autoUIFun from '@/utils/autoUIFun';
 import {
@@ -59,6 +60,7 @@ const { message, modal, notification } = createDiscreteApi(['message', 'modal', 
 	configProviderProps: configProviderPropsRef,
 });
 const autoUIStore = useAutoUIStore();
+const QQDocHook = useQQDoc();
 const importShareRuleLoading = ref(false);
 const hotReloadLoading = ref(false);
 const autoUI = useAutoUI();
@@ -1045,29 +1047,19 @@ function createColumns(): DataTableColumns<AutoUIMergeRuleItem> {
 					</template>
 					超级小爱
 				</n-button>
-				<!-- <n-button
+				<n-button
 					class="mb-3 mr-3"
 					type="info"
 					secondary
 					:loading="deviceStore.loading || autoUIStore.loading"
-					@click="
-						() =>
-							router.push({
-								name: 'embedded-webview',
-								query: {
-									url: 'https://dhfs.heytapimage.com/userfiles/cms/ai_search/index.html?__pf__=detail&__barStyle__=3_2&immersive=0&enter_id=browser&enterMod=viewcard#/',
-								},
-							})
-					">
+					@click="QQDocHook.getModal()">
 					<template #icon>
-							<n-icon size="24">
-								<svg class="icon" aria-hidden="true">
-									<use xlink:href="#icon-deepseek"></use>
-								</svg>
+							<n-icon size="16">
+								<img src="/images/icons/qq_doc.png" />
 						</n-icon>
 					</template>
-					DeepSeek
-				</n-button> -->
+					应用适配收集表
+				</n-button>
 			</div>
 			<n-input-group>
 				<n-input

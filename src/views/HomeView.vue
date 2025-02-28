@@ -26,6 +26,7 @@ import { useDeviceStore } from '@/stores/device';
 import * as xmlFormat from '@/utils/xmlFormat';
 import { useEmbeddedStore } from '@/stores/embedded';
 import { useLogsStore } from '@/stores/logs';
+import { useQQDoc } from '@/hooks/useQQDoc';
 import eventBus from '@/utils/eventBus';
 import {
 	ArrowPathIcon,
@@ -74,6 +75,7 @@ const installedAppNames = useInstalledAppNames();
 const deviceStore = useDeviceStore();
 const embeddedStore = useEmbeddedStore();
 const logsStore = useLogsStore();
+const QQDocHook = useQQDoc();
 const importShareRuleLoading = ref(false);
 const hotReloadLoading = ref(false);
 const searchKeyWordInput = ref<SearchKeyWordInputInstance | null>(null);
@@ -837,7 +839,8 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 		embeddedStore.systemAppOptimizeConfig[row.name] &&
 		deviceStore.MIOSVersion &&
 		deviceStore.MIOSVersion >= 2 &&
-		deviceStore.androidTargetSdk >= 35 && !disabledOS2SystemAppOptimizeHook.status
+		deviceStore.androidTargetSdk >= 35 &&
+		!disabledOS2SystemAppOptimizeHook.status
 	) {
 		modal.create({
 			title: '该应用已受模块保护',
@@ -989,6 +992,14 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 			if (updateEmbeddedAppRes.settingMode === 'fixedOrientation') {
 				const { moduleEmbeddedRules, currentEmbeddedRules, moduleFixedOrientation, currentFixedOrientation } =
 					useEmbedded(row.name);
+				if (currentEmbeddedRules.value) {
+					if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35) {
+						const hasFullRule = currentEmbeddedRules.value.hasOwnProperty('fullRule');
+						if (hasFullRule) {
+							delete currentEmbeddedRules.value.fullRule;
+						}
+					}
+				}
 				if (currentFixedOrientation.value) {
 					const hasDisable = currentFixedOrientation.value.hasOwnProperty('disable');
 					if (hasDisable) {
@@ -2142,29 +2153,19 @@ onMounted(() => {
 					</template>
 					超级小爱
 				</n-button>
-				<!-- <n-button
+				<n-button
 					class="mb-3 mr-3"
 					type="info"
 					secondary
 					:loading="deviceStore.loading || embeddedStore.loading"
-					@click="
-						() =>
-							router.push({
-								name: 'embedded-webview',
-								query: {
-									url: 'https://dhfs.heytapimage.com/userfiles/cms/ai_search/index.html?__pf__=detail&__barStyle__=3_2&immersive=0&enter_id=browser&enterMod=viewcard#/',
-								},
-							})
-					">
+					@click="QQDocHook.getModal()">
 					<template #icon>
-							<n-icon size="24">
-								<svg class="icon" aria-hidden="true">
-									<use xlink:href="#icon-deepseek"></use>
-								</svg>
+						<n-icon size="16">
+							<img src="/images/icons/qq_doc.png" />
 						</n-icon>
 					</template>
-					DeepSeek
-				</n-button> -->
+					应用适配收集表
+				</n-button>
 			</div>
 			<div class="flex">
 				<n-input-group>
