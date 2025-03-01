@@ -308,6 +308,7 @@ const topApplicationList = {
     'com.sxyyt.aijm': 1, // 省心英语
     'com.iyuba.American': 1, // 走遍美国
     'jp.pokemon.pokemontcgp': 1, //Pokémon Trading Card Game Pocket
+    'com.baicizhan.ielts.app': 1, // 百词斩雅思
 }
 
 export default {
