@@ -1009,6 +1009,12 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 							delete currentEmbeddedRules.value.fullRule;
 						}
 					}
+					if (!isEqual(moduleEmbeddedRules.value, currentEmbeddedRules.value)) {
+						embeddedStore.customConfigEmbeddedRulesList[row.name] = {
+							...{ name: row.name },
+							...currentEmbeddedRules.value,
+						};
+					}
 				}
 				if (currentFixedOrientation.value) {
 					const hasDisable = currentFixedOrientation.value.hasOwnProperty('disable');

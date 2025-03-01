@@ -326,6 +326,82 @@ export const incompatibleApplicationList: Record<string, (row: EmbeddedMergeRule
 			onNegativeClick: () => {},
 		});
     },
+	'com.cctv.yangshipin.app.androidp':(row: EmbeddedMergeRuleItem) => {
+        const deviceStore = useDeviceStore();
+		const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
+			theme: deviceStore.isDarkMode ? darkTheme : lightTheme,
+		}));
+		const { message, modal, notification } = createDiscreteApi(['message', 'modal', 'notification'], {
+			configProviderProps: configProviderPropsRef,
+		});
+        const url = 'https://caiyun.139.com/m/i?135CdjETPAsIX';
+		modal.create({
+			title: '应用不兼容感知',
+			type: 'warning',
+			preset: 'dialog',
+			content: () => (
+				<div>
+					<p>
+						{' '}
+						<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+							{renderApplicationName(row.name, row.applicationName)}
+						</span>{' '}
+						在大屏体验下欠佳，在大屏设备下更推荐使用{' '}
+						<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+							{renderApplicationName('cn.ysp.app.pad', '央视频 HD')}
+						</span>{' '}
+						~
+					</p>
+					<p>下载地址:</p>
+                    <p>{url}</p>
+				</div>
+			),
+			positiveText: '复制下载链接到剪切板',
+			negativeText: '取消',
+			onPositiveClick: () => {
+				navigator.clipboard.writeText(`${url}`);
+			},
+			onNegativeClick: () => {},
+		});
+    },
+	'uni.UNI724DE05':(row: EmbeddedMergeRuleItem) => {
+        const deviceStore = useDeviceStore();
+		const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
+			theme: deviceStore.isDarkMode ? darkTheme : lightTheme,
+		}));
+		const { message, modal, notification } = createDiscreteApi(['message', 'modal', 'notification'], {
+			configProviderProps: configProviderPropsRef,
+		});
+        const url = 'https://caiyun.139.com/m/i?135Ce3KZl34Fz';
+		modal.create({
+			title: '应用不兼容感知',
+			type: 'warning',
+			preset: 'dialog',
+			content: () => (
+				<div>
+					<p>
+						{' '}
+						<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+							{renderApplicationName(row.name, row.applicationName)}
+						</span>{' '}
+						在大屏体验下欠佳，在大屏设备下更推荐使用{' '}
+						<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+							{renderApplicationName('plus.H5D021621', '大桥化工 pad')}
+						</span>{' '}
+						~
+					</p>
+					<p>下载地址:</p>
+                    <p>{url}</p>
+				</div>
+			),
+			positiveText: '复制下载链接到剪切板',
+			negativeText: '取消',
+			onPositiveClick: () => {
+				navigator.clipboard.writeText(`${url}`);
+			},
+			onNegativeClick: () => {},
+		});
+    },
 	'com.shangkatong.merchant.app':(row: EmbeddedMergeRuleItem) => {
         const deviceStore = useDeviceStore();
 		const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
