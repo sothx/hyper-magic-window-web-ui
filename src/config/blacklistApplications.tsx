@@ -250,6 +250,120 @@ export const incompatibleApplicationList: Record<string, (row: EmbeddedMergeRule
 			onNegativeClick: () => {},
 		});
     },
+	'com.letv.android.client':(row: EmbeddedMergeRuleItem) => {
+        const deviceStore = useDeviceStore();
+		const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
+			theme: deviceStore.isDarkMode ? darkTheme : lightTheme,
+		}));
+		const { message, modal, notification } = createDiscreteApi(['message', 'modal', 'notification'], {
+			configProviderProps: configProviderPropsRef,
+		});
+        const url = 'https://caiyun.139.com/m/i?135CmQkIsmiIY';
+		modal.create({
+			title: '应用不兼容感知',
+			type: 'warning',
+			preset: 'dialog',
+			content: () => (
+				<div>
+					<p>
+						{' '}
+						<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+							{renderApplicationName(row.name, row.applicationName)}
+						</span>{' '}
+						在大屏体验下欠佳，在大屏设备下更推荐使用{' '}
+						<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+							乐视视频 Pad(ccom.letv.android.client.pad)
+						</span>{' '}
+						~
+					</p>
+					<p>下载地址:</p>
+                    <p>{url}</p>
+				</div>
+			),
+			positiveText: '复制下载链接到剪切板',
+			negativeText: '取消',
+			onPositiveClick: () => {
+				navigator.clipboard.writeText(`${url}`);
+			},
+			onNegativeClick: () => {},
+		});
+    },
+	'cn.vcinema.cinema':(row: EmbeddedMergeRuleItem) => {
+        const deviceStore = useDeviceStore();
+		const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
+			theme: deviceStore.isDarkMode ? darkTheme : lightTheme,
+		}));
+		const { message, modal, notification } = createDiscreteApi(['message', 'modal', 'notification'], {
+			configProviderProps: configProviderPropsRef,
+		});
+        const url = 'https://caiyun.139.com/m/i?135ClmrX20IdL';
+		modal.create({
+			title: '应用不兼容感知',
+			type: 'warning',
+			preset: 'dialog',
+			content: () => (
+				<div>
+					<p>
+						{' '}
+						<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+							{renderApplicationName(row.name, row.applicationName)}
+						</span>{' '}
+						在大屏体验下欠佳，在大屏设备下更推荐使用{' '}
+						<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+							{renderApplicationName('com.vcinema.cinema.pad', '南瓜电影 HD')}
+						</span>{' '}
+						~
+					</p>
+					<p>下载地址:</p>
+                    <p>{url}</p>
+				</div>
+			),
+			positiveText: '复制下载链接到剪切板',
+			negativeText: '取消',
+			onPositiveClick: () => {
+				navigator.clipboard.writeText(`${url}`);
+			},
+			onNegativeClick: () => {},
+		});
+    },
+	'com.shangkatong.merchant.app':(row: EmbeddedMergeRuleItem) => {
+        const deviceStore = useDeviceStore();
+		const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
+			theme: deviceStore.isDarkMode ? darkTheme : lightTheme,
+		}));
+		const { message, modal, notification } = createDiscreteApi(['message', 'modal', 'notification'], {
+			configProviderProps: configProviderPropsRef,
+		});
+        const url = 'https://caiyun.139.com/m/i?135CdjIYZ6Pzq';
+		modal.create({
+			title: '应用不兼容感知',
+			type: 'warning',
+			preset: 'dialog',
+			content: () => (
+				<div>
+					<p>
+						{' '}
+						<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+							{renderApplicationName(row.name, row.applicationName)}
+						</span>{' '}
+						在大屏体验下欠佳，在大屏设备下更推荐使用{' '}
+						<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+							{renderApplicationName('com.shangkatong.pro.pad', '商卡通会员管理Pad')}
+						</span>{' '}
+						~
+					</p>
+					<p>下载地址:</p>
+                    <p>{url}</p>
+				</div>
+			),
+			positiveText: '复制下载链接到剪切板',
+			negativeText: '取消',
+			onPositiveClick: () => {
+				navigator.clipboard.writeText(`${url}`);
+			},
+			onNegativeClick: () => {},
+		});
+    },
 	'com.CDA.StructureMaster': (row: EmbeddedMergeRuleItem) => {
         const deviceStore = useDeviceStore();
 		const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
