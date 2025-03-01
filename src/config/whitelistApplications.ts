@@ -307,6 +307,7 @@ const topApplicationList = {
     'com.lanjinger.choiassociatedpress': 1, // 财联社
     'com.sxyyt.aijm': 1, // 省心英语
     'com.iyuba.American': 1, // 走遍美国
+    'jp.pokemon.pokemontcgp': 1, //Pokémon Trading Card Game Pocket
 }
 
 export default {
