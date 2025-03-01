@@ -43,14 +43,6 @@ export const embeddedPerceptionApplications: Record<string, EmbeddedPerceptionAp
 				type: 'info',
 				preset: 'dialog',
 				content() {
-					const NCodeTemplate = (code: string) => {
-						return h(NCode, {
-							code: code,
-							class: 'my-5 overflow-y-auto line-clamp-6',
-							language: 'Base64',
-							wordWrap: true,
-						});
-					};
 					const NButtonTemplate = (
 						text: string,
 						type: ButtonProps['type'],

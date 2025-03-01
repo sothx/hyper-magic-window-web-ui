@@ -305,6 +305,8 @@ const topApplicationList = {
     'com.mankson.reader': 1, // 磁力猫
     'com.gswxxn.unlockmilink': 1, // 小米不妙·享
     'com.lanjinger.choiassociatedpress': 1, // 财联社
+    'com.sxyyt.aijm': 1, // 省心英语
+    'com.iyuba.American': 1, // 走遍美国
 }
 
 export default {

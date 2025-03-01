@@ -326,6 +326,82 @@ export const incompatibleApplicationList: Record<string, (row: EmbeddedMergeRule
 			onNegativeClick: () => {},
 		});
     },
+	'com.mdground.yizhida':(row: EmbeddedMergeRuleItem) => {
+        const deviceStore = useDeviceStore();
+		const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
+			theme: deviceStore.isDarkMode ? darkTheme : lightTheme,
+		}));
+		const { message, modal, notification } = createDiscreteApi(['message', 'modal', 'notification'], {
+			configProviderProps: configProviderPropsRef,
+		});
+        const url = 'https://caiyun.139.com/m/i?135Ce3JW7jaOP';
+		modal.create({
+			title: '应用不兼容感知',
+			type: 'warning',
+			preset: 'dialog',
+			content: () => (
+				<div>
+					<p>
+						{' '}
+						<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+							{renderApplicationName(row.name, row.applicationName)}
+						</span>{' '}
+						在大屏体验下欠佳，在大屏设备下更推荐使用{' '}
+						<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+							{renderApplicationName('com.mdground.yizhida.pad', '医直达 Pad')}
+						</span>{' '}
+						~
+					</p>
+					<p>下载地址:</p>
+                    <p>{url}</p>
+				</div>
+			),
+			positiveText: '复制下载链接到剪切板',
+			negativeText: '取消',
+			onPositiveClick: () => {
+				navigator.clipboard.writeText(`${url}`);
+			},
+			onNegativeClick: () => {},
+		});
+    },
+	'com.wwzstaff.activity':(row: EmbeddedMergeRuleItem) => {
+        const deviceStore = useDeviceStore();
+		const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
+			theme: deviceStore.isDarkMode ? darkTheme : lightTheme,
+		}));
+		const { message, modal, notification } = createDiscreteApi(['message', 'modal', 'notification'], {
+			configProviderProps: configProviderPropsRef,
+		});
+        const url = 'https://caiyun.139.com/m/i?135Clmlw6lnT6';
+		modal.create({
+			title: '应用不兼容感知',
+			type: 'warning',
+			preset: 'dialog',
+			content: () => (
+				<div>
+					<p>
+						{' '}
+						<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+							{renderApplicationName(row.name, row.applicationName)}
+						</span>{' '}
+						在大屏体验下欠佳，在大屏设备下更推荐使用{' '}
+						<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+							{renderApplicationName('com.example.administrator.twocodedemo', '客连连Pad端')}
+						</span>{' '}
+						~
+					</p>
+					<p>下载地址:</p>
+                    <p>{url}</p>
+				</div>
+			),
+			positiveText: '复制下载链接到剪切板',
+			negativeText: '取消',
+			onPositiveClick: () => {
+				navigator.clipboard.writeText(`${url}`);
+			},
+			onNegativeClick: () => {},
+		});
+    },
 	'com.cctv.yangshipin.app.androidp':(row: EmbeddedMergeRuleItem) => {
         const deviceStore = useDeviceStore();
 		const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
