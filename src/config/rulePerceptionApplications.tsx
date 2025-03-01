@@ -52,7 +52,6 @@ export const embeddedPerceptionApplications: Record<string, EmbeddedPerceptionAp
                                 </span>{' '}
                                 进行导入~
                             </p>
-                            <n-button>223</n-button>
                             <p>Tips: 此规则需要搭配最新版的Hyper OS 2.0，老版本的 OS 2 可能由于小米BUG存在崩溃的问题。</p>
                             { NCodeTemplate && NCodeTemplate(code) }
                         </div>
