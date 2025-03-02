@@ -11,6 +11,8 @@ import {
 import { computed, h } from 'vue';
 import { useDeviceStore } from '@/stores/device';
 import type EmbeddedMergeRuleItem from '@/types/EmbeddedMergeRuleItem';
+import pako from 'pako';
+import { arrayBufferToBase64 } from '@/utils/format';
 // 定义每个应用的类型
 interface EmbeddedPerceptionApplications {
 	isShow: () => boolean;
@@ -19,16 +21,7 @@ interface EmbeddedPerceptionApplications {
 export const embeddedPerceptionApplications: Record<string, EmbeddedPerceptionApplications> = {
 	'com.coolapk.market': {
 		isShow() {
-			const deviceStore = useDeviceStore();
-			if (
-				deviceStore.deviceCharacteristics === 'tablet' &&
-				deviceStore.MIOSVersion &&
-				deviceStore.MIOSVersion === 2 &&
-				deviceStore.androidTargetSdk >= 35
-			) {
-				return true;
-			}
-			return false;
+			return true;
 		},
 		onClick(row: EmbeddedMergeRuleItem) {
 			const deviceStore = useDeviceStore();
@@ -72,8 +65,62 @@ export const embeddedPerceptionApplications: Record<string, EmbeddedPerceptionAp
 								configProviderProps: configProviderPropsRef,
 							},
 						);
-						const code =
-							'eNqVkM1qwzAQhN9lj8WYNEfdDKW30FAXet5Ia7xYshZp7eCGvHvlNKVQ+kMuQjPMp9nVCUYMBAZsDLWN0aMMdcA0kEIFNoiC2VZAAczpz2gWz7pHTs+T/zlUz0zHcuex3pWjscoz62LuCo1XcStcUE04ZlaO4wrnG2nrCdNLFDAd+kzXPXY8vrLTHsz9drMp5sDSku8ah1LQMqKmic4VdPG/f+Hc9vH4UPocpQ+uAscZD54+ZZ5EYtLHyfuW377s31p1kbWPwoGcI1daHM1sV09wlSG6bwHtObk9Jl0akafyXLgUXZY+vwMYKbdV';
+						const shareContent = {
+							name: 'com.coolapk.market',
+							cmpt:
+								deviceStore.MIOSVersion &&
+								deviceStore.MIOSVersion >= 2 &&
+								deviceStore.androidTargetSdk >= 35
+									? 2
+									: 1,
+							em: {
+								name: 'com.coolapk.market',
+								...(deviceStore.MIOSVersion &&
+								deviceStore.MIOSVersion >= 2 &&
+								deviceStore.androidTargetSdk >= 35
+									? {
+											skipSelfAdaptive: true,
+										}
+									: undefined),
+								splitPairRule: 'com.coolapk.market.view.main.MainActivity:*',
+								activityRule: 'com.coolapk.market.view.main.MainActivity',
+								transitionRules: 'com.coolapk.market.view.main.MainActivity',
+								clearTop: false,
+								splitMinWidth: 1200,
+							},
+							fo: {
+								name: 'com.coolapk.market',
+								disable: true,
+								isShowDivider: true,
+								...(deviceStore.MIOSVersion &&
+								deviceStore.MIOSVersion >= 2 &&
+								deviceStore.androidTargetSdk >= 35
+									? {
+											skipSelfAdaptive: true,
+										}
+									: undefined),
+								supportFullSize: true,
+							},
+							type: 'embedded',
+							device: deviceStore.deviceCharacteristics === 'tablet' ? 'pad' : 'fold',
+							mode: 'embedded',
+							...(deviceStore.MIOSVersion &&
+							deviceStore.MIOSVersion >= 2 &&
+							deviceStore.androidTargetSdk >= 35
+								? {
+										thirdPartyAppOptimize: false,
+									}
+								: undefined),
+						};
+						const jsonString = JSON.stringify(shareContent);
+						const deflate = pako.deflate(jsonString, {
+							level: 9,
+							memLevel: 9,
+							windowBits: 15,
+						});
+						const compressedData = new Uint8Array(deflate);
+						const base64String: string = arrayBufferToBase64(compressedData);
+						const code = base64String;
 						modal.create({
 							title: '获取自定义规则',
 							type: 'info',
@@ -164,7 +211,6 @@ export const embeddedPerceptionApplications: Record<string, EmbeddedPerceptionAp
 											Tips: 此规则需要搭配最新版的Hyper OS 2.0，老版本的 OS 2
 											可能由于小米BUG存在崩溃的问题。
 										</p>
-										{NCodeTemplate && NCodeTemplate(code)}
 									</div>
 								);
 							},
@@ -194,23 +240,37 @@ export const embeddedPerceptionApplications: Record<string, EmbeddedPerceptionAp
 								进行导入~
 								{NButtonTemplate &&
 									NButtonTemplate('获取全局横屏自定义规则', 'info', () => handleClickFullRule())}
+								{deviceStore.deviceCharacteristics === 'tablet' &&
+									deviceStore.MIOSVersion &&
+									deviceStore.MIOSVersion === 2 &&
+									deviceStore.androidTargetSdk >= 35 && (
+										<div>
+											<p>
+												模块还为{' '}
+												<span
+													class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+													{renderApplicationName(row.name, row.applicationName)}
+												</span>{' '}
+												进行了更详尽的应用规则适配，您可以将此自定义规则通过{' '}
+												<span
+													class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+													[应用横屏布局-从分享口令导入]
+												</span>{' '}
+												进行导入~
+											</p>
+											<p>
+												Tips: 此规则需要搭配最新版的Hyper OS 2.0，老版本的 OS 2
+												可能由于小米BUG存在崩溃的问题。
+											</p>
+											<p>
+												{NButtonTemplate &&
+													NButtonTemplate('获取精适配平行窗口自定义规则', 'info', () =>
+														handleClickEmbeddedRule(),
+													)}
+											</p>
+										</div>
+									)}
 							</p>
-							<p>
-								模块还为{' '}
-								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-									{renderApplicationName(row.name, row.applicationName)}
-								</span>{' '}
-								进行了更详尽的应用规则适配，您可以将此自定义规则通过{' '}
-								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-									[应用横屏布局-从分享口令导入]
-								</span>{' '}
-								进行导入~
-							</p>
-							<p>
-								Tips: 此规则需要搭配最新版的Hyper OS 2.0，老版本的 OS 2 可能由于小米BUG存在崩溃的问题。
-							</p>
-							{NButtonTemplate &&
-								NButtonTemplate('获取精适配平行窗口自定义规则', 'info', () => handleClickEmbeddedRule())}
 						</div>
 					);
 				},

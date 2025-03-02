@@ -402,6 +402,120 @@ export const incompatibleApplicationList: Record<string, (row: EmbeddedMergeRule
 			onNegativeClick: () => {},
 		});
     },
+	'uni.UNI1EB902E':(row: EmbeddedMergeRuleItem) => {
+        const deviceStore = useDeviceStore();
+		const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
+			theme: deviceStore.isDarkMode ? darkTheme : lightTheme,
+		}));
+		const { message, modal, notification } = createDiscreteApi(['message', 'modal', 'notification'], {
+			configProviderProps: configProviderPropsRef,
+		});
+        const url = 'https://caiyun.139.com/m/i?135Cdj9ySaUf9';
+		modal.create({
+			title: '应用不兼容感知',
+			type: 'warning',
+			preset: 'dialog',
+			content: () => (
+				<div>
+					<p>
+						{' '}
+						<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+							{renderApplicationName(row.name, row.applicationName)}
+						</span>{' '}
+						在大屏体验下欠佳，在大屏设备下更推荐使用{' '}
+						<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+							{renderApplicationName('com.kokoni.pad', 'KOKONI3D PAD')}
+						</span>{' '}
+						~
+					</p>
+					<p>下载地址:</p>
+                    <p>{url}</p>
+				</div>
+			),
+			positiveText: '复制下载链接到剪切板',
+			negativeText: '取消',
+			onPositiveClick: () => {
+				navigator.clipboard.writeText(`${url}`);
+			},
+			onNegativeClick: () => {},
+		});
+    },
+	'org.sojex.finance':(row: EmbeddedMergeRuleItem) => {
+        const deviceStore = useDeviceStore();
+		const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
+			theme: deviceStore.isDarkMode ? darkTheme : lightTheme,
+		}));
+		const { message, modal, notification } = createDiscreteApi(['message', 'modal', 'notification'], {
+			configProviderProps: configProviderPropsRef,
+		});
+        const url = 'https://caiyun.139.com/m/i?135CmQYvJeeBr';
+		modal.create({
+			title: '应用不兼容感知',
+			type: 'warning',
+			preset: 'dialog',
+			content: () => (
+				<div>
+					<p>
+						{' '}
+						<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+							{renderApplicationName(row.name, row.applicationName)}
+						</span>{' '}
+						在大屏体验下欠佳，在大屏设备下更推荐使用{' '}
+						<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+							{renderApplicationName('org.sojex.financehd', '口袋贵金属 HD')}
+						</span>{' '}
+						~
+					</p>
+					<p>下载地址:</p>
+                    <p>{url}</p>
+				</div>
+			),
+			positiveText: '复制下载链接到剪切板',
+			negativeText: '取消',
+			onPositiveClick: () => {
+				navigator.clipboard.writeText(`${url}`);
+			},
+			onNegativeClick: () => {},
+		});
+    },
+	'com.zzvcom.uxin.yxgs':(row: EmbeddedMergeRuleItem) => {
+        const deviceStore = useDeviceStore();
+		const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
+			theme: deviceStore.isDarkMode ? darkTheme : lightTheme,
+		}));
+		const { message, modal, notification } = createDiscreteApi(['message', 'modal', 'notification'], {
+			configProviderProps: configProviderPropsRef,
+		});
+        const url = 'https://caiyun.139.com/m/i?135ClSonIiovD';
+		modal.create({
+			title: '应用不兼容感知',
+			type: 'warning',
+			preset: 'dialog',
+			content: () => (
+				<div>
+					<p>
+						{' '}
+						<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+							{renderApplicationName(row.name, row.applicationName)}
+						</span>{' '}
+						在大屏体验下欠佳，在大屏设备下更推荐使用{' '}
+						<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+							{renderApplicationName('com.zzvcom.uxinexpert.pad', '优学高手PAD软件')}
+						</span>{' '}
+						~
+					</p>
+					<p>下载地址:</p>
+                    <p>{url}</p>
+				</div>
+			),
+			positiveText: '复制下载链接到剪切板',
+			negativeText: '取消',
+			onPositiveClick: () => {
+				navigator.clipboard.writeText(`${url}`);
+			},
+			onNegativeClick: () => {},
+		});
+    },
 	'com.cctv.yangshipin.app.androidp':(row: EmbeddedMergeRuleItem) => {
         const deviceStore = useDeviceStore();
 		const configProviderPropsRef = computed<ConfigProviderProps>(() => ({

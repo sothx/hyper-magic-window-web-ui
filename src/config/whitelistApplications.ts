@@ -309,6 +309,13 @@ const topApplicationList = {
     'com.iyuba.American': 1, // 走遍美国
     'jp.pokemon.pokemontcgp': 1, //Pokémon Trading Card Game Pocket
     'com.baicizhan.ielts.app': 1, // 百词斩雅思
+    'com.dancefitme.cn': 1, // 热汗舞蹈
+    'uni.UNI1EB902E': 1, // KOKONI3D
+    'com.kokoni.pad': 1, // KOKONI3D PAD
+    'org.sojex.finance': 1, // 口袋贵金属
+    'com.zhumaonline.exercise': 1, // 竹马
+    'com.gptqcio.lrhtfmqer': 1, // 查字字典大全
+    'com.zzvcom.uxin.yxgs': 1, // 优学高手
 }
 
 export default {
