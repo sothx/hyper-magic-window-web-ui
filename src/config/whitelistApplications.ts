@@ -316,6 +316,9 @@ const topApplicationList = {
     'com.zhumaonline.exercise': 1, // 竹马
     'com.gptqcio.lrhtfmqer': 1, // 查字字典大全
     'com.zzvcom.uxin.yxgs': 1, // 优学高手
+    'com.zlketang.mm': 1, // 之了课堂
+    'com.eastmoney.app.qihuobao': 1, // 东方财富期货宝
+    'com.eastmoney.haitunlive': 1, // 浪客
 }
 
 export default {
