@@ -16,3 +16,4 @@ node_modules
 
 # Build
 /dist
+/stats.html

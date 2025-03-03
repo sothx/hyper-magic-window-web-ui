@@ -59,6 +59,7 @@
 	},
 	"dependencies": {
 		"pinia": "^2.1.7",
+		"rollup-plugin-visualizer": "^5.14.0",
 		"vue": "^3.4.29",
 		"vue-router": "^4.3.3"
 	},
@@ -97,6 +98,7 @@
 		"url": "^0.11.4",
 		"vfonts": "^0.0.3",
 		"vite": "^5.3.1",
+		"vite-plugin-compression": "^0.5.1",
 		"vite-plugin-vue-devtools": "^7.3.1",
 		"vue-tsc": "^2.0.21"
 	}

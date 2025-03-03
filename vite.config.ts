@@ -7,7 +7,8 @@ import vueJsx from '@vitejs/plugin-vue-jsx';
 import { fileURLToPath, URL } from 'node:url';
 import postcssPresetEnv from 'postcss-preset-env';
 import vueDevTools from 'vite-plugin-vue-devtools';
-import legacy from '@vitejs/plugin-legacy'
+import { visualizer } from 'rollup-plugin-visualizer';
+import legacy from '@vitejs/plugin-legacy';
 
 export default defineConfig({
 	css: {
@@ -61,6 +62,10 @@ export default defineConfig({
 				});
 			},
 		},
+		visualizer({
+			open: true,
+			gzipSize: false
+		}),
         // legacy({
         //     targets: ['defaults', 'not IE 11', 'chrome >= 87', 'android >= 5.0'],
         //     additionalLegacyPolyfills: ['regenerator-runtime/runtime'],
@@ -86,8 +91,34 @@ export default defineConfig({
         //     ]
         //   })
 	],
-
-	// assetsInclude: ['**/*.xml'], // 添加这一行以包括 XML 文件
+	build: {
+		minify:'terser',
+		rollupOptions: {
+			output: {
+				manualChunks(id) {
+					if (id.includes('pako')) {
+						return 'pako';
+					}
+					if (id.includes('iconfont')) {
+						return 'iconfont';
+					}
+					if (id.includes('lodash')) {
+						return 'lodash';
+					}
+					if (id.includes('hooks')) {
+						return 'hooks';
+					}
+					if (id.includes('apis')) {
+						return 'apis';
+					}
+					if (id.includes('naive-ui')) {
+						return 'naive-ui';
+					}
+				}
+			}
+		}
+	},
+	assetsInclude: ['**/*.xml'], // 添加这一行以包括 XML 文件
 	resolve: {
 		alias: {
 			'@': fileURLToPath(new URL('./src', import.meta.url)),
