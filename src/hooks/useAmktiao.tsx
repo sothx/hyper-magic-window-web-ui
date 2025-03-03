@@ -11,6 +11,7 @@ import {
 	type NInput,
 } from 'naive-ui';
 import * as deviceApi from '@/apis/deviceApi';
+import { spawn } from '@/utils/kernelsu';
 export interface KeyboardModeOptions {
 	label: string;
 	type: string;
@@ -71,8 +72,7 @@ export function useAmktiao() {
 				<div>
 					<p>
 						该功能仅兼容{' '}
-						<span
-							class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+						<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
 							水龙(Amktiao)
 						</span>{' '}
 						的移植包，不兼容其他移植包作者，请确保当前使用的是水龙的移植包再启用该功能，确定要继续吗？
@@ -83,31 +83,45 @@ export function useAmktiao() {
 			negativeText: '我再想想',
 			onPositiveClick: () => {
 				deviceStore.showThirdPartySetting.amktiaoROMInterface = true;
-			}
+			},
 		});
-	}
+	};
 
 	const changeKeyboardMode = async (mode: KeyboardMode) => {
 		const [negativeRes, positiveRes] = await $to(
 			new Promise((resolve, reject) => {
-				if (mode === 1) {
+				if (mode === 1 || mode === 2) {
 					modal.create({
-						title: '想切换为键盘链接模式吗？',
+						title: `想切换为${mode === 1 ? '键盘连接' : ''}${mode === 2 ? '键盘复位' : ''}状态吗？`,
 						type: 'info',
 						preset: 'dialog',
 						content: () => (
 							<div>
 								<p>
-									切换为{' '}
-									<span
-										class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-										键盘连接状态
-									</span>{' '}
-									前，请确保设备先连接上键盘，否则会存在静电击穿 CPU 的风险，确定要继续吗？
+									切换为
+									{mode === 1 && (
+										<span>
+											{' '}
+											<span
+												class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+												键盘连接
+											</span>{' '}
+										</span>
+									)}
+									{mode === 2 && (
+										<span>
+											{' '}
+											<span
+												class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+												键盘复位
+											</span>{' '}
+										</span>
+									)}
+									状态前，请确保设备先连接上键盘，否则会存在静电击穿 CPU 的风险，确定要继续吗？
 								</p>
 							</div>
 						),
-						positiveText: '确定切换为键盘连接状态',
+						positiveText: `确定切换为${mode === 1 ? '键盘连接' : ''}${mode === 2 ? '键盘复位' : ''}状态`,
 						negativeText: '我再想想',
 						onPositiveClick: () => {
 							resolve('positiveClick');
@@ -123,20 +137,20 @@ export function useAmktiao() {
 		);
 		if (positiveRes) {
 			deviceApi
-			.putCurrentKeyboardMode(mode)
-			.then(res => {
-				currentKeyboardMode.value = mode;
-				currentKeyboardModeSelect.value = keyboardModeOptions.value[mode];
-			})
-			.catch(err => {
-				modal.create({
-					title: '操作失败',
-					type: 'error',
-					preset: 'dialog',
-					content: () => <p>修改失败，详情请查看日志记录~</p>,
-					negativeText: '确定',
+				.putCurrentKeyboardMode(mode)
+				.then(res => {
+					currentKeyboardMode.value = mode;
+					currentKeyboardModeSelect.value = keyboardModeOptions.value[mode];
+				})
+				.catch(err => {
+					modal.create({
+						title: '操作失败',
+						type: 'error',
+						preset: 'dialog',
+						content: () => <p>修改失败，详情请查看日志记录~</p>,
+						negativeText: '确定',
+					});
 				});
-			});
 		}
 	};
 
@@ -284,6 +298,6 @@ export function useAmktiao() {
 		changeKeyboardMode,
 		changePenUpdateMode,
 		changePenEnableMode,
-		enableSetting
+		enableSetting,
 	};
 }
