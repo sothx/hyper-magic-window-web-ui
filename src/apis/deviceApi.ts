@@ -2180,7 +2180,7 @@ export const removeAutoTurnOnDisplayMode = (): Promise<string> => {
 };
 
 export const getUFSHealthInfo = (): Promise<string> => {
-	const shellCommon = `cat /d/ufshcd0/dump_health_desc1`;
+	const shellCommon = `cat /d/ufshcd0/dump_health_desc`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
