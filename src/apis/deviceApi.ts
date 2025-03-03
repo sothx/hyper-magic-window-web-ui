@@ -2253,3 +2253,63 @@ export const getDDRVendor = (): Promise<string> => {
 		shellCommon,
 	);
 }
+
+export const getHasQComDisplayBrightness = (): Promise<string> => {
+	const shellCommon = `ls /sys/devices/platform/soc/ae00000.qcom,mdss_mdp/backlight/panel0-backlight/brightness &>/dev/null && echo "exists" || echo "not exists"`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`exists`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : stdout === 'exists' ? resolve(stdout) : reject(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const getHasMTKDisplayBrightness = (): Promise<string> => {
+	const shellCommon = `ls /sys/devices/platform/soc/soc:mtk_leds/leds/lcd-backlight/brightness &>/dev/null && echo "exists" || echo "not exists"`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`not exists`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : stdout === 'exists' ? resolve(stdout) : reject(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const setQComDisplayBrightnessToZero = (): Promise<string> => {
+	const shellCommon = `settings put system screen_brightness_mode 0 && echo 0 > /sys/devices/platform/soc/ae00000.qcom,mdss_mdp/backlight/panel0-backlight/brightness`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`success`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : stdout === 'null' ? resolve('') : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+}
+
+export const setMTKDisplayBrightnessToZero = (): Promise<string> => {
+	const shellCommon = `settings put system screen_brightness_mode 0 && echo 0 > /sys/devices/platform/soc/soc:mtk_leds/leds/lcd-backlight/brightness`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				reject(`error`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : stdout === 'null' ? resolve('') : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+}

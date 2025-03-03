@@ -27,6 +27,7 @@ import { useVideoWallpaperLoop } from '@/hooks/useVideoWallpaperLoop';
 import { useOS2InstallModuleTips } from '@/hooks/useOS2InstallModuleTips';
 import { useUFSHealth } from '@/hooks/useUFSHealth';
 import { useMemoryInfo } from '@/hooks/useMemory';
+import { useDisplaySettings } from '@/hooks/useDisplaySettings';
 import {
 	BoltIcon,
 	CpuChipIcon,
@@ -77,6 +78,7 @@ const { message, modal } = createDiscreteApi(['message', 'modal'], {
 const gameModeHook = useGameMode();
 const fontStore = useFontStore();
 const amktiaoHook = useAmktiao();
+const useDisplaySettingsHook = useDisplaySettings();
 const rhythmModeOptions = [
 	{
 		label: '跟随系统',
@@ -1077,6 +1079,32 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 								>
 								<p>目前尚处于测试阶段，暂时仅支持小米平板6S Pro ~</p>
 								<p>该功能依赖「AI百宝箱」和「WAE Display」，请确保已经安装这两个系统应用。</p>
+							</n-alert>
+						</dd>
+					</div>
+					<div
+						v-if="
+							deviceStore.deviceCharacteristics === 'tablet' && (useDisplaySettingsHook.hasMTKDisplayBrightness.value || useDisplaySettingsHook.hasQComDisplayBrightness.value)
+						"
+						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+						<dt
+							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
+							<p>伪·熄灭屏幕</p>
+						</dt>
+						<dd
+							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
+							<div>
+								<n-button
+									size="small"
+									type="error"
+									secondary
+									:loading="deviceStore.loading"
+									@click="() => useDisplaySettingsHook.open()">
+									开启伪·熄灭屏幕
+								</n-button>
+							</div>
+							<n-alert class="mt-5" type="warning" :show-icon="false" :bordered="false">
+								<p>通过将屏幕亮度调整为0，达到熄灭屏幕但是不影响屏幕的触控操作，可能适合部分特殊场景使用，游戏或者视频场景仍然推荐使用「熄屏挂机」和「熄屏听剧」，使用该功能会自动关闭「自动亮度」，请悉知，如需恢复屏幕显示需要敲击两次「电源键」。</p>
 							</n-alert>
 						</dd>
 					</div>
