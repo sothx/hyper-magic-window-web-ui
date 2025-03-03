@@ -1096,7 +1096,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							<div>
 								<n-button
 									size="small"
-									type="error"
+									type="warning"
 									secondary
 									:loading="deviceStore.loading"
 									@click="() => useDisplaySettingsHook.open()">
