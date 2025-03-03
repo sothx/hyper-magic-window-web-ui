@@ -1646,7 +1646,7 @@ const handleCustomRuleDropdown = async (
 const handleCanUseAutoUIRuleExplain = (row: EmbeddedMergeRuleItem, index: number) => {
 	modal.create({
 		title: '应用布局优化说明',
-		type: 'info',
+		type: 'success',
 		preset: 'dialog',
 		content: () => (
 			<p>
