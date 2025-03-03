@@ -25,6 +25,7 @@ import { useDisabledOS2SystemAppOptimize } from '@/hooks/useDisabledOS2SystemApp
 import { useZRAMWriteback } from '@/hooks/useZRAMWriteback'
 import { useVideoWallpaperLoop } from '@/hooks/useVideoWallpaperLoop';
 import { useOS2InstallModuleTips } from '@/hooks/useOS2InstallModuleTips';
+import { useUFSHealth } from '@/hooks/useUFSHealth';
 import {
 	BoltIcon,
 	CpuChipIcon,
@@ -64,6 +65,7 @@ const developmentSettingsEnabledHook = useDevelopmentSettingsEnabled();
 const { activateABTest, loading: activateABTestLoading } = useABTestActivation();
 const videoWallpaperLoopHook = useVideoWallpaperLoop();
 const OS2InstallModuleTipsHook = useOS2InstallModuleTips()
+const useUFSHealthHook = useUFSHealth()
 const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
 	theme: deviceStore.isDarkMode ? darkTheme : lightTheme,
 }));
@@ -1178,7 +1180,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 								<template #unchecked>未启用</template>
 							</n-switch>
 							<n-alert class="mt-5" type="warning" :show-icon="false" :bordered="false"
-								>仅兼容水龙(Amktiao)的移植包，存在 /sys/touchpanel/pen_enable
+								>仅兼容水龙(Amktiao)的内核，存在 /sys/touchpanel/pen_enable
 								开关映射时生效</n-alert
 							>
 						</dd>
@@ -1212,7 +1214,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 								<template #unchecked>一代笔驱动</template>
 							</n-switch>
 							<n-alert class="mt-5" type="warning" :show-icon="false" :bordered="false">
-								<p>仅兼容水龙(Amktiao)的移植包，存在 /sys/touchpanel/pen_update 开关映射时生效</p>
+								<p>仅兼容水龙(Amktiao)的内核，存在 /sys/touchpanel/pen_update 开关映射时生效</p>
 							</n-alert>
 						</dd>
 					</div>
@@ -1250,9 +1252,10 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 									{{ amktiaoHook.currentKeyboardModeSelect.value.label }}
 								</n-button>
 							</n-dropdown>
-							<n-alert class="mt-5" type="warning" :show-icon="false" :bordered="false"
-								>仅兼容水龙(Amktiao)的移植包，存在 /sys/touchpanel/keyboard 开关映射时生效</n-alert
-							>
+							<n-alert class="mt-5" type="warning" :show-icon="false" :bordered="false">
+								<p>仅兼容水龙(Amktiao)的内核，存在 /sys/touchpanel/keyboard 开关映射时生效</p>
+								<p>「复位键盘」仅在键盘异常时使用，一般情况下不需要</p>
+							</n-alert>
 						</dd>
 					</div>
 					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
@@ -2119,6 +2122,23 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							<!-- <n-alert class="mt-5" type="info" :show-icon="false" :bordered="false">
 								<p>您已配置xxxx的自启动，如需重新配置请先【移除】该配置！</p>
 							</n-alert> -->
+						</dd>
+					</div>
+					<div
+						id="displayModeSettings"
+						v-if="useUFSHealthHook.isShow.value"
+						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+						<dt
+							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
+							UFS 存储健康
+						</dt>
+						<dd
+							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
+							<div class="mb-3">
+								<div v-if="useUFSHealthHook.preEOLInfo.value" class="mb-3"><n-tag type="info">寿命阶段: {{  useUFSHealthHook.preEOLInfo.value  }}</n-tag></div>
+								<div v-if="useUFSHealthHook.deviceLifeTimeEstA.value" class="mb-3"><n-tag type="success">用户数据区（已磨损）：{{ useUFSHealthHook.deviceLifeTimeEstA.value  }}</n-tag></div>
+								<div v-if="useUFSHealthHook.deviceLifeTimeEstB.value" class="mb-3"><n-tag type="warning">高速缓存区（已磨损）：{{ useUFSHealthHook.deviceLifeTimeEstB.value  }}</n-tag></div>
+							</div>
 						</dd>
 					</div>
 					<div

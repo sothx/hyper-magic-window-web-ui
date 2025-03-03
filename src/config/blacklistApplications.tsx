@@ -212,6 +212,44 @@ export const incompatibleApplicationList: Record<string, (row: EmbeddedMergeRule
 			onNegativeClick: () => {},
 		});
     },
+	'com.ks.kaishustory': (row: EmbeddedMergeRuleItem) => {
+        const deviceStore = useDeviceStore();
+		const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
+			theme: deviceStore.isDarkMode ? darkTheme : lightTheme,
+		}));
+		const { message, modal, notification } = createDiscreteApi(['message', 'modal', 'notification'], {
+			configProviderProps: configProviderPropsRef,
+		});
+        const url = 'https://caiyun.139.com/m/i?135Cmkd67YqaE';
+		modal.create({
+			title: '应用不兼容感知',
+			type: 'warning',
+			preset: 'dialog',
+			content: () => (
+				<div>
+					<p>
+						{' '}
+						<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+							{renderApplicationName(row.name, row.applicationName)}
+						</span>{' '}
+						在大屏体验下欠佳，在大屏设备下更推荐使用{' '}
+						<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+							凯叔讲故事HD(com.ks.kaishustory.hd)
+						</span>{' '}
+						~
+					</p>
+					<p>下载地址:</p>
+                    <p>{url}</p>
+				</div>
+			),
+			positiveText: '复制下载链接到剪切板',
+			negativeText: '取消',
+			onPositiveClick: () => {
+				navigator.clipboard.writeText(`${url}`);
+			},
+			onNegativeClick: () => {},
+		});
+    },
 	'com.letv.android.client':(row: EmbeddedMergeRuleItem) => {
         const deviceStore = useDeviceStore();
 		const configProviderPropsRef = computed<ConfigProviderProps>(() => ({

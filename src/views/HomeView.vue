@@ -73,7 +73,7 @@ type NDataTabletInstance = InstanceType<typeof NDataTable>;
 const shareRuleTextarea = ref('');
 const router = useRouter();
 const disabledOS2SystemAppOptimizeHook = useDisabledOS2SystemAppOptimize();
-const installedAppNames = useInstalledAppNames();
+const installedAppNamesHook = useInstalledAppNames();
 const deviceStore = useDeviceStore();
 const embeddedStore = useEmbeddedStore();
 const logsStore = useLogsStore();
@@ -115,7 +115,7 @@ const getInstalledAppNameList = async () => {
 	// 	meta: '正在获取已安装应用名称，请不要关闭模块的 Web UI，完成后会弹出通知，请稍等~',
 	// 	duration: 2500,
 	// });
-	const [getListErr, getListRes] = await $to(installedAppNames.getList());
+	const [getListErr, getListRes] = await $to(installedAppNamesHook.getList());
 	if (getListErr) {
 		modal.create({
 			title: '获取失败',
@@ -2411,7 +2411,7 @@ onMounted(() => {
 				<n-button
 					class="mb-3 mr-3"
 					color="#69b2b6"
-					:loading="deviceStore.loading || embeddedStore.loading || installedAppNames.loading.value"
+					:loading="deviceStore.loading || embeddedStore.loading || installedAppNamesHook.loading.value"
 					@click="getInstalledAppNameList()">
 					<template #icon>
 						<n-icon>

@@ -425,7 +425,7 @@ export const getCapacityRaw = (): Promise<string> => {
 	);
 };
 
-export const getBatterySohXMPower = (): Promise<string>  => {
+export const getBatterySohXMPower = (): Promise<string> => {
 	const shellCommon = `cat /sys/class/xm_power/fg_master/soh`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
@@ -500,7 +500,6 @@ export const removeIsHideGestureLine = (): Promise<string> => {
 	);
 };
 
-
 export const setHideGestureLine = (mode: 1 | 0): Promise<string> => {
 	const shellCommon = `settings put global hide_gesture_line ${mode}`;
 	return handlePromiseWithLogging(
@@ -566,7 +565,9 @@ export const openInVisibleMode = (): Promise<string> => {
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
-				resolve(`Starting: Intent { cmp=com.miui.securitycenter/com.miui.permcenter.settings.InvisibleModeActivity }`);
+				resolve(
+					`Starting: Intent { cmp=com.miui.securitycenter/com.miui.permcenter.settings.InvisibleModeActivity }`,
+				);
 			} else {
 				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
 				errno ? reject(stderr) : resolve(stdout);
@@ -636,7 +637,6 @@ export const getMouseGestureNaturalscroll = (): Promise<string> => {
 	);
 };
 
-
 export const setHomeVideoWallpaperLoop = (): Promise<string> => {
 	const shellCommon = `sed -i 's/loopVideo="false"/loopVideo="true"/g' /data/system/theme_magic/users/0/wallpaper/data/home.xml`;
 	return handlePromiseWithLogging(
@@ -645,7 +645,7 @@ export const setHomeVideoWallpaperLoop = (): Promise<string> => {
 				resolve(`success`);
 			} else {
 				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
-				errno ? reject(stderr) : resolve(stdout)
+				errno ? reject(stderr) : resolve(stdout);
 			}
 		}),
 		shellCommon,
@@ -660,7 +660,7 @@ export const setLockVideoWallpaperLoop = (): Promise<string> => {
 				resolve(`success`);
 			} else {
 				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
-				errno ? reject(stderr) : resolve(stdout)
+				errno ? reject(stderr) : resolve(stdout);
 			}
 		}),
 		shellCommon,
@@ -686,7 +686,7 @@ export const killMiWallpaper = (): Promise<string> => {
 	);
 };
 
-export const setPointerSpeed = (value:number): Promise<string> => {
+export const setPointerSpeed = (value: number): Promise<string> => {
 	const shellCommon = `settings put system pointer_speed ${value}`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
@@ -895,27 +895,20 @@ export const frameRateService = (status: 'start' | 'stop'): Promise<string> => {
 
 const parseDisplayModeRecords = (output: string): DisplayModeItem[] => {
 	const deviceStore = useDeviceStore();
-    const records: DisplayModeItem[] = [];
-    const lines = output.split("\n");
+	const records: DisplayModeItem[] = [];
+	const lines = output.split('\n');
 
-    lines.forEach(line => {
-        const regex = deviceStore.androidTargetSdk && deviceStore.androidTargetSdk >= 35 ? /id=(\d+),\s*width=(\d+),\s*height=(\d+),\s*fps=([\d.]+),\s*vsync=([\d.]+),\s*synthetic=(true|false),\s*alternativeRefreshRates=\[([^\]]*)\],\s*supportedHdrTypes=\[([^\]]*)\]/ : /id=(\d+),\s*width=(\d+),\s*height=(\d+),\s*fps=([\d.]+),\s*alternativeRefreshRates=\[([^\]]*)\],\s*supportedHdrTypes=\[([^\]]*)\]/;
-        const match = regex.exec(line);
+	lines.forEach(line => {
+		const regex =
+			deviceStore.androidTargetSdk && deviceStore.androidTargetSdk >= 35
+				? /id=(\d+),\s*width=(\d+),\s*height=(\d+),\s*fps=([\d.]+),\s*vsync=([\d.]+),\s*synthetic=(true|false),\s*alternativeRefreshRates=\[([^\]]*)\],\s*supportedHdrTypes=\[([^\]]*)\]/
+				: /id=(\d+),\s*width=(\d+),\s*height=(\d+),\s*fps=([\d.]+),\s*alternativeRefreshRates=\[([^\]]*)\],\s*supportedHdrTypes=\[([^\]]*)\]/;
+		const match = regex.exec(line);
 
-        if (match) {
+		if (match) {
 			if (deviceStore.androidTargetSdk && deviceStore.androidTargetSdk >= 35) {
-				const [
-					_,
-					id,
-					width,
-					height,
-					fps,
-					vsync,
-					synthetic,
-					alternativeRefreshRates,
-					supportedHdrTypes
-				] = match;
-	
+				const [_, id, width, height, fps, vsync, synthetic, alternativeRefreshRates, supportedHdrTypes] = match;
+
 				const record: DisplayModeItem = {
 					id: parseInt(id, 10),
 					width: parseInt(width, 10),
@@ -924,44 +917,36 @@ const parseDisplayModeRecords = (output: string): DisplayModeItem[] => {
 					vsync: parseInt(vsync),
 					synthetic: synthetic === 'true' ? true : false,
 					alternativeRefreshRates: alternativeRefreshRates
-						? alternativeRefreshRates.split(",").map(rate => parseFloat(rate.trim()))
+						? alternativeRefreshRates.split(',').map(rate => parseFloat(rate.trim()))
 						: [],
 					supportedHdrTypes: supportedHdrTypes
-						? supportedHdrTypes.split(",").map(type => parseInt(type.trim(), 10))
-						: []
+						? supportedHdrTypes.split(',').map(type => parseInt(type.trim(), 10))
+						: [],
 				};
-	
+
 				records.push(record);
 			} else {
-				const [
-					_,
-					id,
-					width,
-					height,
-					fps,
-					alternativeRefreshRates,
-					supportedHdrTypes
-				] = match;
-	
+				const [_, id, width, height, fps, alternativeRefreshRates, supportedHdrTypes] = match;
+
 				const record: DisplayModeItem = {
 					id: parseInt(id, 10),
 					width: parseInt(width, 10),
 					height: parseInt(height, 10),
 					fps: parseFloat(fps),
 					alternativeRefreshRates: alternativeRefreshRates
-						? alternativeRefreshRates.split(",").map(rate => parseFloat(rate.trim()))
+						? alternativeRefreshRates.split(',').map(rate => parseFloat(rate.trim()))
 						: [],
 					supportedHdrTypes: supportedHdrTypes
-						? supportedHdrTypes.split(",").map(type => parseInt(type.trim(), 10))
-						: []
+						? supportedHdrTypes.split(',').map(type => parseInt(type.trim(), 10))
+						: [],
 				};
-	
+
 				records.push(record);
 			}
-        }
-    });
+		}
+	});
 
-    return records;
+	return records;
 };
 
 export const getDisplayModeRecord = (): Promise<DisplayModeItem[]> => {
@@ -974,16 +959,16 @@ export const getDisplayModeRecord = (): Promise<DisplayModeItem[]> => {
 				resolve(jsonText);
 			} else {
 				try {
-                    const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
-                    if (errno) {
-                        reject(stderr);
-                        return;
-                    }
-                    const parsedRecords = parseDisplayModeRecords(stdout,);
-                    resolve(parsedRecords);
-                } catch (error) {
-                    reject(error);
-                }
+					const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+					if (errno) {
+						reject(stderr);
+						return;
+					}
+					const parsedRecords = parseDisplayModeRecords(stdout);
+					resolve(parsedRecords);
+				} catch (error) {
+					reject(error);
+				}
 			}
 		}),
 		shellCommon,
@@ -1524,7 +1509,6 @@ export const getDisplay0PanelInfo = (): Promise<string> => {
 	);
 };
 
-
 export const setDisplayMode = (displayModeID: number): Promise<string> => {
 	const shellCommon = `service call SurfaceFlinger 1035 i32 ${displayModeID}`;
 	return handlePromiseWithLogging(
@@ -1555,7 +1539,6 @@ export const setFpsFrameService = (status: boolean): Promise<string> => {
 	);
 };
 
-
 export const openVoiceAssistant = (): Promise<string> => {
 	const shellCommon = `am start com.miui.voiceassist/com.xiaomi.voiceassistant.CTAAlertActivity`;
 	return handlePromiseWithLogging(
@@ -1570,7 +1553,6 @@ export const openVoiceAssistant = (): Promise<string> => {
 		shellCommon,
 	);
 };
-
 
 export const openAITranslation = (): Promise<string> => {
 	const shellCommon = `am startservice -n com.xiaomi.aiasst.vision/.control.translation.AiTranslateService --es from systemui.plugin.tile.aisubtitles --es floatingWindowType startAiSubtitlesWindow`;
@@ -1825,7 +1807,7 @@ export const openLSPosedManger = (): Promise<string> => {
 		}),
 		shellCommon,
 	);
-}
+};
 
 export const openImportThemeManger = (): Promise<string> => {
 	const shellCommon = `am start -n com.android.thememanager/com.android.thememanager.activity.ThemeTabActivity`;
@@ -1840,10 +1822,10 @@ export const openImportThemeManger = (): Promise<string> => {
 		}),
 		shellCommon,
 	);
-}
+};
 
 export const openAllAppList = (): Promise<string> => {
-	const shellCommon = `am start -n com.miui.securitycenter/com.miui.apppredict.activity.AppClassificationActivity`;;
+	const shellCommon = `am start -n com.miui.securitycenter/com.miui.apppredict.activity.AppClassificationActivity`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -1855,10 +1837,10 @@ export const openAllAppList = (): Promise<string> => {
 		}),
 		shellCommon,
 	);
-}
+};
 
 export const openGameEngineLauncherActivity = (): Promise<string> => {
-	const shellCommon = `am start -n com.hyperos.aitoolbox/com.xiaomi.windowsgame.ui.GameEngineLauncherActivity`;;
+	const shellCommon = `am start -n com.hyperos.aitoolbox/com.xiaomi.windowsgame.ui.GameEngineLauncherActivity`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -1870,7 +1852,7 @@ export const openGameEngineLauncherActivity = (): Promise<string> => {
 		}),
 		shellCommon,
 	);
-}
+};
 
 export const getHasGameBoosterDataBase = (): Promise<string> => {
 	const shellCommon = `ls /data/data/com.miui.securitycenter/databases/gamebooster.db &>/dev/null && echo "exists" || echo "not exists"`;
@@ -1896,16 +1878,14 @@ export const deleteMIUIContentExtensionSettings = (): Promise<string> => {
 			if (import.meta.env.MODE === 'development') {
 				resolve(`1`);
 			} else {
-				const { errno, stdout, stderr }: ExecResults = (await exec(
-					shellCommon,
-				)) as unknown as ExecResults;
+				const { errno, stdout, stderr }: ExecResults = (await exec(shellCommon)) as unknown as ExecResults;
 				if (errno) {
 					reject(stderr);
 				} else {
 					if (stderr) {
-						reject(stderr)
+						reject(stderr);
 					}
-					resolve(stdout)
+					resolve(stdout);
 				}
 			}
 		}),
@@ -1926,10 +1906,10 @@ export const setMIUIContentExtensionAuth = (authCode: number): Promise<string> =
 		}),
 		shellCommon,
 	);
-}
+};
 
 export const getSmartFocusIOForBuild = (): Promise<SmartFocusIOResult['stdout']> => {
-	const toolsFunc = `/data/adb/modules/MIUI_MagicWindow+/common/utils/tools_functions.sh`
+	const toolsFunc = `/data/adb/modules/MIUI_MagicWindow+/common/utils/tools_functions.sh`;
 	const shellCommon = `source ${toolsFunc} && grep_prop persist.sys.stability.smartfocusio /system/product/etc/build.prop`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
@@ -1942,7 +1922,7 @@ export const getSmartFocusIOForBuild = (): Promise<SmartFocusIOResult['stdout']>
 		}),
 		shellCommon,
 	);
-}
+};
 
 export const getSmartFocusIO = (): Promise<SmartFocusIOResult['stdout']> => {
 	const shellCommon = `getprop persist.sys.stability.smartfocusio`;
@@ -1957,7 +1937,7 @@ export const getSmartFocusIO = (): Promise<SmartFocusIOResult['stdout']> => {
 		}),
 		shellCommon,
 	);
-}
+};
 
 export const getAutoStartMiuiCursorStyleType = (): Promise<string> => {
 	const shellCommon = `grep 'is_auto_start_miui_cursor_style_type=' /data/adb/MIUI_MagicWindow+/config.prop | awk -F'=' '{print $2}'`;
@@ -2017,7 +1997,7 @@ export const getBackingDev = (): Promise<string> => {
 		}),
 		shellCommon,
 	);
-}
+};
 
 export const getMiuiExtmDmOptEnable = (): Promise<string> => {
 	const shellCommon = `getprop persist.miui.extm.dm_opt.enable`;
@@ -2032,7 +2012,7 @@ export const getMiuiExtmDmOptEnable = (): Promise<string> => {
 		}),
 		shellCommon,
 	);
-}
+};
 
 export const getMiuiExtmDmOptTotalWriteBack = (): Promise<string> => {
 	const shellCommon = `echo $(awk '{print int($3 * 4096 / 1024 / 1024)}' /sys/block/zram0/bd_stat)`;
@@ -2047,7 +2027,7 @@ export const getMiuiExtmDmOptTotalWriteBack = (): Promise<string> => {
 		}),
 		shellCommon,
 	);
-}
+};
 
 export const getMiuiExtmDmOptTotalRead = (): Promise<string> => {
 	const shellCommon = `echo $(awk '{print int($2 * 4096 / 1024 / 1024)}' /sys/block/zram0/bd_stat)`;
@@ -2062,7 +2042,7 @@ export const getMiuiExtmDmOptTotalRead = (): Promise<string> => {
 		}),
 		shellCommon,
 	);
-}
+};
 
 export const getMiuiExtmDmOptHasWriteBack = (): Promise<string> => {
 	const shellCommon = `echo $(awk '{print int($1 * 4096 / 1024 / 1024)}' /sys/block/zram0/bd_stat)`;
@@ -2077,7 +2057,7 @@ export const getMiuiExtmDmOptHasWriteBack = (): Promise<string> => {
 		}),
 		shellCommon,
 	);
-}
+};
 
 export const getDevelopmentSettingsEnabled = (): Promise<string> => {
 	const shellCommon = `settings get global development_settings_enabled`;
@@ -2193,6 +2173,21 @@ export const removeAutoTurnOnDisplayMode = (): Promise<string> => {
 			} else {
 				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
 				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const getUFSHealthInfo = (): Promise<string> => {
+	const shellCommon = `cat /d/ufshcd0/dump_health_desc1`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`Device Descriptor[Byte offset 0x0]: bLength = 0x2d\nDevice Descriptor[Byte offset 0x1]: bDescriptorType = 0x9\nDevice Descriptor[Byte offset 0x2]: bPreEOLInfo = 0x1\nDevice Descriptor[Byte offset 0x3]: bDeviceLifeTimeEstA = 0x2\nDevice Descriptor[Byte offset 0x4]: bDeviceLifeTimeEstB = 0x1\n`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout)
 			}
 		}),
 		shellCommon,

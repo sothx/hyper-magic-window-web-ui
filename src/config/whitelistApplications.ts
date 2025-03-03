@@ -320,6 +320,8 @@ const topApplicationList = {
     'com.eastmoney.app.qihuobao': 1, // 东方财富期货宝
     'com.eastmoney.haitunlive': 1, // 浪客
     'com.kiloo.subwaysurf': 1, // 地铁跑酷
+    'com.changba': 1, // 唱吧
+    'com.rockets.chang': 1, // 唱鸭
 }
 
 export default {

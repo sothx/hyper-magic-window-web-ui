@@ -52,7 +52,7 @@ type AutoUIAppDrawerInstance = InstanceType<typeof AutoUIAppDrawer>;
 const searchKeyWordInput = ref<SearchKeyWordInputInstance | null>(null);
 const columns = createColumns();
 const deviceStore = useDeviceStore();
-const installedAppNames = useInstalledAppNames();
+const installedAppNamesHook = useInstalledAppNames();
 const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
 	theme: deviceStore.isDarkMode ? darkTheme : lightTheme,
 }));
@@ -87,7 +87,7 @@ const reloadPage = async () => {
 };
 
 const getInstalledAppNameList = async () => {
-	const [getListErr, getListRes] = await $to(installedAppNames.getList());
+	const [getListErr, getListRes] = await $to(installedAppNamesHook.getList());
 	if (getListErr) {
 		modal.create({
 			title: '获取失败',
@@ -995,7 +995,7 @@ function createColumns(): DataTableColumns<AutoUIMergeRuleItem> {
 				<n-button
 					class="mb-3 mr-3"
 					color="#69b2b6"
-					:loading="deviceStore.loading || autoUIStore.loading || installedAppNames.loading.value"
+					:loading="deviceStore.loading || autoUIStore.loading || installedAppNamesHook.loading.value"
 					@click="getInstalledAppNameList()">
 					<template #icon>
 						<n-icon>
