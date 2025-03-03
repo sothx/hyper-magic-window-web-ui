@@ -30,7 +30,7 @@ export function useDisplaySettings() {
 
 	const open = async () => {
 		modal.create({
-			title: '确认使用伪·熄灭屏幕吗？',
+			title: '确认使用强制屏幕最低亮度吗？',
 			type: 'info',
 			preset: 'dialog',
 			content: () => (
