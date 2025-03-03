@@ -319,6 +319,7 @@ const topApplicationList = {
     'com.zlketang.mm': 1, // 之了课堂
     'com.eastmoney.app.qihuobao': 1, // 东方财富期货宝
     'com.eastmoney.haitunlive': 1, // 浪客
+    'com.kiloo.subwaysurf': 1, // 地铁跑酷
 }
 
 export default {
