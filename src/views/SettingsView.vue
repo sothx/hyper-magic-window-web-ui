@@ -26,6 +26,7 @@ import { useZRAMWriteback } from '@/hooks/useZRAMWriteback'
 import { useVideoWallpaperLoop } from '@/hooks/useVideoWallpaperLoop';
 import { useOS2InstallModuleTips } from '@/hooks/useOS2InstallModuleTips';
 import { useUFSHealth } from '@/hooks/useUFSHealth';
+import { useMemoryInfo } from '@/hooks/useMemory';
 import {
 	BoltIcon,
 	CpuChipIcon,
@@ -66,6 +67,7 @@ const { activateABTest, loading: activateABTestLoading } = useABTestActivation()
 const videoWallpaperLoopHook = useVideoWallpaperLoop();
 const OS2InstallModuleTipsHook = useOS2InstallModuleTips()
 const useUFSHealthHook = useUFSHealth()
+const useMemoryInfoHook = useMemoryInfo();
 const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
 	theme: deviceStore.isDarkMode ? darkTheme : lightTheme,
 }));
@@ -2018,18 +2020,6 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							<p>{{ deviceStore.deviceInfo.display0Panel }}</p>
 						</dd>
 					</div>
-					<div
-						v-if="deviceStore.deviceInfo.memoryInfo"
-						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-						<dt
-							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
-							设备DDR和UFS信息
-						</dt>
-						<dd
-							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							<div class="whitespace-pre">{{ deviceStore.deviceInfo.memoryInfo || '获取失败' }}</div>
-						</dd>
-					</div>
 					<div v-if="!deviceStore.MIOSVersion || deviceStore.MIOSVersion && deviceStore.MIOSVersion < 2 || deviceStore.androidTargetSdk < 35" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
@@ -2125,6 +2115,30 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 						</dd>
 					</div>
 					<div
+						v-if="deviceStore.deviceInfo.memoryInfo"
+						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+						<dt
+							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
+							设备DDR和UFS信息
+						</dt>
+						<dd
+							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
+							<div class="whitespace-pre">{{ deviceStore.deviceInfo.memoryInfo || '获取失败' }}</div>
+						</dd>
+					</div>
+					<div
+						v-if="useMemoryInfoHook.DDRVendor.value"
+						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+						<dt
+							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
+							设备DDR生产厂商
+						</dt>
+						<dd
+							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
+							<div class="whitespace-pre">{{ useMemoryInfoHook.DDRVendor.value }}</div>
+						</dd>
+					</div>
+					<div
 						id="displayModeSettings"
 						v-if="useUFSHealthHook.isShow.value"
 						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
@@ -2135,10 +2149,13 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
 							<div class="mb-3">
-								<div v-if="useUFSHealthHook.preEOLInfo.value" class="mb-3"><n-tag type="info">寿命阶段: {{  useUFSHealthHook.preEOLInfo.value  }}</n-tag></div>
-								<div v-if="useUFSHealthHook.deviceLifeTimeEstA.value" class="mb-3"><n-tag type="success">用户数据区（已磨损）：{{ useUFSHealthHook.deviceLifeTimeEstA.value  }}</n-tag></div>
-								<div v-if="useUFSHealthHook.deviceLifeTimeEstB.value" class="mb-3"><n-tag type="warning">高速缓存区（已磨损）：{{ useUFSHealthHook.deviceLifeTimeEstB.value  }}</n-tag></div>
+								<div v-if="useUFSHealthHook.correctedPreEOLStatus.value" class="mb-3"><n-tag type="info">寿命阶段: {{  useUFSHealthHook.correctedPreEOLStatus.value  }}</n-tag></div>
+								<div v-if="useUFSHealthHook.deviceLifeTimeEstA.value" class="mb-3"><n-tag type="success">用户数据区(已磨损): {{ useUFSHealthHook.deviceLifeTimeEstA.value  }}</n-tag></div>
+								<div v-if="useUFSHealthHook.deviceLifeTimeEstB.value" class="mb-3"><n-tag type="warning">高速缓存区(已磨损): {{ useUFSHealthHook.deviceLifeTimeEstB.value  }}</n-tag></div>
 							</div>
+							<n-alert class="mt-5" type="info" :show-icon="false" :bordered="false">
+								<p>数据仅供参考，通常仅代表当前 UFS 存储设备循环擦写次数与预期设计寿命的比值，不代表 UFS 存储设备的实际磨损状况，但仍然建议当前 UFS 存储设备接近预期设计寿命时选择更换存储设备。</p>
+							</n-alert>
 						</dd>
 					</div>
 					<div

@@ -139,3 +139,13 @@ export const thirdPartyAppOptimizeJSONFormatToRunnerShell = (jsonData: Record<st
 	.map(([packageName, mode]) => `cmd miui_embedding_window set-appMode ${packageName} ${mode}`)
 	.join('\n');
 }
+
+export const UFSHealthType = (num:number) => {
+	if (num < 5) {
+		return 'success'
+	} else if (num < 7) {
+		return 'warning'
+	} else {
+		return 'error'
+	}
+}

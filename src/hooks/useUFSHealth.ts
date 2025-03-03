@@ -13,51 +13,68 @@ interface UFSHealthData {
 }
 
 export function useUFSHealth() {
-	const deviceStore = useDeviceStore();
 
-	const procceelocked = ref<boolean>(false);
+	const bPreEOLInfo = ref<number>();
 
-	const loading = ref<boolean>(false);
+	const bDeviceLifeTimeEstA = ref<number>();
 
-    const bPreEOLInfo = ref <number>();
+	const bDeviceLifeTimeEstB = ref<number>();
 
-    const bDeviceLifeTimeEstA = ref <number>();
-
-    const bDeviceLifeTimeEstB = ref <number>();
-
-    const preEOLInfo = computed(() => {
-        if (bPreEOLInfo.value === 1) {
+    const correctedPreEOLStatus = computed(() => {
+        if (bDeviceLifeTimeEstA.value && bDeviceLifeTimeEstB.value) {
+            const preEOL = bPreEOLInfo.value;
+            const maxLife = Math.max(bDeviceLifeTimeEstA.value, bDeviceLifeTimeEstB.value);
+            if (maxLife >= 5 || preEOL === 2) return '寿命接近终点';
+            if (maxLife >= 7 || preEOL === 3) return '接近失效';
             return '健康'
         }
-        if (bPreEOLInfo.value === 2) {
-            return '寿命接近终点'
-        }
-        if (bPreEOLInfo.value === 3) {
-            return '接近失效'
-        }
-        return ''
-    });
-
-    const isShow = computed(() => {
-        return Boolean(bPreEOLInfo.value && bDeviceLifeTimeEstA.value && bDeviceLifeTimeEstB.value)
-    })
-
-    const deviceLifeTimeEstA = computed(() => {
-        if (bDeviceLifeTimeEstA.value && bDeviceLifeTimeEstA.value >= 1 && bDeviceLifeTimeEstA.value <= 9) {
-            return `${bDeviceLifeTimeEstA.value * 10}%`;
-        }
         return '';
     });
 
-    const deviceLifeTimeEstB = computed(() => {
-        if (bDeviceLifeTimeEstB.value && bDeviceLifeTimeEstB.value >= 1 && bDeviceLifeTimeEstB.value <= 9) {
-            return `${bDeviceLifeTimeEstB.value * 10}%`;
-        }
-        return '';
-    });
+	const isShow = computed(() => {
+		return Boolean(bPreEOLInfo.value && bDeviceLifeTimeEstA.value && bDeviceLifeTimeEstB.value);
+	});
+
+	const deviceLifeTimeEstA = computed(() => {
+		if (bDeviceLifeTimeEstA.value && bDeviceLifeTimeEstA.value >= 1 && bDeviceLifeTimeEstA.value <= 9) {
+			return `${bDeviceLifeTimeEstA.value * 10}%`;
+		}
+		return '';
+	});
+
+	const deviceLifeTimeEstB = computed(() => {
+		if (bDeviceLifeTimeEstB.value && bDeviceLifeTimeEstB.value >= 1 && bDeviceLifeTimeEstB.value <= 9) {
+			return `${bDeviceLifeTimeEstB.value * 10}%`;
+		}
+		return '';
+	});
 
 	onMounted(async () => {
 		const [getUFSHealthInfoErr, getUFSHealthInfoRes] = await $to(deviceApi.getUFSHealthInfo());
+
+		if (getUFSHealthInfoErr) {
+			const [getUFSEOLInfoErr, getUFSEOLInfoRes] = await $to(deviceApi.getUFSEOLInfo());
+
+			if (getUFSEOLInfoRes) {
+				bPreEOLInfo.value = parseInt(getUFSEOLInfoRes, 16);
+			}
+
+			const [getUFSLifeTimeEstimationAErr, getUFSLifeTimeEstimationARes] = await $to(
+				deviceApi.getUFSLifeTimeEstimationA(),
+			);
+
+			if (getUFSLifeTimeEstimationARes) {
+				bDeviceLifeTimeEstA.value = parseInt(getUFSLifeTimeEstimationARes, 16);
+			}
+
+			const [getUFSLifeTimeEstimationBErr, getUFSLifeTimeEstimationBRes] = await $to(
+				deviceApi.getUFSLifeTimeEstimationB(),
+			);
+
+			if (getUFSLifeTimeEstimationBRes) {
+				bDeviceLifeTimeEstB.value = parseInt(getUFSLifeTimeEstimationBRes, 16);
+			}
+		}
 
 		if (getUFSHealthInfoRes) {
 			// 使用正则提取健康相关字段
@@ -77,31 +94,29 @@ export function useUFSHealth() {
 				return pick(healthData, healthFields) as UFSHealthData;
 			};
 
-            const result: UFSHealthData = parseUfsHealthData(getUFSHealthInfoRes);
+			const result: UFSHealthData = parseUfsHealthData(getUFSHealthInfoRes);
 
-            if (result.bPreEOLInfo) {
-                bPreEOLInfo.value = result.bPreEOLInfo;
-            }
+			if (result.bPreEOLInfo) {
+				bPreEOLInfo.value = result.bPreEOLInfo;
+			}
 
-            if (result.bDeviceLifeTimeEstA) {
-                bDeviceLifeTimeEstA.value = result.bDeviceLifeTimeEstA;
-            }
+			if (result.bDeviceLifeTimeEstA) {
+				bDeviceLifeTimeEstA.value = result.bDeviceLifeTimeEstA;
+			}
 
-            if (result.bDeviceLifeTimeEstB) {
-                bDeviceLifeTimeEstB.value = result.bDeviceLifeTimeEstB;
-            }
-
-
+			if (result.bDeviceLifeTimeEstB) {
+				bDeviceLifeTimeEstB.value = result.bDeviceLifeTimeEstB;
+			}
 		}
 	});
 
 	return {
 		bPreEOLInfo,
-        preEOLInfo,
-        bDeviceLifeTimeEstA,
-        deviceLifeTimeEstA,
-        bDeviceLifeTimeEstB,
-        deviceLifeTimeEstB,
-        isShow
+        correctedPreEOLStatus,
+		bDeviceLifeTimeEstA,
+		deviceLifeTimeEstA,
+		bDeviceLifeTimeEstB,
+		deviceLifeTimeEstB,
+		isShow,
 	};
 }

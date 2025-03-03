@@ -2179,8 +2179,53 @@ export const removeAutoTurnOnDisplayMode = (): Promise<string> => {
 	);
 };
 
+export const getUFSEOLInfo = (): Promise<string> => {
+	const shellCommon = `cat /sys/devices/platform/soc/1d84000.ufshc/health_descriptor/eol_info`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`0x01`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout)
+			}
+		}),
+		shellCommon,
+	);
+}
+
+export const getUFSLifeTimeEstimationA = (): Promise<string> => {
+	const shellCommon = `cat /sys/devices/platform/soc/1d84000.ufshc/health_descriptor/life_time_estimation_a`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`0x02`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout)
+			}
+		}),
+		shellCommon,
+	);
+}
+
+export const getUFSLifeTimeEstimationB = (): Promise<string> => {
+	const shellCommon = `cat /sys/devices/platform/soc/1d84000.ufshc/health_descriptor/life_time_estimation_b`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`0x01`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout)
+			}
+		}),
+		shellCommon,
+	);
+}
+
 export const getUFSHealthInfo = (): Promise<string> => {
-	const shellCommon = `cat /d/ufshcd0/dump_health_desc`;
+	const shellCommon = `cat /sys/devices/virtual/mi_memory/mi_memory_device/ufshcd0/dump_health_desc`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -2193,3 +2238,18 @@ export const getUFSHealthInfo = (): Promise<string> => {
 		shellCommon,
 	);
 };
+
+export const getDDRVendor = (): Promise<string> => {
+	const shellCommon = `cat /sys/devices/virtual/mi_memory/mi_memory_device/ddr/ddr_vendor`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`SAMSUNG`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout)
+			}
+		}),
+		shellCommon,
+	);
+}
