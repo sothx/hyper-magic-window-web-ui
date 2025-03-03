@@ -322,6 +322,7 @@ const topApplicationList = {
     'com.kiloo.subwaysurf': 1, // 地铁跑酷
     'com.changba': 1, // 唱吧
     'com.rockets.chang': 1, // 唱鸭
+    'com.jv.samsungeshop': 1, // 三星商城
 }
 
 export default {
