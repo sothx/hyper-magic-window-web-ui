@@ -62,10 +62,10 @@ export default defineConfig({
 				});
 			},
 		},
-		visualizer({
-			open: true,
-			gzipSize: false
-		}),
+		// visualizer({
+		// 	open: true,
+		// 	gzipSize: false
+		// }),
         // legacy({
         //     targets: ['defaults', 'not IE 11', 'chrome >= 87', 'android >= 5.0'],
         //     additionalLegacyPolyfills: ['regenerator-runtime/runtime'],
