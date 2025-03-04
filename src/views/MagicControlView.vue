@@ -1,478 +1,248 @@
 <script setup lang="tsx">
-import { useDeviceStore } from '@/stores/device';
-import { computed, h, ref, type CSSProperties } from 'vue';
-import * as xmlFormat from '@/utils/xmlFormat';
-import { createDiscreteApi, darkTheme, lightTheme, NInput, type ConfigProviderProps } from 'naive-ui';
-import { useGameMode } from '@/hooks/useGameMode';
-import { useABTestActivation } from '@/hooks/useABTestActivation';
+import { ref, reactive, watch, type CSSProperties, h, type Component, computed, onMounted } from 'vue';
+import { useDotBlackListStore } from '@/stores/dotBlackList';
 import * as deviceApi from '@/apis/deviceApi';
+import * as dotBlackListApi from '@/apis/dotBlackListApi';
+import { useAutoUIStore } from '@/stores/autoui';
+import * as xmlFormat from '@/utils/xmlFormat';
+import { useDeviceStore } from '@/stores/device';
 import $to from 'await-to-js';
-import { useEmbeddedStore } from '@/stores/embedded';
-import { keyBy } from 'lodash-es';
-import { useFontStore } from '@/stores/font';
-import { findBase64InString } from '@/utils/common';
+import {
+	NButton,
+	NIcon,
+	NInput,
+	createDiscreteApi,
+	darkTheme,
+	lightTheme,
+	type ConfigProviderProps,
+	type DataTableColumns,
+	type DropdownOption,
+} from 'naive-ui';
+import {
+	ArrowPathIcon,
+	FunnelIcon,
+	PlusIcon,
+	ShareIcon,
+	TrashIcon,
+	SquaresPlusIcon,
+	XCircleIcon,
+	WindowIcon,
+	StopIcon,
+	MagnifyingGlassIcon,
+	CircleStackIcon,
+} from '@heroicons/vue/24/outline';
+import type AutoUIMergeRuleItem from '@/types/AutoUIMergeRuleItem';
+import { useRouter, useRoute } from 'vue-router';
+import {
+	FunnelIcon as FunnelSolidIcon,
+	EllipsisHorizontalCircleIcon,
+	QuestionMarkCircleIcon,
+	ChatBubbleLeftEllipsisIcon,
+} from '@heroicons/vue/24/solid';
+import { useLogsStore } from '@/stores/logs';
+import { useAutoUI } from '@/hooks/useAutoUI';
+import * as validateFun from '@/utils/validateFun';
+import DotBlackListAppDrawer from '@/components/DotBlackListAppDrawer.vue';
+import { findBase64InString, renderApplicationName } from '@/utils/common';
 import { arrayBufferToBase64, base64ToArrayBuffer } from '@/utils/format';
-import * as embeddedApi from '@/apis/embeddedApi';
 import pako from 'pako';
-import { useAmktiao, type KeyboardModeOptions } from '@/hooks/useAmktiao';
-import { useMiuiDesktopMode } from '@/hooks/useMiuiDesktopMode';
-import { useShowNotificationIcon } from '@/hooks/useShowNotificationIconNum';
-import { useRealQuantity } from '@/hooks/useRealQuantity';
-import { BoltIcon, CpuChipIcon, ArrowDownCircleIcon, FilmIcon } from '@heroicons/vue/24/solid';
-import { useDisplayModeRecord, type DisplayModeItem } from '@/hooks/useDisplayModeRecord';
+import { useInstalledAppNames } from '@/hooks/useInstalledAppNames';
+import type DotBlackListMergeItem from '@/types/DotBlackListMergeItem';
+type SearchKeyWordInputInstance = InstanceType<typeof NInput>;
+type DotBlackListAppDrawerInstance = InstanceType<typeof DotBlackListAppDrawer>;
+const searchKeyWordInput = ref<SearchKeyWordInputInstance | null>(null);
+const columns = createColumns();
 const deviceStore = useDeviceStore();
-const embeddedStore = useEmbeddedStore();
-const miuiDesktopModeHook = useMiuiDesktopMode();
-const showNotificationIconHook = useShowNotificationIcon();
-const realQuantityHook = useRealQuantity();
-const displayModeRecordHook = useDisplayModeRecord();
-const { activateABTest, loading: activateABTestLoading } = useABTestActivation();
+const autoUIStore = useAutoUIStore();
+const installedAppNamesHook = useInstalledAppNames();
 const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
 	theme: deviceStore.isDarkMode ? darkTheme : lightTheme,
 }));
-const { message, modal } = createDiscreteApi(['message', 'modal'], {
+const { message, modal, notification } = createDiscreteApi(['message', 'modal', 'notification'], {
 	configProviderProps: configProviderPropsRef,
 });
-const gameMode = useGameMode();
-const fontStore = useFontStore();
-const amktiaoHook = useAmktiao();
-const handleSmartFocusIOChange = (value: boolean) => {
-	message.info('功能尚未上线，无任何实际效果，请等待后续更新！');
-};
-const rhythmModeOptions = [
-	{
-		label: '跟随系统',
-		key: 'autoRhythm',
-	},
-	{
-		label: '浅色模式',
-		key: 'lightMode',
-	},
-	{
-		label: '深色模式',
-		key: 'dartMode',
-	},
-];
+const dotBlackListStore = useDotBlackListStore();
+const importShareRuleLoading = ref(false);
+const hotReloadLoading = ref(false);
+const autoUI = useAutoUI();
+const addDotBlackListApp = ref<DotBlackListAppDrawerInstance | null>(null);
+const router = useRouter();
+const logsStore = useLogsStore();
+const route = useRoute();
+const shareRuleTextarea = ref('');
 
-const fontModeOptions = ref([
-	{
-		label: 'MiSans',
-		key: 'MiSans',
-		type: 'info',
-	},
-	{
-		label: 'HarmonyOS Sans',
-		key: 'HarmonyOS Sans',
-		type: 'error',
-	},
-	{
-		label: 'OPPO Sans',
-		key: 'OPPO Sans',
-		type: 'success',
-	},
-]);
-
-const fontModeMap = computed(() => {
-	return keyBy(fontModeOptions.value, 'key');
-});
-
-const handleSelectFontMode = (item: string) => {
-	fontStore.currentFont = item;
-};
-
-const handleSelectRhythmMode = (item: string) => {
-	deviceStore.rhythmMode = item;
-	if (item === 'lightMode') {
-		deviceStore.isDarkMode = false;
-	}
-	if (item === 'dartMode') {
-		deviceStore.isDarkMode = true;
-	}
-};
-const activateABTestTextarea = ref<string>('');
-const handleActivateABTest = async () => {
-	const ABTestontent = {
-		GAME_BOOSTER_CUSTOM_RATIO: true,
+function renderIcon(icon: Component, size?: number) {
+	return () => {
+		return h(NIcon, size? {
+			size
+		} : null, {
+			default: () => h(icon),
+		});
 	};
-	const jsonString = JSON.stringify(ABTestontent);
-	const deflate = pako.deflate(jsonString, {
-		level: 9,
-		memLevel: 9,
-		windowBits: 15,
-	});
-	const compressedData = new Uint8Array(deflate);
-	const base64String: string = arrayBufferToBase64(compressedData);
-	console.log(base64String, 'base64String');
-	activateABTestTextarea.value = '';
-	const [activateABTestTextareaModalErr, activateABTestTextareaModalRes] = await $to(
-		new Promise((resolve, reject) => {
-			modal.create({
-				title: '请粘贴激活口令',
-				preset: 'dialog',
-				style: 'min-width:500px; width:50%;',
-				content: () =>
-					h(NInput, {
-						type: 'textarea',
-						value: activateABTestTextarea.value,
-						'onUpdate:value': newValue => {
-							activateABTestTextarea.value = newValue;
-						},
-						autosize: { minRows: 8, maxRows: 8 },
-						placeholder: '在此处粘贴激活口令',
-					}),
-				positiveText: '确定提交',
-				negativeText: '取消',
-				onPositiveClick() {
-					resolve('positiveClick');
-				},
-			});
-		}),
-	);
-	if (activateABTestTextareaModalRes) {
-		activateABTestLoading.value = true;
-		const base64StringFromClipboard: string = activateABTestTextarea.value;
-		const getBase64String = findBase64InString(base64StringFromClipboard);
-		if (!getBase64String?.length) {
-			modal.create({
-				title: '导入激活口令失败',
-				type: 'error',
-				preset: 'dialog',
-				content: () => <p>导入激活口令失败了QwQ，解析口令发生错误，无法正常解析。</p>,
-				negativeText: '确定',
-			});
-			activateABTestLoading.value = false;
-			return;
-		}
-		try {
-			const uint8Array: Uint8Array = base64ToArrayBuffer(getBase64String);
-			const inflate = pako.inflate(uint8Array, {
-				to: 'string',
-			});
-			const activateABTestRuleContent = JSON.parse(inflate);
-			activateABTest(activateABTestRuleContent);
-		} catch (error) {
-			// 解析失败，处理错误
-			modal.create({
-				title: '解析激活口令失败',
-				type: 'error',
-				preset: 'dialog',
-				content: () => <p>解析激活口令失败了QwQ，请检查激活口令是否有误</p>,
-				negativeText: '确定',
-			});
-			activateABTestLoading.value = false;
-		}
-	}
-};
-const switchPatchModeLoading = ref<boolean>(false);
-const changeShowRotationSuggestions = async (value: boolean) => {
-	const [setRotationSuggestionsErr] = await $to(deviceApi.setRotationSuggestions(value ? 1 : 0));
-	if (setRotationSuggestionsErr) {
-		modal.create({
-			title: '操作失败',
-			type: 'error',
-			preset: 'dialog',
-			content: () => <p>无法 {value ? '开启' : '关闭'} 旋转建议提示按钮，详情请查看日志记录~</p>,
-			negativeText: '确定',
-		});
-		return;
-	}
-	deviceStore.showRotationSuggestions = value;
-};
-const changeShamikoMode = async (value: boolean) => {
-	deviceApi
-		.putShamikoMode(value ? 'whitelist' : 'blacklist')
-		.then(res => {
-			deviceStore.shamikoInfo.mode = value ? 'whitelist' : 'blacklist';
-			modal.create({
-				title: '操作成功',
-				type: 'success',
-				preset: 'dialog',
-				content: () => (
-					<div>
-						{value && (
-							<p>
-								好耶w，Shamiko的工作模式已成功切换为{' '}
-								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-									白名单模式
-								</span>{' '}
-							</p>
-						)}
-						{!value && (
-							<p>
-								好耶w，Shamiko的工作模式已成功切换为{' '}
-								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-									黑名单模式
-								</span>{' '}
-							</p>
-						)}
-					</div>
-				),
-				negativeText: '确定',
-			});
-		})
-		.catch(err => {
-			modal.create({
-				title: '操作失败',
-				type: 'error',
-				preset: 'dialog',
-				content: () => <p>无法切换Shamiko的工作模式，详情请查看日志记录~</p>,
-				negativeText: '确定',
-			});
-		});
-};
-const changePatchMode = async (value: boolean) => {
-	const [negativeRes, positiveRes] = await $to(
-		new Promise((resolve, reject) => {
-			modal.create({
-				title: value ? '想切换为定制模式吗？' : '想切换为完整模式吗？',
-				type: 'info',
-				preset: 'dialog',
-				content: () => (
-					<div>
-						{value && (
-							<p>
-								切换为{' '}
-								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-									定制模式
-								</span>{' '}
-								后，模块会以您设备的整体应用情况{' '}
-								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-									修剪模块应用适配列表
-								</span>{' '}
-								，以解决老机型由于系统优化不佳而导致的卡顿、掉帧等问题，后续每次更新模块或者安装新的应用后，建议前往{' '}
-								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-									应用横屏布局
-								</span>{' '}
-								重新{' '}
-								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-									生成定制应用数据
-								</span>{' '}
-								，确定要继续吗？
-							</p>
-						)}
-						{!value && (
-							<p>
-								切换为{' '}
-								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-									完整模式
-								</span>{' '}
-								后，可以获得模块提供的大量应用适配，同时可能会导致部分老机型由于系统优化不佳而导致的卡顿、掉帧等问题，确定要继续吗？
-							</p>
-						)}
-					</div>
-				),
-				positiveText: '确定继续',
-				negativeText: '我再想想',
-				onPositiveClick: () => {
-					resolve('positiveClick');
-				},
-				onNegativeClick: () => {
-					reject('negativeClick');
-				},
-			});
-		}),
-	);
-	if (positiveRes) {
-		switchPatchModeLoading.value = true;
-		const [removeIsPatchModeErr] = await $to(deviceApi.removeIsPatchMode());
-		if (removeIsPatchModeErr) {
-			modal.create({
-				title: '操作失败',
-				type: 'error',
-				preset: 'dialog',
-				content: () => <p>无法移除定制模式的配置项，详情请查看日志记录~</p>,
-				negativeText: '确定',
-			});
-			switchPatchModeLoading.value = false;
-			return;
-		}
-		if (value) {
-			const [addIsPatchModeErr] = await $to(deviceApi.addIsPatchMode());
-			if (addIsPatchModeErr) {
-				modal.create({
-					title: '操作失败',
-					type: 'error',
-					preset: 'dialog',
-					content: () => <p>无法切换为定制模式，详情请查看日志记录~</p>,
-					negativeText: '确定',
-				});
-				switchPatchModeLoading.value = false;
-				return;
-			}
-			embeddedStore.isPatchMode = true;
-		} else {
-			switchPatchModeLoading.value = false;
-			embeddedStore.isPatchMode = false;
-		}
-		await deviceStore.getAndroidApplicationPackageNameList();
-		const [submitUpdateEmbeddedAppErr, submitUpdateEmbeddedAppRes] = await $to(
-			embeddedApi.updateEmbeddedApp({
-				isPatchMode: embeddedStore.isPatchMode,
-				patchEmbeddedRulesListXML: xmlFormat.objectToXML(
-					embeddedStore.patchEmbeddedRulesList,
-					'package',
-					'package_config',
-				),
-				patchFixedOrientationListXML: xmlFormat.objectToXML(
-					embeddedStore.patchFixedOrientationList,
-					'package',
-					'package_config',
-				),
-				patchEmbeddedSettingConfigXML: xmlFormat.objectToXML(
-					embeddedStore.patchEmbeddedSettingConfig,
-					'setting',
-					'setting_rule',
-				),
-				customEmbeddedRulesListXML: xmlFormat.objectToXML(
-					embeddedStore.customConfigEmbeddedRulesList,
-					'package',
-					undefined,
-				),
-				customFixedOrientationListXML: xmlFormat.objectToXML(
-					embeddedStore.customConfigFixedOrientationList,
-					'package',
-					undefined,
-				),
-				...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35
-					? {
-							settingConfigXML: xmlFormat.objectToXML(
-								embeddedStore.customConfigEmbeddedSettingConfig,
-								'setting',
-								undefined,
-							),
-						}
-					: {
-							settingConfigXML: xmlFormat.objectToXML(
-								embeddedStore.systemEmbeddedSettingConfig,
-								'setting',
-								'setting_rule',
-							),
-						}),
-			}),
-		);
-		if (submitUpdateEmbeddedAppErr) {
-			modal.create({
-				title: '操作失败',
-				type: 'error',
-				preset: 'dialog',
-				content: () => <p>发生异常错误，更新失败了QwQ，详细错误请查看错误日志~</p>,
-			});
-			embeddedStore.isPatchMode = !embeddedStore.isPatchMode;
-			switchPatchModeLoading.value = false;
-		} else {
-			modal.create({
-				title: '操作成功',
-				type: 'success',
-				preset: 'dialog',
-				content: () => (
-					<div>
-						{value && (
-							<p>
-								好耶w，已成功切换为{' '}
-								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-									定制模式
-								</span>{' '}
-								，模块已根据您设备当前的整体应用情况{' '}
-								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-									修剪模块应用适配列表
-								</span>{' '}
-								，以解决老机型由于系统优化不佳而导致的卡顿、掉帧等问题，建议每次更新模块或者安装新的应用后，均需要在前往{' '}
-								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-									应用横屏布局
-								</span>{' '}
-								界面重新生成{' '}
-								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-									生成定制应用数据
-								</span>{' '}
-								。
-							</p>
-						)}
-						{!value && (
-							<p>
-								好耶w，已成功切换为{' '}
-								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-									完整模式
-								</span>{' '}
-								，可以获得模块提供的大量应用适配，同时可能会导致部分老机型由于系统优化不佳而导致的卡顿、掉帧等问题。
-							</p>
-						)}
-					</div>
-				),
-				negativeText: '确定',
-			});
-			switchPatchModeLoading.value = false;
-			embeddedStore.updateMergeRuleList();
-		}
-	}
-};
-const changeGameMode = async (value: boolean) => {
-	const [negativeRes, positiveRes] = await $to(
-		new Promise((resolve, reject) => {
-			modal.create({
-				title: value ? '想开启游戏显示布局吗？' : '想关闭游戏显示布局吗？',
-				type: 'info',
-				preset: 'dialog',
-				content: () => (
-					<div>
-						<p>
-							{value ? '开启' : '关闭'}{' '}
-							<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-								游戏显示布局
-							</span>{' '}
-							后需要设备重启才会生效~
-						</p>
-						{value &&
-							deviceStore.deviceCharacteristics === 'tablet' &&
-							deviceStore.MIOSVersion &&
-							deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35 && (
-								<p>
-									从Hyper OS 2.0开始，小米平板需要搭配配套的{' '}
-									<span
-										class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-										修改版平板/手机管家
-									</span>{' '}
-									才能使用游戏显示布局，详情请前往模块首页了解~
-								</p>
-							)}
-						<p>是否立即重启？</p>
-					</div>
-				),
-				positiveText: '确认并立即重启',
-				negativeText: '取消',
-				onPositiveClick: () => {
-					resolve('positiveClick');
-				},
-				onNegativeClick: () => {
-					reject('negativeClick');
-				},
-			});
-		}),
-	);
+}
 
-	const [deleteGameModeErr] = await $to(deviceApi.deleteGameMode());
-	if (deleteGameModeErr) {
+const reloadPage = async () => {
+	if (!dotBlackListStore.systemDotBlackList.length || !dotBlackListStore.hasHTMLViewerCloudData) {
 		modal.create({
-			title: '操作失败',
+			title: '获取云控失败',
 			type: 'error',
 			preset: 'dialog',
-			content: () => <p>无法修改模块配置文件，详情请查看日志记录~</p>,
-			negativeText: '确定',
+			content: () => (
+				<div>
+					<p>无法获取到HTML查看器的云控，请检查是否禁用云控或者清除HTML查看器的数据再重启平板尝试操作~</p>
+					{deviceStore.currentRootManager !== 'Magisk' && (
+						<p>
+							部分{deviceStore.currentRootManager}版本内置的Web
+							UI存在异常，如仍然无法正常获取云控数据库，请单独安装模块网盘内提供的KsuWebUI。
+						</p>
+					)}
+				</div>
+			),
 		});
 		return;
 	}
-	if (value) {
-		const [addGameModeErr] = await $to(deviceApi.addGameMode());
-		if (addGameModeErr) {
-			modal.create({
-				title: '操作失败',
-				type: 'error',
-				preset: 'dialog',
-				content: () => <p>无法修改模块配置文件，详情请查看日志记录~</p>,
-				negativeText: '确定',
-			});
-			return;
-		}
+	await deviceStore.getAndroidApplicationPackageNameList();
+	await dotBlackListStore.initDefault();
+};
+
+const getInstalledAppNameList = async () => {
+	const [getListErr, getListRes] = await $to(installedAppNamesHook.getList());
+	if (getListErr) {
+		modal.create({
+			title: '获取失败',
+			type: 'warning',
+			preset: 'dialog',
+			content: () => <p>您的系统环境暂不支持该功能，获取失败~</p>,
+			negativeText: '确定',
+		});
 	}
+	if (getListRes) {
+		modal.create({
+			title: '获取成功',
+			type: 'success',
+			preset: 'dialog',
+			content: () => <p>好耶OwO，已重新获取当前已安装的应用名称~</p>,
+			negativeText: '确定',
+		});
+	}
+};
+
+const filterHasBeenInstalledApp = () => {
+	dotBlackListStore.filterInstalledApps = !dotBlackListStore.filterInstalledApps;
+};
+
+const hotReloadApplicationData = async () => {
+	if (!dotBlackListStore.systemDotBlackList.length || !dotBlackListStore.hasHTMLViewerCloudData) {
+		modal.create({
+			title: '获取云控失败',
+			type: 'error',
+			preset: 'dialog',
+			content: () => (
+				<div>
+					<p>无法获取到HTML查看器的云控，请检查是否禁用云控或者清除HTML查看器的数据再重启平板尝试操作~</p>
+					{deviceStore.currentRootManager !== 'Magisk' && (
+						<p>
+							部分{deviceStore.currentRootManager}版本内置的Web
+							UI存在异常，如仍然无法正常获取云控数据库，请单独安装模块网盘内提供的KsuWebUI。
+						</p>
+					)}
+				</div>
+			),
+		});
+		return;
+	}
+	hotReloadLoading.value = true;
+	await reloadPage();
+	const currentDotBlackList = dotBlackListStore.mergeDotBlackList.map(item => {
+		return item.name;
+	});
+	const [updateRuleErr, updateRuleRes] = await $to(
+		dotBlackListApi.updateDotBlackList({
+			dotBlackList: currentDotBlackList,
+			sourceDotBlackList: dotBlackListStore.sourceDotBlackList,
+			customDotBlackList: dotBlackListStore.customDotBlackList,
+		}),
+	);
+	if (updateRuleErr) {
+		modal.create({
+			title: '热重载应用数据失败',
+			type: 'error',
+			preset: 'dialog',
+			content: () => <p>热重载应用数据失败了QwQ，详情请查看错误日志~</p>,
+			negativeText: '确定',
+		});
+		hotReloadLoading.value = false;
+	}
+
+	if (updateRuleRes) {
+		modal.create({
+			title: '热重载应用数据成功',
+			type: 'success',
+			preset: 'dialog',
+			content: () => (
+				<p>
+					好耶w，已经重新为你载入包括自定义规则在内的应用数据~实际生效还需要重启{' '}
+					<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+						系统界面
+					</span>{' '}
+					的作用域，确定要继续吗？
+				</p>
+			),
+			positiveText: '确定重启作用域',
+			negativeText: '稍后手动重启',
+			onPositiveClick() {
+				deviceApi
+					.killAndroidSystemUI()
+					.then(async res => {
+						await reloadPage();
+						modal.create({
+							title: '重启作用域成功',
+							type: 'success',
+							preset: 'dialog',
+							content: () => (
+								<p>
+									已经成功为你重启系统界面的作用域，请查看是否生效，如不生效请手动重启平板再查看效果~
+								</p>
+							),
+						});
+					})
+					.catch(err => {
+						modal.create({
+							title: '重启作用域失败',
+							type: 'error',
+							preset: 'dialog',
+							content: () => <p>发生异常错误，重启系统界面作用域失败QwQ，详细错误请查看日志~</p>,
+						});
+					});
+			},
+		});
+		hotReloadLoading.value = false;
+	}
+};
+
+const rebootDevice = async () => {
+	const [negativeRes, positiveRes] = await $to(
+		new Promise((resolve, reject) => {
+			modal.create({
+				title: '想重启设备吗？',
+				type: 'info',
+				preset: 'dialog',
+				content: () => (
+					<div>
+						<p>是否立即重启设备，以使规则生效？</p>
+					</div>
+				),
+				positiveText: '确认重启',
+				negativeText: '取消',
+				onPositiveClick: () => {
+					resolve('positiveClick');
+				},
+				onNegativeClick: () => {
+					reject('negativeClick');
+				},
+			});
+		}),
+	);
 	if (positiveRes) {
 		const [rebootDeviceErr] = await $to(deviceApi.rebootDevice());
 		if (rebootDeviceErr) {
@@ -487,26 +257,666 @@ const changeGameMode = async (value: boolean) => {
 		}
 	}
 };
+
+const importShareRule = async () => {
+	if (!dotBlackListStore.systemDotBlackList.length || !dotBlackListStore.hasHTMLViewerCloudData) {
+		modal.create({
+			title: '获取云控失败',
+			type: 'error',
+			preset: 'dialog',
+			content: () => (
+				<div>
+					<p>无法获取到HTML查看器的云控，请检查是否禁用云控或者清除HTML查看器的数据再重启平板尝试操作~</p>
+					{deviceStore.currentRootManager !== 'Magisk' && (
+						<p>
+							部分{deviceStore.currentRootManager}版本内置的Web
+							UI存在异常，如仍然无法正常获取云控数据库，请单独安装模块网盘内提供的KsuWebUI。
+						</p>
+					)}
+				</div>
+			),
+		});
+		return;
+	}
+	shareRuleTextarea.value = '';
+	const [, showShareRuleTextareaModalRes] = await $to(
+		new Promise((resolve, reject) => {
+			modal.create({
+				title: '请粘贴分享口令',
+				preset: 'dialog',
+				style: 'min-width:500px; width:50%;',
+				content: () =>
+					h(NInput, {
+						type: 'textarea',
+						value: shareRuleTextarea.value,
+						'onUpdate:value': newValue => {
+							shareRuleTextarea.value = newValue;
+						},
+						autosize: { minRows: 8, maxRows: 8 },
+						placeholder: '在此处粘贴分享规则口令',
+					}),
+				positiveText: '确定提交',
+				negativeText: '取消导入',
+				onPositiveClick() {
+					resolve('positiveClick');
+				},
+			});
+		}),
+	);
+	if (showShareRuleTextareaModalRes) {
+		importShareRuleLoading.value = true;
+		const base64StringFromClipboard: string = shareRuleTextarea.value;
+		const getBase64String = findBase64InString(base64StringFromClipboard);
+		if (!getBase64String?.length) {
+			modal.create({
+				title: '导入分享规则失败',
+				type: 'error',
+				preset: 'dialog',
+				content: () => (
+					<p>
+						导入分享规则失败了QwQ，解析{' '}
+						<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+							自定义规则
+						</span>{' '}
+						口令发生错误，无法正常解析。
+					</p>
+				),
+				negativeText: '确定',
+			});
+			importShareRuleLoading.value = false;
+			return;
+		}
+		try {
+			const uint8Array: Uint8Array = base64ToArrayBuffer(getBase64String);
+			const inflate = pako.inflate(uint8Array, {
+				to: 'string',
+			});
+			const importRuleContent = JSON.parse(inflate);
+			if (importRuleContent.type !== 'dot_black_list') {
+				modal.create({
+					title: '导入分享规则失败',
+					type: 'error',
+					preset: 'dialog',
+					content: () => (
+						<p>
+							导入分享规则失败了QwQ，该{' '}
+							<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+								自定义规则
+							</span>{' '}
+							不适用于窗口控制器。
+						</p>
+					),
+					negativeText: '确定',
+				});
+				importShareRuleLoading.value = false;
+				return;
+			}
+			if (
+				(importRuleContent.device === 'pad' && deviceStore.deviceCharacteristics !== 'tablet') ||
+				(importRuleContent.device === 'fold' && deviceStore.deviceCharacteristics === 'tablet')
+			) {
+				modal.create({
+					title: '导入分享规则失败',
+					type: 'error',
+					preset: 'dialog',
+					content: () => <p>导入分享规则失败了QwQ，平板和折叠屏的适配规则不能混用哦~</p>,
+					negativeText: '确定',
+				});
+				importShareRuleLoading.value = false;
+				return;
+			}
+			if (dotBlackListStore.allPackageName.has(importRuleContent.name)) {
+				modal.create({
+					title: '应用包名已存在',
+					type: 'error',
+					preset: 'dialog',
+					content: () => <p>这个应用包名已经存在列表中了,导入分享规则失败了！（敲</p>,
+				});
+				importShareRuleLoading.value = false;
+				return;
+			}
+
+			dotBlackListStore.customDotBlackList.push(importRuleContent.name);
+			const currentDotBlackList = dotBlackListStore.mergeDotBlackList.map(item => {
+				return item.name;
+			});
+			const [submitImportDotBlackListAppErr, submitImportDotBlackListAppRes] = await $to(
+				dotBlackListApi.updateDotBlackList({
+					dotBlackList: currentDotBlackList,
+					sourceDotBlackList: dotBlackListStore.sourceDotBlackList,
+					customDotBlackList: dotBlackListStore.customDotBlackList,
+				}),
+			);
+			if (submitImportDotBlackListAppErr) {
+				modal.create({
+					title: '导入分享规则失败',
+					type: 'error',
+					preset: 'dialog',
+					content: () => <p>发生异常错误，导入失败了QwQ，详细错误请查看错误日志~</p>,
+				});
+				importShareRuleLoading.value = false;
+			} else {
+				await reloadPage();
+				autoUIStore.updateMergeRuleList();
+				importShareRuleLoading.value = false;
+				modal.create({
+					title: '导入分享规则成功',
+					type: 'success',
+					preset: 'dialog',
+					content: () => (
+						<p>
+							好耶w，{' '}
+							<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+								{renderApplicationName(
+									importRuleContent.name,
+									deviceStore.installedAppNameList[importRuleContent.name] ||
+										autoUIStore.applicationName[importRuleContent.name],
+								)}
+							</span>{' '}
+							的应用配置成功了OwO~实际生效还需要重启{' '}
+							<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+								系统界面
+							</span>{' '}
+							的作用域，确定要继续吗？
+						</p>
+					),
+					positiveText: '确定重启作用域',
+					negativeText: '稍后手动重启',
+					onPositiveClick() {
+						deviceApi
+							.killAndroidSystemUI()
+							.then(async res => {
+								await reloadPage();
+								modal.create({
+									title: '重启作用域成功',
+									type: 'success',
+									preset: 'dialog',
+									content: () => (
+										<p>
+											已经成功为你重启系统界面的作用域，请查看是否生效，如不生效请手动重启平板再查看效果~
+										</p>
+									),
+								});
+							})
+							.catch(err => {
+								modal.create({
+									title: '重启作用域失败',
+									type: 'error',
+									preset: 'dialog',
+									content: () => <p>发生异常错误，重启系统界面作用域失败QwQ，详细错误请查看日志~</p>,
+								});
+							});
+					},
+				});
+			}
+			// 解析成功，可以使用 data
+		} catch (error) {
+			console.log(error, 'error');
+			// 解析失败，处理错误
+			modal.create({
+				title: '导入分享规则失败',
+				type: 'error',
+				preset: 'dialog',
+				content: () => <p>解析分享规则失败了QwQ，请检查导入口令是否有误</p>,
+				negativeText: '确定',
+			});
+			importShareRuleLoading.value = false;
+		}
+	}
+};
+
+const handleCustomRuleDropdown = async (
+	key: string | number,
+	option: DropdownOption,
+	row: DotBlackListMergeItem,
+	index: number,
+) => {
+	if (!dotBlackListStore.systemDotBlackList.length || !dotBlackListStore.hasHTMLViewerCloudData) {
+		modal.create({
+			title: '获取云控失败',
+			type: 'error',
+			preset: 'dialog',
+			content: () => (
+				<div>
+					<p>无法获取到HTML查看器的云控，请检查是否禁用云控或者清除HTML查看器的数据再重启平板尝试操作~</p>
+					{deviceStore.currentRootManager !== 'Magisk' && (
+						<p>
+							部分{deviceStore.currentRootManager}版本内置的Web
+							UI存在异常，如仍然无法正常获取云控数据库，请单独安装模块网盘内提供的KsuWebUI。
+						</p>
+					)}
+				</div>
+			),
+		});
+		return;
+	}
+	if (key === 'cleanCustomRule') {
+		const cleanCustomModal = modal.create({
+			title: '想清除自定义规则吗？',
+			type: 'warning',
+			preset: 'dialog',
+			content: () => (
+				<p>
+					清除自定义规则后，将恢复{' '}
+					<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+						{renderApplicationName(row.name, row.applicationName)}
+					</span>{' '}
+					的窗口控制器显示效果。确定要继续吗？
+				</p>
+			),
+			positiveText: '确定清除',
+			negativeText: '我再想想',
+			onPositiveClick: async () => {
+				cleanCustomModal.loading = true;
+				dotBlackListStore.customDotBlackList = dotBlackListStore.customDotBlackList.filter(
+					item => item !== row.name,
+				);
+				dotBlackListStore.sourceDotBlackList = dotBlackListStore.sourceDotBlackList.map(item => {
+					item.dataList = item.dataList.filter((item: string) => item !== row.name);
+					return item;
+				});
+				const currentDotBlackList = dotBlackListStore.mergeDotBlackList.map(item => {
+					return item.name;
+				});
+				const [submitCleanCustomRuleErr, submitCleanCustomRuleRes] = await $to(
+					dotBlackListApi.updateDotBlackList({
+						dotBlackList: currentDotBlackList,
+						sourceDotBlackList: dotBlackListStore.sourceDotBlackList,
+						customDotBlackList: dotBlackListStore.customDotBlackList,
+					}),
+				);
+				if (submitCleanCustomRuleErr) {
+					modal.create({
+						title: '清除自定义规则失败',
+						type: 'error',
+						preset: 'dialog',
+						content: () => <p>发生异常错误，清除失败了QwQ，详细错误请查看错误日志~</p>,
+					});
+					cleanCustomModal.loading = false;
+				} else {
+					cleanCustomModal.loading = false;
+					modal.create({
+						title: '清除自定义规则成功',
+						type: 'success',
+						preset: 'dialog',
+						content: () => (
+							<p>
+								好耶w，清除自定义规则成功了OwO~实际生效还需要重启{' '}
+								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+									系统界面
+								</span>{' '}
+								的作用域，确定要继续吗？
+							</p>
+						),
+						positiveText: '确定重启作用域',
+						negativeText: '稍后手动重启',
+						onPositiveClick() {
+							deviceApi
+								.killAndroidSystemUI()
+								.then(async res => {
+									await reloadPage();
+									modal.create({
+										title: '重启作用域成功',
+										type: 'success',
+										preset: 'dialog',
+										content: () => (
+											<p>
+												已经成功为你重启系统界面的作用域，请查看是否生效，如不生效请手动重启平板再查看效果~
+											</p>
+										),
+									});
+								})
+								.catch(err => {
+									modal.create({
+										title: '重启作用域失败',
+										type: 'error',
+										preset: 'dialog',
+										content: () => (
+											<p>发生异常错误，重启系统界面作用域失败QwQ，详细错误请查看日志~</p>
+										),
+									});
+								});
+						},
+					});
+					cleanCustomModal.loading = false;
+					await reloadPage();
+				}
+			},
+		});
+	}
+	if (key === 'shareCustomRule') {
+		const shareContent = {
+			name: row.name,
+			cmpt: 1,
+			rules: {
+				name: row.name,
+			},
+			type: 'dot_black_list',
+			device: deviceStore.deviceCharacteristics === 'tablet' ? 'pad' : 'fold',
+		};
+		const jsonString = JSON.stringify(shareContent);
+		const deflate = pako.deflate(jsonString, {
+			level: 9,
+			memLevel: 9,
+			windowBits: 15,
+		});
+		const compressedData = new Uint8Array(deflate);
+		const base64String: string = arrayBufferToBase64(compressedData);
+		const [writeClipboardErr] = await $to(
+			navigator.clipboard.writeText(
+				`我分享了一个[窗口控制器]的自定义规则，可以前往[完美横屏应用计划 For Web UI]导入：\n${base64String}`,
+			),
+		);
+		if (writeClipboardErr) {
+			modal.create({
+				title: '复制分享口令失败',
+				type: 'error',
+				preset: 'dialog',
+				content: () => (
+					<p>
+						复制{' '}
+						<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+							{renderApplicationName(row.name, row.applicationName)}
+						</span>{' '}
+						的分享口令失败了QwQ，可能由于没有读取/写入剪切板的权限或{' '}
+						<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+							自定义规则
+						</span>{' '}
+						长度过大。
+					</p>
+				),
+				negativeText: '确定',
+			});
+			return;
+		} else {
+			modal.create({
+				title: '复制分享口令成功',
+				type: 'success',
+				preset: 'dialog',
+				content: () => (
+					<div>
+						<p>
+							好耶w，复制{' '}
+							<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+								{renderApplicationName(row.name, row.applicationName)}
+							</span>{' '}
+							分享口令成功了~
+						</p>
+						<p>
+							如果没有复制成功，请确认是否给予了读取/写入剪切板的权限或{' '}
+							<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+								自定义规则
+							</span>{' '}
+							长度过大。
+						</p>
+						<p>
+							分享口令导入入口位于{' '}
+							<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+								窗口控制器- 从分享口令导入
+							</span>{' '}
+							。
+						</p>
+					</div>
+				),
+				positiveText: '确定',
+			});
+		}
+	}
+};
+
+const handleSystemRuleMode = (row: DotBlackListMergeItem, index: number) => {
+	modal.create({
+		title: '系统规则说明',
+		type: 'warning',
+		preset: 'dialog',
+		content: () => (
+			<p>
+				系统已对{' '}
+				<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+					{renderApplicationName(row.name, row.applicationName)}
+				</span>{' '}
+				配置了窗口控制器的隐藏，且不可被移除，仅有自定义规则可以被移除哦~
+			</p>
+		),
+	});
+};
+
+const openAddDrawer = async () => {
+	if (!dotBlackListStore.systemDotBlackList.length || !dotBlackListStore.hasHTMLViewerCloudData) {
+		modal.create({
+			title: '获取云控失败',
+			type: 'error',
+			preset: 'dialog',
+			content: () => (
+				<div>
+					<p>无法获取到HTML查看器的云控，请检查是否禁用云控或者清除HTML查看器的数据再重启平板尝试操作~</p>
+					{deviceStore.currentRootManager !== 'Magisk' && (
+						<p>
+							部分{deviceStore.currentRootManager}版本内置的Web
+							UI存在异常，如仍然无法正常获取云控数据库，请单独安装模块网盘内提供的KsuWebUI。
+						</p>
+					)}
+				</div>
+			),
+		});
+		return;
+	}
+	if (addDotBlackListApp.value) {
+		const [addDotBlackListAppCancel, addDotBlackListAppRes] = await $to(addDotBlackListApp.value.openDrawer());
+		if (addDotBlackListAppCancel) {
+			console.log('操作取消:', addDotBlackListAppCancel);
+		} else {
+			dotBlackListStore.customDotBlackList.push(addDotBlackListAppRes.name);
+			const currentDotBlackList = dotBlackListStore.mergeDotBlackList.map(item => {
+				return item.name;
+			});
+			const [submitAddDotBlackListAppErr, submitAddDotBlackListAppRes] = await $to(
+				dotBlackListApi.updateDotBlackList({
+					dotBlackList: currentDotBlackList,
+					sourceDotBlackList: dotBlackListStore.sourceDotBlackList,
+					customDotBlackList: dotBlackListStore.customDotBlackList,
+				}),
+			);
+			if (submitAddDotBlackListAppErr) {
+				modal.create({
+					title: '应用添加失败',
+					type: 'error',
+					preset: 'dialog',
+					content: () => <p>发生异常错误，添加失败了QwQ，详细错误请查看错误日志~</p>,
+				});
+				addDotBlackListAppRes.loadingCallback && addDotBlackListAppRes.loadingCallback();
+			} else {
+				modal.create({
+					title: '应用添加成功',
+					type: 'success',
+					preset: 'dialog',
+					content: () => (
+						<p>
+							好耶w，已经成功配置{' '}
+							<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+								{renderApplicationName(
+									addDotBlackListAppRes.name,
+									deviceStore.installedAppNameList[addDotBlackListAppRes.name] ||
+										dotBlackListStore.applicationName[addDotBlackListAppRes.name],
+								)}
+							</span>{' '}
+							的窗口控制器隐藏效果了OwO~实际生效还需要重启{' '}
+							<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+								系统界面
+							</span>{' '}
+							的作用域，确定要继续吗？
+						</p>
+					),
+					positiveText: '确定重启作用域',
+					negativeText: '稍后手动重启',
+					onPositiveClick() {
+						deviceApi
+							.killAndroidSystemUI()
+							.then(async res => {
+								await reloadPage();
+								modal.create({
+									title: '重启作用域成功',
+									type: 'success',
+									preset: 'dialog',
+									content: () => (
+										<p>
+											已经成功为你重启系统界面的作用域，请查看是否生效，如不生效请手动重启平板再查看效果~
+										</p>
+									),
+								});
+							})
+							.catch(err => {
+								modal.create({
+									title: '重启作用域失败',
+									type: 'error',
+									preset: 'dialog',
+									content: () => <p>发生异常错误，重启系统界面作用域失败QwQ，详细错误请查看日志~</p>,
+								});
+							});
+					},
+				});
+				await reloadPage();
+				addDotBlackListAppRes.loadingCallback && addDotBlackListAppRes.loadingCallback();
+				addDotBlackListAppRes.closeCallback && addDotBlackListAppRes.closeCallback();
+			}
+		}
+	}
+};
+
+const pagination = reactive({
+	page: 1,
+	pageSize: 10,
+	simple: true,
+	showSizePicker: true,
+	onChange: (page: number) => {
+		pagination.page = page;
+	},
+	onUpdatePageSize: (pageSize: number) => {
+		pagination.pageSize = pageSize;
+		pagination.page = 1;
+	},
+});
+
 const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean }) => {
 	const style: CSSProperties = {};
 	if (checked) {
-		style.background = '#d03050';
-		if (focused) {
-			style.boxShadow = '0 0 0 2px #d0305040';
-		}
-	} else {
 		style.background = '#2080f0';
 		if (focused) {
 			style.boxShadow = '0 0 0 2px #2080f040';
 		}
+	} else {
+		style.background = '#d03050';
+		if (focused) {
+			style.boxShadow = '0 0 0 2px #d0305040';
+		}
 	}
 	return style;
 };
+
+function createColumns(): DataTableColumns<DotBlackListMergeItem> {
+	return [
+		{
+			title: '应用名称',
+			minWidth: 250,
+			key: 'name',
+			render(row, index) {
+				return (
+					<div>
+						{row.applicationName && <p>{row.applicationName}</p>}
+						{row.name && (
+							<p>
+								<span class={{ hidden: !row.applicationName }}>(</span>
+								{row.name}
+								<span class={{ hidden: !row.applicationName }}>)</span>
+							</p>
+						)}
+					</div>
+				);
+			},
+		},
+		{
+			title: '规则状态',
+			width: 150,
+			key: 'isOptimizeWebView',
+			render(row, index) {
+				if (row.status) {
+					return (
+						<n-tag bordered={false} dashed type='success'>
+							已生效
+						</n-tag>
+					);
+				}
+				return (
+					<n-tag bordered={false} dashed type='info'>
+						未生效
+					</n-tag>
+				);
+			},
+		},
+		{
+			title: '规则来源',
+			width: 150,
+			key: 'ruleMode',
+			render(row, index) {
+				const slots = {
+					icon: row.ruleMode === 'custom' ? EllipsisHorizontalCircleIcon : QuestionMarkCircleIcon,
+				};
+				if (row.ruleMode === 'custom') {
+					const rule = [
+						{
+							label: '分享自定义规则',
+							key: 'shareCustomRule',
+							icon: renderIcon(
+								<svg class='icon' aria-hidden='true'>
+									<use xlinkHref='#icon-fenxiang'></use>
+								</svg>,
+								20
+							),
+						},
+						{
+							label: '清除自定义规则',
+							key: 'cleanCustomRule',
+							icon: renderIcon(
+								<svg class='icon' aria-hidden='true'>
+									<use xlinkHref='#icon-qingchu'></use>
+								</svg>,
+								20
+							),
+						},
+					];
+					return (
+						<n-dropdown
+							onSelect={(key: string | number, option: DropdownOption) =>
+								handleCustomRuleDropdown(key, option, row, index)
+							}
+							size='large'
+							trigger='click'
+							options={rule}>
+							<n-button v-slots={slots} size='small' dashed type='info'>
+								自定义规则
+							</n-button>
+						</n-dropdown>
+					);
+				}
+				return (
+					<n-button
+						size='small'
+						v-slots={slots}
+						dashed
+						type='error'
+						onClick={() => handleSystemRuleMode(row, index)}>
+						系统规则
+					</n-button>
+				);
+			},
+		},
+	];
+}
 </script>
 <template>
-	<div class="setting">
+	<main class="autoui-view mb-10">
 		<div class="mt-3">
-			<div class="px-3 sm:px-0">
+			<div class="mb-3 px-4 sm:px-0">
 				<h3 :class="`text-base font-semibold leading-7`">
 					<span
 						class="animated-bg bg-clip-text font-semibold text-transparent"
@@ -521,35 +931,111 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 								rgb(60, 112, 255) 110.17%
 							);
 						"
-						>外设按键映射</span
+						>触控笔按键映射</span
 					>
 				</h3>
 				<p
 					:class="`mt-1 max-w-2xl text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-500'}`">
-					管理有关外设按键映射的配置
+					触控笔按键映射，可以配置小米触控笔的按键映射
 				</p>
 			</div>
-			<n-watermark
-				content="开发中，尚未上线"
-				cross
-				fullscreen
-				:font-size="16"
-				:line-height="16"
-				:width="384"
-				:height="384"
-				:x-offset="12"
-				:z-index="999"
-				:y-offset="60"
-				:rotate="-15" />
-			<div class="mt-3">
-				<n-alert class="cursor-pointer" :show-icon="false" type="info"
-					>该功能开发中，不会这么快上线，请勿催更，请期待后续更新。</n-alert>
-				<!-- <n-alert class="cursor-pointer" :show-icon="false" type="info"
-					>该功能暂时仅兼容 [小米灵感触控笔 二代] ，其他外设暂无适配计划，请等待后续更新。</n-alert
-				> -->
-			</div>
 		</div>
-	</div>
+		<n-card size="small">
+			<div class="flex flex-wrap">
+				<n-button
+					class="mb-3 mr-3"
+					type="info"
+					:loading="deviceStore.loading || dotBlackListStore.loading"
+					@click="() => message.info('开发中，不会这么快上线，请勿催更，请期待后续更新！')">
+					<template #icon>
+						<n-icon>
+							<PlusIcon />
+						</n-icon>
+					</template>
+					添加映射规则
+				</n-button>
+				<n-button
+					class="mb-3 mr-3"
+					type="success"
+					:loading="deviceStore.loading || dotBlackListStore.loading"
+					@click="() => message.info('开发中，不会这么快上线，请勿催更，请期待后续更新！')">
+					<template #icon>
+						<n-icon>
+							<ArrowPathIcon />
+						</n-icon>
+					</template>
+					刷新映射规则列表
+				</n-button>
+				<n-button
+					class="mb-3 mr-3"
+					type="warning"
+					:loading="deviceStore.loading || dotBlackListStore.loading || importShareRuleLoading"
+					@click="() => message.info('开发中，不会这么快上线，请勿催更，请期待后续更新！')">
+					<template #icon>
+						<n-icon>
+							<ShareIcon />
+						</n-icon>
+					</template>
+					从分享口令导入
+				</n-button>
+			</div>
+			<div class="flex flex-wrap">
+				<div>留空区域:用于显示当前设备__</div>
+				<div>
+					<p>数据列表规划：</p>
+					<p>映射规则名称 | 当前状态 | 操作</p>
+					<p>映射脚本维持监听存在一定功耗，仅连接手写笔状态可开启，断开手写笔自动结束脚本。</p>
+					<p>需要增加进程锁，存在活跃脚本进程时提示是否需要结束上一个进程。</p>
+				</div>
+			</div>
+			<n-input-group>
+				<n-input
+					size="large"
+					clearable
+					v-model:value="dotBlackListStore.searchKeyWord"
+					ref="searchKeyWordInput"
+					placeholder="搜索映射规则名称"
+					autosize
+					:style="{ width: '80%' }" />
+				<n-button
+					size="large"
+					type="primary"
+					@click="
+						() => {
+							searchKeyWordInput?.blur();
+						}
+					">
+					<template #icon>
+						<n-icon>
+							<MagnifyingGlassIcon />
+						</n-icon>
+					</template>
+					搜索
+				</n-button>
+				<n-button
+					size="large"
+					bordered
+					@click="
+						() => {
+							dotBlackListStore.searchKeyWord = '';
+						}
+					">
+					<template #icon>
+						<n-icon>
+							<XCircleIcon />
+						</n-icon>
+					</template>
+					清空
+				</n-button>
+			</n-input-group>
+		</n-card>
+		<!-- <n-data-table
+			size="small"
+			:loading="deviceStore.loading || dotBlackListStore.loading"
+			:columns="columns"
+			class="mt-3"
+			:data="dotBlackListStore.filterMergeDotBlackList"
+			:pagination="pagination" /> -->
+		<DotBlackListAppDrawer ref="addDotBlackListApp" type="add" title="添加应用" />
+	</main>
 </template>
-
-<style></style>
