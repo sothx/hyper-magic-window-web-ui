@@ -21,7 +21,8 @@ interface EmbeddedPerceptionApplications {
 export const embeddedPerceptionApplications: Record<string, EmbeddedPerceptionApplications> = {
 	'com.coolapk.market': {
 		isShow() {
-			return true;
+			const deviceStore = useDeviceStore();
+			return deviceStore.androidTargetSdk > 33;
 		},
 		onClick(row: EmbeddedMergeRuleItem) {
 			const deviceStore = useDeviceStore();

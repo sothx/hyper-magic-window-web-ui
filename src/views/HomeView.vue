@@ -2534,6 +2534,7 @@ onMounted(() => {
 		</n-card>
 		<n-data-table
 			ref="embeddedTableRef"
+			size="small"
 			:loading="deviceStore.loading || embeddedStore.loading"
 			:columns="columns"
 			class="mt-3"

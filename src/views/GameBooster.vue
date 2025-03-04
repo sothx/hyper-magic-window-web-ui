@@ -610,6 +610,7 @@ function createColumns(): DataTableColumns<GameBoosterTableItem> {
 			</n-input-group>
 		</n-card>
 		<n-data-table
+			size="small"
 			:loading="deviceStore.loading || gameBoosterStore.loading"
 			:columns="columns"
 			class="mt-3"

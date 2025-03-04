@@ -1115,6 +1115,7 @@ function createColumns(): DataTableColumns<AutoUIMergeRuleItem> {
 			</n-input-group>
 		</n-card>
 		<n-data-table
+			size="small"
 			:loading="deviceStore.loading || autoUIStore.loading"
 			:columns="columns"
 			class="mt-3"

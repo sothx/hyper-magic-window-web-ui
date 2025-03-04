@@ -1129,6 +1129,7 @@ function createColumns(): DataTableColumns<DotBlackListMergeItem> {
 			</n-input-group>
 		</n-card>
 		<n-data-table
+			size="small"
 			:loading="deviceStore.loading || dotBlackListStore.loading"
 			:columns="columns"
 			class="mt-3"
