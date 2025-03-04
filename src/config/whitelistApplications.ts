@@ -323,6 +323,9 @@ const topApplicationList = {
     'com.changba': 1, // 唱吧
     'com.rockets.chang': 1, // 唱鸭
     'com.jv.samsungeshop': 1, // 三星商城
+    'com.eastmoney.innovation.android': 1, // 妙想
+    'com.eastmoney.android.choice': 1, // Choice数据
+    'com.eastmoney.android.gubaproj': 1, // 股吧
 }
 
 export default {

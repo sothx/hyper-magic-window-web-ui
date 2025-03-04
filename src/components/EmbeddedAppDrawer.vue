@@ -241,6 +241,7 @@ const embeddedAppDrawer = ref({
 				currentType.value = 'update';
 				currentIsSwitchEmbeddedCustom.value = false;
 				currentSplitRatio.value = 0.5;
+				currentIsDisabledEmbeddedPlaceholder.value = false;
 				currentRuleMode.value = initialParams.ruleMode;
 				currentAppName.value = initialParams.name;
 				isSupportEmbedded.value = initialParams.isSupportEmbedded;
@@ -581,7 +582,8 @@ const handleDrawerSubmit = async () => {
 				}),
 			...(currentSettingMode.value === 'embedded' &&
 				(currentRuleMode.value === 'custom' ||
-					(currentRuleMode.value === 'module' && currentIsSwitchEmbeddedCustom.value)) && currentIsSupportEmbeddedPlaceholder.value && {
+					(currentRuleMode.value === 'module' && currentIsSwitchEmbeddedCustom.value)) &&
+				currentIsSupportEmbeddedPlaceholder.value && {
 					emIsDisabledPlaceholder: currentIsDisabledEmbeddedPlaceholder.value,
 				}),
 		},
@@ -637,6 +639,7 @@ defineExpose({
 					<n-alert :show-icon="false" :bordered="false" title="应用分屏显示" type="success">
 						开启后，未适配横屏应用界面将通过平行窗口显示
 					</n-alert>
+					<!-- <n-tag type="success" class="whitespace-pre-wrap h-full py-2 leading-snug" closable>测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本测试文本</n-tag> -->
 					<n-card v-if="currentRuleMode === 'module'" :bordered="false" title="切换自定义规则" size="small">
 						<div class="mb-4">
 							<n-tag :bordered="false" type="info"> 切换为自定义规则后该应用不再随模块更新 </n-tag>

@@ -178,8 +178,70 @@ export const embeddedPerceptionApplications: Record<string, EmbeddedPerceptionAp
 								configProviderProps: configProviderPropsRef,
 							},
 						);
-						const code =
-							'eNqtVk1zGjEM/S977GQ8mfZC6IlC6SWkBBJ61noFq8Fre2wvDM3kv1deEj5mgDVpLra8q2dZsp6sl0xDhVk3k6YS0hgFdikqcEsM2U0mKxuy7tebDKus+3JR1S/JTlHNewXYQCvWC65G/m4VhQkEMln3Vnx7+zAGcpNand5NrAjXLJMWIx56kvejsOl+uTmnW3t0qzvxzNPUgsTZXQJImwLFYMNOkXxgeQwLTIB5BCdLMa0tG2vkCfpahQRoDh7FlCqrsKdsCQmQOWIhhjwMMACpd8SscwED1lag2Rsnnu3CQYGj7TLR3qojKnaIpnVeURCjvZywwYHxnrXphuMVNhcYnb0nn2JLGh1ABjF0hPpqEGifCNmfzShl1uxXSiBUXlcNqhela0yNNgNaUHiC/AB1AbQwpvCM+hXnY1SSW2OSoXaYCCs2JWfIYFMm6ucgl7WNyuLHTkzAVeg9J4/olxAC6cU1bJmgVZtjyrQn/TbHI3zWSaofgeYkY2nT4uFgkXrQ5pB7ZS6i8La4tjSetbMGpSxwpWr+WpKizzPf93FsPl5K/rOQXBGg8wXZKvBckJspVXtYKzWVDlH3ilbMigo0YhbHbdwOM7gtAjGffurgQPO71GlF2dIEIx4nfX6RUk2cStw2zGONPibrEwXVbqipMA2F+w4h4LDWTyVz0rf7g64i7yNHxo5WINsvdI15M9+bRUKKK242xD0PrZrnCsqHykkLyLg1uHjvrPoOYYLHNPAU4x4p7j+F45/AtGtz6GORTKPzpaBzBMlPS7MeUOSk2zWZtbXGhYbU9HfXe84VLGKMHfJTN3bYj08/aXTdy+wbx3HG69bDSm4IUMb73JJjt+RWmIV3/Pfsre8dkf5DRSiz7t3t7Suf0LT11Sf9LchDrrDF/dMtOVsNGxvtYZVjUWDBVgpckYzfLMRlxcXnWCGU5IoxOM5ma3/zdlVjaA7K4+s/HRabjA==';
+						const shareContent = {
+							name: 'com.coolapk.market',
+							cmpt:
+								deviceStore.MIOSVersion &&
+								deviceStore.MIOSVersion >= 2 &&
+								deviceStore.androidTargetSdk >= 35
+									? 2
+									: 1,
+							em: {
+								name: 'com.coolapk.market',
+								skipSelfAdaptive: true,
+								splitRatio: deviceStore.deviceCharacteristics === 'tablet' ? 0.3 : 0.5,
+								splitPairRule:
+									'com.coolapk.market.view.main.MainActivity:*,com.coolapk.market.view.userv9.UserSpaceV9Activity:*,com.coolapk.market.view.node.DynamicNodePageActivity:*,com.coolapk.market.view.search.SuperSearchResultActivity:*,com.coolapk.market.view.base.SimpleAlphaActivity:*,com.coolapk.market.view.feed.FeedDetailActivityV8:*,com.coolapk.market.view.appmanager.UpgradeManagerActivity:*,com.coolapk.market.view.feedv8.multiSubmit.MultiSubmitActivity:*,com.coolapk.market.view.appmanager.AppManagerActivity:*,com.coolapk.market.view.user.UserFeedListActivity:*,com.coolapk.market.view.contact.FriendListActivity:*,com.coolapk.market.view.contact.FansListActivity:*,com.coolapk.market.view.user.UserFollowAppActivity:*,com.coolapk.market.view.album.UserAlbumListActivity:*,com.coolapk.market.view.user.MyDigitTabListActivit:*,com.coolapk.market.view.goods.MyGoodsTabListActivity:*,com.coolapk.market.view.user.UserPictureListActivity:*,com.coolapk.market.view.dyhv8.DyhListActivity:*,com.coolapk.market.view.backupList.BackupListActivity:*,com.coolapk.market.view.message.ChattingActivity:*,com.coolapk.market.view.feed.FeedReplyDetailActivity:*,com.coolapk.market.view.feedv8.SubmitFeedV8Activity:*,com.coolapk.market.view.notification.NotificationActivity:*,com.coolapk.market.view.feed.ReplyActivity:*',
+								activityRule:
+									'com.coolapk.market.view.main.MainActivity,com.coolapk.market.view.wallpaper.coolpic.CoolPicDetailActivity,com.coolapk.market.view.appmanager.UpgradeManagerActivity,com.coolapk.market.view.feedv8.multiSubmit.MultiSubmitActivity,com.coolapk.market.view.feed.ReplyActivity,com.coolapk.market.view.splash.SplashActivity,com.coolapk.market.view.splash.FullScreenAdActivity,com.coolapk.market.view.video.VideoDetailListActivity,com.coolapk.market.view.feedv8.FeedEntranceV8Activity,com.coolapk.market.view.photo.QRCodeActivity,com.coolapk.market.view.feedv8.SubmitFeedV8Activity,com.coolapk.market.view.feedv8.QuestionTitleActivity,com.coolapk.market.view.goodsList.CreateFunThingsActivity,com.coolapk.market.view.permission.PrivacyActivity,com.coolapk.market.view.webview.LoginActivity,com.coolapk.market.view.live.LiveActivity,com.coolapk.market.view.message.ChattingActivity,com.coolapk.market.view.feed.FeedReplyDetailActivity,com.coolapk.market.view.feed.ForwardEntityActivity',
+								transitionRules:
+									'com.coolapk.market.view.main.MainActivity,com.coolapk.market.view.feedv8.multiSubmit.MultiSubmitActivity,com.coolapk.market.view.feedv8.SubmitFeedV8Activity,com.coolapk.market.view.message.ChattingActivity,com.coolapk.market.view.feed.ReplyActivity,com.coolapk.market.view.feed.FeedReplyDetailActivity',
+								isShowDivider: true,
+								supportFullSize: true,
+								flags: 'reusePreContainer:com.coolapk.market.view.photo.PhotoViewActivity,com.coolapk.market.view.collectionList.CollectionSelectActivity;',
+								...(deviceStore.deviceCharacteristics === 'tablet'
+									? {
+											splitMinWidth: 900,
+										}
+									: undefined),
+							},
+							...(deviceStore.deviceCharacteristics === 'tablet'
+								? {
+										fo: {
+											name: 'com.coolapk.market',
+											isShowDivider: true,
+											disable: true,
+											supportFullSize: true,
+											...(deviceStore.MIOSVersion &&
+											deviceStore.MIOSVersion >= 2 &&
+											deviceStore.androidTargetSdk >= 35
+												? {
+														skipSelfAdaptive: true,
+													}
+												: undefined),
+										},
+									}
+								: undefined),
+							type: 'embedded',
+							device: deviceStore.deviceCharacteristics === 'tablet' ? 'pad' : 'fold',
+							mode: 'embedded',
+							...(deviceStore.MIOSVersion &&
+							deviceStore.MIOSVersion >= 2 &&
+							deviceStore.androidTargetSdk >= 35
+								? {
+										thirdPartyAppOptimize: false,
+									}
+								: undefined),
+						};
+						const jsonString = JSON.stringify(shareContent);
+						const deflate = pako.deflate(jsonString, {
+							level: 9,
+							memLevel: 9,
+							windowBits: 15,
+						});
+						const compressedData = new Uint8Array(deflate);
+						const base64String: string = arrayBufferToBase64(compressedData);
+						const code = base64String;
 						modal.create({
 							title: '获取自定义规则',
 							type: 'info',
@@ -301,8 +363,67 @@ export const embeddedPerceptionApplications: Record<string, EmbeddedPerceptionAp
 			const { message, modal, notification } = createDiscreteApi(['message', 'modal', 'notification'], {
 				configProviderProps: configProviderPropsRef,
 			});
-			const code =
-				'eNqVVd1v2kAM/1/StwndVjRpU95SUKtJoFFSdc9H4oDFfe3uAmNV//fZR4BCC13zkrPP/tnnz6fMSA1ZnsWVqKXRctmKGSrMelmlXczyfi8DneVP5+VqDHKmoAQTrM/y6FvoZcEpjCM0MLCKudnVbfryq+tv19+vi6wTmcqINsu/iK+9DEO5sOshrrCGA1DrnPXxtlWqxL9whD+R6KetesMtMZZoiioSVtw89vNPvcrqdJNuA0hfLYQmIXFDDJYuE2+nc6oxc6oNorFK2TWaucIQxe8Wq6WorAmtBnHP1GBLvEA5daxFwe+ztV0bZWUtHpkadtSIcM+5QD/WvgMDXqrLJhq5sh4jiNvucGP/XNbgWPTFLxmrxUhG8B/24khKOiechwY8mApCCvLkQF9Sk21cWB+crIANFYksmTyntc1m/3I6qeBkR/xXyRybqKxqtWF/aogSlUAt5yAGif2Dz48I60PUThyMbY1WVGAosKmQCGiQqAlRLw2/DnaytEroYgw1youWbIVSUZ+IsJAeyG+foshRKZkzBAVzyu/H1O/vixBelGbSipxKE7kBDFT819oa8YbkHp96mV6hbU0ZEJwfXNG/ExXFlvEA2u3UKWvRSxOQpoThvIX3E3d6HXQQpQ4jO0czpOfZ+bksRwBDwfaBPEzvftgxxsQ41n2rh8hRzlKRflvxB/a+OZeu3UFxHAjAW7ol4x6CbT01wI1CsyTj044xohlB4+cDaAlhSqdzj+Yaa2SIi83MYy1mytuWClOUxRCpC2kenPP+RJPqgFqDxoK4o1Ux2FE73S+Uy0bJOWfQQxuA5sFeKH932Drut5m360AG6HEjnC/izZY+PI1tWIrThFaGl7gvw9dV8/nivArRejaY+mZ7HstUCnvEZzZ1cTF2q4trhx/d0ArrkQpdLNGVoJqilo7QuqVGgHHjGAr0DOoaal6u1PoV85xkkgvzWCAu0NcT6eOmcO4nwem0JRupAjz/AySS7HI=';
+			const shareContent = {
+				name: 'tv.danmaku.bili',
+				cmpt:
+					deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35
+						? 2
+						: 1,
+				em: {
+					name: 'tv.danmaku.bili',
+					disableSensor: true,
+					splitLineColor: '#FFFFFF:#17181A',
+					...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35
+						? {
+								skipSelfAdaptive: true,
+							}
+						: undefined),
+					splitRatio: deviceStore.deviceCharacteristics === 'tablet' ? 0.4 : 0.5,
+					isShowDivider: true,
+					supportFullSize: true,
+					splitPairRule:
+						'tv.danmaku.bili.MainActivityV2:*,com.bilibili.search.main.BiliMainSearchActivity:*,com.bilibili.bplus.followinglist.quick.consume.QuickConsumeActivity:*,tv.danmaku.bili.ui.videodownload.VideoDownloadListActivity:*,com.bilibili.lib.ui.GeneralActivity:*,tv.danmaku.bili.ui.favorite.FavoriteBoxActivity:*,tv.danmaku.bili.ui.main2.WatchLaterActivity:*,com.bilibili.lib.ui.GeneralActivity:*,com.bilibili.app.preferences.BiliPreferencesActivity:*,com.bilibili.app.authorspace.ui.AuthorSpaceActivity:*,com.bilibili.search2.main.BiliMainSearchActivity:*',
+					activityRule:
+						'tv.danmaku.bili.MainActivityV2,com.bilibili.column.ui.detail.image.ColumnImageViewerActivity,com.bilibili.studio.centerplus.ui.CenterPlusMainActivity,com.bilibili.lib.imageviewer.MediaViewerActivity,com.bilibili.socialize.share.core.ui.BiliShareDelegateActivity,com.bilibili.socialize.share.core.ui.QQAssistActivity,com.tencent.connect.common.AssistActivity,com.bilibili.upper.module.archive.activity.ArchiveTempActivity',
+					transitionRules:
+						'tv.danmaku.bili.MainActivityV2,tv.danmaku.bili.sms.SmsLoginDialogActivityV2,com.bilibili.teenagersmode.ui.TeenagersModeDialogActivity,tv.danmaku.bili.ui.answer.AnswerDialogTransferActivity,com.bilibili.bilibililive.ui.room.modresource.BlinkModResourceLoadingActivity,com.bilibili.bilibililive.ui.room.BlinkRoomActivityV2,com.bilibili.lib.fasthybrid.blrouter.SADispatcherActivity,com.bilibili.lib.fasthybrid.container.GameContainerActivity0',
+					flags: 'reusePreContainer:com.bilibili.bplus.followinglist.page.browser.ui.LightBrowserActivityV2',
+					forcePortraitActivity:
+						'tv.danmaku.bili/com.bilibili.app.preferences.storage.BiliStorageManagerActivity',
+				},
+				...(deviceStore.deviceCharacteristics === 'tablet'
+					? {
+							fo: {
+								name: 'tv.danmaku.bili',
+								...(deviceStore.MIOSVersion &&
+								deviceStore.MIOSVersion >= 2 &&
+								deviceStore.androidTargetSdk >= 35
+									? {
+											skipSelfAdaptive: true,
+											supportModes: 'full,fo',
+										}
+									: undefined),
+							},
+						}
+					: undefined),
+				type: 'embedded',
+				device: deviceStore.deviceCharacteristics === 'tablet' ? 'pad' : 'fold',
+				mode: 'embedded',
+				...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35
+					? {
+							thirdPartyAppOptimize: false,
+						}
+					: undefined),
+			};
+			const jsonString = JSON.stringify(shareContent);
+			const deflate = pako.deflate(jsonString, {
+				level: 9,
+				memLevel: 9,
+				windowBits: 15,
+			});
+			const compressedData = new Uint8Array(deflate);
+			const base64String: string = arrayBufferToBase64(compressedData);
+			const code = base64String;
 			modal.create({
 				title: '应用规则感知',
 				type: 'info',
@@ -357,9 +478,6 @@ export const embeddedPerceptionApplications: Record<string, EmbeddedPerceptionAp
 	'com.bilibili.app.in': {
 		isShow() {
 			const deviceStore = useDeviceStore();
-			if (deviceStore.deviceCharacteristics === 'tablet') {
-				return true;
-			}
 			return true;
 		},
 		onClick(row: EmbeddedMergeRuleItem) {
@@ -370,10 +488,68 @@ export const embeddedPerceptionApplications: Record<string, EmbeddedPerceptionAp
 			const { message, modal, notification } = createDiscreteApi(['message', 'modal', 'notification'], {
 				configProviderProps: configProviderPropsRef,
 			});
-			const code =
-				deviceStore.androidTargetSdk < 35
-					? 'eNqVVW1vGjEM/i/XbxXKRlVp0+3TAWo1CTTaq7rP4c5wVvO2JAdjVf/77ADlpUBbJEhs/Bb7sf2cGakhy7PKajFBhfwV0jmBJutklXYxy7udDHSWP5+XrTHIiYISTLA+y6NvoZMFpzAO0UDfKuZmFzfpk190v3W/dwvSw1A2djHAOdaw1Wudsz7etEqV+A/2zN3LiDbLv4rr607mlKygsSrpZnEuamm0fGpTgGIk0RRVJNtx+XiV7wUeQPqquRKaZESPOCxcJuZGJVt7HEv0962C9z1cdo74OOfiUGPiVBvE1CplF2hmCkMUf1qsnkRlTWg1iDum+itix8phYC0Kzqit7cIoK2vxyNRgTQ3J7qkQ6GDtWzDgpTrvYirn1mMEcbO+9Ozf8xqciyvxW8aqGcoI/tNRvEGf8zAFD6aCkJI83tLn1GQbG+uDI/ywoyKRJZOntD6AmPySMCPXxBoyezYqq1pt2GENUaISqOUMRD+xf/L9EWGxTctBBLGt0YoKDGUuIYUM9RM1JmoXjG+zmTzNk3UxghrlWU+2Qqmo9URopAeK26c08bNL5gxAwYwK+Dn1u7sihB3sJa3ItTKREW6g4lNra8QRyVf7NB7oFdrWlGLBBcA5nWtRUawYD6DdcfXUGZRN65ei5N/UHB+UffDSEGwIYXFnUETmIk0mw2UPh3X/SAEOuyXoIEodhnaGZkDptLPtpNmPMQIYsu0DZSTl+WHDGBFjX/dYU1LoHFSRjpV4euX0FDw2F8V5JwPe0r/k3EOwraeO6ik0T+T8fs0Y0tChefYJa8nCPd1OPZpTOpUhNsuJx1pMlLctNYIoiwFSfWjAnIr+QJNwR61Ic0bc0oLrb6iN7leq7lTJGdfUQxuABsyrUP7u9Hbc3xNvF4Ec0OOGOGtib0Vvn/aDnVhK1JjWnpe4hdaRfTtRLXw5OwcZruw3tevqPpIJEa92X9jhO1udZOLS8b+gJ1DXUPOiJwxXzHOSSYbcvkBs0Ndj6eOycO6Xi6jTCp9KFeDlP/g2JXE='
-					: 'eNqVVm1v2kAM/i/ptwnd1mrSJvYpgFpNohptqu7zkTjE6r3t7gJjVf/77COUlwItSJCz47ezH9s8Z0ZqyPpZabWYokL+CumcQJP1slK7mPWvehnorP98WrbCIKcKCjDB+qwffQu9LDiFcYwGhlYxN7u4Tp/+xeW3y++XOelhKBq7GOEcK9jotc5ZH69bpQr8Bzvm7mVEm/W/iK+9zClZQmNVUs3iXFTSaPnUpvjErUSTl5FMx+XjVX8n7gDSl43QJCIGxGDZIvHWGlnnbyLR37cK3nfwqXemi32NqVNtELVVyi7QzBSGKP60WD6J0prQahB3TA1XxJaV/cBaFJxPW9mFUVZW4pGpUUeNye6xEOjB2jdgwEt12kUt59ZjBHHdHQb272kNzsWV+C1j2YxlBH92FG+w5zzU4MGUEFKSJxv6lJpsY2N9cAQfdpQnsmDymNaqmleny0mYkR3RQWbHRmlVqw07rCBKVAK1nIEYJvZPPj8iLDZp2YsgthVaUYKhzCWkkKFhoiZEbYPxbTaTp3myLm6hQnnSky1RKmo8ERrpgeL2KU187YI5I1AwowKep353l4ewhb2kFblWJjLCDZT81NoacUDy1T4NB7qFthWlWHABcE7PTlTkK8YDaHdYPXUGZdP6pSj4NzXHB2UfvDQEG0JY3BoUkblIc8lw2cN+3T9SgP1uCTqIQoexnaEZUTrtbDNpdmOMAIZs+0AZSXl+WDNuibGre6gpKXQOKk+PlXi6ZX0MHuuD4ryTAW/pLTn3EGzrqaMGCs0TOb/vGGMaOjTPzrCWLNzT6dilOaW1DLFZTj1WYqq8bakRRJGPkOpDA+ZY9HuahDtqRZoz4obW23BNrXW/UHVrJWdcUw9tABowr0L9d6e34/6eersI5IAuN8ZZEwcrenO1H+zEUqImtPS8xA20DmzbqWrh88k5yHBlv6ldV+dbmRDxaveFHb6707s1zDDi+9e0jnukRi+e0BWg6rySjix2C5qMxqVjc6CnUFVQ8f8CAn3JPCeZZIzuCsQGfTWRPi5z536ROZ02fi1VgJf/awo2nA==';
+			const shareContent = {
+				name: 'com.bilibili.app.in',
+				cmpt:
+					deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35
+						? 2
+						: 1,
+				em: {
+					name: 'com.bilibili.app.in',
+					disableSensor: true,
+					splitLineColor: '#FFFFFF:#17181A',
+					isShowDivider: true,
+					supportFullSize: true,
+					...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35
+						? {
+								skipSelfAdaptive: true,
+							}
+						: undefined),
+					splitRatio: deviceStore.deviceCharacteristics === 'tablet' ? 0.4 : 0.5,
+					placeholder: 'tv.danmaku.bili.MainActivityV2:com.bilibili.search.main.BiliMainSearchActivity',
+					splitPairRule:
+						'tv.danmaku.bili.MainActivityV2:*,com.bilibili.search.main.BiliMainSearchActivity:*,com.bilibili.bplus.followinglist.quick.consume.QuickConsumeActivity:*,tv.danmaku.bili.ui.videodownload.VideoDownloadListActivity:*,com.bilibili.lib.ui.GeneralActivity:*,tv.danmaku.bili.ui.favorite.FavoriteBoxActivity:*,tv.danmaku.bili.ui.main2.WatchLaterActivity:*,com.bilibili.lib.ui.GeneralActivity:*,com.bilibili.app.preferences.BiliPreferencesActivity:*,com.bilibili.app.authorspace.ui.AuthorSpaceActivity:*,com.bilibili.search2.main.BiliMainSearchActivity:*',
+					activityRule:
+						'com.bilibili.column.ui.detail.image.ColumnImageViewerActivity,com.bilibili.studio.centerplus.ui.CenterPlusMainActivity,com.bilibili.lib.imageviewer.MediaViewerActivity,com.bilibili.socialize.share.core.ui.BiliShareDelegateActivity,com.bilibili.socialize.share.core.ui.QQAssistActivity,com.tencent.connect.common.AssistActivity,com.bilibili.upper.module.archive.activity.ArchiveTempActivity,com.bilibili.video.story.StoryTransparentActivity',
+					transitionRules:
+						'com.bilibili.lib.imageviewer.MediaViewerActivity,tv.danmaku.bili.sms.SmsLoginDialogActivityV2,com.bilibili.teenagersmode.ui.TeenagersModeDialogActivity,tv.danmaku.bili.ui.answer.AnswerDialogTransferActivity,com.bilibili.bilibililive.ui.room.modresource.BlinkModResourceLoadingActivity,com.bilibili.bilibililive.ui.room.BlinkRoomActivityV2,com.bilibili.lib.fasthybrid.blrouter.SADispatcherActivity,com.bilibili.lib.fasthybrid.container.GameContainerActivity0',
+					flags: 'reusePreContainer:com.bilibili.bplus.followinglist.page.browser.ui.LightBrowserActivityV2;',
+					forcePortraitActivity:
+						'com.bilibili.app.blue/com.bilibili.app.preferences.storage.BiliStorageManagerActivity',
+				},
+				...(deviceStore.deviceCharacteristics === 'tablet'
+					? {
+							fo: {
+								name: 'com.bilibili.app.in',
+								...(deviceStore.MIOSVersion &&
+								deviceStore.MIOSVersion >= 2 &&
+								deviceStore.androidTargetSdk >= 35
+									? {
+											skipSelfAdaptive: true,
+											supportModes: 'full,fo',
+										}
+									: undefined),
+							},
+						}
+					: undefined),
+				type: 'embedded',
+				device: deviceStore.deviceCharacteristics === 'tablet' ? 'pad' : 'fold',
+				mode: 'embedded',
+				...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35
+					? {
+							thirdPartyAppOptimize: false,
+						}
+					: undefined),
+			};
+			const jsonString = JSON.stringify(shareContent);
+			const deflate = pako.deflate(jsonString, {
+				level: 9,
+				memLevel: 9,
+				windowBits: 15,
+			});
+			const compressedData = new Uint8Array(deflate);
+			const base64String: string = arrayBufferToBase64(compressedData);
+			const code = base64String;
 			modal.create({
 				title: '应用规则感知',
 				type: 'info',

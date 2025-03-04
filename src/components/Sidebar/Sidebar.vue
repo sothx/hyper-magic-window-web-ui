@@ -42,11 +42,13 @@ import { useDeviceStore } from '@/stores/device';
 import handlePromiseWithLogging from '@/utils/handlePromiseWithLogging';
 import * as deviceApi from '@/apis/deviceApi';
 import { useMIUIContentExtension } from '@/hooks/useMIUIContentExtension';
+import { useSidebar } from '@/hooks/useSidebar';
 import type { JSX } from 'vue/jsx-runtime';
 const route = useRoute();
 const gameMode = useGameMode();
 const deviceStore = useDeviceStore();
 const gameBoosterStore = useGameBoosterStore();
+const useSidebarHook = useSidebar();
 const MIUIContentExtension = useMIUIContentExtension();
 const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
 	theme: deviceStore.isDarkMode ? darkTheme : lightTheme,
@@ -589,12 +591,16 @@ onBeforeUnmount(() => {
 							<n-badge v-if="false" value="发现新版本" type="info" :offset="[40, -8]"> </n-badge>
 						</div>
 						<div class="flex items-center gap-x-4 lg:gap-x-6">
-							<button @click="() => message.warning('此区域尚未开放，请以后再来探索吧~')" type="button" class="m-2.5 p-2.5 text-gray-400 hover:text-gray-500">
+							<n-dropdown trigger="click" :options="useSidebarHook.MESSAGE_CENTER_OPTIONS" @select="useSidebarHook.handleMessageCenterOptionClick">
+								<button
+								type="button"
+								class="m-2.5 p-2.5 text-gray-400 hover:text-gray-500">
 								<span class="sr-only">消息中心</span>
 								<svg class="icon h-7 w-7" aria-hidden="true">
 									<use xlink:href="#icon-xiaoxi"></use>
 								</svg>
 							</button>
+							</n-dropdown>
 						</div>
 					</div>
 				</div>
