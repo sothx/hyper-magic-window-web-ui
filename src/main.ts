@@ -14,6 +14,7 @@ import {
   create,
   // component
   NButton,
+  NSplit,
   NDrawer,
   NDrawerContent,
   NSwitch,
@@ -79,6 +80,7 @@ const naive = create({
     NInput,
     NSpin,
     NStatistic,
+    NSplit,
     NSpace,
     NModal,
     NAlert,
