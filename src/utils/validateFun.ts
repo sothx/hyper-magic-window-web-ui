@@ -42,6 +42,28 @@ export const validateFullRule = (packageName: string): boolean => {
     return true;
 }
 
+export const vaildateActivityName = (activity: string): boolean => {
+        // 正则表达式校验全屏规则
+        const activityRegex = /^[a-zA-Z_][\w]*(\.[a-zA-Z_][\w]*)*$/;
+
+        // 允许空字符串
+        if (activity === '') {
+            return true;
+        }
+    
+        // 检查是否包含空格
+        if (/\s/.test(activity)) {
+            return false;
+        }
+    
+        // 校验是否符合Activity规则
+        if (!activityRegex.test(activity)) {
+            return false;
+        }
+    
+        return true;
+}
+
 
 export const validateAutoUIRule = (activityRule: string): boolean => {
     // 正则表达式校验应用布局优化规则
