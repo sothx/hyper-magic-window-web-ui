@@ -22,12 +22,13 @@ import { useHideGestureLine } from '@/hooks/useHideGestureLine';
 import { useInVisibleMode } from '@/hooks/useInVisibleMode';
 import { useMIUIContentExtension } from '@/hooks/useMIUIContentExtension';
 import { useDisabledOS2SystemAppOptimize } from '@/hooks/useDisabledOS2SystemAppOptimize';
-import { useZRAMWriteback } from '@/hooks/useZRAMWriteback'
+import { useZRAMWriteback } from '@/hooks/useZRAMWriteback';
 import { useVideoWallpaperLoop } from '@/hooks/useVideoWallpaperLoop';
 import { useOS2InstallModuleTips } from '@/hooks/useOS2InstallModuleTips';
 import { useUFSHealth } from '@/hooks/useUFSHealth';
 import { useMemoryInfo } from '@/hooks/useMemory';
 import { useDisplaySettings } from '@/hooks/useDisplaySettings';
+import { useFbo } from '@/hooks/useFbo';
 import {
 	BoltIcon,
 	CpuChipIcon,
@@ -66,9 +67,10 @@ const ZRAMWritebackHook = useZRAMWriteback();
 const developmentSettingsEnabledHook = useDevelopmentSettingsEnabled();
 const { activateABTest, loading: activateABTestLoading } = useABTestActivation();
 const videoWallpaperLoopHook = useVideoWallpaperLoop();
-const OS2InstallModuleTipsHook = useOS2InstallModuleTips()
-const useUFSHealthHook = useUFSHealth()
+const OS2InstallModuleTipsHook = useOS2InstallModuleTips();
+const useUFSHealthHook = useUFSHealth();
 const useMemoryInfoHook = useMemoryInfo();
+const fboHook = useFbo();
 const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
 	theme: deviceStore.isDarkMode ? darkTheme : lightTheme,
 }));
@@ -580,7 +582,14 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							</n-switch>
 						</dd>
 					</div>
-					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0" v-show="OS2InstallModuleTipsHook.isInit" v-if="deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35">
+					<div
+						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0"
+						v-show="OS2InstallModuleTipsHook.isInit"
+						v-if="
+							deviceStore.MIOSVersion &&
+							deviceStore.MIOSVersion >= 2 &&
+							deviceStore.androidTargetSdk >= 35
+						">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
 							模块使用须知
@@ -600,7 +609,11 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 					</div>
 					<div
 						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0"
-						v-if="deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35">
+						v-if="
+							deviceStore.MIOSVersion &&
+							deviceStore.MIOSVersion >= 2 &&
+							deviceStore.androidTargetSdk >= 35
+						">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
 							系统应用横屏优化
@@ -670,20 +683,47 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							</n-alert>
 						</dd>
 					</div>
-					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0" v-if="deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35">
+					<div
+						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0"
+						v-if="
+							deviceStore.MIOSVersion &&
+							deviceStore.MIOSVersion >= 2 &&
+							deviceStore.androidTargetSdk >= 35
+						">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`"
 							>ZRAM Writeback</dt
 						>
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							<div class="mb-3" v-if="deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35"><n-tag>dm设备映射器: {{  ZRAMWritebackHook.miuiExtmDmOptEnable ? '启用' : '未启用'  }} </n-tag></div>
-							<div class="mb-3"><n-tag type="error">回写块: {{  ZRAMWritebackHook.backingDev  }} </n-tag></div>
-							<div class="mb-3"><n-tag type="success">已回写: {{  ZRAMWritebackHook.hasWriteBack  }} MB</n-tag></div>
-							<div class="mb-3"><n-tag type="info">总读取: {{  ZRAMWritebackHook.totalRead  }} MB</n-tag></div>
-							<div><n-tag type="warning">总回写: {{  ZRAMWritebackHook.totalWriteBack  }} MB</n-tag></div>
+							<div
+								class="mb-3"
+								v-if="
+									deviceStore.MIOSVersion &&
+									deviceStore.MIOSVersion >= 2 &&
+									deviceStore.androidTargetSdk >= 35
+								"
+								><n-tag
+									>dm设备映射器: {{ ZRAMWritebackHook.miuiExtmDmOptEnable ? '启用' : '未启用' }}
+								</n-tag></div
+							>
+							<div class="mb-3"
+								><n-tag type="error">回写块: {{ ZRAMWritebackHook.backingDev }} </n-tag></div
+							>
+							<div class="mb-3"
+								><n-tag type="success">已回写: {{ ZRAMWritebackHook.hasWriteBack }} MB</n-tag></div
+							>
+							<div class="mb-3"
+								><n-tag type="info">总读取: {{ ZRAMWritebackHook.totalRead }} MB</n-tag></div
+							>
+							<div
+								><n-tag type="warning">总回写: {{ ZRAMWritebackHook.totalWriteBack }} MB</n-tag></div
+							>
 							<n-alert class="mt-5" type="warning" :show-icon="false" :bordered="false">
-								<p>通常用于将设备上的冷数据压缩并迁移到磁盘上，是基于「内存扩展」的回写块，该功能依赖「内存扩展」，请确保已经开启「内存扩展」，总回写可以大于「内存扩展」，初始状态下显示 0 MB是正常现象，请持续使用一段时间再观察是否有变化</p>
+								<p
+									>通常用于将设备上的冷数据压缩并迁移到磁盘上，是基于「内存扩展」的回写块，该功能依赖「内存扩展」，请确保已经开启「内存扩展」，总回写可以大于「内存扩展」，初始状态下显示
+									0 MB是正常现象，请持续使用一段时间再观察是否有变化</p
+								>
 							</n-alert>
 						</dd>
 					</div>
@@ -1084,7 +1124,9 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 					</div>
 					<div
 						v-if="
-							deviceStore.deviceCharacteristics === 'tablet' && (useDisplaySettingsHook.hasMTKDisplayBrightness.value || useDisplaySettingsHook.hasQComDisplayBrightness.value)
+							deviceStore.deviceCharacteristics === 'tablet' &&
+							(useDisplaySettingsHook.hasMTKDisplayBrightness.value ||
+								useDisplaySettingsHook.hasQComDisplayBrightness.value)
 						"
 						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
@@ -1104,7 +1146,9 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 								</n-button>
 							</div>
 							<n-alert class="mt-5" type="warning" :show-icon="false" :bordered="false">
-								<p>通过将屏幕亮度调整为0，达到屏幕最低亮度但是不影响屏幕的触控操作，可能适合部分特殊场景使用，游戏或者视频场景仍然推荐使用「熄屏挂机」和「熄屏听剧」，使用该功能会自动关闭「自动亮度」，请悉知，如需恢复屏幕显示需要敲击两次「电源键」。</p>
+								<p
+									>通过将屏幕亮度调整为0，达到屏幕最低亮度但是不影响屏幕的触控操作，可能适合部分特殊场景使用，游戏或者视频场景仍然推荐使用「熄屏挂机」和「熄屏听剧」，使用该功能会自动关闭「自动亮度」，请悉知，如需恢复屏幕显示需要敲击两次「电源键」。</p
+								>
 							</n-alert>
 						</dd>
 					</div>
@@ -1210,8 +1254,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 								<template #unchecked>未启用</template>
 							</n-switch>
 							<n-alert class="mt-5" type="warning" :show-icon="false" :bordered="false"
-								>仅兼容水龙(Amktiao)的内核，存在 /sys/touchpanel/pen_enable
-								开关映射时生效</n-alert
+								>仅兼容水龙(Amktiao)的内核，存在 /sys/touchpanel/pen_enable 开关映射时生效</n-alert
 							>
 						</dd>
 					</div>
@@ -1316,9 +1359,10 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 								</n-button>
 							</n-dropdown>
 							<n-alert class="mt-5" type="info" :show-icon="false" :bordered="false">
-								<div
+								<div>
+									<p
+										>由于小米BUG，部分系统存在开机后「鼠标光标样式」被异常重置的问题，模块提供「鼠标光标样式开机自配置」来解决这个问题，开启后每次开机会被配置为指定的「鼠标光标样式」，系统设置内的修改会在重启后失效。</p
 									>
-									<p>由于小米BUG，部分系统存在开机后「鼠标光标样式」被异常重置的问题，模块提供「鼠标光标样式开机自配置」来解决这个问题，开启后每次开机会被配置为指定的「鼠标光标样式」，系统设置内的修改会在重启后失效。</p>
 									<n-switch
 										@update:value="(value: boolean) => miuiCursorStyleHook.changeAutoStartMiuiCursorStyleType(value)"
 										:rail-style="railStyle"
@@ -1330,7 +1374,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 										<template #checked>已启用开机自配置</template>
 										<template #unchecked>未启用开机自配置</template>
 									</n-switch>
-									</div>
+								</div>
 							</n-alert>
 						</dd>
 					</div>
@@ -1460,8 +1504,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							</n-button>
 						</dd>
 					</div>
-					<div
-						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
 							动态壁纸循环播放
@@ -1480,8 +1523,10 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 								动态壁纸循环播放
 							</n-button>
 							<n-alert class="mt-5" type="info" :show-icon="false" :bordered="false">
-							<p>配置后不支持循环播放的「动态壁纸」将强制开启循环播放，每次更换「动态壁纸」后会导致循环播放失效，需要在此处重新配置</p>
-						</n-alert>
+								<p
+									>配置后不支持循环播放的「动态壁纸」将强制开启循环播放，每次更换「动态壁纸」后会导致循环播放失效，需要在此处重新配置</p
+								>
+							</n-alert>
 						</dd>
 					</div>
 					<div
@@ -1652,17 +1697,6 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							</n-switch>
 						</dd>
 					</div>
-					<n-watermark
-						content="开发中，未上线"
-						cross
-						selectable
-						:font-size="16"
-						:line-height="16"
-						:width="192"
-						:height="128"
-						:x-offset="12"
-						:y-offset="28"
-						:rotate="-15">
 						<div
 							v-if="deviceStore.shamikoInfo.installed"
 							class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
@@ -1677,7 +1711,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 									type="info"
 									secondary
 									:loading="deviceStore.loading"
-									@click="() => {}">
+									@click="() => deviceApi.openFboResultActivity()">
 									打开 焕新存储信息面板
 								</n-button>
 								<n-alert class="mb-5 mt-5" type="success" :show-icon="false" :bordered="false">
@@ -1686,20 +1720,19 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 											>焕新存储启用状态:<n-tag
 												size="small"
 												class="ml-3"
-												type="success"
+												:type="fboHook.fboEnable.value ? 'success' : 'error'"
 												:loading="deviceStore.loading"
 												@click="() => {}">
-												已启用
+												{{ fboHook.fboEnable.value ? '已启用' : '未启用' }}
 											</n-tag></p
 										>
 										<p
 											>启用状态通常由小米云控控制，模块支持强制启用焕新存储，但该功能受系统底层支持情况而异，不支持的设备即使启用也不会生效。</p
 										>
 										<n-switch
-											@update:value="() => {}"
+											@update:value="(value: boolean) => fboHook.changeIsAutoEnableFboRes(value)"
 											:rail-style="railStyle"
-											:disabled="!deviceStore.enabledMiuiDesktopMode"
-											:value="miuiDesktopModeHook.currentMiuiDktMode"
+											:value="fboHook.isAutoStartFbo.value ? true : false"
 											:loading="deviceStore.loading">
 											<template #checked>已强制启用焕新存储</template>
 											<template #unchecked>跟随系统默认云控规则</template>
@@ -1710,13 +1743,23 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 									<p
 										>焕新存储激活状态:
 										<n-button
-											size="small"
-											type="success"
+											size="tiny"
+											class="ml-3"
+											:type="fboHook.fboServiceCtrl.value ? 'success' : 'error'"
 											secondary
 											:loading="deviceStore.loading"
-											@click="() => {}">
-											已激活
+											@click="() => fboHook.handleEnableFboServiceCtrl()">
+											{{ fboHook.fboServiceCtrl.value ? '已激活' : '未激活(点击激活)' }}
 										</n-button>
+									</p>
+									<p v-if="fboHook.fboInstalld.value" class="mt-1">焕新存储运行状态:<n-tag
+												size="small"
+												class="ml-3"
+												:type="'info'"
+												:loading="deviceStore.loading"
+												@click="() => {}">
+												{{ fboHook.fboInstalld.value }}
+										</n-tag>
 									</p>
 									<p>激活后仍然需要满足以下条件才会在特定时间触发焕新存储：</p>
 									<p>①夜间12点半-凌晨5点</p>
@@ -1730,7 +1773,6 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 								</n-alert>
 							</dd>
 						</div>
-					</n-watermark>
 					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
@@ -2048,7 +2090,13 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							<p>{{ deviceStore.deviceInfo.display0Panel }}</p>
 						</dd>
 					</div>
-					<div v-if="!deviceStore.MIOSVersion || deviceStore.MIOSVersion && deviceStore.MIOSVersion < 2 || deviceStore.androidTargetSdk < 35" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+					<div
+						v-if="
+							!deviceStore.MIOSVersion ||
+							(deviceStore.MIOSVersion && deviceStore.MIOSVersion < 2) ||
+							deviceStore.androidTargetSdk < 35
+						"
+						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
 							性能监视器
@@ -2177,12 +2225,28 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
 							<div class="mb-3">
-								<div v-if="useUFSHealthHook.correctedPreEOLStatus.value" class="mb-3"><n-tag type="info">寿命阶段: {{  useUFSHealthHook.correctedPreEOLStatus.value  }}</n-tag></div>
-								<div v-if="useUFSHealthHook.deviceLifeTimeEstA.value" class="mb-3"><n-tag type="success">用户数据区(已磨损): {{ useUFSHealthHook.deviceLifeTimeEstA.value  }}</n-tag></div>
-								<div v-if="useUFSHealthHook.deviceLifeTimeEstB.value" class="mb-3"><n-tag type="warning">高速缓存区(已磨损): {{ useUFSHealthHook.deviceLifeTimeEstB.value  }}</n-tag></div>
+								<div v-if="useUFSHealthHook.correctedPreEOLStatus.value" class="mb-3"
+									><n-tag type="info"
+										>寿命阶段: {{ useUFSHealthHook.correctedPreEOLStatus.value }}</n-tag
+									></div
+								>
+								<div v-if="useUFSHealthHook.deviceLifeTimeEstA.value" class="mb-3"
+									><n-tag type="success"
+										>用户数据区(已磨损): {{ useUFSHealthHook.deviceLifeTimeEstA.value }}</n-tag
+									></div
+								>
+								<div v-if="useUFSHealthHook.deviceLifeTimeEstB.value" class="mb-3"
+									><n-tag type="warning"
+										>高速缓存区(已磨损): {{ useUFSHealthHook.deviceLifeTimeEstB.value }}</n-tag
+									></div
+								>
 							</div>
 							<n-alert class="mt-5" type="info" :show-icon="false" :bordered="false">
-								<p>数据仅供参考，通常仅代表当前 UFS 存储设备循环擦写次数与预期设计寿命的比值，不代表 UFS 存储设备的实际磨损状况，但仍然建议当前 UFS 存储设备接近预期设计寿命时选择更换存储设备。</p>
+								<p
+									>数据仅供参考，通常仅代表当前 UFS 存储设备循环擦写次数与预期设计寿命的比值，不代表
+									UFS 存储设备的实际磨损状况，但仍然建议当前 UFS
+									存储设备接近预期设计寿命时选择更换存储设备。</p
+								>
 							</n-alert>
 						</dd>
 					</div>

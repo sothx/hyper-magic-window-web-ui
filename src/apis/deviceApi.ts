@@ -1569,6 +1569,21 @@ export const openAITranslation = (): Promise<string> => {
 	);
 };
 
+export const openFboResultActivity = (): Promise<string> => {
+	const shellCommon = `am start -n com.miui.securitycenter/com.miui.optimizecenter.storage.FboResultActivity`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`am startservice command executed successfully.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
 export const openMiFilm = (): Promise<string> => {
 	const shellCommon = `am start -n com.miui.mediaeditor/com.miui.gallery.vlog.template2.VlogTemplateActivity`;
 	return handlePromiseWithLogging(
@@ -1933,6 +1948,126 @@ export const getSmartFocusIO = (): Promise<SmartFocusIOResult['stdout']> => {
 			} else {
 				const { errno, stdout, stderr }: SmartFocusIOResult = (await exec(shellCommon)) as SmartFocusIOResult;
 				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const getFboEnable = (): Promise<string> => {
+	const shellCommon = `getprop persist.sys.stability.miui_fbo_enable`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`true`);
+			} else {
+				const { errno, stdout, stderr }: SmartFocusIOResult = (await exec(shellCommon)) as SmartFocusIOResult;
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const setFboEnable = (): Promise<string> => {
+	const shellCommon = `setprop persist.sys.stability.miui_fbo_enable true`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`true`);
+			} else {
+				const { errno, stdout, stderr }: SmartFocusIOResult = (await exec(shellCommon)) as SmartFocusIOResult;
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const getFboInstalld = (): Promise<string> => {
+	const shellCommon = `getprop init.svc.fbo-installd`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`running`);
+			} else {
+				const { errno, stdout, stderr }: SmartFocusIOResult = (await exec(shellCommon)) as SmartFocusIOResult;
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const getFboServiceCtrl = (): Promise<string> => {
+	const shellCommon = `getprop persist.sys.fboservice.ctrl`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`true`);
+			} else {
+				const { errno, stdout, stderr }: SmartFocusIOResult = (await exec(shellCommon)) as SmartFocusIOResult;
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const setFboServiceCtrl = (): Promise<string> => {
+	const shellCommon = `setprop persist.sys.fboservice.ctrl true`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`true`);
+			} else {
+				const { errno, stdout, stderr }: SmartFocusIOResult = (await exec(shellCommon)) as SmartFocusIOResult;
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const getIsAutoEnableFbo = (): Promise<string> => {
+	const shellCommon = `grep 'is_auto_enable_fbo=' /data/adb/MIUI_MagicWindow+/config.prop | awk -F'=' '{print $2}'`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`3`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const removeIsAutoEnableFbo = (): Promise<string> => {
+	const shellCommon = `sed -i '/^is_auto_enable_fbo=/d' //data/adb/MIUI_MagicWindow+/config.prop && echo "Remove is_auto_enable_fbo successfully." || echo "Remove is_auto_enable_fbo failed."`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`Remove is_auto_enable_fbo successfully.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const addIsAutoEnableFbo = (): Promise<string> => {
+	const shellCommon = `grep -q '^is_auto_enable_fbo=' /data/adb/MIUI_MagicWindow+/config.prop || (echo "is_auto_enable_fbo=true" | tee -a /data/adb/MIUI_MagicWindow+/config.prop > /dev/null && echo "Command executed successfully." || echo "Command failed.")`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`Command executed successfully.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : stdout === 'Command executed successfully.' ? resolve(stdout) : reject(stdout);
 			}
 		}),
 		shellCommon,
