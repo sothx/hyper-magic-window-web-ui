@@ -73,18 +73,34 @@ const currentMainPageActivity = ref<string>('');
 const currentRelatedPageActivity = ref<string>('');
 
 const handleDrawerSubmit = async () => {
+	// 去除前后空格
+	const mainPage = currentMainPageActivity.value.trim();
+	const relatedPage = currentRelatedPageActivity.value.trim();
+
 	// 校验逻辑
-	const isMainEmpty = !currentMainPageActivity.value.trim();
-	const isRelatedEmpty = !currentRelatedPageActivity.value.trim();
+	const isMainEmpty = !mainPage;
+	const isRelatedEmpty = !relatedPage;
 
 	if ((isMainEmpty && !isRelatedEmpty) || (!isMainEmpty && isRelatedEmpty)) {
 		// 其中一个有值，另一个为空 -> 报错并中断提交
 		modal.create({
-			title: '页面Activity校验不通过',
+			title: '校验不通过',
 			type: 'error',
 			preset: 'dialog',
 			content: () => <p>噫？请确保主页面和关联页面Activity同时填写或同时为空（敲</p>,
 		});
+		return;
+	}
+
+	if (!isMainEmpty && mainPage === relatedPage) {
+		// 两个都有值，但相同 -> 报错
+		modal.create({
+			title: '校验不通过',
+			type: 'error',
+			preset: 'dialog',
+			content: () => <p>噫？请主页面和关联页面不能相同（敲</p>,
+		});
+		drawerSubmitLoading.value = false;
 		return;
 	}
 
