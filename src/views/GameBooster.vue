@@ -424,6 +424,7 @@ function createColumns(): DataTableColumns<GameBoosterTableItem> {
 				<n-alert v-if="deviceStore.deviceCharacteristics === 'tablet'" :show-icon="true" type="info">
 					<p>请添加需要管理的游戏应用到游戏工具箱，Hyper OS 2.0+还需要安装修改版的手机/平板管家才会生效。</p>
 					<p>修改版的手机/平板管家支持Hyper OS 2.0/1.0和MIUI 14:</p>
+					<p>[Tips:修改版手机管家支持在小米平板使用全局侧边栏]</p>
 					<n-button strong secondary type="info" @click="() => getAppDownload()"
 						>获取修改版手机/平板管家</n-button
 					>

@@ -931,12 +931,12 @@ function createColumns(): DataTableColumns<DotBlackListMergeItem> {
 								rgb(60, 112, 255) 110.17%
 							);
 						"
-						>触控笔按键映射</span
+						>触控笔映射</span
 					>
 				</h3>
 				<p
 					:class="`mt-1 max-w-2xl text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-500'}`">
-					触控笔按键映射，可以配置小米触控笔的按键映射
+					触控笔映射，可以配置小米触控笔的按键映射
 				</p>
 			</div>
 		</div>
@@ -979,7 +979,7 @@ function createColumns(): DataTableColumns<DotBlackListMergeItem> {
 					从分享口令导入
 				</n-button>
 			</div>
-			<div class="flex flex-wrap">
+			<!-- <div class="flex flex-wrap">
 				<div>留空区域:用于显示当前设备__</div>
 				<div>
 					<p>数据列表规划：</p>
@@ -987,7 +987,7 @@ function createColumns(): DataTableColumns<DotBlackListMergeItem> {
 					<p>映射脚本维持监听存在一定功耗，仅连接手写笔状态可开启，断开手写笔自动结束脚本。</p>
 					<p>需要增加进程锁，存在活跃脚本进程时提示是否需要结束上一个进程。</p>
 				</div>
-			</div>
+			</div> -->
 			<n-input-group>
 				<n-input
 					size="large"

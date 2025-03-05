@@ -193,7 +193,7 @@ const navigation = reactive<NavigationItem[]>([
 		),
 	},
 	{
-		name: '触控笔按键映射(待开发)',
+		name: '触控笔映射(待开发)',
 		routeName: 'magic-control',
 		href: '/magic-control',
 		icon: () => (
