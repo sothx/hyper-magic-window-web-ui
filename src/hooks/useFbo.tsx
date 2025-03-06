@@ -28,13 +28,46 @@ export function useFbo() {
 
 	const isAutoStartFbo = ref<boolean>(false);
 
+    const handleEnableFbo = async () => {
+        if (fboEnable.value) {
+            modal.create({
+                title: '启用状态说明',
+                type: 'success',
+                preset: 'dialog',
+                content: () => <p>当前焕新存储已经是启用状态~</p>,
+                negativeText: '确定',
+            });
+            return;
+        }
+        const [setFboEnableErr,setFboEnableRes] = await $to(
+            deviceApi.setFboEnable()
+        )
+        if (setFboEnableRes) {
+            const [setFboEnableErr,setFboEnableRes] = await $to(
+                deviceApi.setFboEnable()
+            )
+            if (setFboEnableErr) {
+                modal.create({
+                    title: '操作失败',
+                    type: 'error',
+                    preset: 'dialog',
+                    content: () => <p>修改失败，详情请查看日志记录~</p>,
+                    negativeText: '确定',
+                });
+            } else {
+                fboEnable.value = true;
+                reload()
+            }
+        }
+    }
+
     const handleEnableFboServiceCtrl = async () => {
         if (fboServiceCtrl.value) {
             modal.create({
-                title: '操作失败',
-                type: 'info',
+                title: '激活状态说明',
+                type: 'success',
                 preset: 'dialog',
-                content: () => <p>当前焕新存储已经是激活状态，无需再次激活~</p>,
+                content: () => <p>当前焕新存储已经是激活状态~</p>,
                 negativeText: '确定',
             });
             return;
@@ -184,6 +217,7 @@ export function useFbo() {
         changeIsAutoEnableFboRes,
         isAutoStartFbo,
         fboInstalld,
+        handleEnableFbo,
         handleEnableFboServiceCtrl,
         reload
 	};

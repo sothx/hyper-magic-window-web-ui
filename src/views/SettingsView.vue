@@ -1698,7 +1698,6 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 						</dd>
 					</div>
 						<div
-							v-if="deviceStore.shamikoInfo.installed"
 							class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 							<dt
 								:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
@@ -1716,16 +1715,15 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 								</n-button>
 								<n-alert class="mb-5 mt-5" type="success" :show-icon="false" :bordered="false">
 									<div>
-										<p
-											>焕新存储启用状态:<n-tag
-												size="small"
+										<p>焕新存储启用状态:<n-button
+												size="tiny"
 												class="ml-3"
 												:type="fboHook.fboEnable.value ? 'success' : 'error'"
 												:loading="deviceStore.loading"
-												@click="() => {}">
-												{{ fboHook.fboEnable.value ? '已启用' : '未启用' }}
-											</n-tag></p
-										>
+												@click="() => fboHook.handleEnableFbo()">
+												{{ fboHook.fboEnable.value ? '已启用' : '未启用(点击启用)' }}
+											</n-button>
+										</p>
 										<p
 											>启用状态通常由小米云控控制，模块支持强制启用焕新存储，但该功能受系统底层支持情况而异，不支持的设备即使启用也不会生效。</p
 										>
@@ -1746,7 +1744,6 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 											size="tiny"
 											class="ml-3"
 											:type="fboHook.fboServiceCtrl.value ? 'success' : 'error'"
-											secondary
 											:loading="deviceStore.loading"
 											@click="() => fboHook.handleEnableFboServiceCtrl()">
 											{{ fboHook.fboServiceCtrl.value ? '已激活' : '未激活(点击激活)' }}
