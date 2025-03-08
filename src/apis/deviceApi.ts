@@ -1286,7 +1286,7 @@ export const removeIsAddDesktopModeEnabled = (): Promise<string> => {
 };
 
 export const addMiuiDesktopModeEnabled = (): Promise<string> => {
-	const shellCommon = `grep -q '^ro.config.miui_desktop_mode_enabled=' /data/adb/modules/MIUI_MagicWindow+/system.prop || (echo "ro.config.miui_desktop_mode_enabled=true" | tee -a /data/adb/modules/MIUI_MagicWindow+/system.prop > /dev/null && echo "Command executed successfully." || echo "Command failed.")`;
+	const shellCommon = `grep -q '^ro.config.miui_desktop_mode_enabled=' /data/adb/modules/MIUI_MagicWindow+/system.prop || (echo "\nro.config.miui_desktop_mode_enabled=true\n" | tee -a /data/adb/modules/MIUI_MagicWindow+/system.prop > /dev/null && echo "Command executed successfully." || echo "Command failed.")`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -1972,7 +1972,7 @@ export const getPreStartProcForModule = (): Promise<string> => {
 };
 
 export const addDisabledPreStartProc = (): Promise<string> => {
-	const shellCommon = `grep -q '^persist.sys.prestart.proc=' /data/adb/modules/MIUI_MagicWindow+/system.prop || (echo "persist.sys.prestart.proc=true" | tee -a /data/adb/modules/MIUI_MagicWindow+/system.prop > /dev/null && echo "Command executed successfully." || echo "Command failed.")`;
+	const shellCommon = `grep -q '^persist.sys.prestart.proc=' /data/adb/modules/MIUI_MagicWindow+/system.prop || (echo "\npersist.sys.prestart.proc=false\n" | tee -a /data/adb/modules/MIUI_MagicWindow+/system.prop > /dev/null && echo "Command executed successfully." || echo "Command failed.")`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -2302,7 +2302,7 @@ export const getDisabledOS2InstallModuleTips = (): Promise<string> => {
 };
 
 export const addDisabledOS2InstallModuleTips = (): Promise<string> => {
-	const shellCommon = `grep -q '^ro.sothx.disabled_os2_install_module_tips=' /data/adb/modules/MIUI_MagicWindow+/system.prop || (echo "ro.sothx.disabled_os2_install_module_tips=true" | tee -a /data/adb/modules/MIUI_MagicWindow+/system.prop > /dev/null && echo "Command executed successfully." || echo "Command failed.")`;
+	const shellCommon = `grep -q '^ro.sothx.disabled_os2_install_module_tips=' /data/adb/modules/MIUI_MagicWindow+/system.prop || (echo "\nro.sothx.disabled_os2_install_module_tips=true\n" | tee -a /data/adb/modules/MIUI_MagicWindow+/system.prop > /dev/null && echo "Command executed successfully." || echo "Command failed.")`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -2347,7 +2347,7 @@ export const getAutoTurnOnDisplayMode = (): Promise<string> => {
 };
 
 export const addAutoTurnOnDisplayMode = (inputType: number): Promise<string> => {
-	const shellCommon = `grep -q '^ro.sothx.auto_turn_on_display_mode=' /data/adb/modules/MIUI_MagicWindow+/system.prop || (echo "ro.sothx.auto_turn_on_display_mode=${inputType}" | tee -a /data/adb/modules/MIUI_MagicWindow+/system.prop > /dev/null && echo "Command executed successfully." || echo "Command failed.")`;
+	const shellCommon = `grep -q '^ro.sothx.auto_turn_on_display_mode=' /data/adb/modules/MIUI_MagicWindow+/system.prop || (echo "\nro.sothx.auto_turn_on_display_mode=${inputType}\n" | tee -a /data/adb/modules/MIUI_MagicWindow+/system.prop > /dev/null && echo "Command executed successfully." || echo "Command failed.")`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
