@@ -326,6 +326,7 @@ const topApplicationList = {
     'com.eastmoney.innovation.android': 1, // 妙想
     'com.eastmoney.android.choice': 1, // Choice数据
     'com.eastmoney.android.gubaproj': 1, // 股吧
+    'com.proximabeta.nikke': 1, // NIKKE
 }
 
 export default {

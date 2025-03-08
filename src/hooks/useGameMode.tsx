@@ -81,9 +81,11 @@ export function useGameMode() {
 	};
 
 	const changeGameMode = async (value: boolean) => {
-		const [vaildModuleVersionErr] = await $to(vaildModuleVersion())
-		if (vaildModuleVersionErr) {
-			return;
+		if (value) {
+			const [vaildModuleVersionErr] = await $to(vaildModuleVersion())
+			if (vaildModuleVersionErr) {
+				return;
+			}
 		}
 		const [negativeRes, positiveRes] = await $to(
 			new Promise((resolve, reject) => {
