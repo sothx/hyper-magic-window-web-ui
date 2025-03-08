@@ -1939,6 +1939,68 @@ export const getSmartFocusIOForBuild = (): Promise<SmartFocusIOResult['stdout']>
 	);
 };
 
+export const getPreStartProcForBuild = (): Promise<string> => {
+	const toolsFunc = `/data/adb/modules/MIUI_MagicWindow+/common/utils/tools_functions.sh`;
+	const shellCommon = `source ${toolsFunc} && grep_prop persist.sys.prestart.proc /system/product/etc/build.prop`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`true`);
+			} else {
+				const { errno, stdout, stderr }: SmartFocusIOResult = (await exec(shellCommon)) as SmartFocusIOResult;
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const getPreStartProcForModule = (): Promise<string> => {
+	const toolsFunc = `/data/adb/modules/MIUI_MagicWindow+/common/utils/tools_functions.sh`;
+	const shellCommon = `source ${toolsFunc} && grep_prop persist.sys.prestart.proc /data/adb/modules/MIUI_MagicWindow+/system.prop`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`false`);
+			} else {
+				const { errno, stdout, stderr }: SmartFocusIOResult = (await exec(shellCommon)) as SmartFocusIOResult;
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const addDisabledPreStartProc = (): Promise<string> => {
+	const shellCommon = `grep -q '^persist.sys.prestart.proc=' /data/adb/modules/MIUI_MagicWindow+/system.prop || (echo "persist.sys.prestart.proc=true" | tee -a /data/adb/modules/MIUI_MagicWindow+/system.prop > /dev/null && echo "Command executed successfully." || echo "Command failed.")`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`Command executed successfully.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : stdout === 'Command executed successfully.' ? resolve(stdout) : reject(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const removeDisabledPreStartProc = (): Promise<string> => {
+	const shellCommon = `sed -i '/^persist.sys.prestart.proc=/d' //data/adb/modules/MIUI_MagicWindow+/system.prop && echo "Remove persist.sys.prestart.proc successfully." || echo "Remove persist.sys.prestart.proc failed."`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`Remove persist.sys.prestart.proc successfully.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
 export const getSmartFocusIO = (): Promise<SmartFocusIOResult['stdout']> => {
 	const shellCommon = `getprop persist.sys.stability.smartfocusio`;
 	return handlePromiseWithLogging(

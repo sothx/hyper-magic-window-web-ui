@@ -26,6 +26,7 @@ import { useZRAMWriteback } from '@/hooks/useZRAMWriteback';
 import { useVideoWallpaperLoop } from '@/hooks/useVideoWallpaperLoop';
 import { useOS2InstallModuleTips } from '@/hooks/useOS2InstallModuleTips';
 import { useUFSHealth } from '@/hooks/useUFSHealth';
+import { useDisabledOS2SystemPreStart } from '@/hooks/useDisabledOS2SystemPreStart';
 import { useMemoryInfo } from '@/hooks/useMemory';
 import { useDisplaySettings } from '@/hooks/useDisplaySettings';
 import { useFbo } from '@/hooks/useFbo';
@@ -70,6 +71,7 @@ const videoWallpaperLoopHook = useVideoWallpaperLoop();
 const OS2InstallModuleTipsHook = useOS2InstallModuleTips();
 const useUFSHealthHook = useUFSHealth();
 const useMemoryInfoHook = useMemoryInfo();
+const useDisabledOS2SystemPreStartHook = useDisabledOS2SystemPreStart();
 const fboHook = useFbo();
 const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
 	theme: deviceStore.isDarkMode ? darkTheme : lightTheme,
@@ -936,6 +938,25 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 								:loading="deviceStore.loading">
 								<template #checked>已开启开发者模式</template>
 								<template #unchecked>已关闭开发者模式</template>
+							</n-switch>
+						</dd>
+					</div>
+					<div
+						v-if="useDisabledOS2SystemPreStartHook.isShow.value"
+						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+						<dt
+							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
+							禁用应用预加载
+						</dt>
+						<dd
+							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
+							<n-switch
+								@update:value="(value: boolean) => useDisabledOS2SystemPreStartHook.change(value)"
+								:rail-style="railStyle"
+								:value="useDisabledOS2SystemPreStartHook.moduleCurrent.value"
+								:loading="deviceStore.loading">
+								<template #checked>已开启应用预加载</template>
+								<template #unchecked>已禁用应用预加载</template>
 							</n-switch>
 						</dd>
 					</div>
