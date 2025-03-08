@@ -31,7 +31,7 @@ export function useDisabledOS2SystemPreStart() {
 	const buildCurrent = ref<boolean>(false);
 
 	const isShow = computed(() => {
-		return isInit.value && buildCurrent.value;
+		return isInit.value && buildCurrent.value && deviceStore.androidTargetSdk >= 35 && deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2;
 	});
 
 	const change = async (value: boolean) => {
