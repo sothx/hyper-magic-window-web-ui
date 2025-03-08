@@ -141,7 +141,7 @@ onMounted(async () => {
 				type: 'warning',
 				preset: 'dialog',
 				content: () => <div>
-					<p>KernelSU/APatch 自带的 Web UI 存在部分问题，可能导致模块功能显示不全，建议可以安装波奇大佬提取制作的 「KsuWebUI」，取代自带的 Web UI，这不是必选项，您可以选择忽略此条建议，但可能导致模块部分功能无法正常工作。</p>
+					<p>KernelSU/APatch 自带的 Web UI 存在部分问题，可能导致模块功能显示不全，例如 「窗口控制器」等。建议可以安装波奇大佬提取制作的 「KsuWebUI」，取代自带的 Web UI，这不是必选项，您可以选择忽略此条建议，但可能导致模块部分功能无法正常工作。</p>
 					<p>下载地址:https://caiyun.139.com/m/i?135Ce7C7omgXj</p>
 				</div>,
 				positiveText: '复制下载链接到剪切板',
