@@ -36,7 +36,7 @@ export const getMiuiFreeformCloudDataIdList = (): Promise<string[]> => {
 				}
 			}
 		}
-	})
+	});
 };
 
 export const getCustomDotBlackList = (): Promise<string[]> => {
@@ -56,10 +56,10 @@ export const getCustomDotBlackList = (): Promise<string[]> => {
 						try {
 							resolve(JSON.parse(stdout));
 						} catch (err) {
-							reject("dot_black_list config is empty");
+							reject('dot_black_list config is empty');
 						}
 					} else {
-						reject(null)
+						reject(null);
 					}
 				}
 			}
@@ -71,61 +71,62 @@ export const getCustomDotBlackList = (): Promise<string[]> => {
 export const getDotBlackList = (): Promise<DotBlackListItem[]> => {
 	const sqlite3 = '/data/adb/modules/MIUI_MagicWindow+/common/utils/sqlite3';
 	const HTMLViewerCloudDataBase = `/data/user_de/0/com.android.htmlviewer/databases/cloud_all_data.db`;
-		return new Promise(async (resolve, reject) => {
-			if (import.meta.env.MODE === 'development') {
-				const response = await axios.get('/data/system/dot_black_list.json');
-				resolve(response.data as unknown as DotBlackListItem[]);
-			} else {
-				const [, getMiuiFreeformCloudDataIdListRes] = await $to<string[], string>(
-					getMiuiFreeformCloudDataIdList(),
-				);
-				if (getMiuiFreeformCloudDataIdListRes) {
-					const fetchDataById = async (dataId: string): Promise<DotBlackListItem> => {
-						const shellCommon = `echo "$(${sqlite3} ${HTMLViewerCloudDataBase} "SELECT productData FROM cloud_all_data WHERE dataId='${dataId}';")"`;
-						return handlePromiseWithLogging(
-							new Promise(async (fetchDataByIdResolve, fetchDataByIdReject) => {
-								const { errno, stdout, stderr }: ExecResults = (await exec(
-									shellCommon,
-								)) as unknown as ExecResults;
-								if (errno) {
-									fetchDataByIdReject(stderr);
-								}
-								if (stdout) {
-									try {
-										const cloudFeatucteData = JSON.parse(stdout);
-										if (cloudFeatucteData.dot_black_list) {
-											fetchDataByIdResolve({
-												dataId: Number(dataId),
-												productData: cloudFeatucteData || {},
-												dataList: cloudFeatucteData.dot_black_list || [],
-											});
-										} else {
-											fetchDataByIdResolve({
-												dataId: Number(dataId),
-												productData: cloudFeatucteData || {},
-												dataList: [],
-											});
-										}
-									} catch (err) {
-										fetchDataByIdReject(err);
+	return new Promise(async (resolve, reject) => {
+		if (import.meta.env.MODE === 'development') {
+			const response = await axios.get('/data/system/dot_black_list.json');
+			resolve(response.data as unknown as DotBlackListItem[]);
+		} else {
+			const [getMiuiFreeformCloudDataIdListErr, getMiuiFreeformCloudDataIdListRes] = await $to<string[], string>(getMiuiFreeformCloudDataIdList());
+			if (getMiuiFreeformCloudDataIdListErr) {
+				reject(getMiuiFreeformCloudDataIdListErr)
+			}
+			if (getMiuiFreeformCloudDataIdListRes) {
+				const fetchDataById = async (dataId: string): Promise<DotBlackListItem> => {
+					const shellCommon = `echo "$(${sqlite3} ${HTMLViewerCloudDataBase} "SELECT productData FROM cloud_all_data WHERE dataId='${dataId}';")"`;
+					return handlePromiseWithLogging(
+						new Promise(async (fetchDataByIdResolve, fetchDataByIdReject) => {
+							const { errno, stdout, stderr }: ExecResults = (await exec(
+								shellCommon,
+							)) as unknown as ExecResults;
+							if (errno) {
+								fetchDataByIdReject(stderr);
+							}
+							if (stdout) {
+								try {
+									const cloudFeatucteData = JSON.parse(stdout);
+									if (cloudFeatucteData.dot_black_list) {
+										fetchDataByIdResolve({
+											dataId: Number(dataId),
+											productData: cloudFeatucteData || {},
+											dataList: cloudFeatucteData.dot_black_list || [],
+										});
+									} else {
+										fetchDataByIdResolve({
+											dataId: Number(dataId),
+											productData: cloudFeatucteData || {},
+											dataList: [],
+										});
 									}
+								} catch (err) {
+									fetchDataByIdReject(err);
 								}
-							}),
-							shellCommon,
-						);
-					};
-					const [getDotBlackListErr, getDotBlackListRes] = await $to(
-						Promise.all(getMiuiFreeformCloudDataIdListRes.map(dataId => fetchDataById(dataId))),
+							}
+						}),
+						shellCommon,
 					);
-					if (getDotBlackListErr) {
-						reject(getDotBlackListErr);
-					}
-					if (getDotBlackListRes) {
-						resolve(getDotBlackListRes);
-					}
+				};
+				const [getDotBlackListErr, getDotBlackListRes] = await $to(
+					Promise.all(getMiuiFreeformCloudDataIdListRes.map(dataId => fetchDataById(dataId))),
+				);
+				if (getDotBlackListErr) {
+					reject(getDotBlackListErr);
+				}
+				if (getDotBlackListRes) {
+					resolve(getDotBlackListRes);
 				}
 			}
-		})
+		}
+	});
 };
 
 export interface updateDotBlackListAppErrorLoggingItem {
@@ -148,14 +149,17 @@ export interface updateDotBlackListAppParams {
 
 export const getHasHTMLViewerCloudDataBase = (): Promise<string> => {
 	const shellCommon = `ls /data/user_de/0/com.android.htmlviewer/databases/cloud_all_data.db &>/dev/null && echo "exists" || echo "not exists"`;
-	return new Promise(async (resolve, reject) => {
-		if (import.meta.env.MODE === 'development') {
-			resolve(`exists`);
-		} else {
-			const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
-			errno ? reject(stderr) : stdout === 'exists' ? resolve(stdout) : reject(stdout);
-		}
-	})
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`exists`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : stdout === 'exists' ? resolve(stdout) : reject(stdout);
+			}
+		}),
+		'getHasHTMLViewerCloudDataBase',
+	);
 };
 
 export const updateDotBlackList = (
@@ -214,11 +218,11 @@ export const updateDotBlackList = (
 					reject(updateCustomDotBlackListErr);
 				} else {
 					const featchDataList = params.sourceDotBlackList.map(item => {
-						const cloneDeepProductData = cloneDeep(item.productData)
+						const cloneDeepProductData = cloneDeep(item.productData);
 						cloneDeepProductData.dot_black_list = params.dotBlackList;
 						return {
 							dataId: item.dataId,
-							productData: cloneDeepProductData
+							productData: cloneDeepProductData,
 						};
 					});
 					const fetchDataById = async (dataId: number, productData: any): Promise<string> => {
@@ -231,7 +235,7 @@ export const updateDotBlackList = (
 								if (errno) {
 									fetchDataByIdReject(stderr);
 								} else {
-									stdout === '1' ? fetchDataByIdResolve(stdout) : fetchDataByIdReject(stdout)
+									stdout === '1' ? fetchDataByIdResolve(stdout) : fetchDataByIdReject(stdout);
 								}
 							}),
 							shellCommon,
@@ -257,4 +261,3 @@ export const updateDotBlackList = (
 		'updateDotBlackList',
 	);
 };
-

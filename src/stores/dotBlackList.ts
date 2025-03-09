@@ -12,6 +12,7 @@ type ApplicationName = Record<string, string>;
 import { useDeviceStore } from './device';
 import type DotBlackListMergeItem from '@/types/DotBlackListMergeItem';
 import type DotBlackListItem from '@/types/DotBlackListItem';
+import { useLogsStore } from './logs';
 
 export const useDotBlackListStore = defineStore(
 	'dotBlackList',
@@ -135,6 +136,7 @@ export const useDotBlackListStore = defineStore(
 		});
 
 		async function initDefault() {
+			const logsStore = useLogsStore();
 			loading.value = true;
 			// 获取所有应用包名
 			const applicationNameRes = await import('@/assets/applicationName.json');
@@ -145,7 +147,9 @@ export const useDotBlackListStore = defineStore(
 			const [getHasHTMLViewerCloudDataBaseErr, getHasHTMLViewerCloudDataBaseRes] = await $to<string>(dotBlackListApi.getHasHTMLViewerCloudDataBase())
 
 			if (getHasHTMLViewerCloudDataBaseErr) {
+				logsStore.error('[窗口控制器-获取HTML云控数据库失败]', getHasHTMLViewerCloudDataBaseErr.toString());
 				hasHTMLViewerCloudData.value = false;
+				loading.value = false;
 			}
 
 			if (getHasHTMLViewerCloudDataBaseRes) {
@@ -154,6 +158,7 @@ export const useDotBlackListStore = defineStore(
 					dotBlackListApi.getDotBlackList(),
 				);
 				if (getDotBlackListErr) {
+					logsStore.error('[窗口控制器-获取系统内置云控配置失败]', getDotBlackListErr.toString());
 					sourceDotBlackList.value = [];
 				}
 	
@@ -165,6 +170,7 @@ export const useDotBlackListStore = defineStore(
 					dotBlackListApi.getCustomDotBlackList(),
 				);
 				if (getCustomDotBlackListErr) {
+					logsStore.error('[窗口控制器-获取自定义云控配置失败]', getCustomDotBlackListErr.toString());
 					customDotBlackList.value = [];
 				}
 	
