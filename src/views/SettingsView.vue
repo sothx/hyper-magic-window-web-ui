@@ -1749,7 +1749,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 											>启用状态通常由小米云控控制，模块支持强制启用焕新存储，但该功能受系统底层支持情况而异，不支持的设备即使启用也不会生效。</p
 										>
 										<n-switch
-											@update:value="(value: boolean) => fboHook.changeIsAutoEnableFboRes(value)"
+											@update:value="(value: boolean) => fboHook.changeIsAutoEnableFbo(value)"
 											:rail-style="railStyle"
 											:value="fboHook.isAutoStartFbo.value ? true : false"
 											:loading="deviceStore.loading">
@@ -1786,6 +1786,14 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 									<p>④电池温度小于40℃</p>
 									<p>进行焕新存储期间检测到其中任意条件不满足，焕新存储会被中断，待满足后继续执行，当满足上述4个条件后，此功能也并不是每天都生效，需要文件碎片累积到一定程度会主动进行。</p>
 									<p>（焕新存储流程结束后，激活状态会被关闭，您可以前往Web UI 重新激活）</p>
+									<n-switch
+											@update:value="(value: boolean) => fboHook.changeIsAutoRegularlyFbo(value)"
+											:rail-style="railStyle"
+											:value="fboHook.isAutoRegularlyFbo.value ? true : false"
+											:loading="deviceStore.loading">
+											<template #checked>已启用每日闲时维护</template>
+											<template #unchecked>未启用每日闲时维护</template>
+									</n-switch>
 								</n-alert>
 							</dd>
 						</div>

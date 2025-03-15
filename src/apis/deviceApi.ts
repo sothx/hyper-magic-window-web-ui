@@ -2096,7 +2096,7 @@ export const getIsAutoEnableFbo = (): Promise<string> => {
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
-				resolve(`3`);
+				resolve(`true`);
 			} else {
 				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
 				errno ? reject(stderr) : resolve(stdout);
@@ -2114,7 +2114,7 @@ export const removeIsAutoEnableFbo = (): Promise<string> => {
 				resolve(`Remove is_auto_enable_fbo successfully.`);
 			} else {
 				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
-				errno ? reject(stderr) : resolve(stdout);
+				errno ? reject(stderr) : stdout === 'Remove is_auto_enable_fbo successfully.' ? resolve(stdout) : reject(stdout);
 			}
 		}),
 		shellCommon,
@@ -2123,6 +2123,51 @@ export const removeIsAutoEnableFbo = (): Promise<string> => {
 
 export const addIsAutoEnableFbo = (): Promise<string> => {
 	const shellCommon = `grep -q '^is_auto_enable_fbo=' /data/adb/MIUI_MagicWindow+/config.prop || (echo "is_auto_enable_fbo=true" | tee -a /data/adb/MIUI_MagicWindow+/config.prop > /dev/null && echo "Command executed successfully." || echo "Command failed.")`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`Command executed successfully.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : stdout === 'Command executed successfully.' ? resolve(stdout) : reject(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const getIsAutoRegularlyFbo = (): Promise<string> => {
+	const shellCommon = `grep 'is_auto_regularly_fbo=' /data/adb/MIUI_MagicWindow+/config.prop | awk -F'=' '{print $2}'`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`true`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const removeIsAutoRegularlyFbo = (): Promise<string> => {
+	const shellCommon = `sed -i '/^is_auto_regularly_fbo=/d' //data/adb/MIUI_MagicWindow+/config.prop && echo "Remove is_auto_regularly_fbo successfully." || echo "Remove is_auto_regularly_fbo failed."`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`Remove is_auto_regularly_fbo successfully.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : stdout === 'Remove is_auto_regularly_fbo successfully.' ? resolve(stdout) : reject(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const addIsAutoRegularlyFbo = (): Promise<string> => {
+	const shellCommon = `grep -q '^is_auto_regularly_fbo=' /data/adb/MIUI_MagicWindow+/config.prop || (echo "is_auto_regularly_fbo=true" | tee -a /data/adb/MIUI_MagicWindow+/config.prop > /dev/null && echo "Command executed successfully." || echo "Command failed.")`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {

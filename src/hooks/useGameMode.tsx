@@ -61,9 +61,9 @@ export function useGameMode() {
 							},
 							onNegativeClick: () => {},
 						});
-						reject('error')
+						reject('error');
 					} else {
-						resolve('success')
+						resolve('success');
 					}
 				} else {
 					modal.create({
@@ -72,17 +72,17 @@ export function useGameMode() {
 						preset: 'dialog',
 						content: () => <p>该系统版本尚未适配游戏显示布局，请等待模块后续更新~</p>,
 					});
-					reject('error')
+					reject('error');
 				}
 			} else {
-				resolve('success')
+				resolve('success');
 			}
 		});
 	};
 
 	const changeGameMode = async (value: boolean) => {
 		if (value) {
-			const [vaildModuleVersionErr] = await $to(vaildModuleVersion())
+			const [vaildModuleVersionErr] = await $to(vaildModuleVersion());
 			if (vaildModuleVersionErr) {
 				return;
 			}
@@ -130,21 +130,9 @@ export function useGameMode() {
 				});
 			}),
 		);
-
-		const [deleteGameModeErr] = await $to(deviceApi.deleteGameMode());
-		if (deleteGameModeErr) {
-			modal.create({
-				title: '操作失败',
-				type: 'error',
-				preset: 'dialog',
-				content: () => <p>无法修改模块配置文件，详情请查看日志记录~</p>,
-				negativeText: '确定',
-			});
-			return;
-		}
-		if (value) {
-			const [addGameModeErr] = await $to(deviceApi.addGameMode());
-			if (addGameModeErr) {
+		if (positiveRes) {
+			const [deleteGameModeErr] = await $to(deviceApi.deleteGameMode());
+			if (deleteGameModeErr) {
 				modal.create({
 					title: '操作失败',
 					type: 'error',
@@ -154,8 +142,19 @@ export function useGameMode() {
 				});
 				return;
 			}
-		}
-		if (positiveRes) {
+			if (value) {
+				const [addGameModeErr] = await $to(deviceApi.addGameMode());
+				if (addGameModeErr) {
+					modal.create({
+						title: '操作失败',
+						type: 'error',
+						preset: 'dialog',
+						content: () => <p>无法修改模块配置文件，详情请查看日志记录~</p>,
+						negativeText: '确定',
+					});
+					return;
+				}
+			}
 			const [rebootDeviceErr] = await $to(deviceApi.rebootDevice());
 			if (rebootDeviceErr) {
 				modal.create({
