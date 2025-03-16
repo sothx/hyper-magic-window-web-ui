@@ -217,6 +217,17 @@ export function useFbo() {
 						negativeText: '确定',
 					});
 				} else {
+                    const [rebootDeviceErr] = await $to(deviceApi.rebootDevice());
+                    if (rebootDeviceErr) {
+                        modal.create({
+                            title: '操作失败',
+                            type: 'error',
+                            preset: 'dialog',
+                            content: () => <p>无法重启设备，详情请查看日志记录~</p>,
+                            negativeText: '确定',
+                        });
+                        return;
+                    }
 					modal.create({
 						title: '操作成功',
 						type: 'success',
