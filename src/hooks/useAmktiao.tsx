@@ -1,4 +1,4 @@
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, nextTick } from 'vue';
 import { useDeviceStore } from '@/stores/device';
 import $to from 'await-to-js';
 import {
@@ -262,7 +262,7 @@ export function useAmktiao() {
 		}
 	};
 
-	onMounted(async () => {
+	const fetchData = async () => {
 		// 移植包键盘和手写笔控制
 		if (deviceStore.hasPenUpdateControl) {
 			const [, getCurrentPenUpdateResolve] = await $to<string, string>(deviceApi.getCurrentPenUpdate());
@@ -287,6 +287,12 @@ export function useAmktiao() {
 				currentKeyboardModeSelect.value = keyboardModeOptions.value[mode];
 			}
 		}
+	}
+
+	onMounted(async () => {
+		nextTick(() => {
+			fetchData(); // 确保 UI 先渲染，再执行耗时操作
+		});
 	});
 
 	return {

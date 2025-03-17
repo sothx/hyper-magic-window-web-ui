@@ -1,4 +1,4 @@
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, nextTick } from 'vue';
 import { useDeviceStore } from '@/stores/device';
 import * as deviceApi from '@/apis/deviceApi';
 import { createDiscreteApi, darkTheme, lightTheme, type ConfigProviderProps } from 'naive-ui';
@@ -115,7 +115,7 @@ export function useFbo() {
 									后，每天夜间12点20分会自动激活焕新存储的运行状态，激活后仍然需要满足条件才会在特定时间触发焕新存储~
 								</p>
 							)}
-                            {!status && (
+							{!status && (
 								<p>
 									关闭焕新存储{' '}
 									<span
@@ -217,17 +217,17 @@ export function useFbo() {
 						negativeText: '确定',
 					});
 				} else {
-                    const [rebootDeviceErr] = await $to(deviceApi.rebootDevice());
-                    if (rebootDeviceErr) {
-                        modal.create({
-                            title: '操作失败',
-                            type: 'error',
-                            preset: 'dialog',
-                            content: () => <p>无法重启设备，详情请查看日志记录~</p>,
-                            negativeText: '确定',
-                        });
-                        return;
-                    }
+					const [rebootDeviceErr] = await $to(deviceApi.rebootDevice());
+					if (rebootDeviceErr) {
+						modal.create({
+							title: '操作失败',
+							type: 'error',
+							preset: 'dialog',
+							content: () => <p>无法重启设备，详情请查看日志记录~</p>,
+							negativeText: '确定',
+						});
+						return;
+					}
 					modal.create({
 						title: '操作成功',
 						type: 'success',
@@ -348,7 +348,9 @@ export function useFbo() {
 	};
 
 	onMounted(() => {
-		reload();
+		nextTick(() => {
+			reload(); // 确保 UI 先渲染，再执行耗时操作
+		});
 	});
 
 	return {

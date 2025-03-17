@@ -1,4 +1,4 @@
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, nextTick } from 'vue';
 import { useDeviceStore } from '@/stores/device';
 import $to from 'await-to-js';
 import {
@@ -109,8 +109,8 @@ export function useMiuiCursorStyle() {
         }
 	};
 
-	onMounted(async () => {
-		const [, getMiuiCursorStyleTypeRes] = await $to<string, string>(deviceApi.getMiuiCursorStyleType());
+    const fetchData = async () => {
+        const [, getMiuiCursorStyleTypeRes] = await $to<string, string>(deviceApi.getMiuiCursorStyleType());
 		if (getMiuiCursorStyleTypeRes && Number(getMiuiCursorStyleTypeRes)) {
 			currentMiuiCursorStyleType.value = Number(getMiuiCursorStyleTypeRes) as miuiCursorStyleType;
 		}
@@ -118,6 +118,12 @@ export function useMiuiCursorStyle() {
 		if (getAutoStartMiuiCursorStyleTypeRes && Number(getAutoStartMiuiCursorStyleTypeRes)) {
 			currentAutoStartMiuiCursorStyleType.value = Number(getAutoStartMiuiCursorStyleTypeRes) as miuiAutoStartCursorStyleType;
 		}
+    }
+
+	onMounted(async () => {
+        nextTick(() => {
+            fetchData(); // 确保 UI 先渲染，再执行耗时操作
+        });
 	});
 
 	return {

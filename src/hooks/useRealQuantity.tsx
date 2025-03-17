@@ -1,4 +1,4 @@
-import { ref, computed, onMounted, reactive, watchEffect, onUnmounted } from 'vue';
+import { ref, computed, onMounted, reactive, watchEffect, onUnmounted, nextTick } from 'vue';
 import { useDeviceStore } from '@/stores/device';
 import $to from 'await-to-js';
 import {
@@ -74,9 +74,11 @@ export function useRealQuantity() {
 	watchEffect(() => setupAutoReload(qcomBatteryFg1RSocInfo));
 	watchEffect(() => setupAutoReload(capacityRawInfo));
 
-	onMounted(async () => {
-        qcomBatteryFg1RSocInfo.reload()
-		capacityRawInfo.reload()
+	onMounted(() => {
+		nextTick(() => {
+			qcomBatteryFg1RSocInfo.reload()
+			capacityRawInfo.reload()
+		});
 	});
 
 	onUnmounted(() => {

@@ -1,4 +1,4 @@
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, nextTick } from 'vue';
 import { useDeviceStore } from '@/stores/device';
 import $to from 'await-to-js';
 import {
@@ -42,12 +42,18 @@ export function usePointerSpeed() {
         }
     };
 
-
-    onMounted(async () => {
+    const fetchData = async () => {
         const [, getPointerSpeedRes] = await $to<string, string>(deviceApi.getPointerSpeed());
         if (Number(getPointerSpeedRes)) {
             currentPointerSpeed.value = Number(getPointerSpeedRes);
         }
+    }
+
+
+    onMounted(async () => {
+        nextTick(() => {
+            fetchData(); // 确保 UI 先渲染，再执行耗时操作
+        });
     });
 
     return {

@@ -1,4 +1,4 @@
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, nextTick } from 'vue';
 import { useDeviceStore } from '@/stores/device';
 import * as deviceApi from '@/apis/deviceApi';
 import { pick } from 'lodash-es';
@@ -49,7 +49,7 @@ export function useUFSHealth() {
 		return '';
 	});
 
-	onMounted(async () => {
+	const fetchData = async () => {
 		const [getUFSHealthInfoErr, getUFSHealthInfoRes] = await $to(deviceApi.getUFSHealthInfo());
 
 		if (getUFSHealthInfoErr) {
@@ -108,6 +108,11 @@ export function useUFSHealth() {
 				bDeviceLifeTimeEstB.value = result.bDeviceLifeTimeEstB;
 			}
 		}
+	}
+	onMounted(() => {
+		nextTick(() => {
+		  fetchData(); // 确保 UI 先渲染，再执行耗时操作
+		});
 	});
 
 	return {

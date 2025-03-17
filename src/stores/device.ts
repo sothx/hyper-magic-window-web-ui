@@ -7,7 +7,8 @@ import type { InstallAppNameListDictionary } from '@/hooks/useInstalledAppNames'
 import { useAmktiao, type KeyboardMode, type KeyboardModeOptions } from '@/hooks/useAmktiao';
 import { parsePropContent } from '@/utils/common';
 import { transformValues } from '@/utils/xmlFormat';
-
+import type { DisplayModeItem } from '@/hooks/useDisplayModeRecord';
+import type { IsHideGestureLine } from '@/hooks/useHideGestureLine';
 
 export interface ModuleProp {
 	id: string;
@@ -40,12 +41,12 @@ export interface ROOTManagerInfo {
 }
 
 export interface BatteryInfo {
-	sohQcom: number
-	sohXMPower: number
-	sohMTK: number
-	chargeFullDesign: number
-	chargeFull: number
-	cycleCount: number
+	sohQcom: number;
+	sohXMPower: number;
+	sohMTK: number;
+	chargeFullDesign: number;
+	chargeFull: number;
+	cycleCount: number;
 }
 
 export interface ShamikoInfo {
@@ -54,10 +55,10 @@ export interface ShamikoInfo {
 }
 
 export interface deviceInfo {
-	socName?: string
-	socModel?: string
-	display0Panel?: string
-	memoryInfo?: string
+	socName?: string;
+	socModel?: string;
+	display0Panel?: string;
+	memoryInfo?: string;
 }
 
 export type ROOT_MANAGER_TYPE = 'Magisk' | 'APatch' | 'KernelSU';
@@ -72,8 +73,8 @@ export const useDeviceStore = defineStore(
 			socName: '',
 			socModel: '',
 			display0Panel: '',
-			memoryInfo: ''
-		})
+			memoryInfo: '',
+		});
 		const lastVersionCode = ref<number>();
 		const needReloadData = ref<boolean>(false);
 		const moduleInfo = ref<ModuleProp>();
@@ -90,10 +91,15 @@ export const useDeviceStore = defineStore(
 		const systemPreVersion = ref<string>('');
 		const currentRootManager = ref<ROOT_MANAGER_TYPE>('Magisk');
 		const hasNeedUpdateModule = ref<boolean>(false);
-		const shamikoInfo =  reactive<ShamikoInfo>({
+		const isInstallMIUIContentExtension = ref<boolean>(false);
+		const displayModeList = ref<DisplayModeItem[]>([]);
+		const currentIsHideGestureLine = ref<IsHideGestureLine>(0);
+		const isDisabledOS2SystemAppOptimize = ref<boolean>(false);
+		const isDisabledOS2InstallModuleTips = ref<boolean>(false);
+		const shamikoInfo = reactive<ShamikoInfo>({
 			installed: false,
-			mode: undefined
-		})
+			mode: undefined,
+		});
 		const rootManagerInfo = reactive<ROOTManagerInfo>({
 			KSU: false,
 			KSU_VER: '',
@@ -107,24 +113,25 @@ export const useDeviceStore = defineStore(
 		});
 		const batteryInfo = reactive<BatteryInfo>({
 			sohQcom: 0,
-			sohMTK:0,
-			sohXMPower:0,
+			sohMTK: 0,
+			sohXMPower: 0,
 			chargeFullDesign: 0,
 			chargeFull: 0,
-			cycleCount: 0
-		})
+			cycleCount: 0,
+		});
 		const ABTestInfo = reactive({
 			OS2_PAD_EMBEDDED_APP_MANAGER: true,
 			Hyper_OS_DOT_BLACK_LIST_MANAGER: true,
 			GAME_BOOSTER_RADIO_MANAGER: true,
-			GAME_BOOSTER_CUSTOM_RATIO: false
-		})
+			GAME_BOOSTER_CUSTOM_RATIO: false,
+		});
 		const smartFocusIO = ref<deviceApi.SmartFocusIOResult['stdout']>();
 		const miuiCompatEnable = ref<boolean>(false);
 		const miuiAppCompatEnable = ref<boolean>(false);
 		const showRotationSuggestions = ref<boolean>(false);
 		const isDarkMode = ref<boolean>(false);
 		const rhythmMode = ref<string>('autoRhythm');
+		const DDRVendor = ref<string>('');
 		const loading = ref<boolean>(true);
 		const errorLogging = reactive<ErrorLogging[]>([]);
 		const skipConfirm = reactive({
@@ -132,10 +139,14 @@ export const useDeviceStore = defineStore(
 			MIUIContentExt: false,
 			lowWebViewVersion: false,
 			patchModeAlert: false,
-			needInstalledKsuWebUiApk: false
+			needInstalledKsuWebUiApk: false,
 		});
 		const showThirdPartySetting = reactive({
-			amktiaoROMInterface: false
+			amktiaoROMInterface: false,
+		});
+		const preStartProp = reactive({
+			build: false,
+			module: false
 		})
 
 		const isNeedShowErrorModal = computed(() => Boolean(errorLogging.length > 0));
@@ -194,15 +205,21 @@ export const useDeviceStore = defineStore(
 				// 键盘控制(水龙)
 				$to<string, string>(deviceApi.getHasKeyboardControl()),
 				// 工作台模式判断
-				$to<string,string>(deviceApi.getMiuiDesktopModeEnabled()),
+				$to<string, string>(deviceApi.getMiuiDesktopModeEnabled()),
 				// 设备Soc名称
-				$to<string,string>(deviceApi.getDeviceSocName()),
+				$to<string, string>(deviceApi.getDeviceSocName()),
 				// 设备Soc类型
-				$to<string,string>(deviceApi.getDeviceSocModel()),
+				$to<string, string>(deviceApi.getDeviceSocModel()),
 				// 设备显示器信息
-				$to<string,string>(deviceApi.getDisplay0PanelInfo()),
+				$to<string, string>(deviceApi.getDisplay0PanelInfo()),
 				// 设备UFS信息
-				$to<string,string>(deviceApi.getMemoryInfo()),
+				$to<string, string>(deviceApi.getMemoryInfo()),
+				// 传送门
+				$to<string, string>(deviceApi.getHasInstalledMIUIContentExtension()),
+				// 隐藏手势提示条
+				$to<string, string>(deviceApi.getHideGestureLine()),
+				// 获取DDRVendor
+				$to<string, string>(deviceApi.getDDRVendor()),
 			];
 			// 等待所有 promises 完成
 			const executeWithoutWaitingResults = await Promise.all(executeWithoutWaiting);
@@ -210,7 +227,7 @@ export const useDeviceStore = defineStore(
 				[, getModuleInfoRes],
 				[, getDeviceNameRes],
 				[, getRootManagerInfo],
-				[,getShamikoHasInstalledRes],
+				[, getShamikoHasInstalledRes],
 				[, getSystemVersionRes],
 				[, getPreSystemVersionRes],
 				[, getBatterySohQcomRes],
@@ -225,8 +242,11 @@ export const useDeviceStore = defineStore(
 				[, getMiuiDesktopModeEnabledRes],
 				[, getDeviceSocNameRes],
 				[, getDeviceSocModelRes],
-				[, getDisplay0PanelInfo],
-				[, getMemoryInfo],
+				[, getDisplay0PanelInfoRes],
+				[, getMemoryInfoRes],
+				[, getHasInstalledMIUIContentExtensionRes],
+				[, getHideGestureLineRes],
+				[, getDDRVendorRes],
 			] = executeWithoutWaitingResults;
 			// 模块信息 *弱校验
 			if (!getModuleInfoRes?.length) {
@@ -239,17 +259,17 @@ export const useDeviceStore = defineStore(
 			if (getModuleInfoRes?.length) {
 				const moduleInfoParse = transformValues({
 					...parsePropContent(getModuleInfoRes),
-					dir: '/data/adb/modules/MIUI_MagicWindow+'
-				}) as unknown as ModuleProp
+					dir: '/data/adb/modules/MIUI_MagicWindow+',
+				}) as unknown as ModuleProp;
 				if (moduleInfoParse.versionCode) {
 					if (!lastVersionCode.value) {
-						lastVersionCode.value = moduleInfoParse.versionCode
+						lastVersionCode.value = moduleInfoParse.versionCode;
 					} else if (lastVersionCode.value < moduleInfoParse.versionCode) {
 						needReloadData.value = true;
-						lastVersionCode.value = moduleInfoParse.versionCode
+						lastVersionCode.value = moduleInfoParse.versionCode;
 					}
 				}
-				moduleInfo.value = moduleInfoParse
+				moduleInfo.value = moduleInfoParse;
 				// moduleDir.value = moduleInfoObj.moduleDir;
 				// moduleID.value = moduleInfoObj.id;
 			}
@@ -292,7 +312,6 @@ export const useDeviceStore = defineStore(
 				if (getShamikoModeReject) {
 					shamikoInfo.mode = 'blacklist';
 				}
-
 			}
 			// 移植包键盘和手写笔控制
 			if (getHasPenUpdateControlRes) {
@@ -308,15 +327,15 @@ export const useDeviceStore = defineStore(
 				enabledMiuiDesktopMode.value = true;
 			}
 			// 售后电池健康度
-			batteryInfo.sohQcom = Number(getBatterySohQcomRes)
-			batteryInfo.sohMTK = Number(getBatterySohMTKRes)
-			batteryInfo.sohXMPower = Number(getBatterySohXMPowerRes)
+			batteryInfo.sohQcom = Number(getBatterySohQcomRes);
+			batteryInfo.sohMTK = Number(getBatterySohMTKRes);
+			batteryInfo.sohXMPower = Number(getBatterySohXMPowerRes);
 			// 电池设计容量
-			batteryInfo.chargeFullDesign = Number(getBatteryChargeFullDesignRes)
+			batteryInfo.chargeFullDesign = Number(getBatteryChargeFullDesignRes);
 			// 当前电池容量
-			batteryInfo.chargeFull = Number(getBatteryChargeFullRes)
+			batteryInfo.chargeFull = Number(getBatteryChargeFullRes);
 			// 当前电池循环次数
-			batteryInfo.cycleCount = Number(getBatteryCycleCountRes)
+			batteryInfo.cycleCount = Number(getBatteryCycleCountRes);
 			// 获取用户已安装的应用
 			await getAndroidApplicationPackageNameList();
 			// 设备类型 *强校验
@@ -369,12 +388,29 @@ export const useDeviceStore = defineStore(
 				deviceInfo.socName = getDeviceSocNameRes;
 			}
 			// 设备显示器信息
-			if (getDisplay0PanelInfo) {
-				deviceInfo.display0Panel = getDisplay0PanelInfo;
+			if (getDisplay0PanelInfoRes) {
+				deviceInfo.display0Panel = getDisplay0PanelInfoRes;
 			}
 			// 设备UFS信息
-			if (getMemoryInfo) {
-				deviceInfo.memoryInfo = getMemoryInfo;
+			if (getMemoryInfoRes) {
+				deviceInfo.memoryInfo = getMemoryInfoRes;
+			}
+			// 传送门
+			if (getHasInstalledMIUIContentExtensionRes === 'exists') {
+				isInstallMIUIContentExtension.value = true;
+			}
+			// 隐藏手势提示条
+			if (Number(getHideGestureLineRes)) {
+				currentIsHideGestureLine.value = 1;
+			}
+			// 刷新率和分辨率
+			const [, getDiplayModeListRes] = await $to(deviceApi.getDisplayModeRecord());
+			if (getDiplayModeListRes) {
+				displayModeList.value = getDiplayModeListRes;
+			}
+			// DDR信息
+			if (getDDRVendorRes) {
+				DDRVendor.value = getDDRVendorRes;
 			}
 			// 游戏显示布局 *弱校验
 			const [, getMiuiCompatEnableRes] = await $to(deviceApi.getMiuiCompatEnable());
@@ -397,6 +433,51 @@ export const useDeviceStore = defineStore(
 			);
 			if (getSmartFocusIO) {
 				smartFocusIO.value = getSmartFocusIO;
+			}
+
+			if (MIOSVersion.value && MIOSVersion.value >= 2 && androidTargetSdk.value >= 35) {
+				const [getIsDisabledOS2SystemAppOptimizeErr, getIsDisabledOS2SystemAppOptimizeRes] = await $to<
+					string,
+					string
+				>(deviceApi.getIsDisabledOS2SystemAppOptimize());
+				if (getIsDisabledOS2SystemAppOptimizeErr) {
+					isDisabledOS2SystemAppOptimize.value = false;
+				} else {
+					if (getIsDisabledOS2SystemAppOptimizeRes === 'true') {
+						isDisabledOS2SystemAppOptimize.value = true;
+					} else {
+						isDisabledOS2SystemAppOptimize.value = false;
+					}
+				}
+			}
+
+			if (MIOSVersion.value && MIOSVersion.value >= 2 && androidTargetSdk.value >= 35) {
+				const [,getPreStartProcForBuildRes] = await $to<string, string>(
+					deviceApi.getPreStartProcForBuild(),
+				);
+				const [,getPreStartProcForModuleRes] = await $to<string, string>(
+					deviceApi.getPreStartProcForModule(),
+				);
+				if (getPreStartProcForBuildRes === 'true') {
+					preStartProp.build = true;
+				} else {
+					preStartProp.build = false;
+				}
+				if (getPreStartProcForModuleRes === 'true') {
+					preStartProp.module = true;
+				} else {
+					preStartProp.module = false;
+				}
+			}
+
+			
+			if (MIOSVersion.value && MIOSVersion.value >= 2 && androidTargetSdk.value >= 35) {
+ 				const [, getDisabledOS2InstallModuleTipsRes] = await $to<string, string>(deviceApi.getDisabledOS2InstallModuleTips());
+				if (getDisabledOS2InstallModuleTipsRes === 'true') {
+					isDisabledOS2InstallModuleTips.value = true;
+				} else {
+					isDisabledOS2InstallModuleTips.value = false;
+				}
 			}
 
 			if (!errorLogging.length) {
@@ -441,12 +522,28 @@ export const useDeviceStore = defineStore(
 			hasKeyboardControl,
 			hasNeedUpdateModule,
 			enabledMiuiDesktopMode,
-			isEnableShowNotificationIconNum
+			isEnableShowNotificationIconNum,
+			isInstallMIUIContentExtension,
+			displayModeList,
+			currentIsHideGestureLine,
+			isDisabledOS2SystemAppOptimize,
+			preStartProp,
+			isDisabledOS2InstallModuleTips,
+			DDRVendor
 		};
 	},
 	{
 		persist: {
-			pick: ['skipConfirm', 'installedAndroidApplicationPackageNameList', 'isDarkMode', 'rhythmMode','ABTestInfo','installedAppNameList','lastVersionCode','showThirdPartySetting'],
+			pick: [
+				'skipConfirm',
+				'installedAndroidApplicationPackageNameList',
+				'isDarkMode',
+				'rhythmMode',
+				'ABTestInfo',
+				'installedAppNameList',
+				'lastVersionCode',
+				'showThirdPartySetting',
+			],
 		},
 	},
 );

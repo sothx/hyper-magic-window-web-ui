@@ -850,7 +850,7 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 		deviceStore.MIOSVersion &&
 		deviceStore.MIOSVersion >= 2 &&
 		deviceStore.androidTargetSdk >= 35 &&
-		!disabledOS2SystemAppOptimizeHook.status
+		!deviceStore.isDisabledOS2SystemAppOptimize
 	) {
 		modal.create({
 			title: '该应用已受模块保护',

@@ -22,9 +22,6 @@ export function useDisabledOS2SystemAppOptimize() {
         configProviderProps: configProviderPropsRef,
     });
 
-    const status = ref<boolean>(false);
-
-
     const changeDisabledOS2SystemAppOptimize = async (value: boolean) => {
         const [removeIsDisabledOS2SystemAppOptimizeErr, removeIsDisabledOS2SystemAppOptimizeRes] = await $to(
             deviceApi.removeIsDisabledOS2SystemAppOptimize(),
@@ -54,28 +51,14 @@ export function useDisabledOS2SystemAppOptimize() {
                 return;
             }
         }
-        status.value = value;
+        deviceStore.isDisabledOS2SystemAppOptimize = value;
     };
 
 
     onMounted(async () => {
-        if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35) {
-            const [getIsDisabledOS2SystemAppOptimizeErr, getIsDisabledOS2SystemAppOptimizeRes] = await $to<string, string>(deviceApi.getIsDisabledOS2SystemAppOptimize());
-            if (getIsDisabledOS2SystemAppOptimizeErr) {
-                status.value = false;
-            } else {
-                if (getIsDisabledOS2SystemAppOptimizeRes === 'true') {
-                    status.value = true;
-                } else {
-                    status.value = false;
-                }
-                console.log(getIsDisabledOS2SystemAppOptimizeRes,status.value,'getIsDisabledOS2SystemAppOptimizeRes')
-            }
-        }
     });
 
     return {
-        status,
         change: changeDisabledOS2SystemAppOptimize
     };
 }

@@ -27,7 +27,6 @@ import { useVideoWallpaperLoop } from '@/hooks/useVideoWallpaperLoop';
 import { useOS2InstallModuleTips } from '@/hooks/useOS2InstallModuleTips';
 import { useUFSHealth } from '@/hooks/useUFSHealth';
 import { useDisabledOS2SystemPreStart } from '@/hooks/useDisabledOS2SystemPreStart';
-import { useMemoryInfo } from '@/hooks/useMemory';
 import { useDisplaySettings } from '@/hooks/useDisplaySettings';
 import { useFbo } from '@/hooks/useFbo';
 import {
@@ -54,12 +53,10 @@ import { useDevelopmentSettingsEnabled } from '@/hooks/useDevelopmentSettingsEna
 const deviceStore = useDeviceStore();
 const embeddedStore = useEmbeddedStore();
 const miuiDesktopModeHook = useMiuiDesktopMode();
-const showNotificationIconHook = useShowNotificationIcon();
 const MIUIContentExtensionHook = useMIUIContentExtension();
 const realQuantityHook = useRealQuantity();
 const displayModeRecordHook = useDisplayModeRecord();
 const hideGestureLineHook = useHideGestureLine();
-const inVisibleModeHook = useInVisibleMode();
 const miuiCursorStyleHook = useMiuiCursorStyle();
 const mouseGestureNaturalscrollHook = useMouseGestureNaturalscroll();
 const pointerSpeedHook = usePointerSpeed();
@@ -70,7 +67,6 @@ const { activateABTest, loading: activateABTestLoading } = useABTestActivation()
 const videoWallpaperLoopHook = useVideoWallpaperLoop();
 const OS2InstallModuleTipsHook = useOS2InstallModuleTips();
 const useUFSHealthHook = useUFSHealth();
-const useMemoryInfoHook = useMemoryInfo();
 const useDisabledOS2SystemPreStartHook = useDisabledOS2SystemPreStart();
 const fboHook = useFbo();
 const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
@@ -586,7 +582,6 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 					</div>
 					<div
 						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0"
-						v-show="OS2InstallModuleTipsHook.isInit"
 						v-if="
 							deviceStore.MIOSVersion &&
 							deviceStore.MIOSVersion >= 2 &&
@@ -601,8 +596,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							<n-switch
 								@update:value="(value: boolean) => OS2InstallModuleTipsHook.change(value)"
 								:rail-style="railStyle"
-								:value="OS2InstallModuleTipsHook.current.value"
-								:loading="OS2InstallModuleTipsHook.loading.value"
+								:value="deviceStore.isDisabledOS2InstallModuleTips"
 								:disabled="deviceStore.androidTargetSdk && deviceStore.androidTargetSdk < 35">
 								<template #checked>禁用模块使用须知</template>
 								<template #unchecked>开启模块使用须知</template>
@@ -625,7 +619,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							<n-switch
 								@update:value="(value: boolean) => disabledOS2SystemAppOptimizeHook.change(value)"
 								:rail-style="railStyle"
-								:value="disabledOS2SystemAppOptimizeHook.status"
+								:value="deviceStore.isDisabledOS2SystemAppOptimize"
 								:loading="deviceStore.loading">
 								<template #checked>已禁用系统应用横屏优化</template>
 								<template #unchecked>已启用系统应用横屏优化</template>
@@ -953,7 +947,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							<n-switch
 								@update:value="(value: boolean) => useDisabledOS2SystemPreStartHook.change(value)"
 								:rail-style="railStyle"
-								:value="useDisabledOS2SystemPreStartHook.moduleCurrent.value"
+								:value="deviceStore.preStartProp.module"
 								:loading="deviceStore.loading">
 								<template #checked>已开启应用预加载</template>
 								<template #unchecked>已禁用应用预加载</template>
@@ -1034,7 +1028,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 								@update:value="(value: boolean) => miuiDesktopModeHook.changeMiuiDktMode(value)"
 								:rail-style="railStyle"
 								:disabled="!deviceStore.enabledMiuiDesktopMode"
-								:value="miuiDesktopModeHook.currentMiuiDktMode"
+								:value="miuiDesktopModeHook.currentMiuiDktMode.value"
 								:loading="deviceStore.loading">
 								<template #checked>工作台模式</template>
 								<template #unchecked>默认桌面模式</template>
@@ -1063,7 +1057,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							</div>
 							<n-alert
 								v-if="
-									MIUIContentExtensionHook.isInstallMIUIContentExtension.value &&
+									deviceStore.isInstallMIUIContentExtension &&
 									deviceStore.deviceCharacteristics === 'tablet'
 								"
 								class="mt-5"
@@ -1712,7 +1706,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							<n-switch
 								@update:value="(value: boolean) => hideGestureLineHook.changeIsHideGestureLine(value)"
 								:rail-style="railStyle"
-								:value="hideGestureLineHook.currentIsHideGestureLine.value === 1 ? true : false">
+								:value="deviceStore.currentIsHideGestureLine === 1 ? true : false">
 								<template #checked>隐藏手势提示线</template>
 								<template #unchecked>显示手势提示线</template>
 							</n-switch>
@@ -2227,7 +2221,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 						</dd>
 					</div>
 					<div
-						v-if="useMemoryInfoHook.DDRVendor.value"
+						v-if="deviceStore.DDRVendor"
 						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
@@ -2235,7 +2229,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 						</dt>
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							<div class="whitespace-pre">{{ useMemoryInfoHook.DDRVendor.value }}</div>
+							<div class="whitespace-pre">{{ deviceStore.DDRVendor }}</div>
 						</dd>
 					</div>
 					<div

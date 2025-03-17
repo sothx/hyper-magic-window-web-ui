@@ -41,18 +41,16 @@ export function useDisplayModeRecord() {
 		configProviderProps: configProviderPropsRef,
 	});
 
-    const displayModeList = ref<DisplayModeItem[]>([])
-
     const supportHDRTypes = computed(() => {
-        if (Array.isArray(displayModeList.value) && displayModeList.value.length) {
-            return displayModeList.value[0].supportedHdrTypes
+        if (Array.isArray(deviceStore.displayModeList) && deviceStore.displayModeList.length) {
+            return deviceStore.displayModeList[0].supportedHdrTypes
         }
 
         return []
     })
 
     const formatDisplayModeList = computed(() => {
-        return displayModeList.value.map(item => ({
+        return deviceStore.displayModeList.map(item => ({
             ...item,
             fps: Math.round(item.fps), // 将 fps 转换为整数
             alternativeRefreshRates: item.alternativeRefreshRates.map(rate => Math.round(rate)) // 将 alternativeRefreshRates 转换为整数数组
@@ -111,24 +109,10 @@ export function useDisplayModeRecord() {
 
 
     onMounted(async () => {
-        const [getDiplayModeListErr,getDiplayModeListRes] = await $to(deviceApi.getDisplayModeRecord())
-        if (getDiplayModeListErr) {
-            modal.create({
-                title: '操作失败',
-                type: 'error',
-                preset: 'dialog',
-                content: () => <p>修改失败，详情请查看日志记录~</p>,
-                negativeText: '确定',
-            });
-        }
-        if (getDiplayModeListRes) {
-            displayModeList.value = getDiplayModeListRes;
-        }
     })
 
 
     return {
-        displayModeList,
         supportHDRTypes,
         formatDisplayModeList,
         setDisplayMode,

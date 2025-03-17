@@ -1,4 +1,4 @@
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, nextTick } from 'vue';
 import { useDeviceStore } from '@/stores/device';
 import $to from 'await-to-js';
 import {
@@ -65,14 +65,20 @@ export function useDevelopmentSettingsEnabled() {
         }
     };
 
-
-    onMounted(async () => {
+    const fetchData = async () => {
         const [, getDevelopmentSettingsEnabledRes] = await $to<string, string>(deviceApi.getDevelopmentSettingsEnabled());
         if (getDevelopmentSettingsEnabledRes === '1') {
             isEnabled.value = true
         } else {
             isEnabled.value = false
         }
+    }
+
+
+    onMounted(async () => {
+        nextTick(() => {
+            fetchData(); // 确保 UI 先渲染，再执行耗时操作
+        });
     });
 
     return {

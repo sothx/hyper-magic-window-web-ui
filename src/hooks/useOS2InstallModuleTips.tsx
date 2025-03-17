@@ -22,11 +22,6 @@ export function useOS2InstallModuleTips() {
         configProviderProps: configProviderPropsRef,
     });
 
-    const current = ref<boolean>(false);
-
-    const loading = ref<boolean>(false);
-
-    const isInit = ref<boolean>(false);
 
 
 
@@ -77,7 +72,6 @@ export function useOS2InstallModuleTips() {
             }),
         );
         if (positiveRes) {
-            loading.value = true;
             const [removeDisabledOS2InstallModuleTipsErr] = await $to(deviceApi.removeDisabledOS2InstallModuleTips());
             if (removeDisabledOS2InstallModuleTipsErr) {
                 modal.create({
@@ -87,7 +81,6 @@ export function useOS2InstallModuleTips() {
                     content: () => <p>无法修改模块使用须知，详情请查看日志记录~</p>,
                     negativeText: '确定',
                 });
-                loading.value = false;
                 return;
             }
             if (value) {
@@ -100,14 +93,11 @@ export function useOS2InstallModuleTips() {
                         content: () => <p>无法修改模块使用须知，详情请查看日志记录~</p>,
                         negativeText: '确定',
                     });
-                    loading.value = false;
                     return;
                 }
-                loading.value = false;
-                current.value = true;
+                deviceStore.isDisabledOS2InstallModuleTips = true;
             } else {
-                loading.value = false;
-                current.value = false;
+                deviceStore.isDisabledOS2InstallModuleTips = false;
             }
             const [rebootDeviceErr] = await $to(deviceApi.rebootDevice());
             if (rebootDeviceErr) {
@@ -123,31 +113,10 @@ export function useOS2InstallModuleTips() {
         }
     };
 
-    const get = async () => {
-        loading.value = true;
-        const [getDisabledOS2InstallModuleTipsErr, getDisabledOS2InstallModuleTipsRes] = await $to<string, string>(deviceApi.getDisabledOS2InstallModuleTips());
-        if (getDisabledOS2InstallModuleTipsErr) {
-            loading.value = false;
-            return;
-        }
-        if (getDisabledOS2InstallModuleTipsRes === 'true') {
-            loading.value = false;
-            current.value = true;
-        } else {
-            loading.value = false;
-            current.value = false;
-        }
-    }
-
     onMounted(async () => {
-        await get()
-        isInit.value = true
     });
 
     return {
-        loading,
-        current,
-        change,
-        isInit
+        change
     };
 }

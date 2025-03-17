@@ -1,4 +1,4 @@
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, nextTick } from 'vue';
 import { useDeviceStore } from '@/stores/device';
 import $to from 'await-to-js';
 import {
@@ -139,14 +139,20 @@ export function useMiuiDesktopMode() {
 		}
 	};
 
-	onMounted(async () => {
-        if (deviceStore.enabledMiuiDesktopMode) {
+	const fetchData = async () => {
+		if (deviceStore.enabledMiuiDesktopMode) {
 			const [, getCurrentMiuiDktModeResolve] = await $to<string, string>(deviceApi.getCurrentMiuiDktMode());
 
 			if (Number(getCurrentMiuiDktModeResolve) === 1) {
 				currentMiuiDktMode.value = true;
 			}
 		}
+	}
+
+	onMounted(async () => {
+		nextTick(() => {
+			fetchData(); // 确保 UI 先渲染，再执行耗时操作
+		});
 	});
 
 	return {

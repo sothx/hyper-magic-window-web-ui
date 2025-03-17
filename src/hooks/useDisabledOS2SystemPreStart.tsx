@@ -24,14 +24,8 @@ export function useDisabledOS2SystemPreStart() {
 
 	const loading = ref<boolean>(false);
 
-	const isInit = ref<boolean>(false);
-
-	const moduleCurrent = ref<boolean>(false);
-
-	const buildCurrent = ref<boolean>(false);
-
 	const isShow = computed(() => {
-		return isInit.value && buildCurrent.value && deviceStore.androidTargetSdk >= 35 && deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2;
+		return deviceStore.preStartProp.build && deviceStore.androidTargetSdk >= 35 && deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2;
 	});
 
 	const change = async (value: boolean) => {
@@ -114,10 +108,10 @@ export function useDisabledOS2SystemPreStart() {
 					return;
 				}
 				loading.value = false;
-				moduleCurrent.value = false;
+				deviceStore.preStartProp.module = false;
 			} else {
 				loading.value = false;
-				moduleCurrent.value = true;
+				deviceStore.preStartProp.module = true;
 			}
 			const [rebootDeviceErr] = await $to(deviceApi.rebootDevice());
 			if (rebootDeviceErr) {
@@ -133,46 +127,12 @@ export function useDisabledOS2SystemPreStart() {
 		}
 	};
 
-	const get = async () => {
-		loading.value = true;
-		const [getPreStartProcForBuildErr, getPreStartProcForBuildRes] = await $to<string, string>(
-			deviceApi.getPreStartProcForBuild(),
-		);
-		if (getPreStartProcForBuildErr) {
-			loading.value = false;
-			return;
-		}
-		if (getPreStartProcForBuildRes === 'true') {
-			buildCurrent.value = true;
-		} else {
-			buildCurrent.value = false;
-		}
-		const [getPreStartProcForModuleErr, getPreStartProcForModuleRes] = await $to<string, string>(
-			deviceApi.getPreStartProcForModule(),
-		);
-		if (getPreStartProcForBuildErr) {
-			loading.value = false;
-			return;
-		}
-		if (getPreStartProcForModuleRes === 'false') {
-			moduleCurrent.value = false;
-		} else {
-			moduleCurrent.value = true;
-		}
-		loading.value = false;
-	};
-
 	onMounted(async () => {
-		await get();
-		isInit.value = true;
 	});
 
 	return {
-		moduleCurrent,
-		buildCurrent,
 		isShow,
 		loading,
 		change,
-		isInit,
 	};
 }

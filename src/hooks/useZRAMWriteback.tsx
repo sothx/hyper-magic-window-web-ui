@@ -1,4 +1,4 @@
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, nextTick } from 'vue';
 import { useDeviceStore } from '@/stores/device';
 import $to from 'await-to-js';
 import {
@@ -31,7 +31,7 @@ export function useZRAMWriteback() {
 
 	const totalRead = ref<number>(0);
 
-	onMounted(async () => {
+	const fetchData = async () => {
 		const [, getMiuiExtmDmOptEnableResolve] = await $to<string, string>(deviceApi.getMiuiExtmDmOptEnable());
 		if (getMiuiExtmDmOptEnableResolve === 'true')  {
 			miuiExtmDmOptEnable.value = true
@@ -52,6 +52,12 @@ export function useZRAMWriteback() {
 		if (Number(getMiuiExtmDmOptHasWriteBackResolve) && Number(getMiuiExtmDmOptHasWriteBackResolve) > 0) {
 			hasWriteBack.value = Number(getMiuiExtmDmOptHasWriteBackResolve)
 		}
+	}
+
+	onMounted(async () => {
+		nextTick(() => {
+			fetchData(); // 确保 UI 先渲染，再执行耗时操作
+		});
 	});
 
 	return {
