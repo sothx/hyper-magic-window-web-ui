@@ -146,7 +146,7 @@ export const useDeviceStore = defineStore(
 		});
 		const preStartProp = reactive({
 			build: false,
-			module: false
+			module: true
 		})
 
 		const isNeedShowErrorModal = computed(() => Boolean(errorLogging.length > 0));
@@ -463,10 +463,10 @@ export const useDeviceStore = defineStore(
 				} else {
 					preStartProp.build = false;
 				}
-				if (getPreStartProcForModuleRes === 'true') {
-					preStartProp.module = true;
-				} else {
+				if (getPreStartProcForModuleRes === 'false') {
 					preStartProp.module = false;
+				} else {
+					preStartProp.module = true;
 				}
 			}
 

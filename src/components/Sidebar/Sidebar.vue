@@ -193,6 +193,16 @@ const navigation = reactive<NavigationItem[]>([
 		),
 	},
 	{
+		name: '系统体验增强',
+		routeName: 'system-experience-enhance',
+		href: '/system-experience-enhance',
+		icon: () => (
+			<svg class='icon' aria-hidden='true'>
+				<use xlinkHref='#icon-jiqunchushihua1'></use>
+			</svg>
+		)
+	},
+	{
 		name: '触控笔映射(待开发)',
 		routeName: 'magic-control',
 		href: '/magic-control',
@@ -202,7 +212,7 @@ const navigation = reactive<NavigationItem[]>([
 			</svg>
 		),
 		isShow() {
-			return Boolean(deviceStore.deviceCharacteristics === 'tablet');
+			return false;
 		},
 	},
 	{

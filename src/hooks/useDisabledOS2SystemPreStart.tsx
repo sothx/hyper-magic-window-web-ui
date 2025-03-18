@@ -22,8 +22,6 @@ export function useDisabledOS2SystemPreStart() {
 		configProviderProps: configProviderPropsRef,
 	});
 
-	const loading = ref<boolean>(false);
-
 	const isShow = computed(() => {
 		return deviceStore.preStartProp.build && deviceStore.androidTargetSdk >= 35 && deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2;
 	});
@@ -81,7 +79,6 @@ export function useDisabledOS2SystemPreStart() {
 			}),
 		);
 		if (positiveRes) {
-			loading.value = true;
 			const [removeDisabledPreStartProcErr] = await $to(deviceApi.removeDisabledPreStartProc());
 			if (removeDisabledPreStartProcErr) {
 				modal.create({
@@ -91,7 +88,6 @@ export function useDisabledOS2SystemPreStart() {
 					content: () => <p>无法修改应用预加载的配置，详情请查看日志记录~</p>,
 					negativeText: '确定',
 				});
-				loading.value = false;
 				return;
 			}
 			if (!value) {
@@ -104,13 +100,10 @@ export function useDisabledOS2SystemPreStart() {
 						content: () => <p>无法修改应用预加载的配置，详情请查看日志记录~</p>,
 						negativeText: '确定',
 					});
-					loading.value = false;
 					return;
 				}
-				loading.value = false;
 				deviceStore.preStartProp.module = false;
 			} else {
-				loading.value = false;
 				deviceStore.preStartProp.module = true;
 			}
 			const [rebootDeviceErr] = await $to(deviceApi.rebootDevice());
@@ -132,7 +125,6 @@ export function useDisabledOS2SystemPreStart() {
 
 	return {
 		isShow,
-		loading,
 		change,
 	};
 }
