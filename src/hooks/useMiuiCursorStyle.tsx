@@ -110,15 +110,23 @@ export function useMiuiCursorStyle() {
 	};
 
     const fetchData = async () => {
-        const [, getMiuiCursorStyleTypeRes] = await $to<string, string>(deviceApi.getMiuiCursorStyleType());
-		if (getMiuiCursorStyleTypeRes && Number(getMiuiCursorStyleTypeRes)) {
-			currentMiuiCursorStyleType.value = Number(getMiuiCursorStyleTypeRes) as miuiCursorStyleType;
-		}
-        const [, getAutoStartMiuiCursorStyleTypeRes] = await $to<string, string>(deviceApi.getAutoStartMiuiCursorStyleType());
-		if (getAutoStartMiuiCursorStyleTypeRes && Number(getAutoStartMiuiCursorStyleTypeRes)) {
-			currentAutoStartMiuiCursorStyleType.value = Number(getAutoStartMiuiCursorStyleTypeRes) as miuiAutoStartCursorStyleType;
-		}
-    }
+        const [
+            [, getMiuiCursorStyleTypeRes],
+            [, getAutoStartMiuiCursorStyleTypeRes]
+        ] = await Promise.all([
+            $to<string, string>(deviceApi.getMiuiCursorStyleType()),
+            $to<string, string>(deviceApi.getAutoStartMiuiCursorStyleType())
+        ]);
+    
+        // 赋值
+        if (Number(getMiuiCursorStyleTypeRes)) {
+            currentMiuiCursorStyleType.value = Number(getMiuiCursorStyleTypeRes) as miuiCursorStyleType;
+        }
+        if (Number(getAutoStartMiuiCursorStyleTypeRes)) {
+            currentAutoStartMiuiCursorStyleType.value = Number(getAutoStartMiuiCursorStyleTypeRes) as miuiAutoStartCursorStyleType;
+        }
+    };
+    
 
 	onMounted(() => {
         nextTick(() => {

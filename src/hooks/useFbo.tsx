@@ -313,38 +313,25 @@ export function useFbo() {
 	};
 
 	const reload = async () => {
-		const [, getIsAutoEnableFboRes] = await $to<string, string>(deviceApi.getIsAutoEnableFbo());
-		if (getIsAutoEnableFboRes === 'true') {
-			isAutoStartFbo.value = true;
-		} else {
-			isAutoStartFbo.value = false;
-		}
-		const [, getIsAutoRegularlyFboRes] = await $to<string, string>(deviceApi.getIsAutoRegularlyFbo());
-		if (getIsAutoRegularlyFboRes === 'true') {
-			isAutoRegularlyFbo.value = true;
-		} else {
-			isAutoRegularlyFbo.value = false;
-		}
-		const [fboEnableErr, fboEnableRes] = await $to(deviceApi.getFboEnable());
-		if (fboEnableRes === 'true') {
-			fboEnable.value = true;
-		} else {
-			fboEnable.value = false;
-		}
-
-		const [fFboServiceCtrlErr, fboServiceCtrlRes] = await $to(deviceApi.getFboServiceCtrl());
-		if (fboServiceCtrlRes === 'true') {
-			fboServiceCtrl.value = true;
-		} else {
-			fboServiceCtrl.value = false;
-		}
-
-		const [fboInstalldErr, fboInstalldRes] = await $to(deviceApi.getFboInstalld());
-		if (fboInstalldRes) {
-			fboInstalld.value = fboInstalldRes;
-		} else {
-			fboInstalld.value = '';
-		}
+		const [
+			[, getIsAutoEnableFboRes],
+			[, getIsAutoRegularlyFboRes],
+			[fboEnableErr, fboEnableRes],
+			[fFboServiceCtrlErr, fboServiceCtrlRes],
+			[fboInstalldErr, fboInstalldRes]
+		] = await Promise.all([
+			$to<string, string>(deviceApi.getIsAutoEnableFbo()),
+			$to<string, string>(deviceApi.getIsAutoRegularlyFbo()),
+			$to(deviceApi.getFboEnable()),
+			$to(deviceApi.getFboServiceCtrl()),
+			$to(deviceApi.getFboInstalld())
+		]);
+	
+		isAutoStartFbo.value = getIsAutoEnableFboRes === 'true';
+		isAutoRegularlyFbo.value = getIsAutoRegularlyFboRes === 'true';
+		fboEnable.value = fboEnableRes === 'true';
+		fboServiceCtrl.value = fboServiceCtrlRes === 'true';
+		fboInstalld.value = fboInstalldRes ?? '';
 	};
 
 	onMounted(() => {

@@ -32,27 +32,27 @@ export function useZRAMWriteback() {
 	const totalRead = ref<number>(0);
 
 	const fetchData = async () => {
-		const [, getMiuiExtmDmOptEnableResolve] = await $to<string, string>(deviceApi.getMiuiExtmDmOptEnable());
-		if (getMiuiExtmDmOptEnableResolve === 'true')  {
-			miuiExtmDmOptEnable.value = true
-		}
-		const [, getBackingDevResolve] = await $to<string,string>(deviceApi.getBackingDev());
-		if (getBackingDevResolve) {
-			backingDev.value = getBackingDevResolve
-		}
-		const [, getMiuiExtmDmOptTotalWriteBackResolve] = await $to<string, string>(deviceApi.getMiuiExtmDmOptTotalWriteBack());
-		if (Number(getMiuiExtmDmOptTotalWriteBackResolve) && Number(getMiuiExtmDmOptTotalWriteBackResolve) > 0) {
-			totalWriteBack.value = Number(getMiuiExtmDmOptTotalWriteBackResolve)
-		}
-		const [, getMiuiExtmDmOptTotalReadResolve] = await $to<string, string>(deviceApi.getMiuiExtmDmOptTotalRead());
-		if (Number(getMiuiExtmDmOptTotalReadResolve) && Number(getMiuiExtmDmOptTotalReadResolve) > 0) {
-			totalRead.value = Number(getMiuiExtmDmOptTotalReadResolve)
-		}
-		const [, getMiuiExtmDmOptHasWriteBackResolve] = await $to<string, string>(deviceApi.getMiuiExtmDmOptHasWriteBack());
-		if (Number(getMiuiExtmDmOptHasWriteBackResolve) && Number(getMiuiExtmDmOptHasWriteBackResolve) > 0) {
-			hasWriteBack.value = Number(getMiuiExtmDmOptHasWriteBackResolve)
-		}
-	}
+		const [
+			[, getMiuiExtmDmOptEnableResolve],
+			[, getBackingDevResolve],
+			[, getMiuiExtmDmOptTotalWriteBackResolve],
+			[, getMiuiExtmDmOptTotalReadResolve],
+			[, getMiuiExtmDmOptHasWriteBackResolve]
+		] = await Promise.all([
+			$to<string, string>(deviceApi.getMiuiExtmDmOptEnable()),
+			$to<string, string>(deviceApi.getBackingDev()),
+			$to<string, string>(deviceApi.getMiuiExtmDmOptTotalWriteBack()),
+			$to<string, string>(deviceApi.getMiuiExtmDmOptTotalRead()),
+			$to<string, string>(deviceApi.getMiuiExtmDmOptHasWriteBack())
+		]);
+	
+		// 赋值
+		if (getMiuiExtmDmOptEnableResolve === 'true') miuiExtmDmOptEnable.value = true;
+		if (getBackingDevResolve) backingDev.value = getBackingDevResolve;
+		if (Number(getMiuiExtmDmOptTotalWriteBackResolve) > 0) totalWriteBack.value = Number(getMiuiExtmDmOptTotalWriteBackResolve);
+		if (Number(getMiuiExtmDmOptTotalReadResolve) > 0) totalRead.value = Number(getMiuiExtmDmOptTotalReadResolve);
+		if (Number(getMiuiExtmDmOptHasWriteBackResolve) > 0) hasWriteBack.value = Number(getMiuiExtmDmOptHasWriteBackResolve);
+	};
 
 	onMounted(() => {
 		nextTick(() => {

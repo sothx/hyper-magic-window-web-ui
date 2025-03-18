@@ -50,65 +50,47 @@ export function useUFSHealth() {
 	});
 
 	const fetchData = async () => {
+		// 先获取 UFS 健康信息
 		const [getUFSHealthInfoErr, getUFSHealthInfoRes] = await $to(deviceApi.getUFSHealthInfo());
-
-		if (getUFSHealthInfoErr) {
-			const [getUFSEOLInfoErr, getUFSEOLInfoRes] = await $to(deviceApi.getUFSEOLInfo());
-
-			if (getUFSEOLInfoRes) {
-				bPreEOLInfo.value = parseInt(getUFSEOLInfoRes, 16);
-			}
-
-			const [getUFSLifeTimeEstimationAErr, getUFSLifeTimeEstimationARes] = await $to(
-				deviceApi.getUFSLifeTimeEstimationA(),
-			);
-
-			if (getUFSLifeTimeEstimationARes) {
-				bDeviceLifeTimeEstA.value = parseInt(getUFSLifeTimeEstimationARes, 16);
-			}
-
-			const [getUFSLifeTimeEstimationBErr, getUFSLifeTimeEstimationBRes] = await $to(
-				deviceApi.getUFSLifeTimeEstimationB(),
-			);
-
-			if (getUFSLifeTimeEstimationBRes) {
-				bDeviceLifeTimeEstB.value = parseInt(getUFSLifeTimeEstimationBRes, 16);
-			}
-		}
-
+	
 		if (getUFSHealthInfoRes) {
 			// 使用正则提取健康相关字段
-			// 需要提取的健康相关字段
 			const healthFields: (keyof UFSHealthData)[] = ['bPreEOLInfo', 'bDeviceLifeTimeEstA', 'bDeviceLifeTimeEstB'];
 			const regex = new RegExp(`(${healthFields.join('|')}) = 0x([0-9a-fA-F]+)`, 'g');
-			// 解析数据
-			// 解析数据
+	
 			const parseUfsHealthData = (data: string): UFSHealthData => {
 				const healthData: Partial<UFSHealthData> = {};
 				let match: RegExpExecArray | null;
-
+	
 				while ((match = regex.exec(data)) !== null) {
 					healthData[match[1] as keyof UFSHealthData] = parseInt(match[2], 16);
 				}
-
+	
 				return pick(healthData, healthFields) as UFSHealthData;
 			};
-
+	
 			const result: UFSHealthData = parseUfsHealthData(getUFSHealthInfoRes);
-
-			if (result.bPreEOLInfo) {
-				bPreEOLInfo.value = result.bPreEOLInfo;
-			}
-
-			if (result.bDeviceLifeTimeEstA) {
-				bDeviceLifeTimeEstA.value = result.bDeviceLifeTimeEstA;
-			}
-
-			if (result.bDeviceLifeTimeEstB) {
-				bDeviceLifeTimeEstB.value = result.bDeviceLifeTimeEstB;
-			}
+	
+			if (result.bPreEOLInfo !== undefined) bPreEOLInfo.value = result.bPreEOLInfo;
+			if (result.bDeviceLifeTimeEstA !== undefined) bDeviceLifeTimeEstA.value = result.bDeviceLifeTimeEstA;
+			if (result.bDeviceLifeTimeEstB !== undefined) bDeviceLifeTimeEstB.value = result.bDeviceLifeTimeEstB;
+		} else if (getUFSHealthInfoErr) {
+			// 如果 UFS 健康信息获取失败，则并行请求其他数据
+			const [
+				[, getUFSEOLInfoRes],
+				[, getUFSLifeTimeEstimationARes],
+				[, getUFSLifeTimeEstimationBRes]
+			] = await Promise.all([
+				$to(deviceApi.getUFSEOLInfo()),
+				$to(deviceApi.getUFSLifeTimeEstimationA()),
+				$to(deviceApi.getUFSLifeTimeEstimationB())
+			]);
+	
+			if (getUFSEOLInfoRes) bPreEOLInfo.value = parseInt(getUFSEOLInfoRes, 16);
+			if (getUFSLifeTimeEstimationARes) bDeviceLifeTimeEstA.value = parseInt(getUFSLifeTimeEstimationARes, 16);
+			if (getUFSLifeTimeEstimationBRes) bDeviceLifeTimeEstB.value = parseInt(getUFSLifeTimeEstimationBRes, 16);
 		}
-	}
+	};
 	onMounted(() => {
 		nextTick(() => {
 		  fetchData(); // 确保 UI 先渲染，再执行耗时操作
