@@ -127,7 +127,7 @@ export function useDisabledOS2SystemPreStart() {
 		}
 	};
 
-	onMounted(async () => {
+	onMounted(() => {
 	});
 
 	return {

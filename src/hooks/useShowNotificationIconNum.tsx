@@ -1,4 +1,4 @@
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, nextTick } from 'vue';
 import { useDeviceStore } from '@/stores/device';
 import $to from 'await-to-js';
 import {
@@ -27,7 +27,9 @@ export function useShowNotificationIcon() {
 
 	const changeEnableMode = async (value: boolean) => {
 		if (value) {
-			const [removeIsEnableShowNotificationIconNumErr] = await $to<string,string>(deviceApi.removeIsEnableShowNotificationIconNum());
+			const [removeIsEnableShowNotificationIconNumErr] = await $to<string, string>(
+				deviceApi.removeIsEnableShowNotificationIconNum(),
+			);
 			if (removeIsEnableShowNotificationIconNumErr) {
 				modal.create({
 					title: '操作失败',
@@ -38,7 +40,9 @@ export function useShowNotificationIcon() {
 				});
 				return;
 			}
-			const [addIsEnableShowNotificationIconNumErr] = await $to<string,string>(deviceApi.addIsEnableShowNotificationIconNum());
+			const [addIsEnableShowNotificationIconNumErr] = await $to<string, string>(
+				deviceApi.addIsEnableShowNotificationIconNum(),
+			);
 			if (addIsEnableShowNotificationIconNumErr) {
 				modal.create({
 					title: '操作失败',
@@ -50,9 +54,10 @@ export function useShowNotificationIcon() {
 				return;
 			}
 			deviceStore.isEnableShowNotificationIconNum = true;
-
 		} else {
-			const [removeIsEnableShowNotificationIconNumErr] = await $to<string,string>(deviceApi.removeIsEnableShowNotificationIconNum());
+			const [removeIsEnableShowNotificationIconNumErr] = await $to<string, string>(
+				deviceApi.removeIsEnableShowNotificationIconNum(),
+			);
 			if (removeIsEnableShowNotificationIconNumErr) {
 				modal.create({
 					title: '操作失败',
@@ -65,10 +70,10 @@ export function useShowNotificationIcon() {
 			}
 			deviceStore.isEnableShowNotificationIconNum = false;
 		}
-	}
+	};
 
 	const changeNum = async (num: number) => {
-		const [removeShowNotificationIconNumErr] = await $to<string,string>(deviceApi.removeShowNotificationIconNum());
+		const [removeShowNotificationIconNumErr] = await $to<string, string>(deviceApi.removeShowNotificationIconNum());
 		if (removeShowNotificationIconNumErr) {
 			modal.create({
 				title: '操作失败',
@@ -80,7 +85,7 @@ export function useShowNotificationIcon() {
 			return;
 		}
 
-		const [addShowNotificationIconNumErr] = await $to<string,string>(deviceApi.addShowNotificationIconNum(num));
+		const [addShowNotificationIconNumErr] = await $to<string, string>(deviceApi.addShowNotificationIconNum(num));
 
 		if (addShowNotificationIconNumErr) {
 			modal.create({
@@ -92,7 +97,9 @@ export function useShowNotificationIcon() {
 			});
 		}
 
-		const [putCurrentStatusBarShowNotificationIconErr] = await $to<string,string>(deviceApi.putCurrentStatusBarShowNotificationIcon(num));
+		const [putCurrentStatusBarShowNotificationIconErr] = await $to<string, string>(
+			deviceApi.putCurrentStatusBarShowNotificationIcon(num),
+		);
 
 		if (putCurrentStatusBarShowNotificationIconErr) {
 			modal.create({
@@ -103,21 +110,34 @@ export function useShowNotificationIcon() {
 				negativeText: '确定',
 			});
 		}
-	}
+	};
 
-	onMounted(async () => {
-        if (deviceStore.isEnableShowNotificationIconNum) {
-			const [, getIsEnableShowNotificationIconNumResolve] = await $to<string, string>(deviceApi.getIsEnableShowNotificationIconNum());
-			if (getIsEnableShowNotificationIconNumResolve && !Number.isNaN(Number(getIsEnableShowNotificationIconNumResolve))) {
-				const numRes = Number(getIsEnableShowNotificationIconNumResolve)
-				currentNum.value = numRes
+	const fetchData = async () => {
+		if (deviceStore.isEnableShowNotificationIconNum) {
+			const [, getIsEnableShowNotificationIconNumResolve] = await $to<string, string>(
+				deviceApi.getIsEnableShowNotificationIconNum(),
+			);
+			if (
+				getIsEnableShowNotificationIconNumResolve &&
+				!Number.isNaN(Number(getIsEnableShowNotificationIconNumResolve))
+			) {
+				const numRes = Number(getIsEnableShowNotificationIconNumResolve);
+				currentNum.value = numRes;
 			}
+		}
+	};
+
+	onMounted(() => {
+		if (deviceStore.isEnableShowNotificationIconNum) {
+			nextTick(() => {
+				fetchData(); // 确保 UI 先渲染，再执行耗时操作
+			});
 		}
 	});
 
 	return {
 		currentNum,
 		changeNum,
-		changeEnableMode
+		changeEnableMode,
 	};
 }

@@ -83,8 +83,10 @@ export function useRealQuantity() {
 
 	onUnmounted(() => {
 		// Clear intervals when the component is unmounted
-		if (qcomBatteryFg1RSocInfo.interval !== null) clearInterval(qcomBatteryFg1RSocInfo.interval);
-		if (capacityRawInfo.interval !== null) clearInterval(capacityRawInfo.interval);
+		nextTick(() => {
+			if (qcomBatteryFg1RSocInfo.interval !== null) clearInterval(qcomBatteryFg1RSocInfo.interval);
+			if (capacityRawInfo.interval !== null) clearInterval(capacityRawInfo.interval);
+		});
 	});
 
 	return {

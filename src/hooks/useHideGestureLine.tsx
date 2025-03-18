@@ -1,4 +1,4 @@
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, nextTick } from 'vue';
 import { useDeviceStore } from '@/stores/device';
 import $to from 'await-to-js';
 import {
@@ -86,12 +86,18 @@ export function useHideGestureLine() {
         }
     };
 
-
-    onMounted(async () => {
+    const fetchData = async () => {
         const [, getHideGestureLineRes] = await $to<string, string>(deviceApi.getHideGestureLine());
         if (Number(getHideGestureLineRes)) {
             deviceStore.currentIsHideGestureLine = 1;
         }
+    }
+
+
+    onMounted(() => {
+        nextTick(() => {
+            fetchData(); // 确保 UI 先渲染，再执行耗时操作
+        });
     });
 
     return {

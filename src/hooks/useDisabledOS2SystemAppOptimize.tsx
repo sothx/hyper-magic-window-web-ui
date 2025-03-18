@@ -55,7 +55,7 @@ export function useDisabledOS2SystemAppOptimize() {
     };
 
 
-    onMounted(async () => {
+    onMounted(() => {
     });
 
     return {

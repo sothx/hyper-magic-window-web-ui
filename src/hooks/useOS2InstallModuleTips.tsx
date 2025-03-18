@@ -113,7 +113,7 @@ export function useOS2InstallModuleTips() {
         }
     };
 
-    onMounted(async () => {
+    onMounted(() => {
     });
 
     return {

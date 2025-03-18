@@ -54,7 +54,7 @@ export function useZRAMWriteback() {
 		}
 	}
 
-	onMounted(async () => {
+	onMounted(() => {
 		nextTick(() => {
 			fetchData(); // 确保 UI 先渲染，再执行耗时操作
 		});

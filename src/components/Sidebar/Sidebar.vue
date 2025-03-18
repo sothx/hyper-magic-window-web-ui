@@ -419,7 +419,7 @@ onBeforeUnmount(() => {
 											</ul>
 										</li>
 										<li class="mt-auto">
-											<router-link
+											<RouterLink
 												to="/settings"
 												:class="[
 													route.name === 'settings'
@@ -435,7 +435,7 @@ onBeforeUnmount(() => {
 													<use xlink:href="#icon-shezhi"></use>
 												</svg>
 												模块设置
-											</router-link>
+											</RouterLink>
 										</li>
 									</ul>
 								</nav>
@@ -535,7 +535,7 @@ onBeforeUnmount(() => {
 							</ul>
 						</li>
 						<li class="mt-auto">
-							<router-link
+							<RouterLink
 								to="/settings"
 								:class="[
 									route.name === 'settings'
@@ -551,7 +551,7 @@ onBeforeUnmount(() => {
 									<use xlink:href="#icon-shezhi"></use>
 								</svg>
 								模块设置
-							</router-link>
+							</RouterLink>
 						</li>
 					</ul>
 				</nav>
