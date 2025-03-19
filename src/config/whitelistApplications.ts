@@ -327,6 +327,8 @@ const topApplicationList = {
     'com.eastmoney.android.choice': 1, // Choice数据
     'com.eastmoney.android.gubaproj': 1, // 股吧
     'com.proximabeta.nikke': 1, // NIKKE
+    'com.moondroplab.moondrop.moondrop_app': 1, //MOONDROP
+    'com.masseffect.suki': 1, // Suki
 }
 
 export default {
