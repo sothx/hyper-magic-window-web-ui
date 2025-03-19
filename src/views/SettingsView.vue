@@ -293,49 +293,7 @@ const changePatchMode = async (value: boolean) => {
 		}
 		await deviceStore.getAndroidApplicationPackageNameList();
 		const [submitUpdateEmbeddedAppErr, submitUpdateEmbeddedAppRes] = await $to(
-			embeddedApi.updateEmbeddedApp({
-				isPatchMode: embeddedStore.isPatchMode,
-				patchEmbeddedRulesListXML: xmlFormat.objectToXML(
-					embeddedStore.patchEmbeddedRulesList,
-					'package',
-					'package_config',
-				),
-				patchFixedOrientationListXML: xmlFormat.objectToXML(
-					embeddedStore.patchFixedOrientationList,
-					'package',
-					'package_config',
-				),
-				patchEmbeddedSettingConfigXML: xmlFormat.objectToXML(
-					embeddedStore.patchEmbeddedSettingConfig,
-					'setting',
-					'setting_rule',
-				),
-				customEmbeddedRulesListXML: xmlFormat.objectToXML(
-					embeddedStore.customConfigEmbeddedRulesList,
-					'package',
-					undefined,
-				),
-				customFixedOrientationListXML: xmlFormat.objectToXML(
-					embeddedStore.customConfigFixedOrientationList,
-					'package',
-					undefined,
-				),
-				...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35
-					? {
-							settingConfigXML: xmlFormat.objectToXML(
-								embeddedStore.customConfigEmbeddedSettingConfig,
-								'setting',
-								undefined,
-							),
-						}
-					: {
-							settingConfigXML: xmlFormat.objectToXML(
-								embeddedStore.systemEmbeddedSettingConfig,
-								'setting',
-								'setting_rule',
-							),
-						}),
-			}),
+			embeddedApi.updateEmbeddedApp(),
 		);
 		if (submitUpdateEmbeddedAppErr) {
 			modal.create({
@@ -485,49 +443,7 @@ const changeDeepPatchMode = async (value: boolean) => {
 		}
 		await deviceStore.getAndroidApplicationPackageNameList();
 		const [submitUpdateEmbeddedAppErr, submitUpdateEmbeddedAppRes] = await $to(
-			embeddedApi.updateEmbeddedApp({
-				isPatchMode: embeddedStore.isPatchMode,
-				patchEmbeddedRulesListXML: xmlFormat.objectToXML(
-					embeddedStore.patchEmbeddedRulesList,
-					'package',
-					'package_config',
-				),
-				patchFixedOrientationListXML: xmlFormat.objectToXML(
-					embeddedStore.patchFixedOrientationList,
-					'package',
-					'package_config',
-				),
-				patchEmbeddedSettingConfigXML: xmlFormat.objectToXML(
-					embeddedStore.patchEmbeddedSettingConfig,
-					'setting',
-					'setting_rule',
-				),
-				customEmbeddedRulesListXML: xmlFormat.objectToXML(
-					embeddedStore.customConfigEmbeddedRulesList,
-					'package',
-					undefined,
-				),
-				customFixedOrientationListXML: xmlFormat.objectToXML(
-					embeddedStore.customConfigFixedOrientationList,
-					'package',
-					undefined,
-				),
-				...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35
-					? {
-							settingConfigXML: xmlFormat.objectToXML(
-								embeddedStore.customConfigEmbeddedSettingConfig,
-								'setting',
-								undefined,
-							),
-						}
-					: {
-							settingConfigXML: xmlFormat.objectToXML(
-								embeddedStore.systemEmbeddedSettingConfig,
-								'setting',
-								'setting_rule',
-							),
-						}),
-			}),
+			embeddedApi.updateEmbeddedApp(),
 		);
 		if (submitUpdateEmbeddedAppErr) {
 			modal.create({
