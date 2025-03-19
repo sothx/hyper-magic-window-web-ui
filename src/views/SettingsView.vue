@@ -453,8 +453,8 @@ const changeDeepPatchMode = async (value: boolean) => {
 	);
 	if (positiveRes) {
 		switchDeepPatchModeLoading.value = true;
-		const [removeIsPatchModeErr] = await $to(deviceApi.removeIsPatchMode());
-		if (removeIsPatchModeErr) {
+		const [removeIsDeepPatchModeErr] = await $to(deviceApi.removeIsDeepPatchMode());
+		if (removeIsDeepPatchModeErr) {
 			modal.create({
 				title: '操作失败',
 				type: 'error',
@@ -466,8 +466,8 @@ const changeDeepPatchMode = async (value: boolean) => {
 			return;
 		}
 		if (value) {
-			const [addIsPatchModeErr] = await $to(deviceApi.addIsPatchMode());
-			if (addIsPatchModeErr) {
+			const [addIsDeepPatchModeErr] = await $to(deviceApi.addIsDeepPatchMode());
+			if (addIsDeepPatchModeErr) {
 				modal.create({
 					title: '操作失败',
 					type: 'error',

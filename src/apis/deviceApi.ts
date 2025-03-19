@@ -201,7 +201,7 @@ export const getIsPatchMode = (): Promise<string> => {
 };
 
 export const addIsDeepPatchMode = (): Promise<string> => {
-	const shellCommon = `grep -q '^is_deep_patch_mode=' /data/adb/MIUI_MagicWindow+/config.prop || (echo "is_patch_mode=true" | tee -a /data/adb/MIUI_MagicWindow+/config.prop > /dev/null && echo "Command executed successfully." || echo "Command failed.")`;
+	const shellCommon = `grep -q '^is_deep_patch_mode=' /data/adb/MIUI_MagicWindow+/config.prop || (echo "is_deep_patch_mode=true" | tee -a /data/adb/MIUI_MagicWindow+/config.prop > /dev/null && echo "Command executed successfully." || echo "Command failed.")`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -216,11 +216,11 @@ export const addIsDeepPatchMode = (): Promise<string> => {
 };
 
 export const removeIsDeepPatchMode = (): Promise<string> => {
-	const shellCommon = `sed -i '/^is_deep_patch_mode=/d' //data/adb/MIUI_MagicWindow+/config.prop && echo "Remove is_patch_mode successfully." || echo "Remove is_patch_mode failed."`;
+	const shellCommon = `sed -i '/^is_deep_patch_mode=/d' //data/adb/MIUI_MagicWindow+/config.prop && echo "Remove is_deep_patch_mode successfully." || echo "Remove is_deep_patch_mode failed."`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
-				resolve(`Remove is_patch_mode successfully.`);
+				resolve(`Remove is_deep_patch_mode successfully.`);
 			} else {
 				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
 				errno ? reject(stderr) : resolve(stdout);

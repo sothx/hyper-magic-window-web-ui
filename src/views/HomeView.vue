@@ -573,8 +573,19 @@ const reloadPatchModeConfigList = async () => {
 			preset: 'dialog',
 			content: () => (
 				<div>
-					<p>
-						好耶w，已根据您设备当前的整体应用情况重新{' '}
+					{embeddedStore.isDeepPatchMode && (<p>好耶w，检测到您已启用{' '}
+						<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+							深度定制模式
+						</span>{' '}，已根据您当前已安装应用列表重新{' '}
+						<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+							修剪模块应用适配列表
+						</span>{' '}
+						，后续每次更新模块或者安装新的应用后，均需要重新操作{' '}
+						<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+							生成定制应用数据
+						</span>{' '}
+						。</p>)}
+					{!embeddedStore.isDeepPatchMode && (<p>好耶w，已根据您设备当前的整体应用情况重新{' '}
 						<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
 							修剪模块应用适配列表
 						</span>{' '}
@@ -583,7 +594,7 @@ const reloadPatchModeConfigList = async () => {
 							生成定制应用数据
 						</span>{' '}
 						。
-					</p>
+					</p>)}
 				</div>
 			),
 			negativeText: '确定',
