@@ -87,7 +87,7 @@ export const embeddedPerceptionApplications: Record<string, EmbeddedPerceptionAp
 								activityRule: 'com.coolapk.market.view.main.MainActivity',
 								transitionRules: 'com.coolapk.market.view.main.MainActivity',
 								clearTop: false,
-								splitMinWidth: 1200,
+								splitMinWidth: 1800,
 							},
 							fo: {
 								name: 'com.coolapk.market',
