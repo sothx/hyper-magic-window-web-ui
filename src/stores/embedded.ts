@@ -22,6 +22,7 @@ export const useEmbeddedStore = defineStore(
 	() => {
 		// 是否补丁模式
 		const isPatchMode = ref<boolean>(false);
+		const isDeepPatchMode = ref<boolean>(false);
 		const filterInstalledApps = ref<boolean>(false);
 		const applicationName = ref<ApplicationName>({});
 		const isNeedShowReloadPathModeDialog = ref<boolean>(false);
@@ -63,13 +64,16 @@ export const useEmbeddedStore = defineStore(
 		// diff后的平行窗口配置
 		const patchEmbeddedRulesList = computed((): Record<EmbeddedRuleItem['name'], EmbeddedRuleItem> => {
 			const deviceStore = useDeviceStore();
-			const combinedSet = new Set([
-				...Object.keys(systemEmbeddedRulesList.value),
-				...Object.keys(systemFixedOrientationList.value),
-				...deviceStore.installedAndroidApplicationPackageNameList,
-				...Object.keys(whitelistApplications),
-			]);
-
+			const combinedSet = new Set(
+				isDeepPatchMode.value
+					? [...deviceStore.installedAndroidApplicationPackageNameList]
+					: [
+							...Object.keys(systemEmbeddedRulesList.value),
+							...Object.keys(systemFixedOrientationList.value),
+							...deviceStore.installedAndroidApplicationPackageNameList,
+							...Object.keys(whitelistApplications),
+						],
+			);
 			const filteredEntries = Object.entries(sourceEmbeddedRulesList.value).filter(([key]) =>
 				combinedSet.has(key),
 			);
@@ -82,12 +86,16 @@ export const useEmbeddedStore = defineStore(
 		const patchFixedOrientationList = computed(
 			(): Record<FixedOrientationRuleItem['name'], FixedOrientationRuleItem> => {
 				const deviceStore = useDeviceStore();
-				const combinedSet = new Set([
-					...Object.keys(systemEmbeddedRulesList.value),
-					...Object.keys(systemFixedOrientationList.value),
-					...deviceStore.installedAndroidApplicationPackageNameList,
-					...Object.keys(whitelistApplications),
-				]);
+				const combinedSet = new Set(
+					isDeepPatchMode.value
+						? [...deviceStore.installedAndroidApplicationPackageNameList]
+						: [
+								...Object.keys(systemEmbeddedRulesList.value),
+								...Object.keys(systemFixedOrientationList.value),
+								...deviceStore.installedAndroidApplicationPackageNameList,
+								...Object.keys(whitelistApplications),
+							],
+				);
 
 				const filteredEntries = Object.entries(sourceFixedOrientationList.value).filter(([key]) =>
 					combinedSet.has(key),
@@ -102,12 +110,16 @@ export const useEmbeddedStore = defineStore(
 		const patchEmbeddedSettingConfig = computed(
 			(): Record<EmbeddedSettingRuleItem['name'], EmbeddedSettingRuleItem> => {
 				const deviceStore = useDeviceStore();
-				const combinedSet = new Set([
-					...Object.keys(systemEmbeddedRulesList.value),
-					...Object.keys(systemFixedOrientationList.value),
-					...deviceStore.installedAndroidApplicationPackageNameList,
-					...Object.keys(whitelistApplications),
-				]);
+				const combinedSet = new Set(
+					isDeepPatchMode.value
+						? [...deviceStore.installedAndroidApplicationPackageNameList]
+						: [
+								...Object.keys(systemEmbeddedRulesList.value),
+								...Object.keys(systemFixedOrientationList.value),
+								...deviceStore.installedAndroidApplicationPackageNameList,
+								...Object.keys(whitelistApplications),
+							],
+				);
 
 				const filteredEntries = Object.entries(sourceEmbeddedSettingConfig.value).filter(([key]) =>
 					combinedSet.has(key),
@@ -245,7 +257,7 @@ export const useEmbeddedStore = defineStore(
 				customConfigFixedOrientationList.value,
 				customConfigEmbeddedSettingConfig.value,
 				systemEmbeddedRulesList.value,
-				systemFixedOrientationList.value
+				systemFixedOrientationList.value,
 			);
 		}
 
@@ -258,10 +270,13 @@ export const useEmbeddedStore = defineStore(
 			applicationName.value = applicationNameData;
 			// 获取补丁模式
 			const [getIsPatchModeErr, getIsPatchModeRes] = await $to<string, string>(deviceApi.getIsPatchMode());
+			const [getIsDeepPatchModeErr, getIsDeepPatchModeRes] = await $to<string, string>(
+				deviceApi.getIsDeepPatchMode(),
+			);
 			if (getIsPatchModeErr) {
 				errorLogging.push({
 					type: 'getIsPatchModeErr',
-					title: '补丁模式',
+					title: '定制模式',
 					msg: getIsPatchModeErr,
 				});
 			} else {
@@ -269,6 +284,20 @@ export const useEmbeddedStore = defineStore(
 					isPatchMode.value = true;
 				} else {
 					isPatchMode.value = false;
+				}
+			}
+
+			if (getIsDeepPatchModeErr) {
+				errorLogging.push({
+					type: 'getIsPatchModeErr',
+					title: '深度定制模式',
+					msg: getIsDeepPatchModeErr,
+				});
+			} else {
+				if (getIsDeepPatchModeRes === 'true') {
+					isDeepPatchMode.value = true;
+				} else {
+					isDeepPatchMode.value = false;
 				}
 			}
 
@@ -284,7 +313,7 @@ export const useEmbeddedStore = defineStore(
 				embeddedApi.getCustomConfigEmbeddedSettingConfig(),
 				embeddedApi.getSourceThirdPartyAppOptimizeConfig(),
 				embeddedApi.getCustomThirdPartyAppOptimizeConfig(),
-				embeddedApi.getSystemAppOptimizeConfig()
+				embeddedApi.getSystemAppOptimizeConfig(),
 			];
 
 			const [
@@ -450,12 +479,10 @@ export const useEmbeddedStore = defineStore(
 			}
 			// 获取系统应用横屏优化
 			if (getSystemAppOptimizeConfigErr) {
-				systemAppOptimizeConfig.value = {}
+				systemAppOptimizeConfig.value = {};
 			}
 			if (getSystemAppOptimizeConfigRes) {
-				systemAppOptimizeConfig.value = thirdPartyAppOptimizeConfigFormatToJSON(
-					getSystemAppOptimizeConfigRes
-				)
+				systemAppOptimizeConfig.value = thirdPartyAppOptimizeConfigFormatToJSON(getSystemAppOptimizeConfigRes);
 			}
 
 			// 合并最终配置
@@ -474,7 +501,7 @@ export const useEmbeddedStore = defineStore(
 				customConfigFixedOrientationList.value,
 				customConfigEmbeddedSettingConfig.value,
 				systemEmbeddedRulesList.value,
-				systemFixedOrientationList.value
+				systemFixedOrientationList.value,
 			);
 
 			// errorLogging.push({
@@ -529,6 +556,7 @@ export const useEmbeddedStore = defineStore(
 			initDefault,
 			updateMergeRuleList,
 			isNeedShowReloadPathModeDialog,
+			isDeepPatchMode,
 		};
 	},
 	{
