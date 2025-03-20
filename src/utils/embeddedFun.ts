@@ -29,7 +29,7 @@ export const getSettingEnableMode = (embeddedConfig: EmbeddedRuleItem, fixedOrie
 	if (settingMode === 'fullScreen') {
 		enableModes.ratio_fullScreenEnable = true;
 		if (embeddedConfig && embeddedConfig.hasOwnProperty('fullRule')) {
-			enableModes.ratio_fullScreenEnable = false;
+			enableModes.ratio_fullScreenEnable = true;
 			enableModes.fullScreenEnable = true;
 		} else {
 			delete enableModes.fullScreenEnable
