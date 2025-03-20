@@ -75,22 +75,22 @@ export function useRealQuantity() {
 	watchEffect(() => setupAutoReload(capacityRawInfo));
 
 	onMounted(() => {
-		nextTick(() => {
+		setTimeout(() => {
 			qcomBatteryFg1RSocInfo.reload()
 			capacityRawInfo.reload()
-		});
+		},0);
 	});
 
 	onUnmounted(() => {
 		// Clear intervals when the component is unmounted
-		nextTick(() => {
+		setTimeout(() => {
 			if (qcomBatteryFg1RSocInfo.interval !== null) clearInterval(qcomBatteryFg1RSocInfo.interval);
 			if (capacityRawInfo.interval !== null) clearInterval(capacityRawInfo.interval);
-		});
+		},0);
 	});
 
 	return {
 		qcomBatteryFg1RSocInfo,
-		capacityRawInfo
+		capacityRawInfo,
 	};
 }

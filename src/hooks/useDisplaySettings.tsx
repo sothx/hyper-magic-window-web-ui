@@ -83,9 +83,9 @@ export function useDisplaySettings() {
 	};
 
 	onMounted(() => {
-		nextTick(() => {
+		setTimeout(() => {
 			fetchData(); // 确保 UI 先渲染，再执行耗时操作
-		});
+		},0);
 	});
 
 	return {

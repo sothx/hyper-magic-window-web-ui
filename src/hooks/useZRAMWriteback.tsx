@@ -31,6 +31,8 @@ export function useZRAMWriteback() {
 
 	const totalRead = ref<number>(0);
 
+	const isInit = ref<boolean>(false);
+
 	const fetchData = async () => {
 		const [
 			[, getMiuiExtmDmOptEnableResolve],
@@ -55,9 +57,9 @@ export function useZRAMWriteback() {
 	};
 
 	onMounted(() => {
-		nextTick(() => {
+		setTimeout(() => {
 			fetchData(); // 确保 UI 先渲染，再执行耗时操作
-		});
+		},0);
 	});
 
 	return {
@@ -65,6 +67,7 @@ export function useZRAMWriteback() {
 		miuiExtmDmOptEnable,
 		totalWriteBack,
 		hasWriteBack,
-		totalRead
+		totalRead,
+		isInit
 	};
 }

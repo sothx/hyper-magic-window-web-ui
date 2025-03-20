@@ -18,6 +18,8 @@ export type miuiAutoStartCursorStyleType = 3 | 1 | 0 | undefined;
 
 export function useMiuiCursorStyle() {
 	const deviceStore = useDeviceStore();
+    const loading = ref<boolean>(true);
+    const isInit = ref<boolean>(false);
 	const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
 		theme: deviceStore.isDarkMode ? darkTheme : lightTheme,
 	}));
@@ -125,13 +127,15 @@ export function useMiuiCursorStyle() {
         if (Number(getAutoStartMiuiCursorStyleTypeRes)) {
             currentAutoStartMiuiCursorStyleType.value = Number(getAutoStartMiuiCursorStyleTypeRes) as miuiAutoStartCursorStyleType;
         }
+        isInit.value = true;
+		loading.value = false;
     };
     
 
 	onMounted(() => {
-        nextTick(() => {
+        setTimeout(() => {
             fetchData(); // 确保 UI 先渲染，再执行耗时操作
-        });
+        },0);
 	});
 
 	return {
@@ -139,5 +143,7 @@ export function useMiuiCursorStyle() {
 		changeMiuiCursorStyleType,
         currentAutoStartMiuiCursorStyleType,
         changeAutoStartMiuiCursorStyleType,
+        isInit,
+        loading
 	};
 }

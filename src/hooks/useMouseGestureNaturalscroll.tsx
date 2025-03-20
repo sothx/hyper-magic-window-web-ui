@@ -20,6 +20,9 @@ export function useMouseGestureNaturalscroll() {
 		theme: deviceStore.isDarkMode ? darkTheme : lightTheme,
 	}));
 
+	const loading = ref<boolean>(true);
+    const isInit = ref<boolean>(false);
+
 	const { message, modal } = createDiscreteApi(['message', 'modal'], {
 		configProviderProps: configProviderPropsRef,
 	});
@@ -48,16 +51,20 @@ export function useMouseGestureNaturalscroll() {
 		if (Number(getMouseGestureNaturalscrollRes)) {
 			currentMouseGestureNaturalscroll.value = 1;
 		}
+		isInit.value = true;
+		loading.value = false;
 	};
 
 	onMounted(() => {
-		nextTick(() => {
+		setTimeout(() => {
 			fetchData(); // 确保 UI 先渲染，再执行耗时操作
-		});
+		},0);
 	});
 
 	return {
 		currentMouseGestureNaturalscroll,
 		changeMouseGestureNaturalscroll,
+		isInit,
+        loading
 	};
 }

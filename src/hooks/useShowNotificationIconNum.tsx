@@ -25,6 +25,8 @@ export function useShowNotificationIcon() {
 
 	const currentNum = ref<number>(3);
 
+	const isInit = ref<boolean>(false);
+
 	const changeEnableMode = async (value: boolean) => {
 		if (value) {
 			const [removeIsEnableShowNotificationIconNumErr] = await $to<string, string>(
@@ -125,13 +127,14 @@ export function useShowNotificationIcon() {
 				currentNum.value = numRes;
 			}
 		}
+		isInit.value = true;
 	};
 
 	onMounted(() => {
 		if (deviceStore.isEnableShowNotificationIconNum) {
-			nextTick(() => {
+			setTimeout(() => {
 				fetchData(); // 确保 UI 先渲染，再执行耗时操作
-			});
+			},0);
 		}
 	});
 
@@ -139,5 +142,6 @@ export function useShowNotificationIcon() {
 		currentNum,
 		changeNum,
 		changeEnableMode,
+		isInit
 	};
 }

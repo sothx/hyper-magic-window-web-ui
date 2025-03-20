@@ -16,6 +16,8 @@ export function useUFSHealth() {
 
 	const bPreEOLInfo = ref<number>();
 
+	const isInit = ref<boolean>(false);
+
 	const bDeviceLifeTimeEstA = ref<number>();
 
 	const bDeviceLifeTimeEstB = ref<number>();
@@ -32,7 +34,7 @@ export function useUFSHealth() {
     });
 
 	const isShow = computed(() => {
-		return Boolean(bPreEOLInfo.value && bDeviceLifeTimeEstA.value && bDeviceLifeTimeEstB.value);
+		return Boolean(bPreEOLInfo.value && bDeviceLifeTimeEstA.value && bDeviceLifeTimeEstB.value && isInit.value);
 	});
 
 	const deviceLifeTimeEstA = computed(() => {
@@ -90,11 +92,12 @@ export function useUFSHealth() {
 			if (getUFSLifeTimeEstimationARes) bDeviceLifeTimeEstA.value = parseInt(getUFSLifeTimeEstimationARes, 16);
 			if (getUFSLifeTimeEstimationBRes) bDeviceLifeTimeEstB.value = parseInt(getUFSLifeTimeEstimationBRes, 16);
 		}
+		isInit.value = true;
 	};
 	onMounted(() => {
-		nextTick(() => {
+		setTimeout(() => {
 		  fetchData(); // 确保 UI 先渲染，再执行耗时操作
-		});
+		},0);
 	});
 
 	return {

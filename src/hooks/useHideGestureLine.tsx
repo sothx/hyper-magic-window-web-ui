@@ -24,6 +24,8 @@ export function useHideGestureLine() {
         configProviderProps: configProviderPropsRef,
     });
 
+    const isInit = ref<boolean>(false);
+
 
     const changeIsHideGestureLine = async (value: boolean) => {
         const [setHideGestureLineErr, setHideGestureLineRes] = await $to(
@@ -91,16 +93,18 @@ export function useHideGestureLine() {
         if (Number(getHideGestureLineRes)) {
             deviceStore.currentIsHideGestureLine = 1;
         }
+        isInit.value = true;
     }
 
 
     onMounted(() => {
-        nextTick(() => {
+        setTimeout(() => {
             fetchData(); // 确保 UI 先渲染，再执行耗时操作
-        });
+        },0);
     });
 
     return {
-        changeIsHideGestureLine
+        changeIsHideGestureLine,
+        isInit
     };
 }

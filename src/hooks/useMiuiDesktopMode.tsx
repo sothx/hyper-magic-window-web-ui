@@ -22,6 +22,8 @@ export function useMiuiDesktopMode() {
 	const { message, modal } = createDiscreteApi(['message', 'modal'], {
 		configProviderProps: configProviderPropsRef,
 	});
+	
+	const isInit = ref<boolean>(false);
 
 	const currentMiuiDktMode = ref<boolean>(false);
 
@@ -147,17 +149,19 @@ export function useMiuiDesktopMode() {
 				currentMiuiDktMode.value = true;
 			}
 		}
+		isInit.value = true;
 	}
 
 	onMounted(() => {
-		nextTick(() => {
+		setTimeout(() => {
 			fetchData(); // 确保 UI 先渲染，再执行耗时操作
-		});
+		},0);
 	});
 
 	return {
 		currentMiuiDktMode,
 		changeMiuiDktMode,
-		changeMiuiDesktopModeEnabled
+		changeMiuiDesktopModeEnabled,
+		isInit
 	};
 }

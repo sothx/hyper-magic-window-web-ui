@@ -21,6 +21,10 @@ export function useDevelopmentSettingsEnabled() {
 
     const isEnabled = ref<boolean>(false);
 
+    const loading = ref<boolean>(true);
+
+    const isInit = ref<boolean>(false);
+
 
 
 
@@ -66,23 +70,29 @@ export function useDevelopmentSettingsEnabled() {
     };
 
     const fetchData = async () => {
-        const [, getDevelopmentSettingsEnabledRes] = await $to<string, string>(deviceApi.getDevelopmentSettingsEnabled());
-        if (getDevelopmentSettingsEnabledRes === '1') {
-            isEnabled.value = true
-        } else {
-            isEnabled.value = false
+        const [getDevelopmentSettingsEnabledErr, getDevelopmentSettingsEnabledRes] = await $to<string, string>(deviceApi.getDevelopmentSettingsEnabled());
+        if (getDevelopmentSettingsEnabledRes) {
+            if (getDevelopmentSettingsEnabledRes === '1') {
+                isEnabled.value = true
+            } else {
+                isEnabled.value = false
+            }
+            isInit.value = true;
+            loading.value = false;
         }
     }
 
 
     onMounted(() => {
-        nextTick(() => {
+        setTimeout(() => {
             fetchData(); // 确保 UI 先渲染，再执行耗时操作
-        });
+        },0);
     });
 
     return {
         change,
-        isEnabled
+        isEnabled,
+        isInit,
+        loading,
     };
 }

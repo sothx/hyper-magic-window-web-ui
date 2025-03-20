@@ -1,6 +1,6 @@
 <script setup lang="tsx">
 import { useDeviceStore } from '@/stores/device';
-import { computed, h, ref, type CSSProperties } from 'vue';
+import { computed, h, onMounted, ref, shallowRef, type CSSProperties } from 'vue';
 import { createDiscreteApi, darkTheme, lightTheme, NInput, type ConfigProviderProps } from 'naive-ui';
 import * as deviceApi from '@/apis/deviceApi';
 import { useAmktiao, type KeyboardModeOptions } from '@/hooks/useAmktiao';
@@ -40,6 +40,13 @@ const developmentSettingsEnabledHook = useDevelopmentSettingsEnabled();
 const videoWallpaperLoopHook = useVideoWallpaperLoop();
 const useDisabledOS2SystemPreStartHook = useDisabledOS2SystemPreStart();
 const fboHook = useFbo();
+// const initHooks = () => {
+// 	fboHook.value = useFbo();
+// }
+
+// onMounted(() => {
+// 	initHooks()
+// })
 const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
 	theme: deviceStore.isDarkMode ? darkTheme : lightTheme,
 }));
@@ -182,19 +189,25 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							</n-switch>
 						</dd>
 					</div>
-					<div
-						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
 							开发者模式
 						</dt>
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
+							<n-skeleton
+								v-if="!developmentSettingsEnabledHook.isInit.value"
+								:width="150"
+								:sharp="false"
+								:round="true"
+								size="small" />
 							<n-switch
+								v-else
 								@update:value="(value: boolean) => developmentSettingsEnabledHook.change(value ? 1 : 0)"
 								:rail-style="railStyle"
 								:value="developmentSettingsEnabledHook.isEnabled"
-								:loading="deviceStore.loading">
+								:loading="deviceStore.loading || developmentSettingsEnabledHook.loading.value">
 								<template #checked>已开启开发者模式</template>
 								<template #unchecked>已关闭开发者模式</template>
 							</n-switch>
@@ -289,7 +302,14 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 						</dt>
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
+							<n-skeleton
+								:width="123"
+								:sharp="false"
+								v-if="!miuiDesktopModeHook.isInit.value"
+								:round="true"
+								size="small" />
 							<n-switch
+								v-else
 								@update:value="(value: boolean) => miuiDesktopModeHook.changeMiuiDktMode(value)"
 								:rail-style="railStyle"
 								:disabled="!deviceStore.enabledMiuiDesktopMode"
@@ -524,7 +544,14 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 						</dt>
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
+							<n-skeleton
+								v-if="!amktiaoHook.isInit.value"
+								:width="80"
+								:sharp="false"
+								:round="true"
+								size="small" />
 							<n-switch
+								v-else
 								@update:value="(value: boolean) => amktiaoHook.changePenEnableMode(value)"
 								:rail-style="railStyle"
 								:disabled="!deviceStore.showThirdPartySetting.amktiaoROMInterface"
@@ -557,7 +584,14 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 						</dt>
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
+							<n-skeleton
+								v-if="!amktiaoHook.isInit.value"
+								:width="110"
+								:sharp="false"
+								:round="true"
+								size="small" />
 							<n-switch
+								v-else
 								@update:value="(value: boolean) => amktiaoHook.changePenUpdateMode(value)"
 								:rail-style="railStyle"
 								:disabled="!deviceStore.showThirdPartySetting.amktiaoROMInterface"
@@ -590,7 +624,9 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 						</dt>
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
+							<n-skeleton v-if="!amktiaoHook.isInit.value" :width="75" :sharp="false" size="small" />
 							<n-dropdown
+								v-else
 								:value="amktiaoHook.currentKeyboardModeSelect"
 								size="large"
 								trigger="click"
@@ -618,7 +654,13 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 						</dt>
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
+							<n-skeleton
+								v-if="!miuiCursorStyleHook.isInit.value"
+								:width="65"
+								:sharp="false"
+								size="small" />
 							<n-dropdown
+								v-else
 								size="large"
 								trigger="click"
 								:options="[
@@ -665,7 +707,14 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 						</dt>
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
+							<n-skeleton
+								:width="165"
+								v-if="!mouseGestureNaturalscrollHook.isInit.value"
+								:sharp="false"
+								:round="true"
+								size="small" />
 							<n-switch
+								v-else
 								@update:value="(value: boolean) => mouseGestureNaturalscrollHook.changeMouseGestureNaturalscroll(value)"
 								:rail-style="railStyle"
 								:value="
@@ -688,22 +737,28 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 						</dt>
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							<n-slider
-								size="small"
-								:min="-7"
-								@update:value="(value: number) => deviceApi.setPointerSpeed(value)"
-								:max="7"
-								v-model:value="pointerSpeedHook.currentPointerSpeed.value"
-								:step="1" />
-							<n-input-number
-								:show-button="false"
-								class="pt-3"
-								readonly
-								v-model:value="pointerSpeedHook.currentPointerSpeed.value"
-								placeholder="请输入鼠标指针速度"
-								:min="-7"
-								:max="7"
-								:step="1" />
+							<div v-if="!pointerSpeedHook.isInit.value">
+								<n-skeleton text :repeat="1" :sharp="false" :round="true" />
+								<n-skeleton text :repeat="1" :sharp="false" size="small" />
+							</div>
+							<div v-else>
+								<n-slider
+									size="small"
+									:min="-7"
+									@update:value="(value: number) => deviceApi.setPointerSpeed(value)"
+									:max="7"
+									v-model:value="pointerSpeedHook.currentPointerSpeed.value"
+									:step="1" />
+								<n-input-number
+									:show-button="false"
+									class="pt-3"
+									readonly
+									v-model:value="pointerSpeedHook.currentPointerSpeed.value"
+									placeholder="请输入鼠标指针速度"
+									:min="-7"
+									:max="7"
+									:step="1" />
+							</div>
 						</dd>
 					</div>
 					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
@@ -913,85 +968,88 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							</n-alert>
 						</dd>
 					</div>
-						<div
-							class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-							<dt
-								:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
-								焕新存储
-							</dt>
-							<dd
-								:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-								<n-button
-									size="small"
-									type="info"
-									secondary
-									:loading="deviceStore.loading"
-									@click="() => deviceApi.openFboResultActivity()">
-									打开 焕新存储信息面板
-								</n-button>
-								<n-alert class="mb-5 mt-5" type="success" :show-icon="false" :bordered="false">
-									<div>
-										<p>焕新存储启用状态:<n-button
-												size="tiny"
-												class="ml-3"
-												:type="fboHook.fboEnable.value ? 'success' : 'error'"
-												:loading="deviceStore.loading"
-												@click="() => fboHook.handleEnableFbo()">
-												{{ fboHook.fboEnable.value ? '已启用' : '未启用(点击启用)' }}
-											</n-button>
-										</p>
-										<p
-											>启用状态通常由小米云控控制，模块支持强制启用焕新存储，但该功能受系统底层支持情况而异，不支持的设备即使启用也不会生效。</p
-										>
-										<n-switch
-											@update:value="(value: boolean) => fboHook.changeIsAutoEnableFbo(value)"
-											:rail-style="railStyle"
-											:value="fboHook.isAutoStartFbo.value ? true : false"
-											:loading="deviceStore.loading">
-											<template #checked>已强制启用焕新存储</template>
-											<template #unchecked>跟随系统默认云控规则</template>
-										</n-switch>
-									</div>
-								</n-alert>
-								<n-alert class="mt-5" type="info" :show-icon="false" :bordered="false">
+					<div v-if="fboHook.isInit.value" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+						<dt
+							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
+							焕新存储
+						</dt>
+						<dd
+							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
+							<n-button
+								size="small"
+								type="info"
+								secondary
+								:loading="deviceStore.loading"
+								@click="() => deviceApi.openFboResultActivity()">
+								打开 焕新存储信息面板
+							</n-button>
+							<n-alert class="mb-5 mt-5" type="success" :show-icon="false" :bordered="false">
+								<div>
 									<p
-										>焕新存储激活状态:
-										<n-button
+										>焕新存储启用状态:<n-button
 											size="tiny"
 											class="ml-3"
-											:type="fboHook.fboServiceCtrl.value ? 'success' : 'error'"
+											:type="fboHook.fboEnable.value ? 'success' : 'error'"
 											:loading="deviceStore.loading"
-											@click="() => fboHook.handleEnableFboServiceCtrl()">
-											{{ fboHook.fboServiceCtrl.value ? '已激活' : '未激活(点击激活)' }}
+											@click="() => fboHook.handleEnableFbo()">
+											{{ fboHook.fboEnable.value ? '已启用' : '未启用(点击启用)' }}
 										</n-button>
 									</p>
-									<p v-if="fboHook.fboInstalld.value" class="mt-1">焕新存储运行状态:<n-tag
-												size="small"
-												class="ml-3"
-												:type="'info'"
-												:loading="deviceStore.loading"
-												@click="() => {}">
-												{{ fboHook.fboInstalld.value }}
-										</n-tag>
-									</p>
-									<p>激活后仍然需要满足以下条件才会在特定时间触发焕新存储：</p>
-									<p>①夜间12点半-凌晨5点</p>
-									<p>②息屏状态</p>
-									<p>③电量大于75%(或保持手机充电)</p>
-									<p>④电池温度小于40℃</p>
-									<p>进行焕新存储期间检测到其中任意条件不满足，焕新存储会被中断，待满足后继续执行，当满足上述4个条件后，此功能也并不是每天都生效，需要文件碎片累积到一定程度会主动进行。</p>
-									<p>（焕新存储流程结束后，激活状态会被关闭，您可以前往Web UI 重新激活）</p>
+									<p
+										>启用状态通常由小米云控控制，模块支持强制启用焕新存储，但该功能受系统底层支持情况而异，不支持的设备即使启用也不会生效。</p
+									>
 									<n-switch
-											@update:value="(value: boolean) => fboHook.changeIsAutoRegularlyFbo(value)"
-											:rail-style="railStyle"
-											:value="fboHook.isAutoRegularlyFbo.value ? true : false"
-											:loading="deviceStore.loading">
-											<template #checked>已启用每日闲时维护</template>
-											<template #unchecked>未启用每日闲时维护</template>
+										@update:value="(value: boolean) => fboHook.changeIsAutoEnableFbo(value)"
+										:rail-style="railStyle"
+										:value="fboHook.isAutoStartFbo.value ? true : false"
+										:loading="deviceStore.loading">
+										<template #checked>已强制启用焕新存储</template>
+										<template #unchecked>跟随系统默认云控规则</template>
 									</n-switch>
-								</n-alert>
-							</dd>
-						</div>
+								</div>
+							</n-alert>
+							<n-alert class="mt-5" type="info" :show-icon="false" :bordered="false">
+								<p
+									>焕新存储激活状态:
+									<n-button
+										size="tiny"
+										class="ml-3"
+										:type="fboHook.fboServiceCtrl.value ? 'success' : 'error'"
+										:loading="deviceStore.loading"
+										@click="() => fboHook.handleEnableFboServiceCtrl()">
+										{{ fboHook.fboServiceCtrl.value ? '已激活' : '未激活(点击激活)' }}
+									</n-button>
+								</p>
+								<p v-if="fboHook.fboInstalld.value" class="mt-1"
+									>焕新存储运行状态:<n-tag
+										size="small"
+										class="ml-3"
+										:type="'info'"
+										:loading="deviceStore.loading"
+										@click="() => {}">
+										{{ fboHook.fboInstalld.value }}
+									</n-tag>
+								</p>
+								<p>激活后仍然需要满足以下条件才会在特定时间触发焕新存储：</p>
+								<p>①夜间12点半-凌晨5点</p>
+								<p>②息屏状态</p>
+								<p>③电量大于75%(或保持手机充电)</p>
+								<p>④电池温度小于40℃</p>
+								<p
+									>进行焕新存储期间检测到其中任意条件不满足，焕新存储会被中断，待满足后继续执行，当满足上述4个条件后，此功能也并不是每天都生效，需要文件碎片累积到一定程度会主动进行。</p
+								>
+								<p>（焕新存储流程结束后，激活状态会被关闭，您可以前往Web UI 重新激活）</p>
+								<n-switch
+									@update:value="(value: boolean) => fboHook.changeIsAutoRegularlyFbo(value)"
+									:rail-style="railStyle"
+									:value="fboHook.isAutoRegularlyFbo.value ? true : false"
+									:loading="deviceStore.loading">
+									<template #checked>已启用每日闲时维护</template>
+									<template #unchecked>未启用每日闲时维护</template>
+								</n-switch>
+							</n-alert>
+						</dd>
+					</div>
 					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">

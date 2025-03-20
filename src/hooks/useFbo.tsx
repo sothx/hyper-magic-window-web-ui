@@ -29,6 +29,8 @@ export function useFbo() {
 
 	const isAutoRegularlyFbo = ref<boolean>(false);
 
+    const isInit = ref<boolean>(false);
+
 	const handleEnableFbo = async () => {
 		if (fboEnable.value) {
 			modal.create({
@@ -332,12 +334,13 @@ export function useFbo() {
 		fboEnable.value = fboEnableRes === 'true';
 		fboServiceCtrl.value = fboServiceCtrlRes === 'true';
 		fboInstalld.value = fboInstalldRes ?? '';
+		isInit.value = true;
 	};
 
 	onMounted(() => {
-		nextTick(() => {
+		setTimeout(() => {
 			reload(); // 确保 UI 先渲染，再执行耗时操作
-		});
+		},0);
 	});
 
 	return {
@@ -351,5 +354,6 @@ export function useFbo() {
 		handleEnableFbo,
 		handleEnableFboServiceCtrl,
 		reload,
+		isInit
 	};
 }

@@ -738,7 +738,8 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 						v-if="
 							deviceStore.MIOSVersion &&
 							deviceStore.MIOSVersion >= 2 &&
-							deviceStore.androidTargetSdk >= 35
+							deviceStore.androidTargetSdk >= 35 &&
+							ZRAMWritebackHook.isInit.value
 						">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`"
@@ -1006,7 +1007,9 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 						</dt>
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
+							<n-skeleton v-if="!hideGestureLineHook.isInit.value" :width="137" :sharp="false" :round="true" size="small" />
 							<n-switch
+								v-else
 								@update:value="(value: boolean) => hideGestureLineHook.changeIsHideGestureLine(value)"
 								:rail-style="railStyle"
 								:value="deviceStore.currentIsHideGestureLine === 1 ? true : false">

@@ -39,6 +39,10 @@ export function useAmktiao() {
 
 	const currentKeyboardMode = ref<KeyboardMode>(0);
 
+	const loading = ref<boolean>(true);
+
+    const isInit = ref<boolean>(false);
+
 	const keyboardModeOptions = ref<KeyboardModeOptions[]>([
 		{
 			label: '关闭键盘',
@@ -287,12 +291,14 @@ export function useAmktiao() {
 				currentKeyboardModeSelect.value = keyboardModeOptions.value[mode];
 			}
 		}
+		isInit.value = true;
+		loading.value = false;
 	}
 
 	onMounted(() => {
-		nextTick(() => {
+		setTimeout(() => {
 			fetchData(); // 确保 UI 先渲染，再执行耗时操作
-		});
+		},0);
 	});
 
 	return {
@@ -305,5 +311,7 @@ export function useAmktiao() {
 		changePenUpdateMode,
 		changePenEnableMode,
 		enableSetting,
+		isInit,
+		loading
 	};
 }
