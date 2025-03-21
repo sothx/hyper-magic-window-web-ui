@@ -8,7 +8,6 @@ import { useAmktiao, type KeyboardMode, type KeyboardModeOptions } from '@/hooks
 import { parsePropContent } from '@/utils/common';
 import { transformValues } from '@/utils/xmlFormat';
 import type { DisplayModeItem } from '@/hooks/useDisplayModeRecord';
-import type { IsHideGestureLine } from '@/hooks/useHideGestureLine';
 
 export interface ModuleProp {
 	id: string;
@@ -89,7 +88,6 @@ export const useDeviceStore = defineStore(
 		const currentRootManager = ref<ROOT_MANAGER_TYPE>('Magisk');
 		const hasNeedUpdateModule = ref<boolean>(false);
 		const displayModeList = ref<DisplayModeItem[]>([]);
-		const currentIsHideGestureLine = ref<IsHideGestureLine>(0);
 		const isDisabledOS2SystemAppOptimize = ref<boolean>(false);
 		const isDisabledOS2InstallModuleTips = ref<boolean>(false);
 		const shamikoInfo = reactive<ShamikoInfo>({
@@ -370,10 +368,6 @@ export const useDeviceStore = defineStore(
 			if (getMemoryInfoRes) {
 				deviceInfo.memoryInfo = getMemoryInfoRes;
 			}
-			// 隐藏手势提示条
-			if (Number(getHideGestureLineRes)) {
-				currentIsHideGestureLine.value = 1;
-			}
 			// 刷新率和分辨率
 			const [, getDiplayModeListRes] = await $to(deviceApi.getDisplayModeRecord());
 			if (getDiplayModeListRes) {
@@ -492,7 +486,6 @@ export const useDeviceStore = defineStore(
 			enabledMiuiDesktopMode,
 			isEnableShowNotificationIconNum,
 			displayModeList,
-			currentIsHideGestureLine,
 			isDisabledOS2SystemAppOptimize,
 			preStartProp,
 			isDisabledOS2InstallModuleTips,

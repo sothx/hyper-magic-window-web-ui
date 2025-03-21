@@ -1012,7 +1012,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 								v-else
 								@update:value="(value: boolean) => hideGestureLineHook.changeIsHideGestureLine(value)"
 								:rail-style="railStyle"
-								:value="deviceStore.currentIsHideGestureLine === 1 ? true : false">
+								:value="hideGestureLineHook.currentIsHideGestureLine.value === 1 ? true : false">
 								<template #checked>隐藏手势提示线</template>
 								<template #unchecked>显示手势提示线</template>
 							</n-switch>

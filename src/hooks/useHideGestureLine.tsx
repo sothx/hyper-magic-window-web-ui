@@ -26,6 +26,8 @@ export function useHideGestureLine() {
 
     const isInit = ref<boolean>(false);
 
+    const currentIsHideGestureLine = ref<IsHideGestureLine>(0);
+
 
     const changeIsHideGestureLine = async (value: boolean) => {
         const [setHideGestureLineErr, setHideGestureLineRes] = await $to(
@@ -60,7 +62,7 @@ export function useHideGestureLine() {
                         content: () => <p>好耶w！隐藏手势提示线（小白条）成功，请知晓，隐藏手势提示线（小白条）的情况下，旋转建议提示按钮也将变成不可用的状态~</p>,
                         positiveText: '确定',
                     });
-                    deviceStore.currentIsHideGestureLine = 1;
+                    currentIsHideGestureLine.value = 1;
                 }
             } else {
                 const [removeIsHideGestureLineErr, removeIsHideGestureLineRes] = await $to(
@@ -82,7 +84,7 @@ export function useHideGestureLine() {
                         content: () => <p>好耶w！已经将手势提示线（小白条）调整为显示状态~</p>,
                         positiveText: '确定',
                     });
-                    deviceStore.currentIsHideGestureLine = 0;
+                    currentIsHideGestureLine.value = 0;
                 }
             }
         }
@@ -91,7 +93,7 @@ export function useHideGestureLine() {
     const fetchData = async () => {
         const [, getHideGestureLineRes] = await $to<string, string>(deviceApi.getHideGestureLine());
         if (Number(getHideGestureLineRes)) {
-            deviceStore.currentIsHideGestureLine = 1;
+            currentIsHideGestureLine.value = 1;
         }
         isInit.value = true;
     }
@@ -104,6 +106,7 @@ export function useHideGestureLine() {
     });
 
     return {
+        currentIsHideGestureLine,
         changeIsHideGestureLine,
         isInit
     };
