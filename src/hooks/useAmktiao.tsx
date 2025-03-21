@@ -33,6 +33,10 @@ export function useAmktiao() {
 		configProviderProps: configProviderPropsRef,
 	});
 
+	const hasPenUpdateControl = ref<boolean>(false);
+	const hasPenEnableControl = ref<boolean>(false);
+	const hasKeyboardControl = ref<boolean>(false);
+
 	const currentPenUpdate = ref<PenUpdate>(0);
 
 	const currentPenEnable = ref<PenEnable>(0);
@@ -267,22 +271,34 @@ export function useAmktiao() {
 	};
 
 	const fetchData = async () => {
+		const [, getHasPenUpdateControlRes] = await $to<string, string>(deviceApi.getHasPenUpdateControl());
+		if (getHasPenUpdateControlRes) {
+			hasPenUpdateControl.value = true;
+		}
+		const [, getHasPenEnableControlRes] = await $to<string, string>(deviceApi.getHasPenEnableControl());
+		if (getHasPenEnableControlRes) {
+			hasPenEnableControl.value = true;
+		}
+		const [, getHasKeyboardControlRes] = await $to<string, string>(deviceApi.getHasKeyboardControl());
+		if (getHasKeyboardControlRes) {
+			hasKeyboardControl.value = true;
+		}
 		// 移植包键盘和手写笔控制
-		if (deviceStore.hasPenUpdateControl) {
+		if (hasPenUpdateControl.value) {
 			const [, getCurrentPenUpdateResolve] = await $to<string, string>(deviceApi.getCurrentPenUpdate());
 
 			if (Number(getCurrentPenUpdateResolve)) {
 				currentPenUpdate.value = 1;
 			}
 		}
-		if (deviceStore.hasPenEnableControl) {
+		if (hasPenEnableControl.value) {
 			const [, getCurrentPenEnableResolve] = await $to<string, string>(deviceApi.getCurrentPenEnable());
 
 			if (Number(getCurrentPenEnableResolve)) {
 				currentPenEnable.value = 1;
 			}
 		}
-		if (deviceStore.hasKeyboardControl) {
+		if (hasKeyboardControl.value) {
 			const [, getCurrentKeyboardModeResolve] = await $to<string, string>(deviceApi.getCurrentKeyboardMode());
 
 			if (getCurrentKeyboardModeResolve) {
@@ -302,6 +318,9 @@ export function useAmktiao() {
 	});
 
 	return {
+		hasPenUpdateControl,
+		hasPenEnableControl,
+		hasKeyboardControl,
 		currentPenUpdate,
 		currentPenEnable,
 		currentKeyboardMode,

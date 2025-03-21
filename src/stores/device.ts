@@ -78,9 +78,6 @@ export const useDeviceStore = defineStore(
 		const lastVersionCode = ref<number>();
 		const needReloadData = ref<boolean>(false);
 		const moduleInfo = ref<ModuleProp>();
-		const hasPenUpdateControl = ref<boolean>(false);
-		const hasPenEnableControl = ref<boolean>(false);
-		const hasKeyboardControl = ref<boolean>(false);
 		const enabledMiuiDesktopMode = ref<boolean>(false);
 		const windowWidth = ref(window.innerWidth);
 		const isEnableShowNotificationIconNum = ref<boolean>(false);
@@ -199,11 +196,6 @@ export const useDeviceStore = defineStore(
 				$to<string, string>(deviceApi.getBatteryChargeFull()),
 				// 电池循环次数
 				$to<string, string>(deviceApi.getBatteryCycleCount()),
-				// 触控笔控制(水龙)
-				$to<string, string>(deviceApi.getHasPenUpdateControl()),
-				$to<string, string>(deviceApi.getHasPenEnableControl()),
-				// 键盘控制(水龙)
-				$to<string, string>(deviceApi.getHasKeyboardControl()),
 				// 工作台模式判断
 				$to<string, string>(deviceApi.getMiuiDesktopModeEnabled()),
 				// 设备Soc名称
@@ -236,9 +228,6 @@ export const useDeviceStore = defineStore(
 				[, getBatteryChargeFullDesignRes],
 				[, getBatteryChargeFullRes],
 				[, getBatteryCycleCountRes],
-				[, getHasPenUpdateControlRes],
-				[, getHasPenEnableControlRes],
-				[, getHasKeyboardControlRes],
 				[, getMiuiDesktopModeEnabledRes],
 				[, getDeviceSocNameRes],
 				[, getDeviceSocModelRes],
@@ -312,16 +301,6 @@ export const useDeviceStore = defineStore(
 				if (getShamikoModeReject) {
 					shamikoInfo.mode = 'blacklist';
 				}
-			}
-			// 移植包键盘和手写笔控制
-			if (getHasPenUpdateControlRes) {
-				hasPenUpdateControl.value = true;
-			}
-			if (getHasPenEnableControlRes) {
-				hasPenEnableControl.value = true;
-			}
-			if (getHasKeyboardControlRes) {
-				hasKeyboardControl.value = true;
 			}
 			if (getMiuiDesktopModeEnabledRes) {
 				enabledMiuiDesktopMode.value = true;
@@ -517,9 +496,6 @@ export const useDeviceStore = defineStore(
 			rhythmMode,
 			initDefault,
 			ABTestInfo,
-			hasPenUpdateControl,
-			hasPenEnableControl,
-			hasKeyboardControl,
 			hasNeedUpdateModule,
 			enabledMiuiDesktopMode,
 			isEnableShowNotificationIconNum,
