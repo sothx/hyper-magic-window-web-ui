@@ -1077,6 +1077,8 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 						if (hasCompatChange) {
 							delete currentFixedOrientation.value.compatChange;
 						}
+					}
+					if (currentEmbeddedRules.value) {
 						const hasEmSkipSelfAdaptive = currentEmbeddedRules.value.hasOwnProperty('skipSelfAdaptive');
 						if (!hasEmSkipSelfAdaptive) {
 							currentEmbeddedRules.value.skipSelfAdaptive = true;
