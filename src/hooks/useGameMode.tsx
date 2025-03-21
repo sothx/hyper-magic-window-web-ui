@@ -116,10 +116,10 @@ export function useGameMode() {
 										才能使用游戏显示布局，详情请前往模块首页了解~
 									</p>
 								)}
-							<p>是否立即重启？</p>
+							<p>是否继续{value ? '开启' : '关闭'}游戏显示布局？</p>
 						</div>
 					),
-					positiveText: '确认并立即重启',
+					positiveText: '确定',
 					negativeText: '取消',
 					onPositiveClick: () => {
 						resolve('positiveClick');
@@ -155,17 +155,32 @@ export function useGameMode() {
 					return;
 				}
 			}
-			const [rebootDeviceErr] = await $to(deviceApi.rebootDevice());
-			if (rebootDeviceErr) {
-				modal.create({
-					title: '操作失败',
-					type: 'error',
-					preset: 'dialog',
-					content: () => <p>无法重启设备，详情请查看日志记录~</p>,
-					negativeText: '确定',
-				});
-				return;
-			}
+			modal.create({
+				title: '操作成功',
+				type: 'success',
+				preset: 'dialog',
+				content: () => (
+					<p>
+						好耶w，已经成功{value ? '开启' : '关闭'}游戏显示布局~实际生效还需要重启设备，确定要重启吗？
+					</p>
+				),
+				positiveText: '立即重启',
+				negativeText: '稍后手动重启',
+				onPositiveClick() {
+					deviceApi
+						.rebootDevice()
+						.catch(err => {
+							modal.create({
+								title: '操作失败',
+								type: 'error',
+								preset: 'dialog',
+								content: () => <p>无法重启设备，详情请查看日志记录~</p>,
+								negativeText: '确定',
+							});
+							return;
+						});
+				},
+			});
 		}
 	};
 

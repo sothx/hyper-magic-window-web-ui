@@ -1061,25 +1061,23 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 						currentFixedOrientation,
 					} = useEmbedded(row.name);
 					if (currentFixedOrientation.value) {
-						const hasDisable = currentFixedOrientation.hasOwnProperty('disable');
+						const hasDisable = currentFixedOrientation.value.hasOwnProperty('disable');
 						if (hasDisable) {
 							delete currentFixedOrientation.value.disable;
 						}
-						const hasDefaultSettings = currentFixedOrientation.hasOwnProperty('defaultSettings');
+						const hasDefaultSettings = currentFixedOrientation.value.hasOwnProperty('defaultSettings');
 						if (hasDefaultSettings) {
 							delete currentFixedOrientation.value.defaultSettings;
 						}
-						const hasFoSkipSelfAdaptive = currentFixedOrientation.hasOwnProperty('skipSelfAdaptive');
+						const hasFoSkipSelfAdaptive = currentFixedOrientation.value.hasOwnProperty('skipSelfAdaptive');
 						if (!hasFoSkipSelfAdaptive) {
 							currentFixedOrientation.value.skipSelfAdaptive = true;
 						}
-						const hasCompatChange = currentFixedOrientation.hasOwnProperty('compatChange');
+						const hasCompatChange = currentFixedOrientation.value.hasOwnProperty('compatChange');
 						if (hasCompatChange) {
 							delete currentFixedOrientation.value.compatChange;
 						}
-					}
-					if (currentFixedOrientation.value) {
-						const hasEmSkipSelfAdaptive = currentEmbeddedRules.hasOwnProperty('skipSelfAdaptive');
+						const hasEmSkipSelfAdaptive = currentEmbeddedRules.value.hasOwnProperty('skipSelfAdaptive');
 						if (!hasEmSkipSelfAdaptive) {
 							currentEmbeddedRules.value.skipSelfAdaptive = true;
 						}

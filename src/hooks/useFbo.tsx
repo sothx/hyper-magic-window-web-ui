@@ -29,7 +29,7 @@ export function useFbo() {
 
 	const isAutoRegularlyFbo = ref<boolean>(false);
 
-    const isInit = ref<boolean>(false);
+	const isInit = ref<boolean>(false);
 
 	const handleEnableFbo = async () => {
 		if (fboEnable.value) {
@@ -132,11 +132,11 @@ export function useFbo() {
 								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
 									每日闲时维护
 								</span>{' '}
-								后需要设备重启才会生效，是否立即重启？
+								后需要设备重启才会生效，是否继续？
 							</p>
 						</div>
 					),
-					positiveText: '确认并立即重启',
+					positiveText: '确定',
 					negativeText: '取消',
 					onPositiveClick: () => {
 						resolve('positiveClick');
@@ -184,24 +184,29 @@ export function useFbo() {
 								negativeText: '确定',
 							});
 						} else {
-							const [rebootDeviceErr] = await $to(deviceApi.rebootDevice());
-							if (rebootDeviceErr) {
-								modal.create({
-									title: '操作失败',
-									type: 'error',
-									preset: 'dialog',
-									content: () => <p>无法重启设备，详情请查看日志记录~</p>,
-									negativeText: '确定',
-								});
-								return;
-							}
-							isAutoRegularlyFbo.value = true;
 							modal.create({
 								title: '操作成功',
 								type: 'success',
 								preset: 'dialog',
-								content: () => <p>已启用焕新存储的每日闲时维护~</p>,
-								positiveText: '确定',
+								content: () => (
+									<p>
+										好耶w，已启用焕新存储的每日闲时维护~实际生效还需要重启设备，确定要重启吗？
+									</p>
+								),
+								positiveText: '立即重启',
+								negativeText: '稍后手动重启',
+								onPositiveClick() {
+									deviceApi.rebootDevice().catch(err => {
+										modal.create({
+											title: '操作失败',
+											type: 'error',
+											preset: 'dialog',
+											content: () => <p>无法重启设备，详情请查看日志记录~</p>,
+											negativeText: '确定',
+										});
+										return;
+									});
+								},
 							});
 						}
 					}
@@ -219,25 +224,30 @@ export function useFbo() {
 						negativeText: '确定',
 					});
 				} else {
-					const [rebootDeviceErr] = await $to(deviceApi.rebootDevice());
-					if (rebootDeviceErr) {
-						modal.create({
-							title: '操作失败',
-							type: 'error',
-							preset: 'dialog',
-							content: () => <p>无法重启设备，详情请查看日志记录~</p>,
-							negativeText: '确定',
-						});
-						return;
-					}
 					modal.create({
 						title: '操作成功',
 						type: 'success',
 						preset: 'dialog',
-						content: () => <p>已关闭焕新存储的每日闲时维护~</p>,
-						positiveText: '确定',
+						content: () => (
+							<p>
+								好耶w，已关闭焕新存储的每日闲时维护~实际生效还需要重启设备，确定要重启吗？
+							</p>
+						),
+						positiveText: '立即重启',
+						negativeText: '稍后手动重启',
+						onPositiveClick() {
+							deviceApi.rebootDevice().catch(err => {
+								modal.create({
+									title: '操作失败',
+									type: 'error',
+									preset: 'dialog',
+									content: () => <p>无法重启设备，详情请查看日志记录~</p>,
+									negativeText: '确定',
+								});
+								return;
+							});
+						},
 					});
-					isAutoRegularlyFbo.value = false;
 				}
 			}
 		}
@@ -320,15 +330,15 @@ export function useFbo() {
 			[, getIsAutoRegularlyFboRes],
 			[fboEnableErr, fboEnableRes],
 			[fFboServiceCtrlErr, fboServiceCtrlRes],
-			[fboInstalldErr, fboInstalldRes]
+			[fboInstalldErr, fboInstalldRes],
 		] = await Promise.all([
 			$to<string, string>(deviceApi.getIsAutoEnableFbo()),
 			$to<string, string>(deviceApi.getIsAutoRegularlyFbo()),
 			$to(deviceApi.getFboEnable()),
 			$to(deviceApi.getFboServiceCtrl()),
-			$to(deviceApi.getFboInstalld())
+			$to(deviceApi.getFboInstalld()),
 		]);
-	
+
 		isAutoStartFbo.value = getIsAutoEnableFboRes === 'true';
 		isAutoRegularlyFbo.value = getIsAutoRegularlyFboRes === 'true';
 		fboEnable.value = fboEnableRes === 'true';
@@ -340,7 +350,7 @@ export function useFbo() {
 	onMounted(() => {
 		setTimeout(() => {
 			reload(); // 确保 UI 先渲染，再执行耗时操作
-		},0);
+		}, 0);
 	});
 
 	return {
@@ -354,6 +364,6 @@ export function useFbo() {
 		handleEnableFbo,
 		handleEnableFboServiceCtrl,
 		reload,
-		isInit
+		isInit,
 	};
 }

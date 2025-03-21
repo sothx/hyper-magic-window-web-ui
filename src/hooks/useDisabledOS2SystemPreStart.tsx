@@ -23,7 +23,12 @@ export function useDisabledOS2SystemPreStart() {
 	});
 
 	const isShow = computed(() => {
-		return deviceStore.preStartProp.build && deviceStore.androidTargetSdk >= 35 && deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2;
+		return (
+			deviceStore.preStartProp.build &&
+			deviceStore.androidTargetSdk >= 35 &&
+			deviceStore.MIOSVersion &&
+			deviceStore.MIOSVersion >= 2
+		);
 	});
 
 	const change = async (value: boolean) => {
@@ -47,7 +52,7 @@ export function useDisabledOS2SystemPreStart() {
 										class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
 										任意应用
 									</span>{' '}
-									不再触发应用预加载，需要设备重启才会生效，确定要继续开启并重启吗？
+									不再触发应用预加载，需要设备重启才会生效，确定要继续禁用吗？
 								</p>
 							)}
 							{value && (
@@ -62,12 +67,12 @@ export function useDisabledOS2SystemPreStart() {
 										class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
 										任意应用
 									</span>{' '}
-									将会触发应用预加载，需要设备重启才会生效，确定要继续开启并重启吗？
+									将会触发应用预加载，需要设备重启才会生效，确定要继续开启吗？
 								</p>
 							)}
 						</div>
 					),
-					positiveText: '确定，并立即重启',
+					positiveText: '确定',
 					negativeText: '我再想想',
 					onPositiveClick: () => {
 						resolve('positiveClick');
@@ -102,26 +107,31 @@ export function useDisabledOS2SystemPreStart() {
 					});
 					return;
 				}
-				deviceStore.preStartProp.module = false;
-			} else {
-				deviceStore.preStartProp.module = true;
 			}
-			const [rebootDeviceErr] = await $to(deviceApi.rebootDevice());
-			if (rebootDeviceErr) {
-				modal.create({
-					title: '操作失败',
-					type: 'error',
-					preset: 'dialog',
-					content: () => <p>无法重启设备，详情请查看日志记录~</p>,
-					negativeText: '确定',
-				});
-				return;
-			}
+			modal.create({
+				title: '操作成功',
+				type: 'success',
+				preset: 'dialog',
+				content: () => <p>好耶w，已{value ? '开启' : '关闭'}应用预加载~实际生效还需要重启设备，确定要重启吗？</p>,
+				positiveText: '立即重启',
+				negativeText: '稍后手动重启',
+				onPositiveClick() {
+					deviceApi.rebootDevice().catch(err => {
+						modal.create({
+							title: '操作失败',
+							type: 'error',
+							preset: 'dialog',
+							content: () => <p>无法重启设备，详情请查看日志记录~</p>,
+							negativeText: '确定',
+						});
+						return;
+					});
+				},
+			});
 		}
 	};
 
-	onMounted(() => {
-	});
+	onMounted(() => {});
 
 	return {
 		isShow,
