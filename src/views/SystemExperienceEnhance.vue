@@ -342,7 +342,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							</div>
 							<n-alert
 								v-if="
-									deviceStore.isInstallMIUIContentExtension &&
+									MIUIContentExtensionHook.isInstallMIUIContentExtension.value &&
 									deviceStore.deviceCharacteristics === 'tablet'
 								"
 								class="mt-5"

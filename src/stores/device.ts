@@ -88,7 +88,6 @@ export const useDeviceStore = defineStore(
 		const systemPreVersion = ref<string>('');
 		const currentRootManager = ref<ROOT_MANAGER_TYPE>('Magisk');
 		const hasNeedUpdateModule = ref<boolean>(false);
-		const isInstallMIUIContentExtension = ref<boolean>(false);
 		const displayModeList = ref<DisplayModeItem[]>([]);
 		const currentIsHideGestureLine = ref<IsHideGestureLine>(0);
 		const isDisabledOS2SystemAppOptimize = ref<boolean>(false);
@@ -206,8 +205,6 @@ export const useDeviceStore = defineStore(
 				$to<string, string>(deviceApi.getDisplay0PanelInfo()),
 				// 设备UFS信息
 				$to<string, string>(deviceApi.getMemoryInfo()),
-				// 传送门
-				$to<string, string>(deviceApi.getHasInstalledMIUIContentExtension()),
 				// 隐藏手势提示条
 				$to<string, string>(deviceApi.getHideGestureLine()),
 				// 获取DDRVendor
@@ -233,7 +230,6 @@ export const useDeviceStore = defineStore(
 				[, getDeviceSocModelRes],
 				[, getDisplay0PanelInfoRes],
 				[, getMemoryInfoRes],
-				[, getHasInstalledMIUIContentExtensionRes],
 				[, getHideGestureLineRes],
 				[, getDDRVendorRes],
 			] = executeWithoutWaitingResults;
@@ -374,10 +370,6 @@ export const useDeviceStore = defineStore(
 			if (getMemoryInfoRes) {
 				deviceInfo.memoryInfo = getMemoryInfoRes;
 			}
-			// 传送门
-			if (getHasInstalledMIUIContentExtensionRes === 'exists') {
-				isInstallMIUIContentExtension.value = true;
-			}
 			// 隐藏手势提示条
 			if (Number(getHideGestureLineRes)) {
 				currentIsHideGestureLine.value = 1;
@@ -499,7 +491,6 @@ export const useDeviceStore = defineStore(
 			hasNeedUpdateModule,
 			enabledMiuiDesktopMode,
 			isEnableShowNotificationIconNum,
-			isInstallMIUIContentExtension,
 			displayModeList,
 			currentIsHideGestureLine,
 			isDisabledOS2SystemAppOptimize,

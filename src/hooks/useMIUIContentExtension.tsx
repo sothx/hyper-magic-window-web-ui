@@ -22,13 +22,17 @@ export function useMIUIContentExtension() {
         const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
             theme: deviceStore.isDarkMode ? darkTheme : lightTheme,
         }));
+
+        const isInit = ref<boolean>(false);
+
+        const isInstallMIUIContentExtension = ref<boolean>(false);
     
         const { message, modal } = createDiscreteApi(['message', 'modal'], {
             configProviderProps: configProviderPropsRef,
         });
 
     const open = async () => {
-        if (!deviceStore.isInstallMIUIContentExtension) {
+        if (!isInstallMIUIContentExtension.value) {
             await navigator.clipboard.writeText(`https://caiyun.139.com/m/i?135CdxVMTx4nf`);
             modal.create({
                 title: '无法打开传送门',
@@ -202,18 +206,30 @@ export function useMIUIContentExtension() {
         });
     }
 
+        const fetchData = async () => {
+            const [, getHasInstalledMIUIContentExtensionRes] = await $to<string, string>(deviceApi.getHasInstalledMIUIContentExtension());
+            if (getHasInstalledMIUIContentExtensionRes === 'exists') {
+				isInstallMIUIContentExtension.value = true;
+			}
+            isInit.value = true;
+        }
 
 
 
-    onMounted(() => {
-    })
+	onMounted(() => {
+		setTimeout(() => {
+			fetchData(); // 确保 UI 先渲染，再执行耗时操作
+		},0);
+	});
 
 
     return {
         open,
         fix,
         setAuthIsOnlyRead,
-        setAuthIsReadAndWrite
+        setAuthIsReadAndWrite,
+        isInstallMIUIContentExtension,
+        isInit
     }
 
 
