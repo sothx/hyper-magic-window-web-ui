@@ -32,6 +32,78 @@ export const incompatibleApplicationList: Record<string, (row: EmbeddedMergeRule
             positiveText: '已了解该应用可能不兼容',
 		});
 	},
+	'com.guozhigq.pilipala': (row: EmbeddedMergeRuleItem) => {
+		const deviceStore = useDeviceStore();
+		const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
+			theme: deviceStore.isDarkMode ? darkTheme : lightTheme,
+		}));
+		const { message, modal, notification } = createDiscreteApi(['message', 'modal', 'notification'], {
+			configProviderProps: configProviderPropsRef,
+		});
+		modal.create({
+			title: '应用不兼容感知',
+			type: 'warning',
+			preset: 'dialog',
+			content: () => (
+				<p>
+					{' '}
+					<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+						{renderApplicationName(row.name, row.applicationName)}
+					</span>{' '}
+					在大屏设备体验不佳，模块仅提供强制居中显示适配优化~
+				</p>
+			),
+            positiveText: '已了解该应用可能不兼容',
+		});
+	},
+	'com.xiaomi.mitime': (row: EmbeddedMergeRuleItem) => {
+		const deviceStore = useDeviceStore();
+		const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
+			theme: deviceStore.isDarkMode ? darkTheme : lightTheme,
+		}));
+		const { message, modal, notification } = createDiscreteApi(['message', 'modal', 'notification'], {
+			configProviderProps: configProviderPropsRef,
+		});
+		modal.create({
+			title: '应用不兼容感知',
+			type: 'warning',
+			preset: 'dialog',
+			content: () => (
+				<p>
+					{' '}
+					<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+						{renderApplicationName(row.name, row.applicationName)}
+					</span>{' '}
+					在大屏设备体验不佳，模块仅提供强制居中显示适配优化~
+				</p>
+			),
+            positiveText: '已了解该应用可能不兼容',
+		});
+	},
+	'com.unicom.woshipin': (row: EmbeddedMergeRuleItem) => {
+		const deviceStore = useDeviceStore();
+		const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
+			theme: deviceStore.isDarkMode ? darkTheme : lightTheme,
+		}));
+		const { message, modal, notification } = createDiscreteApi(['message', 'modal', 'notification'], {
+			configProviderProps: configProviderPropsRef,
+		});
+		modal.create({
+			title: '应用不兼容感知',
+			type: 'warning',
+			preset: 'dialog',
+			content: () => (
+				<p>
+					{' '}
+					<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+						{renderApplicationName(row.name, row.applicationName)}
+					</span>{' '}
+					在大屏设备体验不佳，极易触发应用异常崩溃，模块仅提供强制居中显示适配优化~
+				</p>
+			),
+            positiveText: '已了解该应用可能不兼容',
+		});
+	},
 	'com.qiyi.video': (row: EmbeddedMergeRuleItem) => {
 		const deviceStore = useDeviceStore();
 		const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
