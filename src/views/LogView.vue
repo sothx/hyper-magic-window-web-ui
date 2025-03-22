@@ -85,9 +85,9 @@ const saveLogs = () => {
 onMounted(() => {
 	watchEffect(() => {
 		if (logsStore.content) {
-			nextTick(() => {
+			setTimeout(() => {
 				logInstRef.value?.scrollTo({ position: 'bottom', silent: true });
-			});
+			},0);
 		}
 	});
 });
