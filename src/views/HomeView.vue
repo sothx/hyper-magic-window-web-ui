@@ -1404,7 +1404,8 @@ const handleCanUseAutoUIRuleExplain = (row: EmbeddedMergeRuleItem, index: number
 				<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
 					{renderApplicationName(row.name, row.applicationName)}
 				</span>{' '}
-				已存在应用布局优化的规则，规则仅在应用横屏冷启动全屏场景下才会生效，如果规则没有生效，建议将应用的横屏配置修改为{' '}
+				已存在应用布局优化的规则，规则仅在应用横屏冷启动全屏场景下才会生效，如果规则未生效，请检查应用布局优化规则是否{' '}
+				<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>启用</span>{' '}，并建议将应用的横屏配置修改为{' '}
             <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>全屏</span>
             ，规则效果以应用个体差异而异，建议多多尝试。
 			</p>

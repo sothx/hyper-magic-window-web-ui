@@ -54,6 +54,8 @@ export function useZRAMWriteback() {
 		if (Number(getMiuiExtmDmOptTotalWriteBackResolve) > 0) totalWriteBack.value = Number(getMiuiExtmDmOptTotalWriteBackResolve);
 		if (Number(getMiuiExtmDmOptTotalReadResolve) > 0) totalRead.value = Number(getMiuiExtmDmOptTotalReadResolve);
 		if (Number(getMiuiExtmDmOptHasWriteBackResolve) > 0) hasWriteBack.value = Number(getMiuiExtmDmOptHasWriteBackResolve);
+
+		isInit.value = true;
 	};
 
 	onMounted(() => {
