@@ -165,6 +165,27 @@ onMounted(async () => {
 			},
 		});
 	}
+	if (
+		deviceStore.androidTargetSdk === 33 && deviceStore.MIOSVersion && deviceStore.MIOSVersion === 1
+	) {
+		modal.create({
+			title: '模块额外说明',
+			type: 'warning',
+			preset: 'dialog',
+			content: () => (
+				<div>
+					<p>
+						基于Android 13 的 Hyper OS 1 存在系统异常问题，可能导致「应用横屏布局」和「应用布局优化」的相关修改需要手动重启设备才会生效，请知悉此异常问题~
+					</p>
+				</div>
+			),
+			positiveText: '确定',
+			negativeText: '已知悉，不再提醒',
+			onNegativeClick: () => {
+				deviceStore.skipConfirm.needReloadSystemModuleVer = true;
+			},
+		});
+	}
 	embeddedStore.initDefault();
 	autoUIStore.initDefault();
 	gameBoosterStore.initDefault();
