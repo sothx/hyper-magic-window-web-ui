@@ -166,7 +166,7 @@ onMounted(async () => {
 		});
 	}
 	if (
-		deviceStore.androidTargetSdk === 33 && deviceStore.MIOSVersion && deviceStore.MIOSVersion === 1
+		deviceStore.androidTargetSdk === 33 && deviceStore.MIOSVersion && deviceStore.MIOSVersion === 1 && !deviceStore.skipConfirm.needReloadSystemModuleVer
 	) {
 		modal.create({
 			title: '模块额外说明',
