@@ -30,20 +30,20 @@ const dotBlackListStore = useDotBlackListStore();
 const showErrorModal = ref(false);
 const isSplashVisible = ref(true);
 
-watchEffect((onCleanup) => {
-  // 检查 deviceStore.loading 和 embeddedStore.loading 是否都为 false
-  if (!deviceStore.loading && !embeddedStore.loading) {
-    isSplashVisible.value = false;  // 隐藏开屏页
-  }
+watchEffect(onCleanup => {
+	// 检查 deviceStore.loading 和 embeddedStore.loading 是否都为 false
+	if (!deviceStore.loading && !embeddedStore.loading) {
+		isSplashVisible.value = false; // 隐藏开屏页
+	}
 
-  if (deviceStore.errorLogging.length || embeddedStore.errorLogging.length) {
-	isSplashVisible.value = false;  // 隐藏开屏页
-  }
+	if (deviceStore.errorLogging.length || embeddedStore.errorLogging.length) {
+		isSplashVisible.value = false; // 隐藏开屏页
+	}
 
-  // 清理函数，不再需要监听时执行
-  onCleanup(() => {
-    // 这里可以移除其他的副作用，如定时器等
-  });
+	// 清理函数，不再需要监听时执行
+	onCleanup(() => {
+		// 这里可以移除其他的副作用，如定时器等
+	});
 });
 
 watch(
@@ -106,60 +106,70 @@ onMounted(async () => {
 		}
 	});
 	await deviceStore.initDefault();
-	if (deviceStore.androidTargetSdk && deviceStore.androidTargetSdk === 30) {
+	if (
+		deviceStore.androidTargetSdk &&
+		deviceStore.androidTargetSdk <= 33 &&
+		!deviceStore.skipConfirm.lowWebViewVersion
+	) {
 		modal.create({
-			title: '不适配说明',
-			type: 'error',
+			title: '不兼容说明',
+			type: 'warning',
 			preset: 'dialog',
-			content: () => <p>Web UI 未对Android 11做适配，无法使用~</p>,
-			negativeText: '确定',
-		});
-	} else {
-		if (deviceStore.androidTargetSdk && deviceStore.androidTargetSdk <= 33 && !deviceStore.skipConfirm.lowWebViewVersion) {
-			modal.create({
-				title: '不兼容说明',
-				type: 'warning',
-				preset: 'dialog',
-				content: () => <div>
-					<p>Web UI 强依赖部分较新内核的JavaScript API实现，为了确保模块正常工作，Android 13/12的小米设备可能需要升级系统内置WebView版本，请通过Google Play商店升级！</p>
+			content: () => (
+				<div>
+					<p>
+						Web UI 强依赖部分较新内核的JavaScript API实现，为了确保模块正常工作，Android
+						13/12的小米设备可能需要升级系统内置WebView版本，请通过Google Play商店升级！
+					</p>
 					<p>下载地址:https://play.google.com/store/apps/details?id=com.google.android.webview</p>
 					<p>如果下载的是Beta/Dev/Canary版本的WebView，则需要前往[开发者选项-WebView实现]进行切换~</p>
-				</div>,
-				positiveText: '复制下载链接到剪切板',
-				negativeText: '已升级，不再提醒',
-				onPositiveClick: () => {
-					navigator.clipboard.writeText(`https://play.google.com/store/apps/details?id=com.google.android.webview`)
-				},
-				onNegativeClick: () => {
-						deviceStore.skipConfirm.lowWebViewVersion = true;
-				},
-			});
-		}
-		if (['KernelSU','APatch'].includes(deviceStore.currentRootManager) && !deviceStore.skipConfirm.needInstalledKsuWebUiApk) {
-			modal.create({
-				title: 'Web UI 升级提醒',
-				type: 'warning',
-				preset: 'dialog',
-				content: () => <div>
-					<p>KernelSU/APatch 自带的 Web UI 存在部分问题，可能导致模块功能显示不全，例如 「窗口控制器」等。建议可以安装波奇大佬提取制作的 「KsuWebUI」，取代自带的 Web UI，这不是必选项，您可以选择忽略此条建议，但可能导致模块部分功能无法正常工作。</p>
+				</div>
+			),
+			positiveText: '复制下载链接到剪切板',
+			negativeText: '已升级，不再提醒',
+			onPositiveClick: () => {
+				navigator.clipboard.writeText(
+					`https://play.google.com/store/apps/details?id=com.google.android.webview`,
+				);
+			},
+			onNegativeClick: () => {
+				deviceStore.skipConfirm.lowWebViewVersion = true;
+			},
+		});
+	}
+	if (
+		['KernelSU', 'APatch'].includes(deviceStore.currentRootManager) &&
+		!deviceStore.skipConfirm.needInstalledKsuWebUiApk
+	) {
+		modal.create({
+			title: 'Web UI 升级提醒',
+			type: 'warning',
+			preset: 'dialog',
+			content: () => (
+				<div>
+					<p>
+						KernelSU/APatch 自带的 Web UI 存在部分问题，可能导致模块功能显示不全，例如
+						「窗口控制器」等。建议可以安装波奇大佬提取制作的 「KsuWebUI」，取代自带的 Web
+						UI，这不是必选项，您可以选择忽略此条建议，但可能导致模块部分功能无法正常工作。
+					</p>
 					<p>下载地址:https://caiyun.139.com/m/i?135Ce7C7omgXj</p>
-				</div>,
-				positiveText: '复制下载链接到剪切板',
-				negativeText: '已安装，不再提醒',
-				onPositiveClick: () => {
-					navigator.clipboard.writeText(`https://caiyun.139.com/m/i?135Ce7C7omgXj`)
-				},
-				onNegativeClick: () => {
-						deviceStore.skipConfirm.needInstalledKsuWebUiApk = true;
-				},
-			});
-		}
-		embeddedStore.initDefault();
-		autoUIStore.initDefault();
-		gameBoosterStore.initDefault();
-		if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 1) {
-			dotBlackListStore.initDefault();
-		}
+				</div>
+			),
+			positiveText: '复制下载链接到剪切板',
+			negativeText: '已安装，不再提醒',
+			onPositiveClick: () => {
+				navigator.clipboard.writeText(`https://caiyun.139.com/m/i?135Ce7C7omgXj`);
+			},
+			onNegativeClick: () => {
+				deviceStore.skipConfirm.needInstalledKsuWebUiApk = true;
+			},
+		});
+	}
+	embeddedStore.initDefault();
+	autoUIStore.initDefault();
+	gameBoosterStore.initDefault();
+	if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 1) {
+		dotBlackListStore.initDefault();
 	}
 });
 </script>
@@ -177,7 +187,7 @@ onMounted(async () => {
       </nav>
     </div>
   </header> -->
-	<div class="app-container h-full" :class="`${deviceStore.isDarkMode ? 'bg-zinc-900 theme-dark-mode' : 'bg-white'}`">
+	<div class="app-container h-full" :class="`${deviceStore.isDarkMode ? 'theme-dark-mode bg-zinc-900' : 'bg-white'}`">
 		<n-config-provider :theme="deviceStore.isDarkMode ? darkTheme : lightTheme">
 			<Sidebar>
 				<RouterView />
