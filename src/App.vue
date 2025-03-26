@@ -1,10 +1,10 @@
 <script setup lang="tsx">
-import { RouterLink, RouterView } from 'vue-router';
+import { RouterLink, RouterView, useRouter } from 'vue-router';
 import HelloWorld from './components/HelloWorld.vue';
 import { Sidebar } from './components/Sidebar';
 import ErrorModal from '@/components/ErrorModal.vue';
 import SplashScreen from '@/components/SplashScreen.vue';
-import { ref, onMounted, watch, watchEffect, computed } from 'vue';
+import { ref, onMounted, watch, watchEffect, computed, nextTick } from 'vue';
 import { useDeviceStore } from '@/stores/device';
 import { createDiscreteApi, darkTheme, lightTheme, type ConfigProviderProps } from 'naive-ui';
 import { useEmbeddedStore } from '@/stores/embedded';
@@ -15,6 +15,7 @@ import { useAutoUIStore } from '@/stores/autoui';
 import { useGameBoosterStore } from './stores/gameBooster';
 const deviceStore = useDeviceStore();
 const logsStore = useLogsStore();
+const router = useRouter();
 const gameBoosterStore = useGameBoosterStore();
 const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
 	theme: deviceStore.isDarkMode ? darkTheme : lightTheme,
@@ -94,6 +95,29 @@ watchEffect(onCleanup => {
 	});
 });
 
+const loadRoutes = async () => {
+  let module;
+  console.log(deviceStore.deviceType,'deviceStore.deviceType')
+  if (deviceStore.deviceType === 'tablet') {
+    module = await import("./router/device_routes/tablet");
+  } else if (deviceStore.deviceType === 'fold') {
+    module = await import("./router/device_routes/fold");
+  } else {
+    module = await import("./router/device_routes/phone");
+  }
+
+  // 确保路由全部添加完成
+  module.default.forEach((item) => {
+    router.addRoute(item);
+  });
+
+  // 等待 Vue 处理异步路由更新
+  await nextTick();
+
+  // 使用 replace 避免历史记录
+  router.replace('/home');
+};
+
 onMounted(async () => {
 	window.onerror = function (message, source, lineno, colno, error) {
 		if (logsStore) {
@@ -106,6 +130,7 @@ onMounted(async () => {
 		}
 	});
 	await deviceStore.initDefault();
+	await loadRoutes();
 	// if (
 	// 	deviceStore.androidTargetSdk &&
 	// 	deviceStore.androidTargetSdk <= 33 &&

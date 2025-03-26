@@ -1070,7 +1070,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 						</dt>
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							{{ deviceStore.deviceType === 'tablet' ? '平板(Pad)' : '折叠屏(Fold)' }}
+							{{ deviceStore.deviceType === 'tablet' ? '平板(Pad)' : deviceStore.deviceType === 'fold' ? '折叠屏(Fold)' : '手机(Phone)' }}
 						</dd>
 					</div>
 					<div

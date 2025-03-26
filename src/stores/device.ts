@@ -75,6 +75,7 @@ export const useDeviceStore = defineStore(
 			display0Panel: '',
 			memoryInfo: '',
 		});
+		const isInit = ref<boolean>(false);
 		const lastVersionCode = ref<number>();
 		const needReloadData = ref<boolean>(false);
 		const moduleInfo = ref<ModuleProp>();
@@ -148,13 +149,17 @@ export const useDeviceStore = defineStore(
 		const isNeedShowErrorModal = computed(() => Boolean(errorLogging.length > 0));
 
 		const deviceType = computed(() => {
-			if (deviceCharacteristics.value === 'tablet') {
-				return 'tablet';
+			if (isInit.value) {
+				if (deviceCharacteristics.value === 'tablet') {
+					return 'tablet';
+				}
+				if (muiltdisplayType.value === 2) {
+					return 'fold';
+				}
+				return 'phone';
+			} else {
+				return '';
 			}
-			if (muiltdisplayType.value === 2) {
-				return 'fold';
-			}
-			return 'phone';
 		})
 
 		async function getAndroidApplicationPackageNameList() {
@@ -473,6 +478,7 @@ export const useDeviceStore = defineStore(
 			if (!errorLogging.length) {
 				loading.value = false;
 			}
+			isInit.value = true;
 		}
 
 		return {
@@ -516,7 +522,8 @@ export const useDeviceStore = defineStore(
 			isDisabledOS2InstallModuleTips,
 			DDRVendor,
 			deviceType,
-			muiltdisplayType
+			muiltdisplayType,
+			isInit
 		};
 	},
 	{
