@@ -92,7 +92,7 @@
               <n-button class="mt-2" strong secondary type="warning" @click="() => getAppDownload('小米萌宠系列动态壁纸', 'https://caiyun.139.com/m/i?135CmTzk7BYsS', 'original')">获取小米主题壁纸 - 萌宠系列动态壁纸</n-button>
             </n-alert>
           </div>
-          <div v-if="deviceStore.deviceCharacteristics === 'tablet'" class="px-4 flex sm:grid sm:px-0 mt-5">
+          <div v-if="deviceStore.deviceType === 'tablet'" class="px-4 flex sm:grid sm:px-0 mt-5">
             <n-alert
               title="小米平板系统应用补全模块 - 传送门/悬浮球"
               type="info"
@@ -140,7 +140,7 @@
               <n-button class="mt-2" strong secondary type="success" @click="() => getAppDownload('小米平板系统功能补全模块', 'https://caiyun.139.com/m/i?135Ce7Jx2e5nZ', 'magisk')">获取小米平板系统功能补全模块</n-button>
             </n-alert>
           </div>
-          <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="deviceStore.MIOSVersion && deviceStore.MIOSVersion === 1 && deviceStore.deviceCharacteristics === 'tablet'">
+          <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="deviceStore.MIOSVersion && deviceStore.MIOSVersion === 1 && deviceStore.deviceType === 'tablet'">
             <n-alert
               title="小米平板系统桌面 - Hyper OS 1"
               type="error"
@@ -154,7 +154,7 @@
               <n-button class="mt-2" strong secondary type="error" @click="() => getAppDownload('小米平板系统桌面', 'https://caiyun.139.com/m/i?135ClZdWPAYZk', 'system')">获取小米平板系统桌面</n-button>
             </n-alert>
           </div>
-          <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="deviceStore.MIOSVersion && deviceStore.MIOSVersion === 2 && deviceStore.deviceCharacteristics === 'tablet'">
+          <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="deviceStore.MIOSVersion && deviceStore.MIOSVersion === 2 && deviceStore.deviceType === 'tablet'">
             <n-alert
               title="小米平板系统桌面 - Android 15 Hyper OS 2"
               type="error"
@@ -168,7 +168,7 @@
               <n-button class="mt-2" strong secondary type="error" @click="() => getAppDownload('小米平板系统桌面', 'https://caiyun.139.com/m/i?135CmXZPQXz3d', 'system')">获取小米平板系统桌面</n-button>
             </n-alert>
           </div>
-          <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="deviceStore.MIOSVersion && deviceStore.MIOSVersion === 2 && deviceStore.androidTargetSdk === 34 && deviceStore.deviceCharacteristics === 'tablet'">
+          <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="deviceStore.MIOSVersion && deviceStore.MIOSVersion === 2 && deviceStore.androidTargetSdk === 34 && deviceStore.deviceType === 'tablet'">
             <n-alert
               title="小米平板系统桌面 - Android 14 Hyper OS 2"
               type="error"
@@ -182,7 +182,7 @@
               <n-button class="mt-2" strong secondary type="error" @click="() => getAppDownload('小米平板系统桌面', 'https://caiyun.139.com/m/i?135ClUAurszLD', 'system')">获取小米平板系统桌面</n-button>
             </n-alert>
           </div>
-          <div v-if="deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2  && deviceStore.androidTargetSdk >= 35 && deviceStore.deviceCharacteristics === 'tablet'" class="px-4 flex sm:grid sm:px-0 mt-5">
+          <div v-if="deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2  && deviceStore.androidTargetSdk >= 35 && deviceStore.deviceType === 'tablet'" class="px-4 flex sm:grid sm:px-0 mt-5">
             <n-alert
               title="WinPlay Mobile"
               type="info"
@@ -211,7 +211,7 @@
             <n-button class="mt-2" strong secondary type="warning" @click="() => getAppDownload('小米笔记', 'https://caiyun.139.com/m/i?135Ce9CtGXcVc', 'revision')">获取小米笔记</n-button>
             </n-alert>
           </div>
-          <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="deviceStore.deviceCharacteristics === 'tablet'">
+          <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="deviceStore.deviceType === 'tablet'">
             <n-alert
               title="UU远程"
               type="info"
@@ -239,7 +239,7 @@
             <n-button class="mt-2" strong secondary type="error" @click="() => getAppDownload('小米录音机', 'https://caiyun.139.com/m/i?135Ce9CYAY0YN', 'revision')">获取小米录音机</n-button>
             </n-alert>
           </div>
-          <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="deviceStore.deviceCharacteristics === 'tablet'">
+          <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="deviceStore.deviceType === 'tablet'">
             <n-alert
               title="小米远程控制"
               type="info"
@@ -252,7 +252,7 @@
               <n-button class="mt-2" strong secondary type="info" @click="() => getAppDownload('小米远程控制', 'https://caiyun.139.com/m/i?135Cmo1bvo1XC', 'original')">获取小米远程控制</n-button>
             </n-alert>
           </div>
-          <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="deviceStore.deviceCharacteristics === 'tablet'">
+          <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="deviceStore.deviceType === 'tablet'">
             <n-alert
               title="QQ音乐 HD"
               type="success"
@@ -319,7 +319,7 @@
               <n-button class="mt-2" strong secondary type="default" @click="() => getAppDownload('自由笔记', 'https://caiyun.139.com/m/i?135Clo5BWejq9', 'original')">获取自由笔记</n-button>
             </n-alert>
           </div>
-          <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="deviceStore.deviceCharacteristics === 'tablet'">
+          <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="deviceStore.deviceType === 'tablet'">
             <n-alert
               title="蓝牙遥控"
               type="info"
@@ -332,7 +332,7 @@
               <n-button class="mt-2" strong secondary type="info" @click="() => getAppDownload('蓝牙遥控', 'https://caiyun.139.com/m/i?135CmQwFbuC1D', 'original')">获取蓝牙遥控</n-button>
             </n-alert>
           </div>
-          <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="deviceStore.deviceCharacteristics === 'tablet'">
+          <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="deviceStore.deviceType === 'tablet'">
             <n-alert
               title="Flix"
               type="default"
@@ -372,7 +372,7 @@
               <n-button class="mt-2" strong secondary type="info" @click="() => getAppDownload('快递100', 'https://caiyun.139.com/m/i?135ClmypRCpvN', 'original')">获取快递100</n-button>
             </n-alert>
           </div>
-          <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="deviceStore.deviceCharacteristics === 'tablet'">
+          <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="deviceStore.deviceType === 'tablet'">
             <n-alert
               title="小米音乐(平板端)"
               type="success"
@@ -409,7 +409,7 @@
               <n-button class="mt-2" strong secondary type="info" @click="() => getAppDownload('屏幕一览', 'https://caiyun.139.com/m/i?135Cm6wzXEOyx', 'original')">获取屏幕一览</n-button>
             </n-alert>
           </div>
-          <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="deviceStore.deviceCharacteristics === 'tablet'">
+          <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="deviceStore.deviceType === 'tablet'">
             <n-alert
               title="网易爆米花"
               type="warning"
@@ -435,7 +435,7 @@
               <n-button class="mt-2" strong secondary type="info" @click="() => getAppDownload('三星浏览器', 'https://caiyun.139.com/m/i?135CmXZb9D6PP', 'original')">获取三星浏览器</n-button>
             </n-alert>
           </div>
-          <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="deviceStore.deviceCharacteristics === 'tablet'">
+          <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="deviceStore.deviceType === 'tablet'">
             <n-alert
               title="波点音乐"
               type="success"
@@ -447,7 +447,7 @@
               <n-button class="mt-2" strong secondary type="success" @click="() => getAppDownload('波点音乐', 'https://caiyun.139.com/m/i?135CmXWNtw2yy', 'original')">获取波点音乐</n-button>
             </n-alert>
           </div>
-          <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="deviceStore.deviceCharacteristics === 'tablet'">
+          <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="deviceStore.deviceType === 'tablet'">
             <n-alert
               title="荣耀音乐"
               type="error"
@@ -460,7 +460,7 @@
               <n-button class="mt-2" strong secondary type="error" @click="() => getAppDownload('荣耀音乐', 'https://caiyun.139.com/m/i?135CmrVUbH2y3', 'original')">获取荣耀音乐</n-button>
             </n-alert>
           </div>
-          <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="deviceStore.deviceCharacteristics === 'tablet'">
+          <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="deviceStore.deviceType === 'tablet'">
             <n-alert
               title="随身乐队"
               type="info"
@@ -487,7 +487,7 @@
               <n-button class="mt-2" strong secondary type="default" @click="() => getAppDownload('FlipaClip', 'https://caiyun.139.com/m/i?135Ce7Ou7DwWV', 'original')">获取FlipaClip</n-button>
             </n-alert>
           </div>
-          <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="deviceStore.deviceCharacteristics === 'tablet'">
+          <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="deviceStore.deviceType === 'tablet'">
             <n-alert
               title="像素习惯"
               type="info"

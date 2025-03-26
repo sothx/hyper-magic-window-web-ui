@@ -231,8 +231,8 @@ const importShareRule = async () => {
 				return;
 			}
 			if (
-				(importRuleContent.device === 'pad' && deviceStore.deviceCharacteristics !== 'tablet') ||
-				(importRuleContent.device === 'fold' && deviceStore.deviceCharacteristics === 'tablet')
+				(importRuleContent.device === 'pad' && deviceStore.deviceType !== 'tablet') ||
+				(importRuleContent.device === 'fold' && deviceStore.deviceType === 'tablet')
 			) {
 				modal.create({
 					title: '导入分享规则失败',
@@ -500,7 +500,7 @@ const reloadPatchModeConfigList = async () => {
 };
 
 const openAddEmbeddedApp = async () => {
-	if (deviceStore.deviceCharacteristics !== 'tablet') {
+	if (deviceStore.deviceType !== 'tablet') {
 		modal.create({
 			title: '不兼容说明',
 			type: 'warning',
@@ -692,7 +692,7 @@ const openAddEmbeddedApp = async () => {
 };
 
 const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) => {
-	if (deviceStore.deviceCharacteristics !== 'tablet') {
+	if (deviceStore.deviceType !== 'tablet') {
 		modal.create({
 			title: '不兼容说明',
 			type: 'warning',
@@ -1197,7 +1197,7 @@ const handleCustomRuleDropdown = async (
 	row: EmbeddedMergeRuleItem,
 	index: number,
 ) => {
-	if (deviceStore.deviceCharacteristics !== 'tablet') {
+	if (deviceStore.deviceType !== 'tablet') {
 		modal.create({
 			title: '不兼容说明',
 			type: 'warning',
@@ -1315,7 +1315,7 @@ const handleCustomRuleDropdown = async (
 				...row.fixedOrientationRule,
 			},
 			type: 'embedded',
-			device: deviceStore.deviceCharacteristics === 'tablet' ? 'pad' : 'fold',
+			device: deviceStore.deviceType === 'tablet' ? 'pad' : 'fold',
 			mode: row.settingMode,
 			...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35
 				? {
@@ -1414,7 +1414,7 @@ const handleCanUseAutoUIRuleExplain = (row: EmbeddedMergeRuleItem, index: number
 };
 
 const handleModuleRuleModeExplain = (row: EmbeddedMergeRuleItem, index: number, canUseSystemEmbedded?: boolean) => {
-	if (deviceStore.deviceCharacteristics !== 'tablet') {
+	if (deviceStore.deviceType !== 'tablet') {
 		modal.create({
 			title: '不兼容说明',
 			type: 'warning',
@@ -1467,7 +1467,7 @@ const handleModuleRuleDropdown = async (
 	row: EmbeddedMergeRuleItem,
 	index: number,
 ) => {
-	if (deviceStore.deviceCharacteristics !== 'tablet') {
+	if (deviceStore.deviceType !== 'tablet') {
 		modal.create({
 			title: '不兼容说明',
 			type: 'warning',
@@ -1882,7 +1882,7 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 						type: 'success',
 						name: '平行窗口',
 						onClick(row: EmbeddedMergeRuleItem, index: number) {
-							if (deviceStore.deviceCharacteristics !== 'tablet') {
+							if (deviceStore.deviceType !== 'tablet') {
 								modal.create({
 									title: '不兼容说明',
 									type: 'warning',
@@ -1898,7 +1898,7 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 						type: 'info',
 						name: '全屏',
 						onClick(row: EmbeddedMergeRuleItem, index: number) {
-							if (deviceStore.deviceCharacteristics !== 'tablet') {
+							if (deviceStore.deviceType !== 'tablet') {
 								modal.create({
 									title: '不兼容说明',
 									type: 'warning',
@@ -1914,7 +1914,7 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 						type: 'warning',
 						name: '居中布局',
 						onClick(row: EmbeddedMergeRuleItem, index: number) {
-							if (deviceStore.deviceCharacteristics !== 'tablet') {
+							if (deviceStore.deviceType !== 'tablet') {
 								modal.create({
 									title: '不兼容说明',
 									type: 'warning',
@@ -1930,7 +1930,7 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 						type: 'error',
 						name: '原始布局',
 						onClick(row: EmbeddedMergeRuleItem, index: number) {
-							if (deviceStore.deviceCharacteristics !== 'tablet') {
+							if (deviceStore.deviceType !== 'tablet') {
 								modal.create({
 									title: '不兼容说明',
 									type: 'warning',

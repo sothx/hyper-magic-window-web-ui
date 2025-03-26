@@ -66,6 +66,7 @@ export const useDeviceStore = defineStore(
 	'device',
 	() => {
 		const deviceCharacteristics = ref<string>();
+		const muiltdisplayType = ref<number>(0);
 		const androidTargetSdk = ref<number>(0);
 		const MIOSVersion = ref<number>();
 		const deviceInfo = reactive<deviceInfo>({
@@ -145,6 +146,16 @@ export const useDeviceStore = defineStore(
 		})
 
 		const isNeedShowErrorModal = computed(() => Boolean(errorLogging.length > 0));
+
+		const deviceType = computed(() => {
+			if (deviceCharacteristics.value === 'tablet') {
+				return 'tablet';
+			}
+			if (muiltdisplayType.value === 2) {
+				return 'fold';
+			}
+			return 'phone';
+		})
 
 		async function getAndroidApplicationPackageNameList() {
 			return new Promise(async (resolve, reject) => {
@@ -312,18 +323,31 @@ export const useDeviceStore = defineStore(
 			batteryInfo.cycleCount = Number(getBatteryCycleCountRes);
 			// 获取用户已安装的应用
 			await getAndroidApplicationPackageNameList();
-			// 设备类型 *强校验
+			// 设备特征 *强校验
 			const [getDeviceCharacteristicsErr, getDeviceCharacteristicsRes] = await $to<string, string>(
 				deviceApi.getDeviceCharacteristics(),
 			);
 			if (getDeviceCharacteristicsErr) {
 				errorLogging.push({
 					type: 'deviceCharacteristics',
-					title: '设备类型',
+					title: '设备特征',
 					msg: getDeviceCharacteristicsErr,
 				});
 			} else {
 				deviceCharacteristics.value = getDeviceCharacteristicsRes;
+			}
+			// 设备屏幕数量
+			const [getMuiltdisplayTypeErr, getMuiltdisplayTypeRes] = await $to<string, string>(
+				deviceApi.getMuiltdisplayType(),
+			);
+			if (getMuiltdisplayTypeErr) {
+				errorLogging.push({
+					type: 'muiltdisplayType',
+					title: '设备屏幕数量',
+					msg: getMuiltdisplayTypeErr,
+				});
+			} else {
+				muiltdisplayType.value = Number(getMuiltdisplayTypeRes) || 0;
 			}
 			// 旋转建议提示按钮 *强校验
 			const [getRotationSuggestionsErr, getRotationSuggestionsRes] = await $to<string, string>(
@@ -490,7 +514,9 @@ export const useDeviceStore = defineStore(
 			isDisabledOS2SystemAppOptimize,
 			preStartProp,
 			isDisabledOS2InstallModuleTips,
-			DDRVendor
+			DDRVendor,
+			deviceType,
+			muiltdisplayType
 		};
 	},
 	{

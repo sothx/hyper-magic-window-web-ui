@@ -964,7 +964,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 								:value="gameModeHook.isSupportGameMode"
 								:rail-style="railStyle"
 								:disabled="
-									deviceStore.deviceCharacteristics !== 'tablet' ||
+									deviceStore.deviceType !== 'tablet' ||
 									(deviceStore.androidTargetSdk && deviceStore.androidTargetSdk < 32)
 								">
 								<template #checked>已开启游戏显示布局</template>
@@ -996,7 +996,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 					</div>
 					<div
 						v-if="
-							deviceStore.deviceCharacteristics === 'tablet' &&
+							deviceStore.deviceType === 'tablet' &&
 							deviceStore.MIOSVersion &&
 							deviceStore.MIOSVersion >= 2
 						"
@@ -1070,7 +1070,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 						</dt>
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							{{ deviceStore.deviceCharacteristics === 'tablet' ? '平板(Pad)' : '折叠屏(Fold)' }}
+							{{ deviceStore.deviceType === 'tablet' ? '平板(Pad)' : '折叠屏(Fold)' }}
 						</dd>
 					</div>
 					<div

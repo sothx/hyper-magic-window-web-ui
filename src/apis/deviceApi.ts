@@ -33,6 +33,21 @@ export const getDeviceCharacteristics = (): Promise<string> => {
 	);
 };
 
+export const getMuiltdisplayType = (): Promise<string> => {
+	const shellCommon = `getprop persist.sys.muiltdisplay_type`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve('2');
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
 export const getAndroidTargetSdk = (): Promise<number> => {
 	const shellCommon = `getprop ro.build.version.sdk`;
 	return handlePromiseWithLogging(

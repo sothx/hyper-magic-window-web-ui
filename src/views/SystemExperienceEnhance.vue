@@ -283,7 +283,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 						v-if="
 							deviceStore.MIOSVersion &&
 							deviceStore.MIOSVersion >= 1 &&
-							deviceStore.deviceCharacteristics === 'tablet'
+							deviceStore.deviceType === 'tablet'
 						"
 						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
@@ -343,7 +343,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							<n-alert
 								v-if="
 									MIUIContentExtensionHook.isInstallMIUIContentExtension.value &&
-									deviceStore.deviceCharacteristics === 'tablet'
+									deviceStore.deviceType === 'tablet'
 								"
 								class="mt-5"
 								type="info"
@@ -390,7 +390,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							deviceStore.MIOSVersion &&
 							deviceStore.MIOSVersion >= 2 &&
 							deviceStore.androidTargetSdk >= 35 &&
-							deviceStore.deviceCharacteristics === 'tablet'
+							deviceStore.deviceType === 'tablet'
 						"
 						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
@@ -424,7 +424,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 					</div>
 					<div
 						v-if="
-							deviceStore.deviceCharacteristics === 'tablet' &&
+							deviceStore.deviceType === 'tablet' &&
 							(useDisplaySettingsHook.hasMTKDisplayBrightness.value ||
 								useDisplaySettingsHook.hasQComDisplayBrightness.value)
 						"
@@ -869,7 +869,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 						v-if="
 							deviceStore.MIOSVersion &&
 							deviceStore.MIOSVersion >= 2 &&
-							deviceStore.deviceCharacteristics === 'tablet'
+							deviceStore.deviceType === 'tablet'
 						">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
@@ -898,7 +898,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 						v-if="
 							deviceStore.MIOSVersion &&
 							deviceStore.MIOSVersion >= 2 &&
-							deviceStore.deviceCharacteristics !== 'tablet'
+							deviceStore.deviceType !== 'tablet'
 						">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">

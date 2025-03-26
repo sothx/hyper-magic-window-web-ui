@@ -23,7 +23,7 @@ export function useGameMode() {
 				deviceStore.androidTargetSdk >= 35 &&
 				deviceStore.MIOSVersion &&
 				deviceStore.MIOSVersion >= 2 &&
-				deviceStore.deviceCharacteristics === 'tablet'
+				deviceStore.deviceType === 'tablet'
 			) {
 				if (deviceStore.MIOSVersion === 2) {
 					if (
@@ -103,7 +103,7 @@ export function useGameMode() {
 								后需要设备重启才会生效~
 							</p>
 							{value &&
-								deviceStore.deviceCharacteristics === 'tablet' &&
+								deviceStore.deviceType === 'tablet' &&
 								deviceStore.MIOSVersion &&
 								deviceStore.MIOSVersion >= 2 &&
 								deviceStore.androidTargetSdk >= 35 && (

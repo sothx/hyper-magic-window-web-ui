@@ -215,8 +215,8 @@ const importShareRule = async () => {
 				return;
 			}
 			if (
-				(importRuleContent.device === 'pad' && deviceStore.deviceCharacteristics !== 'tablet') ||
-				(importRuleContent.device === 'fold' && deviceStore.deviceCharacteristics === 'tablet')
+				(importRuleContent.device === 'pad' && deviceStore.deviceType !== 'tablet') ||
+				(importRuleContent.device === 'fold' && deviceStore.deviceType === 'tablet')
 			) {
 				modal.create({
 					title: '导入分享规则失败',
@@ -376,7 +376,7 @@ const handleCustomRuleDropdown = async (
 				...row.autoUIRule,
 			},
 			type: 'autoui',
-			device: deviceStore.deviceCharacteristics === 'tablet' ? 'pad' : 'fold',
+			device: deviceStore.deviceType === 'tablet' ? 'pad' : 'fold',
 			mode: row.settingMode,
 		};
 		console.log(shareContent, 'shareContent');

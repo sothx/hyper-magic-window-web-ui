@@ -103,7 +103,7 @@ export const embeddedPerceptionApplications: Record<string, EmbeddedPerceptionAp
 								supportFullSize: true,
 							},
 							type: 'embedded',
-							device: deviceStore.deviceCharacteristics === 'tablet' ? 'pad' : 'fold',
+							device: deviceStore.deviceType === 'tablet' ? 'pad' : 'fold',
 							mode: 'embedded',
 							...(deviceStore.MIOSVersion &&
 							deviceStore.MIOSVersion >= 2 &&
@@ -189,7 +189,7 @@ export const embeddedPerceptionApplications: Record<string, EmbeddedPerceptionAp
 							em: {
 								name: 'com.coolapk.market',
 								skipSelfAdaptive: true,
-								splitRatio: deviceStore.deviceCharacteristics === 'tablet' ? 0.3 : 0.5,
+								splitRatio: deviceStore.deviceType === 'tablet' ? 0.3 : 0.5,
 								splitPairRule:
 									'com.coolapk.market.view.main.MainActivity:*,com.coolapk.market.view.userv9.UserSpaceV9Activity:*,com.coolapk.market.view.node.DynamicNodePageActivity:*,com.coolapk.market.view.search.SuperSearchResultActivity:*,com.coolapk.market.view.base.SimpleAlphaActivity:*,com.coolapk.market.view.feed.FeedDetailActivityV8:*,com.coolapk.market.view.appmanager.UpgradeManagerActivity:*,com.coolapk.market.view.feedv8.multiSubmit.MultiSubmitActivity:*,com.coolapk.market.view.appmanager.AppManagerActivity:*,com.coolapk.market.view.user.UserFeedListActivity:*,com.coolapk.market.view.contact.FriendListActivity:*,com.coolapk.market.view.contact.FansListActivity:*,com.coolapk.market.view.user.UserFollowAppActivity:*,com.coolapk.market.view.album.UserAlbumListActivity:*,com.coolapk.market.view.user.MyDigitTabListActivit:*,com.coolapk.market.view.goods.MyGoodsTabListActivity:*,com.coolapk.market.view.user.UserPictureListActivity:*,com.coolapk.market.view.dyhv8.DyhListActivity:*,com.coolapk.market.view.backupList.BackupListActivity:*,com.coolapk.market.view.message.ChattingActivity:*,com.coolapk.market.view.feed.FeedReplyDetailActivity:*,com.coolapk.market.view.feedv8.SubmitFeedV8Activity:*,com.coolapk.market.view.notification.NotificationActivity:*,com.coolapk.market.view.feed.ReplyActivity:*',
 								activityRule:
@@ -199,13 +199,13 @@ export const embeddedPerceptionApplications: Record<string, EmbeddedPerceptionAp
 								isShowDivider: true,
 								supportFullSize: true,
 								flags: 'reusePreContainer:com.coolapk.market.view.photo.PhotoViewActivity,com.coolapk.market.view.collectionList.CollectionSelectActivity;',
-								...(deviceStore.deviceCharacteristics === 'tablet'
+								...(deviceStore.deviceType === 'tablet'
 									? {
 											splitMinWidth: 900,
 										}
 									: undefined),
 							},
-							...(deviceStore.deviceCharacteristics === 'tablet'
+							...(deviceStore.deviceType === 'tablet'
 								? {
 										fo: {
 											name: 'com.coolapk.market',
@@ -223,7 +223,7 @@ export const embeddedPerceptionApplications: Record<string, EmbeddedPerceptionAp
 									}
 								: undefined),
 							type: 'embedded',
-							device: deviceStore.deviceCharacteristics === 'tablet' ? 'pad' : 'fold',
+							device: deviceStore.deviceType === 'tablet' ? 'pad' : 'fold',
 							mode: 'embedded',
 							...(deviceStore.MIOSVersion &&
 							deviceStore.MIOSVersion >= 2 &&
@@ -303,7 +303,7 @@ export const embeddedPerceptionApplications: Record<string, EmbeddedPerceptionAp
 								进行导入~
 								{NButtonTemplate &&
 									NButtonTemplate('获取全局横屏自定义规则', 'info', () => handleClickFullRule())}
-								{deviceStore.deviceCharacteristics === 'tablet' &&
+								{deviceStore.deviceType === 'tablet' &&
 									deviceStore.MIOSVersion &&
 									deviceStore.MIOSVersion === 2 &&
 									deviceStore.androidTargetSdk >= 35 && (
@@ -346,7 +346,7 @@ export const embeddedPerceptionApplications: Record<string, EmbeddedPerceptionAp
 		isShow() {
 			const deviceStore = useDeviceStore();
 			if (
-				deviceStore.deviceCharacteristics === 'tablet' &&
+				deviceStore.deviceType === 'tablet' &&
 				deviceStore.MIOSVersion &&
 				deviceStore.MIOSVersion === 2 &&
 				deviceStore.androidTargetSdk >= 35
@@ -378,7 +378,7 @@ export const embeddedPerceptionApplications: Record<string, EmbeddedPerceptionAp
 								skipSelfAdaptive: true,
 							}
 						: undefined),
-					splitRatio: deviceStore.deviceCharacteristics === 'tablet' ? 0.4 : 0.5,
+					splitRatio: deviceStore.deviceType === 'tablet' ? 0.4 : 0.5,
 					isShowDivider: true,
 					supportFullSize: true,
 					splitPairRule:
@@ -391,7 +391,7 @@ export const embeddedPerceptionApplications: Record<string, EmbeddedPerceptionAp
 					forcePortraitActivity:
 						'tv.danmaku.bili/com.bilibili.app.preferences.storage.BiliStorageManagerActivity',
 				},
-				...(deviceStore.deviceCharacteristics === 'tablet'
+				...(deviceStore.deviceType === 'tablet'
 					? {
 							fo: {
 								name: 'tv.danmaku.bili',
@@ -407,7 +407,7 @@ export const embeddedPerceptionApplications: Record<string, EmbeddedPerceptionAp
 						}
 					: undefined),
 				type: 'embedded',
-				device: deviceStore.deviceCharacteristics === 'tablet' ? 'pad' : 'fold',
+				device: deviceStore.deviceType === 'tablet' ? 'pad' : 'fold',
 				mode: 'embedded',
 				...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35
 					? {
@@ -505,7 +505,7 @@ export const embeddedPerceptionApplications: Record<string, EmbeddedPerceptionAp
 								skipSelfAdaptive: true,
 							}
 						: undefined),
-					splitRatio: deviceStore.deviceCharacteristics === 'tablet' ? 0.4 : 0.5,
+					splitRatio: deviceStore.deviceType === 'tablet' ? 0.4 : 0.5,
 					placeholder: 'tv.danmaku.bili.MainActivityV2:com.bilibili.search.main.BiliMainSearchActivity',
 					splitPairRule:
 						'tv.danmaku.bili.MainActivityV2:*,com.bilibili.search.main.BiliMainSearchActivity:*,com.bilibili.bplus.followinglist.quick.consume.QuickConsumeActivity:*,tv.danmaku.bili.ui.videodownload.VideoDownloadListActivity:*,com.bilibili.lib.ui.GeneralActivity:*,tv.danmaku.bili.ui.favorite.FavoriteBoxActivity:*,tv.danmaku.bili.ui.main2.WatchLaterActivity:*,com.bilibili.lib.ui.GeneralActivity:*,com.bilibili.app.preferences.BiliPreferencesActivity:*,com.bilibili.app.authorspace.ui.AuthorSpaceActivity:*,com.bilibili.search2.main.BiliMainSearchActivity:*',
@@ -517,7 +517,7 @@ export const embeddedPerceptionApplications: Record<string, EmbeddedPerceptionAp
 					forcePortraitActivity:
 						'com.bilibili.app.blue/com.bilibili.app.preferences.storage.BiliStorageManagerActivity',
 				},
-				...(deviceStore.deviceCharacteristics === 'tablet'
+				...(deviceStore.deviceType === 'tablet'
 					? {
 							fo: {
 								name: 'com.bilibili.app.in',
@@ -533,7 +533,7 @@ export const embeddedPerceptionApplications: Record<string, EmbeddedPerceptionAp
 						}
 					: undefined),
 				type: 'embedded',
-				device: deviceStore.deviceCharacteristics === 'tablet' ? 'pad' : 'fold',
+				device: deviceStore.deviceType === 'tablet' ? 'pad' : 'fold',
 				mode: 'embedded',
 				...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35
 					? {

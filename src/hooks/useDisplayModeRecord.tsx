@@ -75,7 +75,7 @@ export function useDisplayModeRecord() {
             title: '想应用该配置吗?',
             type: 'info',
             preset: 'dialog',
-            content: () => <div>应用后设备分辨率将配置为{data.width}x{data.height}，刷新率将配置为{data.fps}Hz，在设备下次重启前将一直维持该配置，该功能可能受触控笔和其他第三方模块影响不一定生效，如需恢复系统设置内的默认分辨率及刷新率配置，请手动重启设备。{deviceStore.deviceCharacteristics === 'tablet' && <span>连接触控笔蓝牙期间，为了确保触控笔正常工作，系统也会强行重置该配置，断开触控笔蓝牙后需要重新配置，</span>}确定要继续应用该配置么？</div>,
+            content: () => <div>应用后设备分辨率将配置为{data.width}x{data.height}，刷新率将配置为{data.fps}Hz，在设备下次重启前将一直维持该配置，该功能可能受触控笔和其他第三方模块影响不一定生效，如需恢复系统设置内的默认分辨率及刷新率配置，请手动重启设备。{deviceStore.deviceType === 'tablet' && <span>连接触控笔蓝牙期间，为了确保触控笔正常工作，系统也会强行重置该配置，断开触控笔蓝牙后需要重新配置，</span>}确定要继续应用该配置么？</div>,
             negativeText: '取消',
             positiveText: '确定',
             onPositiveClick() {
