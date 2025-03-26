@@ -106,37 +106,37 @@ onMounted(async () => {
 		}
 	});
 	await deviceStore.initDefault();
-	if (
-		deviceStore.androidTargetSdk &&
-		deviceStore.androidTargetSdk <= 33 &&
-		!deviceStore.skipConfirm.lowWebViewVersion
-	) {
-		modal.create({
-			title: '不兼容说明',
-			type: 'warning',
-			preset: 'dialog',
-			content: () => (
-				<div>
-					<p>
-						Web UI 强依赖部分较新内核的JavaScript API实现，为了确保模块正常工作，Android
-						13/12的小米设备可能需要升级系统内置WebView版本，请通过Google Play商店升级！
-					</p>
-					<p>下载地址:https://play.google.com/store/apps/details?id=com.google.android.webview</p>
-					<p>如果下载的是Beta/Dev/Canary版本的WebView，则需要前往[开发者选项-WebView实现]进行切换~</p>
-				</div>
-			),
-			positiveText: '复制下载链接到剪切板',
-			negativeText: '已升级，不再提醒',
-			onPositiveClick: () => {
-				navigator.clipboard.writeText(
-					`https://play.google.com/store/apps/details?id=com.google.android.webview`,
-				);
-			},
-			onNegativeClick: () => {
-				deviceStore.skipConfirm.lowWebViewVersion = true;
-			},
-		});
-	}
+	// if (
+	// 	deviceStore.androidTargetSdk &&
+	// 	deviceStore.androidTargetSdk <= 33 &&
+	// 	!deviceStore.skipConfirm.lowWebViewVersion
+	// ) {
+	// 	modal.create({
+	// 		title: '不兼容说明',
+	// 		type: 'warning',
+	// 		preset: 'dialog',
+	// 		content: () => (
+	// 			<div>
+	// 				<p>
+	// 					Web UI 强依赖部分较新内核的JavaScript API实现，为了确保模块正常工作，Android
+	// 					13/12的小米设备可能需要升级系统内置WebView版本，请通过Google Play商店升级！
+	// 				</p>
+	// 				<p>下载地址:https://play.google.com/store/apps/details?id=com.google.android.webview</p>
+	// 				<p>如果下载的是Beta/Dev/Canary版本的WebView，则需要前往[开发者选项-WebView实现]进行切换~</p>
+	// 			</div>
+	// 		),
+	// 		positiveText: '复制下载链接到剪切板',
+	// 		negativeText: '已升级，不再提醒',
+	// 		onPositiveClick: () => {
+	// 			navigator.clipboard.writeText(
+	// 				`https://play.google.com/store/apps/details?id=com.google.android.webview`,
+	// 			);
+	// 		},
+	// 		onNegativeClick: () => {
+	// 			deviceStore.skipConfirm.lowWebViewVersion = true;
+	// 		},
+	// 	});
+	// }
 	if (
 		['KernelSU', 'APatch'].includes(deviceStore.currentRootManager) &&
 		!deviceStore.skipConfirm.needInstalledKsuWebUiApk
