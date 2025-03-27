@@ -64,9 +64,9 @@
       </div>
       <div class="mt-6 border-gray-100">
         <dl class="divide-gray-100 mb-5">
-          <div class="px-4 flex sm:grid sm:px-0">
+          <div class="px-4 flex sm:grid sm:px-0" v-if="['tablet','fold'].includes(deviceStore.deviceType)">
             <n-alert
-              title="超级小爱"
+              title="超级小爱 - Pad / Fold"
               type="error"
             >
             <template #icon>
@@ -107,7 +107,7 @@
               <n-button class="mt-2" strong secondary type="info" @click="() => getAppDownload('传送门/悬浮球补全模块', 'https://caiyun.139.com/m/i?135Ce8FLLcLm8', 'magisk')">获取传送门/悬浮球补全模块</n-button>
             </n-alert>
           </div>
-          <div class="px-4 flex sm:grid sm:px-0 mt-5">
+          <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="['tablet','fold'].includes(deviceStore.deviceType)">
             <n-alert
               title="小米平板系统功能补全模块"
               type="success"
@@ -211,7 +211,7 @@
             <n-button class="mt-2" strong secondary type="warning" @click="() => getAppDownload('小米笔记', 'https://caiyun.139.com/m/i?135Ce9CtGXcVc', 'revision')">获取小米笔记</n-button>
             </n-alert>
           </div>
-          <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="deviceStore.deviceType === 'tablet'">
+          <div class="px-4 flex sm:grid sm:px-0 mt-5">
             <n-alert
               title="UU远程"
               type="info"
@@ -239,7 +239,7 @@
             <n-button class="mt-2" strong secondary type="error" @click="() => getAppDownload('小米录音机', 'https://caiyun.139.com/m/i?135Ce9CYAY0YN', 'revision')">获取小米录音机</n-button>
             </n-alert>
           </div>
-          <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="deviceStore.deviceType === 'tablet'">
+          <div class="px-4 flex sm:grid sm:px-0 mt-5">
             <n-alert
               title="小米远程控制"
               type="info"
@@ -252,7 +252,7 @@
               <n-button class="mt-2" strong secondary type="info" @click="() => getAppDownload('小米远程控制', 'https://caiyun.139.com/m/i?135Cmo1bvo1XC', 'original')">获取小米远程控制</n-button>
             </n-alert>
           </div>
-          <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="deviceStore.deviceType === 'tablet'">
+          <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="['tablet','fold'].includes(deviceStore.deviceType)">
             <n-alert
               title="QQ音乐 HD"
               type="success"
@@ -260,7 +260,7 @@
             <template #icon>
               <img src="/images/apps/qq_music.jpg" />
             </template>
-              <p>QQ 音乐 HD 6.0，全新版本已增加对平板的大屏适配！</p>
+              <p>QQ 音乐 HD 6.0，全新版本已增加大屏适配！</p>
               <n-button class="mt-2" strong secondary type="success" @click="() => getAppDownload('QQ音乐 HD', 'https://caiyun.139.com/m/i?135CmomGWJWB1', 'original')">获取QQ音乐 HD</n-button>
             </n-alert>
           </div>
@@ -292,7 +292,7 @@
               <n-button class="mt-2" strong secondary type="default" @click="() => getAppDownload('盖世游戏', 'https://caiyun.139.com/m/i?135ClWBEBfVxW', 'original')">获取盖世游戏</n-button>
             </n-alert>
           </div>
-          <div class="px-4 flex sm:grid sm:px-0 mt-5">
+          <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="['tablet'].includes(deviceStore.deviceType)">
             <n-alert
               title="StarNote"
               type="info"
@@ -306,7 +306,7 @@
               <n-button class="mt-2" strong secondary type="info" @click="() => getAppDownload('StarNote', 'https://yun.139.com/sharewap/#/m/i?135CmrnDyIHP2', 'original')">获取StarNote</n-button>
             </n-alert>
           </div>
-          <div class="px-4 flex sm:grid sm:px-0 mt-5">
+          <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="['tablet'].includes(deviceStore.deviceType)">
             <n-alert
               title="自由笔记"
               type="default"
@@ -319,7 +319,7 @@
               <n-button class="mt-2" strong secondary type="default" @click="() => getAppDownload('自由笔记', 'https://caiyun.139.com/m/i?135Clo5BWejq9', 'original')">获取自由笔记</n-button>
             </n-alert>
           </div>
-          <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="deviceStore.deviceType === 'tablet'">
+          <div class="px-4 flex sm:grid sm:px-0 mt-5">
             <n-alert
               title="蓝牙遥控"
               type="info"
@@ -355,7 +355,7 @@
               <img src="/images/apps/mi_whitenoise.png" />
             </template>
               <p>小米白噪音能让你更专注，更好的入睡。在这里，您可以倾听大自然的声音，将嘈杂的噪音和噪音隔绝开来，沉浸在大自然的礼物中，享受着夏日的微风吹拂着自己的脸庞，海浪的温柔拍打着自己的脸庞，还有淅淅沥沥的小雨，这一切都是发自内心的快乐。</p>
-              <p>完美横屏应用计划已为小米白噪音通过应用横屏布局适配大屏，欢迎体验！</p>
+              <p v-if="['tablet','fold'].includes(deviceStore.deviceType)">完美横屏应用计划已为小米白噪音通过应用横屏布局适配大屏，欢迎体验！</p>
               <n-button class="mt-2" strong secondary type="success" @click="() => getAppDownload('小米白噪音', 'https://caiyun.139.com/m/i?135Ce3WtvUiKp', 'system')">获取小米白噪音</n-button>
             </n-alert>
           </div>
@@ -368,11 +368,11 @@
               <img src="/images/apps/kingdee.webp" />
             </template>
             <p>查快递 寄快递 上快递100，支持直接输入或扫描单号、图片识别、添加手机号等多种查件方式，还可自动保存查件记录，支持多设备多平台同步物流信息。取件、派件、签收、异常等多类型快递状态实时跟踪展示！</p>
-            <p>完美横屏应用计划已为快递100通过应用横屏布局适配大屏，欢迎体验！</p>
+            <p v-if="['tablet','fold'].includes(deviceStore.deviceType)">完美横屏应用计划已为快递100通过应用横屏布局适配大屏，欢迎体验！</p>
               <n-button class="mt-2" strong secondary type="info" @click="() => getAppDownload('快递100', 'https://caiyun.139.com/m/i?135ClmypRCpvN', 'original')">获取快递100</n-button>
             </n-alert>
           </div>
-          <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="deviceStore.deviceType === 'tablet'">
+          <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="['tablet'].includes(deviceStore.deviceType)">
             <n-alert
               title="小米音乐(平板端)"
               type="success"
@@ -409,7 +409,7 @@
               <n-button class="mt-2" strong secondary type="info" @click="() => getAppDownload('屏幕一览', 'https://caiyun.139.com/m/i?135Cm6wzXEOyx', 'original')">获取屏幕一览</n-button>
             </n-alert>
           </div>
-          <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="deviceStore.deviceType === 'tablet'">
+          <div class="px-4 flex sm:grid sm:px-0 mt-5">
             <n-alert
               title="网易爆米花"
               type="warning"
@@ -435,7 +435,7 @@
               <n-button class="mt-2" strong secondary type="info" @click="() => getAppDownload('三星浏览器', 'https://caiyun.139.com/m/i?135CmXZb9D6PP', 'original')">获取三星浏览器</n-button>
             </n-alert>
           </div>
-          <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="deviceStore.deviceType === 'tablet'">
+          <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="['tablet','fold'].includes(deviceStore.deviceType)">
             <n-alert
               title="波点音乐"
               type="success"
@@ -447,7 +447,7 @@
               <n-button class="mt-2" strong secondary type="success" @click="() => getAppDownload('波点音乐', 'https://caiyun.139.com/m/i?135CmXWNtw2yy', 'original')">获取波点音乐</n-button>
             </n-alert>
           </div>
-          <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="deviceStore.deviceType === 'tablet'">
+          <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="['tablet','fold'].includes(deviceStore.deviceType)">
             <n-alert
               title="荣耀音乐"
               type="error"
@@ -460,7 +460,7 @@
               <n-button class="mt-2" strong secondary type="error" @click="() => getAppDownload('荣耀音乐', 'https://caiyun.139.com/m/i?135CmrVUbH2y3', 'original')">获取荣耀音乐</n-button>
             </n-alert>
           </div>
-          <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="deviceStore.deviceType === 'tablet'">
+          <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="['tablet','fold'].includes(deviceStore.deviceType)">
             <n-alert
               title="随身乐队"
               type="info"
@@ -487,7 +487,7 @@
               <n-button class="mt-2" strong secondary type="default" @click="() => getAppDownload('FlipaClip', 'https://caiyun.139.com/m/i?135Ce7Ou7DwWV', 'original')">获取FlipaClip</n-button>
             </n-alert>
           </div>
-          <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="deviceStore.deviceType === 'tablet'">
+          <div class="px-4 flex sm:grid sm:px-0 mt-5">
             <n-alert
               title="像素习惯"
               type="info"
@@ -496,7 +496,7 @@
               <img src="/images/apps/habicat.webp" />
             </template>
               <p>像素习惯是一款像素风的游戏化习惯养成打卡软件，你可以在里面通过培养习惯来抽装备，集成就，强化数值装备自己，不断进步。</p>
-              <p>注意事项:  完美横屏应用计划已为像素习惯通过应用布局优化适配大屏，请确保你安装的模块版本和系统版本支持应用布局优化。</p>
+              <p v-if="['tablet','fold'].includes(deviceStore.deviceType)">注意事项:  完美横屏应用计划已为像素习惯通过应用布局优化适配大屏，请确保你安装的模块版本和系统版本支持应用布局优化。</p>
               <n-button class="mt-2" strong secondary type="info" @click="() => getAppDownload('像素习惯', 'https://caiyun.139.com/m/i?135Ce9wkd3aKT', 'original')">获取像素习惯</n-button>
             </n-alert>
           </div>
@@ -513,7 +513,7 @@
               <n-button class="mt-2" strong secondary type="default" @click="() => getAppDownload('机核', 'https://caiyun.139.com/m/i?135CmUfDZ6yV8', 'original')">获取机核</n-button>
             </n-alert>
           </div>
-          <div class="px-4 flex sm:grid sm:px-0 mt-5">
+          <div v-if="deviceStore.deviceType === 'tablet'" class="px-4 flex sm:grid sm:px-0 mt-5">
             <n-alert
               title="Redmi Pad Pro X 哈利·波特 联动主题"
               type="warning"

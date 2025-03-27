@@ -33,8 +33,13 @@ const isSplashVisible = ref(true);
 
 watchEffect(onCleanup => {
 	// 检查 deviceStore.loading 和 embeddedStore.loading 是否都为 false
-	if (!deviceStore.loading && !embeddedStore.loading) {
-		isSplashVisible.value = false; // 隐藏开屏页
+	if (!deviceStore.loading) {
+		if (['tablet','fold'].includes(deviceStore.deviceType) && !embeddedStore.loading) {
+			isSplashVisible.value = false; // 隐藏开屏页
+		}
+		if (['phone'].includes(deviceStore.deviceType)) {
+			isSplashVisible.value = false; // 隐藏开屏页
+		}
 	}
 
 	if (deviceStore.errorLogging.length || embeddedStore.errorLogging.length) {
@@ -211,11 +216,13 @@ onMounted(async () => {
 			},
 		});
 	}
-	embeddedStore.initDefault();
-	autoUIStore.initDefault();
-	gameBoosterStore.initDefault();
-	if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 1) {
-		dotBlackListStore.initDefault();
+	if (['tablet','fold'].includes(deviceStore.deviceType)) {
+		embeddedStore.initDefault();
+		autoUIStore.initDefault();
+		gameBoosterStore.initDefault();
+		if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 1) {
+			dotBlackListStore.initDefault();
+		}
 	}
 });
 </script>

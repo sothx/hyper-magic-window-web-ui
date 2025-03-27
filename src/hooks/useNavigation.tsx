@@ -235,80 +235,14 @@ export function useNavigation() {
 
     const phoneSidebarList = reactive<NavigationItem[]>([
 		{
-			name: '应用横屏布局',
-			routeName: 'home',
-			href: '/',
-			icon: () => (
-				<svg class='icon' aria-hidden='true'>
-					<use xlinkHref='#icon-putong'></use>
-				</svg>
-			),
-		},
-		{
-			name: '应用布局优化',
-			routeName: 'autoui',
-			isShow() {
-				return Boolean(deviceStore.androidTargetSdk && deviceStore.androidTargetSdk >= 33);
-			},
-			href: '/autoui',
-			icon: () => (
-				<svg class='icon' aria-hidden='true'>
-					<use xlinkHref='#icon-yingyong2'></use>
-				</svg>
-			),
-		},
-		{
-			name: '游戏显示布局',
-			routeName: 'game-booster',
-			href: '/game-booster',
-			isShow() {
-				return Boolean(
-					deviceStore.androidTargetSdk &&
-						deviceStore.androidTargetSdk >= 32 &&
-						gameBoosterStore.hasGameBoosterDataBase,
-				);
-			},
-			icon: () => (
-				<svg class='icon' aria-hidden='true'>
-					<use xlinkHref='#icon-youxi7'></use>
-				</svg>
-			),
-		},
-		{
-			name: '窗口控制器',
-			routeName: 'dot-black-list',
-			href: '/dot-black-list',
-			isShow() {
-				return Boolean(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 1);
-			},
-			icon: () => (
-				<svg class='icon' aria-hidden='true'>
-					<use xlinkHref='#icon-kongzhitai'></use>
-				</svg>
-			),
-		},
-		{
 			name: '系统体验增强',
-			routeName: 'system-experience-enhance',
-			href: '/system-experience-enhance',
+			routeName: 'home',
+			href: '/home',
 			icon: () => (
 				<svg class='icon' aria-hidden='true'>
 					<use xlinkHref='#icon-jiqunchushihua1'></use>
 				</svg>
 			),
-		},
-		{
-			name: '触控笔映射(待开发)',
-			routeName: 'magic-control',
-			href: '/magic-control',
-			icon: () => (
-				<svg class='icon' aria-hidden='true'>
-					<use xlinkHref='#icon-youxi8'></use>
-				</svg>
-			),
-			isShow() {
-				return false;
-			},
 		},
 		{
 			name: '精选应用',
