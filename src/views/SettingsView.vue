@@ -1107,7 +1107,6 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 						</dd>
 					</div>
 					<div
-						id="displayModeSettings"
 						v-if="useUFSHealthHook.isShow.value && ['tablet','fold'].includes(deviceStore.deviceType)"
 						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt

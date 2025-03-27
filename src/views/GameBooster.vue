@@ -72,8 +72,10 @@ const openAddGame = async () => {
 					const observer = new MutationObserver(() => {
 						const target = document.getElementById('gameModeSettings');
 						if (target) {
-							target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-							observer.disconnect(); // 停止观察
+							setTimeout(() => {
+								target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+								observer.disconnect(); // 停止观察
+							},0)
 						}
 					});
 
@@ -121,12 +123,14 @@ const getAppDownload = async () => {
 };
 
 const goToDisplayModeSettings = () => {
-	router.push({ name: 'system-experience-enhance', hash: '#displayModeSettings' }).then(() => {
+	router.push({ name: 'system-experience-enhance' }).then(() => {
 		const observer = new MutationObserver(() => {
 			const target = document.getElementById('displayModeSettings');
 			if (target) {
-				target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-				observer.disconnect(); // 停止观察
+				setTimeout(() => {
+					target.scrollIntoView({ behavior: "smooth", block: 'center' });
+					observer.disconnect(); // 停止观察
+				},0)
 			}
 		});
 
@@ -155,8 +159,10 @@ const handleClickSetting = async (row: GameBoosterTableItem, index: number) => {
 					const observer = new MutationObserver(() => {
 						const target = document.getElementById('gameModeSettings');
 						if (target) {
-							target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-							observer.disconnect(); // 停止观察
+							setTimeout(() => {
+								target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+								observer.disconnect(); // 停止观察
+							},0)
 						}
 					});
 

@@ -9,11 +9,16 @@ const router = createRouter({
   // history: createWebHistory(import.meta.env.BASE_URL),
   history: createWebHashHistory(),
   routes: [],
-  scrollBehavior(to, from, next) {
-    return {
-      top: 0,
-    };
-  },
+	scrollBehavior(to, from, savedPosition) {
+		if (to.hash) {
+			return {
+				el: to.hash,
+				behavior: 'smooth',
+				block: 'center',
+			};
+		}
+		return savedPosition || { top: 0 };
+	},
 });
 
 // 进入路由前，显示 loadingBar
