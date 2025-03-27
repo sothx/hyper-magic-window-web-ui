@@ -287,15 +287,20 @@ export function useNavigation() {
 	]);
 
     const sidebarList = computed(() => {
-        if(deviceStore.deviceType === 'tablet') {
-            return padSidebarList;
-        }else if (deviceStore.deviceType === 'fold') {
-            return foldSidebarList;
-        } else if (deviceStore.deviceType === 'phone') {
-			return phoneSidebarList;
-		} else {
-            return [];
-        }
+		switch (deviceStore.deviceType) {
+			case 'tablet': {
+				return padSidebarList;
+			}
+			case 'fold': {
+				return foldSidebarList;
+			}
+			case 'phone': {
+				return phoneSidebarList;
+			}
+			default: {
+				return [];
+			}
+		}
     })
 
 
