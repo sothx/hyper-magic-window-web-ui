@@ -210,7 +210,7 @@ onBeforeUnmount(() => {
 												</li>
 											</ul>
 										</li>
-										<li>
+										<li v-if="deviceStore.deviceType">
 											<div
 												class="text-xs font-semibold leading-6"
 												:class="deviceStore.isDarkMode ? 'text-gray-500' : 'text-gray-400'"
@@ -326,7 +326,7 @@ onBeforeUnmount(() => {
 								</li>
 							</ul>
 						</li>
-						<li>
+						<li v-if="deviceStore.deviceType">
 							<div
 								class="text-xs font-semibold leading-6"
 								:class="deviceStore.isDarkMode ? 'text-gray-500' : 'text-gray-400'"

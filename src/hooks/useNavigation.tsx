@@ -291,8 +291,10 @@ export function useNavigation() {
             return padSidebarList;
         }else if (deviceStore.deviceType === 'fold') {
             return foldSidebarList;
-        }else {
-            return phoneSidebarList;
+        } else if (deviceStore.deviceType === 'phone') {
+			return phoneSidebarList;
+		} else {
+            return [];
         }
     })
 
