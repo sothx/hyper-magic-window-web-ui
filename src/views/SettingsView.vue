@@ -596,7 +596,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							{{ deviceStore.moduleInfo.versionCode || '获取失败' }}
 						</dd>
 					</div>
-					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+					<div v-if="['tablet','fold'].includes(deviceStore.deviceType)" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
 							模块工作模式
@@ -639,7 +639,8 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 						v-if="
 							deviceStore.MIOSVersion &&
 							deviceStore.MIOSVersion >= 2 &&
-							deviceStore.androidTargetSdk >= 35
+							deviceStore.androidTargetSdk >= 35 &&
+							['tablet','fold'].includes(deviceStore.deviceType)
 						">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
@@ -662,7 +663,8 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 						v-if="
 							deviceStore.MIOSVersion &&
 							deviceStore.MIOSVersion >= 2 &&
-							deviceStore.androidTargetSdk >= 35
+							deviceStore.androidTargetSdk >= 35 && 
+							['tablet'].includes(deviceStore.deviceType)
 						">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
@@ -941,7 +943,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 								size="small"
 								type="warning"
 								secondary
-								:loading="deviceStore.loading || embeddedStore.loading || activateABTestLoading"
+								:loading="deviceStore.loading || activateABTestLoading"
 								@click="handleActivateABTest()">
 								<template #icon>
 									<n-icon>
@@ -952,7 +954,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							</n-button>
 						</dd>
 					</div>
-					<div id="gameModeSettings" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+					<div v-if="['tablet'].includes(deviceStore.deviceType) && deviceStore.androidTargetSdk && deviceStore.androidTargetSdk > 32" id="gameModeSettings" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
 							游戏显示布局
