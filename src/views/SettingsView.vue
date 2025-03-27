@@ -110,6 +110,7 @@ const handleActivateABTest = async () => {
 				title: '请粘贴激活口令',
 				preset: 'dialog',
 				style: 'min-width:500px; width:50%;',
+				class: 'responsive-modal',
 				content: () =>
 					h(NInput, {
 						type: 'textarea',

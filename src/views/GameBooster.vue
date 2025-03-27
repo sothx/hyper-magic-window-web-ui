@@ -121,7 +121,7 @@ const getAppDownload = async () => {
 };
 
 const goToDisplayModeSettings = () => {
-	router.push({ name: 'settings', hash: '#displayModeSettings' }).then(() => {
+	router.push({ name: 'system-experience-enhance', hash: '#displayModeSettings' }).then(() => {
 		const observer = new MutationObserver(() => {
 			const target = document.getElementById('displayModeSettings');
 			if (target) {

@@ -17,6 +17,13 @@
   /* font-weight: normal; */
 }
 
+@media (max-width: 640px) {
+  .responsive-modal {
+    width: 100% !important;
+    min-width: auto !important;
+  }
+}
+
 /* a,
 .green {
   text-decoration: none;

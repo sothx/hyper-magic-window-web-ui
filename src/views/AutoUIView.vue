@@ -147,6 +147,7 @@ const importShareRule = async () => {
 				title: '请粘贴分享口令',
 				preset: 'dialog',
 				style: 'min-width:500px; width:50%;',
+				class: 'responsive-modal',
 				content: () =>
 					h(NInput, {
 						type: 'textarea',

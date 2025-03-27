@@ -8,7 +8,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/home',
     name: 'home',
-    component: () => import('../../views/HomeView.vue'),
+    component: () => import('../../views/EmbeddedActivityView.vue'),
   },
   {
     path: '/autoui',

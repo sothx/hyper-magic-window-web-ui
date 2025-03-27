@@ -207,7 +207,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							</n-switch>
 						</dd>
 					</div>
-					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+					<div v-if="['tablet','fold'].includes(deviceStore.deviceType)" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
 							旋转建议提示按钮
@@ -1095,7 +1095,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
 							<div
-								class="mb-3 flex"
+								class="mb-3 sm:flex"
 								v-for="item in displayModeRecordHook.formatDisplayModeList.value"
 								:key="item.id">
 								<p class="mr-3">ID: {{ item.id }}</p>
@@ -1107,7 +1107,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 									secondary
 									:loading="deviceStore.loading"
 									@click="() => displayModeRecordHook.selectDisplayMode(item)">
-									应用该配置
+									应用配置
 								</n-button>
 							</div>
 							<!-- <n-alert class="mt-5" type="info" :show-icon="false" :bordered="false">
