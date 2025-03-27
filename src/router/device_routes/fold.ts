@@ -74,6 +74,10 @@ const routes: RouteRecordRaw[] = [
     name: 'eggs',
     component: () => import('../../views/HappyNewYearEgg.vue'),
   },
+  {
+    path: '/:pathMatch(.*)*', // 捕获所有未匹配的路由
+    component: () => import('../../views/NotFoundView.vue'),
+  },
 ]
 
 export default routes

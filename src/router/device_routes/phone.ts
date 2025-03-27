@@ -43,6 +43,10 @@ const routes: RouteRecordRaw[] = [
     // which is lazy-loaded when the route is visited.
     component: () => import('../../views/SettingsView.vue'),
   },
+  {
+    path: '/:pathMatch(.*)*', // 捕获所有未匹配的路由
+    component: () => import('../../views/NotFoundView.vue'),
+  },
 ]
 
 export default routes
