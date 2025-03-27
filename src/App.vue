@@ -115,12 +115,20 @@ const loadRoutes = async () => {
   module.default.forEach((item) => {
     router.addRoute(item);
   });
+  // **等待 Vue Router 解析完成**
+  await router.isReady();
 
-  // 等待 Vue 处理异步路由更新
-  await nextTick();
+  // **获取当前路径**
+  const currentPath = router.currentRoute.value.path;
 
-  // 使用 replace 避免历史记录
-  router.replace('/home');
+  // **如果当前路径是 `/`，才执行 redirect**
+  const firstRouteRedirect = module.default[0]?.redirect as string | undefined;
+  if (currentPath === '/' && firstRouteRedirect) {
+    router.replace(firstRouteRedirect);
+  } else {
+    // **确保 Vue Router 重新解析当前路径**
+    router.replace({ path: currentPath, replace: true });
+  }
 };
 
 onMounted(async () => {

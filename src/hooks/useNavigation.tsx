@@ -245,15 +245,35 @@ export function useNavigation() {
 			),
 		},
 		{
-			name: '精选应用',
-			routeName: 'appStore',
-			href: '/appStore',
+			name: '存储健康',
+			routeName: 'memory-health',
+			href: '/memory-health',
 			icon: () => (
 				<svg class='icon' aria-hidden='true'>
-					<use xlinkHref='#icon-linggan'></use>
+					<use xlinkHref='#icon-wulitu_yingpan'></use>
 				</svg>
 			),
 		},
+		{
+			name: '电池健康',
+			routeName: 'battery-health',
+			href: '/battery-health',
+			icon: () => (
+				<svg class='icon' aria-hidden='true'>
+					<use xlinkHref='#icon-dianchi'></use>
+				</svg>
+			),
+		},
+		// {
+		// 	name: '精选应用',
+		// 	routeName: 'appStore',
+		// 	href: '/appStore',
+		// 	icon: () => (
+		// 		<svg class='icon' aria-hidden='true'>
+		// 			<use xlinkHref='#icon-linggan'></use>
+		// 		</svg>
+		// 	),
+		// },
 		{
 			name: '日志记录',
 			routeName: 'logs',

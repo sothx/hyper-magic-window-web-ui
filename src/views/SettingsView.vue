@@ -25,7 +25,6 @@ import { useDisplayModeRecord, type DisplayModeItem } from '@/hooks/useDisplayMo
 const deviceStore = useDeviceStore();
 const embeddedStore = useEmbeddedStore();
 const realQuantityHook = useRealQuantity();
-const displayModeRecordHook = useDisplayModeRecord();
 const hideGestureLineHook = useHideGestureLine();
 const disabledOS2SystemAppOptimizeHook = useDisabledOS2SystemAppOptimize();
 const ZRAMWritebackHook = useZRAMWriteback();
@@ -166,20 +165,6 @@ const handleActivateABTest = async () => {
 };
 const switchPatchModeLoading = ref<boolean>(false);
 const switchDeepPatchModeLoading = ref<boolean>(false);
-const changeShowRotationSuggestions = async (value: boolean) => {
-	const [setRotationSuggestionsErr] = await $to(deviceApi.setRotationSuggestions(value ? 1 : 0));
-	if (setRotationSuggestionsErr) {
-		modal.create({
-			title: '操作失败',
-			type: 'error',
-			preset: 'dialog',
-			content: () => <p>无法 {value ? '开启' : '关闭'} 旋转建议提示按钮，详情请查看日志记录~</p>,
-			negativeText: '确定',
-		});
-		return;
-	}
-	deviceStore.showRotationSuggestions = value;
-};
 const getAppDownload = async (title: string, url: string, type: 'system' | 'revision' | 'original' | 'magisk') => {
 	modal.create({
 		title: `获取${title}`,
@@ -708,7 +693,8 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 									deviceStore.deviceInfo.socModel === 'SM8475' &&
 									deviceStore.androidTargetSdk &&
 									deviceStore.androidTargetSdk >= 34 &&
-									deviceStore.smartFocusIO !== 'on'
+									deviceStore.smartFocusIO !== 'on' &&
+									['tablet','fold'].includes(deviceStore.deviceType)
 								"
 								type="warning"
 								:show-icon="false"
@@ -741,7 +727,8 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							deviceStore.MIOSVersion &&
 							deviceStore.MIOSVersion >= 2 &&
 							deviceStore.androidTargetSdk >= 35 &&
-							ZRAMWritebackHook.isInit.value
+							ZRAMWritebackHook.isInit.value && 
+							['tablet','fold'].includes(deviceStore.deviceType)
 						">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`"
@@ -980,22 +967,6 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							</n-switch>
 						</dd>
 					</div>
-					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-						<dt
-							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
-							旋转建议提示按钮
-						</dt>
-						<dd
-							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							<n-switch
-								@update:value="(value: boolean) => changeShowRotationSuggestions(value)"
-								:rail-style="railStyle"
-								:value="deviceStore.showRotationSuggestions">
-								<template #checked>已启用旋转建议提示按钮</template>
-								<template #unchecked>已关闭旋转建议提示按钮</template>
-							</n-switch>
-						</dd>
-					</div>
 					<div
 						v-if="
 							deviceStore.deviceType === 'tablet' &&
@@ -1113,38 +1084,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 						</dd>
 					</div>
 					<div
-						v-if="displayModeRecordHook.formatDisplayModeList.value.length"
-						id="displayModeSettings"
-						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-						<dt
-							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
-							分辨率及刷新率
-						</dt>
-						<dd
-							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							<div
-								class="mb-3 flex"
-								v-for="item in displayModeRecordHook.formatDisplayModeList.value"
-								:key="item.id">
-								<p class="mr-3">ID: {{ item.id }}</p>
-								<p class="mr-3">分辨率: {{ `${item.width}x${item.height}` }}</p>
-								<p class="mr-3">刷新率: {{ `${item.fps} Hz` }}</p>
-								<n-button
-									size="small"
-									type="info"
-									secondary
-									:loading="deviceStore.loading"
-									@click="() => displayModeRecordHook.selectDisplayMode(item)">
-									应用该配置
-								</n-button>
-							</div>
-							<!-- <n-alert class="mt-5" type="info" :show-icon="false" :bordered="false">
-								<p>您已配置xxxx的自启动，如需重新配置请先【移除】该配置！</p>
-							</n-alert> -->
-						</dd>
-					</div>
-					<div
-						v-if="deviceStore.deviceInfo.memoryInfo"
+						v-if="deviceStore.deviceInfo.memoryInfo && ['tablet','fold'].includes(deviceStore.deviceType)"
 						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
@@ -1155,7 +1095,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							<div class="whitespace-pre">{{ deviceStore.deviceInfo.memoryInfo || '获取失败' }}</div>
 						</dd>
 					</div>
-					<div v-if="deviceStore.DDRVendor" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+					<div v-if="deviceStore.DDRVendor && ['tablet','fold'].includes(deviceStore.deviceType)" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
 							设备DDR生产厂商
@@ -1167,7 +1107,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 					</div>
 					<div
 						id="displayModeSettings"
-						v-if="useUFSHealthHook.isShow.value"
+						v-if="useUFSHealthHook.isShow.value && ['tablet','fold'].includes(deviceStore.deviceType)"
 						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
@@ -1202,28 +1142,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 						</dd>
 					</div>
 					<div
-						v-if="displayModeRecordHook.supportHDRTypes.value.length"
-						id="displayModeSettings"
-						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-						<dt
-							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
-							支持的 HDR 类型
-						</dt>
-						<dd
-							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							<div
-								class="mb-3 flex"
-								v-for="(item, index) in displayModeRecordHook.supportHDRTypes.value"
-								:key="index">
-								<p v-if="item === 1" class="mr-3">{{ 'HLG' }}</p>
-								<p v-if="item === 2" class="mr-3">{{ 'HDR10' }}</p>
-								<p v-if="item === 3" class="mr-3">{{ 'HDR10+' }}</p>
-								<p v-if="item === 4" class="mr-3">{{ 'Dolby Vision' }}</p>
-							</div>
-						</dd>
-					</div>
-					<div
-						v-if="realQuantityHook.qcomBatteryFg1RSocInfo.current"
+						v-if="realQuantityHook.qcomBatteryFg1RSocInfo.current && ['tablet','fold'].includes(deviceStore.deviceType)"
 						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
@@ -1273,7 +1192,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 						</dd>
 					</div>
 					<div
-						v-if="realQuantityHook.capacityRawInfo.current"
+						v-if="realQuantityHook.capacityRawInfo.current && ['tablet','fold'].includes(deviceStore.deviceType)"
 						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
@@ -1323,7 +1242,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 						</dd>
 					</div>
 					<div
-						v-if="deviceStore.batteryInfo.chargeFullDesign"
+						v-if="deviceStore.batteryInfo.chargeFullDesign && ['tablet','fold'].includes(deviceStore.deviceType)"
 						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
@@ -1335,7 +1254,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 						</dd>
 					</div>
 					<div
-						v-if="deviceStore.batteryInfo.chargeFull"
+						v-if="deviceStore.batteryInfo.chargeFull && ['tablet','fold'].includes(deviceStore.deviceType)"
 						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
@@ -1347,7 +1266,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 						</dd>
 					</div>
 					<div
-						v-if="deviceStore.batteryInfo.cycleCount"
+						v-if="deviceStore.batteryInfo.cycleCount && ['tablet','fold'].includes(deviceStore.deviceType)"
 						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
@@ -1359,7 +1278,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 						</dd>
 					</div>
 					<div
-						v-if="deviceStore.batteryInfo.chargeFullDesign && deviceStore.batteryInfo.chargeFull"
+						v-if="deviceStore.batteryInfo.chargeFullDesign && deviceStore.batteryInfo.chargeFull && ['tablet','fold'].includes(deviceStore.deviceType)"
 						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
@@ -1376,7 +1295,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 						</dd>
 					</div>
 					<div
-						v-if="deviceStore.batteryInfo.sohQcom"
+						v-if="deviceStore.batteryInfo.sohQcom && ['tablet','fold'].includes(deviceStore.deviceType)"
 						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
@@ -1398,7 +1317,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 						</dd>
 					</div>
 					<div
-						v-if="deviceStore.batteryInfo.sohMTK"
+						v-if="deviceStore.batteryInfo.sohMTK && ['tablet','fold'].includes(deviceStore.deviceType)"
 						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
@@ -1421,7 +1340,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 						</dd>
 					</div>
 					<div
-						v-if="deviceStore.batteryInfo.sohXMPower"
+						v-if="deviceStore.batteryInfo.sohXMPower && ['tablet','fold'].includes(deviceStore.deviceType)"
 						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
@@ -1442,58 +1361,6 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							</n-alert>
 						</dd>
 					</div>
-					<!-- <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-            <dt :class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">Salary expectation</dt>
-            <dd :class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">$120,000</dd>
-          </div>
-          <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-            <dt :class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">About</dt>
-            <dd :class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">Fugiat ipsum ipsum deserunt culpa
-              aute sint do nostrud anim incididunt cillum culpa consequat. Excepteur qui ipsum aliquip consequat sint.
-              Sit id mollit nulla mollit nostrud in ea officia proident. Irure nostrud pariatur mollit ad adipisicing
-              reprehenderit deserunt qui eu.</dd>
-          </div>
-          <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-            <dt :class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">Attachments</dt>
-            <dd class="mt-2 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-              <ul role="list" class="divide-y divide-gray-100 rounded-md border border-gray-200">
-                <li class="flex items-center justify-between py-4 pl-4 pr-5 text-sm leading-6">
-                  <div class="flex w-0 flex-1 items-center">
-                    <svg class="h-5 w-5 flex-shrink-0 text-gray-400" viewBox="0 0 20 20" fill="currentColor"
-                      aria-hidden="true" data-slot="icon">
-                      <path fill-rule="evenodd"
-                        d="M15.621 4.379a3 3 0 0 0-4.242 0l-7 7a3 3 0 0 0 4.241 4.243h.001l.497-.5a.75.75 0 0 1 1.064 1.057l-.498.501-.002.002a4.5 4.5 0 0 1-6.364-6.364l7-7a4.5 4.5 0 0 1 6.368 6.36l-3.455 3.553A2.625 2.625 0 1 1 9.52 9.52l3.45-3.451a.75.75 0 1 1 1.061 1.06l-3.45 3.451a1.125 1.125 0 0 0 1.587 1.595l3.454-3.553a3 3 0 0 0 0-4.242Z"
-                        clip-rule="evenodd" />
-                    </svg>
-                    <div class="ml-4 flex min-w-0 flex-1 gap-2">
-                      <span class="truncate font-medium">resume_back_end_developer.pdf</span>
-                      <span class="flex-shrink-0 text-gray-400">2.4mb</span>
-                    </div>
-                  </div>
-                  <div class="ml-4 flex-shrink-0">
-                    <a href="#" class="font-medium text-indigo-600 hover:text-indigo-500">Download</a>
-                  </div>
-                </li>
-                <li class="flex items-center justify-between py-4 pl-4 pr-5 text-sm leading-6">
-                  <div class="flex w-0 flex-1 items-center">
-                    <svg class="h-5 w-5 flex-shrink-0 text-gray-400" viewBox="0 0 20 20" fill="currentColor"
-                      aria-hidden="true" data-slot="icon">
-                      <path fill-rule="evenodd"
-                        d="M15.621 4.379a3 3 0 0 0-4.242 0l-7 7a3 3 0 0 0 4.241 4.243h.001l.497-.5a.75.75 0 0 1 1.064 1.057l-.498.501-.002.002a4.5 4.5 0 0 1-6.364-6.364l7-7a4.5 4.5 0 0 1 6.368 6.36l-3.455 3.553A2.625 2.625 0 1 1 9.52 9.52l3.45-3.451a.75.75 0 1 1 1.061 1.06l-3.45 3.451a1.125 1.125 0 0 0 1.587 1.595l3.454-3.553a3 3 0 0 0 0-4.242Z"
-                        clip-rule="evenodd" />
-                    </svg>
-                    <div class="ml-4 flex min-w-0 flex-1 gap-2">
-                      <span class="truncate font-medium">coverletter_back_end_developer.pdf</span>
-                      <span class="flex-shrink-0 text-gray-400">4.5mb</span>
-                    </div>
-                  </div>
-                  <div class="ml-4 flex-shrink-0">
-                    <a href="#" class="font-medium text-indigo-600 hover:text-indigo-500">Download</a>
-                  </div>
-                </li>
-              </ul>
-            </dd>
-          </div> -->
 				</dl>
 			</div>
 		</div>

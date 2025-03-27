@@ -6,6 +6,7 @@ import * as deviceApi from '@/apis/deviceApi';
 import { useAmktiao, type KeyboardModeOptions } from '@/hooks/useAmktiao';
 import { useMiuiDesktopMode } from '@/hooks/useMiuiDesktopMode';
 import { useMIUIContentExtension } from '@/hooks/useMIUIContentExtension';
+import $to from 'await-to-js';
 import { useVideoWallpaperLoop } from '@/hooks/useVideoWallpaperLoop';
 import { useDisabledOS2SystemPreStart } from '@/hooks/useDisabledOS2SystemPreStart';
 import { useDisplaySettings } from '@/hooks/useDisplaySettings';
@@ -30,6 +31,7 @@ import { useMiuiCursorStyle, type miuiCursorStyleType } from '@/hooks/useMiuiCur
 import { useMouseGestureNaturalscroll } from '@/hooks/useMouseGestureNaturalscroll';
 import { usePointerSpeed } from '@/hooks/usePointerSpeed';
 import { useDevelopmentSettingsEnabled } from '@/hooks/useDevelopmentSettingsEnabled';
+import { useDisplayModeRecord } from '@/hooks/useDisplayModeRecord';
 const deviceStore = useDeviceStore();
 const miuiDesktopModeHook = useMiuiDesktopMode();
 const MIUIContentExtensionHook = useMIUIContentExtension();
@@ -38,6 +40,7 @@ const mouseGestureNaturalscrollHook = useMouseGestureNaturalscroll();
 const pointerSpeedHook = usePointerSpeed();
 const developmentSettingsEnabledHook = useDevelopmentSettingsEnabled();
 const videoWallpaperLoopHook = useVideoWallpaperLoop();
+const displayModeRecordHook = useDisplayModeRecord();
 const useDisabledOS2SystemPreStartHook = useDisabledOS2SystemPreStart();
 const fboHook = useFbo();
 // const initHooks = () => {
@@ -96,6 +99,21 @@ const changeShamikoMode = async (value: boolean) => {
 				negativeText: '确定',
 			});
 		});
+};
+
+const changeShowRotationSuggestions = async (value: boolean) => {
+	const [setRotationSuggestionsErr] = await $to(deviceApi.setRotationSuggestions(value ? 1 : 0));
+	if (setRotationSuggestionsErr) {
+		modal.create({
+			title: '操作失败',
+			type: 'error',
+			preset: 'dialog',
+			content: () => <p>无法 {value ? '开启' : '关闭'} 旋转建议提示按钮，详情请查看日志记录~</p>,
+			negativeText: '确定',
+		});
+		return;
+	}
+	deviceStore.showRotationSuggestions = value;
 };
 const getAppDownload = async (title: string, url: string, type: 'system' | 'revision' | 'original' | 'magisk') => {
 	modal.create({
@@ -186,6 +204,22 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 								:loading="deviceStore.loading">
 								<template #checked>白名单模式</template>
 								<template #unchecked>黑名单模式</template>
+							</n-switch>
+						</dd>
+					</div>
+					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+						<dt
+							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
+							旋转建议提示按钮
+						</dt>
+						<dd
+							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
+							<n-switch
+								@update:value="(value: boolean) => changeShowRotationSuggestions(value)"
+								:rail-style="railStyle"
+								:value="deviceStore.showRotationSuggestions">
+								<template #checked>已启用旋转建议提示按钮</template>
+								<template #unchecked>已关闭旋转建议提示按钮</template>
 							</n-switch>
 						</dd>
 					</div>
@@ -968,7 +1002,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							</n-alert>
 						</dd>
 					</div>
-					<div v-if="fboHook.isInit.value" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+					<div v-if="fboHook.isInit.value && ['tablet','fold'].includes(deviceStore.deviceType)" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
 							焕新存储
@@ -1048,6 +1082,37 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 									<template #unchecked>未启用每日闲时维护</template>
 								</n-switch>
 							</n-alert>
+						</dd>
+					</div>
+					<div
+						v-if="displayModeRecordHook.formatDisplayModeList.value.length"
+						id="displayModeSettings"
+						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+						<dt
+							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
+							分辨率及刷新率
+						</dt>
+						<dd
+							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
+							<div
+								class="mb-3 flex"
+								v-for="item in displayModeRecordHook.formatDisplayModeList.value"
+								:key="item.id">
+								<p class="mr-3">ID: {{ item.id }}</p>
+								<p class="mr-3">分辨率: {{ `${item.width}x${item.height}` }}</p>
+								<p class="mr-3">刷新率: {{ `${item.fps} Hz` }}</p>
+								<n-button
+									size="small"
+									type="info"
+									secondary
+									:loading="deviceStore.loading"
+									@click="() => displayModeRecordHook.selectDisplayMode(item)">
+									应用该配置
+								</n-button>
+							</div>
+							<!-- <n-alert class="mt-5" type="info" :show-icon="false" :bordered="false">
+								<p>您已配置xxxx的自启动，如需重新配置请先【移除】该配置！</p>
+							</n-alert> -->
 						</dd>
 					</div>
 					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">

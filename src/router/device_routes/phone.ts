@@ -16,6 +16,16 @@ const routes: RouteRecordRaw[] = [
     component: () => import('../../views/EmbeddedWebView.vue'),
   },
   {
+    path: '/memory-health',
+    name: 'memory-health',
+    component: () => import('../../views/MemoryHealth.vue'),
+  },
+  {
+    path: '/battery-health',
+    name: 'battery-health',
+    component: () => import('../../views/BatteryHealth.vue'),
+  },
+  {
     path: '/appStore',
     name: 'appStore',
     component: () => import('../../views/AppStore.vue'),
