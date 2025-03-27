@@ -376,14 +376,15 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							</div>
 							<n-alert
 								v-if="
-									MIUIContentExtensionHook.isInstallMIUIContentExtension.value &&
-									deviceStore.deviceType === 'tablet'
+									MIUIContentExtensionHook.isInstallMIUIContentExtension.value
 								"
 								class="mt-5"
 								type="info"
 								:show-icon="false"
 								:bordered="false">
 								<p
+									v-if="deviceStore.deviceType === 'tablet'"
+									class="mt-5"
 									>模块安装后可能会导致「传送门」被异常添加到「游戏工具箱」，您可以通过
 									<n-button
 										size="small"
@@ -395,7 +396,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 									</n-button>
 									移除「游戏工具箱」内的「传送门」</p
 								>
-								<p class="mt-5"
+								<p
 									>由于小米「传送门」存在「应用黑名单」不定期重置的BUG，您可以通过
 									<n-dropdown
 										size="large"
@@ -560,7 +561,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 						</dd>
 					</div> -->
 					<div
-						v-if="amktiaoHook.hasPenEnableControl.value && ['tablet','fold'].includes(deviceStore.deviceType)"
+						v-if="amktiaoHook.hasPenEnableControl.value && ['tablet'].includes(deviceStore.deviceType)"
 						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
@@ -600,7 +601,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 						</dd>
 					</div>
 					<div
-						v-if="amktiaoHook.hasPenUpdateControl.value && ['tablet','fold'].includes(deviceStore.deviceType)"
+						v-if="amktiaoHook.hasPenUpdateControl.value && ['tablet'].includes(deviceStore.deviceType)"
 						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
@@ -640,7 +641,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 						</dd>
 					</div>
 					<div
-						v-if="amktiaoHook.hasKeyboardControl.value && ['tablet','fold'].includes(deviceStore.deviceType)"
+						v-if="amktiaoHook.hasKeyboardControl.value && ['tablet'].includes(deviceStore.deviceType)"
 						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
