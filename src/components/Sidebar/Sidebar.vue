@@ -416,7 +416,7 @@ onBeforeUnmount(() => {
 										rgb(60, 112, 255) 110.17%
 									);
 								"
-								>完美横屏应用计划 For Web UI</h1
+								>完美横屏应用计划</h1
 							>
 							<n-badge v-if="false" value="发现新版本" type="info" :offset="[40, -8]"> </n-badge>
 						</div>
