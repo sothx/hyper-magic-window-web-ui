@@ -264,16 +264,16 @@ export function useNavigation() {
 				</svg>
 			),
 		},
-		// {
-		// 	name: '精选应用',
-		// 	routeName: 'appStore',
-		// 	href: '/appStore',
-		// 	icon: () => (
-		// 		<svg class='icon' aria-hidden='true'>
-		// 			<use xlinkHref='#icon-linggan'></use>
-		// 		</svg>
-		// 	),
-		// },
+		{
+			name: '精选应用',
+			routeName: 'appStore',
+			href: '/appStore',
+			icon: () => (
+				<svg class='icon' aria-hidden='true'>
+					<use xlinkHref='#icon-linggan'></use>
+				</svg>
+			),
+		},
 		{
 			name: '日志记录',
 			routeName: 'logs',
