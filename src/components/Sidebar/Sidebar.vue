@@ -181,7 +181,12 @@ onBeforeUnmount(() => {
 																? { to: item.href }
 																: { href: 'javascript:void(0)' }
 														"
-														@click="item.click && item.click()"
+														@click="
+															() => {
+																sidebarOpen = false;
+																item.click && item.click();
+															}
+														"
 														:class="[
 															item.routeName === route.name
 																? deviceStore.isDarkMode
@@ -220,6 +225,9 @@ onBeforeUnmount(() => {
 												<li v-for="team in teams" :key="team.name">
 													<RouterLink
 														:to="team.href"
+														@click="() => {
+															sidebarOpen = false;
+														}"
 														:class="[
 															team.href === route.fullPath
 																? deviceStore.isDarkMode
@@ -251,6 +259,9 @@ onBeforeUnmount(() => {
 										<li class="mt-auto">
 											<RouterLink
 												to="/settings"
+												@click="() => {
+													sidebarOpen = false;
+												}"
 												:class="[
 													route.name === 'settings'
 														? deviceStore.isDarkMode
@@ -297,7 +308,12 @@ onBeforeUnmount(() => {
 												? { to: item.href }
 												: { href: 'javascript:void(0)' }
 										"
-										@click="item.click && item.click()"
+										@click="
+											() => {
+												sidebarOpen = false;
+												item.click && item.click();
+											}
+										"
 										:class="[
 											item.routeName === route.name
 												? deviceStore.isDarkMode
@@ -335,6 +351,9 @@ onBeforeUnmount(() => {
 							<ul role="list" class="-mx-2 mt-2 space-y-1">
 								<li v-for="team in teams" :key="team.name">
 									<RouterLink
+									    @click="() => {
+											sidebarOpen = false;
+										}"
 										:to="team.href"
 										:class="[
 											team.href === route.fullPath
@@ -367,6 +386,9 @@ onBeforeUnmount(() => {
 						<li class="mt-auto">
 							<RouterLink
 								to="/settings"
+								@click="() => {
+									sidebarOpen = false;
+								}"
 								:class="[
 									route.name === 'settings'
 										? deviceStore.isDarkMode
@@ -421,15 +443,16 @@ onBeforeUnmount(() => {
 							<n-badge v-if="false" value="发现新版本" type="info" :offset="[40, -8]"> </n-badge>
 						</div>
 						<div class="flex items-center gap-x-4 lg:gap-x-6">
-							<n-dropdown trigger="click" :options="useSidebarHook.MESSAGE_CENTER_OPTIONS" @select="useSidebarHook.handleMessageCenterOptionClick">
-								<button
-								type="button"
-								class="m-2.5 p-2.5 text-gray-400 hover:text-gray-500">
-								<span class="sr-only">消息中心</span>
-								<svg class="icon h-7 w-7" aria-hidden="true">
-									<use xlink:href="#icon-xiaoxi"></use>
-								</svg>
-							</button>
+							<n-dropdown
+								trigger="click"
+								:options="useSidebarHook.MESSAGE_CENTER_OPTIONS"
+								@select="useSidebarHook.handleMessageCenterOptionClick">
+								<button type="button" class="m-2.5 p-2.5 text-gray-400 hover:text-gray-500">
+									<span class="sr-only">消息中心</span>
+									<svg class="icon h-7 w-7" aria-hidden="true">
+										<use xlink:href="#icon-xiaoxi"></use>
+									</svg>
+								</button>
 							</n-dropdown>
 						</div>
 					</div>

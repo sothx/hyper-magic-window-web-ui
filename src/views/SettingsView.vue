@@ -714,7 +714,39 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 											getAppDownload(
 												'小米平板系统功能补全模块',
 												'https://caiyun.139.com/m/i?135CmUuWuqGsk',
-												'original',
+												'magisk',
+											)
+									"
+									>获取小米平板系统功能补全模块</n-button
+								>
+							</n-alert>
+							<n-alert
+								class="mt-5"
+								v-if="
+									deviceStore.deviceInfo.socModel === 'SM8475' &&
+									deviceStore.androidTargetSdk &&
+									deviceStore.androidTargetSdk >= 34 &&
+									deviceStore.smartFocusIO !== 'on' &&
+									['phone'].includes(deviceStore.deviceType)
+								"
+								type="warning"
+								:show-icon="false"
+								:bordered="false">
+								<p
+									>您当前未启用「智能IO调度」，由于小米「磁盘IO调度」BUG，骁龙8+Gen1机型存在IO调度异常的问题，容易导致系统卡顿或者无响应，您可以通过安装「小米手机系统功能补全模块」来启用「智能IO调度」，提升系统IO性能体验。</p
+								>
+								<n-button
+									class="mt-2"
+									strong
+									size="small"
+									secondary
+									type="warning"
+									@click="
+										() =>
+											getAppDownload(
+												'小米手机系统功能补全模块',
+												'https://caiyun.139.com/m/i?135CmOdNLkQeu',
+												'magisk',
 											)
 									"
 									>获取小米平板系统功能补全模块</n-button

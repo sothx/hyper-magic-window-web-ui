@@ -55,10 +55,13 @@
 						>精选应用</span
 					>
 				</h3>
-        <p :class="`mt-1 max-w-2xl text-sm leading-6  ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-500'}`">
+        <p v-if="['phone'].includes(deviceStore.deviceType)" :class="`mt-1 max-w-2xl text-sm leading-6  ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-500'}`">
+          这里罗列了一些作者认为不错的应用作为精选推荐应用
+        </p>
+        <p v-if="['tablet','fold'].includes(deviceStore.deviceType)" :class="`mt-1 max-w-2xl text-sm leading-6  ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-500'}`">
           这里罗列了一些适配大屏良好的应用作为精选推荐应用
         </p>
-        <p :class="`mt-1 max-w-2xl text-sm leading-6  ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-500'}`">
+        <p v-if="['tablet','fold'].includes(deviceStore.deviceType)" :class="`mt-1 max-w-2xl text-sm leading-6  ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-500'}`">
           部分增强小米大屏系统体验的大屏应用也罗列在此
         </p>
       </div>
@@ -66,6 +69,7 @@
         <dl class="divide-gray-100 mb-5">
           <div class="px-4 flex sm:grid sm:px-0">
             <n-alert
+              class="w-full"
               title="小米互联互通服务"
               type="info"
             >
@@ -78,8 +82,9 @@
               <n-button class="mt-2" strong secondary type="info" @click="() => getAppDownload('小米互联互通服务', 'https://caiyun.139.com/m/i?135CmimxMDtEs', 'system')">获取小米互联互通服务</n-button>
             </n-alert>
           </div>
-          <div class="px-4 flex sm:grid sm:px-0" v-if="['tablet','fold'].includes(deviceStore.deviceType)">
+          <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="['tablet','fold'].includes(deviceStore.deviceType)">
             <n-alert
+              class="w-full"
               title="超级小爱 - Pad / Fold"
               type="error"
             >
@@ -94,6 +99,7 @@
           </div>
           <div class="px-4 flex sm:grid sm:px-0 mt-5">
             <n-alert
+              class="w-full"
               title="小米主题壁纸 - 萌宠系列动态壁纸"
               type="warning"
             >
@@ -108,6 +114,7 @@
           </div>
           <div v-if="deviceStore.deviceType === 'tablet'" class="px-4 flex sm:grid sm:px-0 mt-5">
             <n-alert
+              class="w-full"
               title="小米平板系统应用补全模块 - 传送门/悬浮球"
               type="info"
             >
@@ -123,6 +130,7 @@
           </div>
           <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="['tablet','fold'].includes(deviceStore.deviceType)">
             <n-alert
+              class="w-full"
               title="小米平板系统功能补全模块"
               type="success"
             >
@@ -157,6 +165,7 @@
           </div>
           <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="['phone'].includes(deviceStore.deviceType)">
             <n-alert
+              class="w-full"
               title="小米手机系统功能补全模块"
               type="success"
             >
@@ -185,6 +194,7 @@
           </div>
           <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="deviceStore.MIOSVersion && deviceStore.MIOSVersion === 1 && deviceStore.deviceType === 'tablet'">
             <n-alert
+              class="w-full"
               title="小米平板系统桌面 - Hyper OS 1"
               type="error"
             >
@@ -199,6 +209,7 @@
           </div>
           <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="deviceStore.MIOSVersion && deviceStore.MIOSVersion === 2 && deviceStore.deviceType === 'tablet'">
             <n-alert
+              class="w-full"
               title="小米平板系统桌面 - Android 15 Hyper OS 2"
               type="error"
             >
@@ -213,6 +224,7 @@
           </div>
           <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="deviceStore.MIOSVersion && deviceStore.MIOSVersion === 2 && deviceStore.androidTargetSdk === 34 && deviceStore.deviceType === 'tablet'">
             <n-alert
+              class="w-full"
               title="小米平板系统桌面 - Android 14 Hyper OS 2"
               type="error"
             >
@@ -227,6 +239,7 @@
           </div>
           <div v-if="deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2  && deviceStore.androidTargetSdk >= 35 && deviceStore.deviceType === 'tablet'" class="px-4 flex sm:grid sm:px-0 mt-5">
             <n-alert
+              class="w-full"
               title="WinPlay Mobile"
               type="info"
             >
@@ -241,6 +254,7 @@
           </div>
           <div class="px-4 flex sm:grid sm:px-0 mt-5">
             <n-alert
+              class="w-full"
               title="小米笔记 - Hyper AI"
               type="warning"
             >
@@ -256,6 +270,7 @@
           </div>
           <div class="px-4 flex sm:grid sm:px-0 mt-5">
             <n-alert
+              class="w-full"
               title="UU远程"
               type="info"
             >
@@ -270,6 +285,7 @@
           </div>
           <div class="px-4 flex sm:grid sm:px-0 mt-5">
             <n-alert
+              class="w-full"
               title="小米录音机 - Hyper AI"
               type="error"
             >
@@ -284,6 +300,7 @@
           </div>
           <div class="px-4 flex sm:grid sm:px-0 mt-5">
             <n-alert
+              class="w-full"
               title="小米远程控制"
               type="info"
             >
@@ -297,6 +314,7 @@
           </div>
           <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="['tablet','fold'].includes(deviceStore.deviceType)">
             <n-alert
+              class="w-full"
               title="QQ音乐 HD"
               type="success"
             >
@@ -309,6 +327,7 @@
           </div>
           <div v-if="['tablet','fold'].includes(deviceStore.deviceType)" class="px-4 flex sm:grid sm:px-0 mt-5">
             <n-alert
+              class="w-full"
               title="流舟文件"
               type="info"
             >
@@ -322,6 +341,7 @@
           </div>
           <div class="px-4 flex sm:grid sm:px-0 mt-5">
             <n-alert
+              class="w-full"
               title="盖世游戏"
               type="default"
             >
@@ -337,6 +357,7 @@
           </div>
           <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="['tablet'].includes(deviceStore.deviceType)">
             <n-alert
+              class="w-full"
               title="StarNote"
               type="info"
             >
@@ -351,6 +372,7 @@
           </div>
           <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="['tablet'].includes(deviceStore.deviceType)">
             <n-alert
+              class="w-full"
               title="自由笔记"
               type="default"
             >
@@ -362,8 +384,9 @@
               <n-button class="mt-2" strong secondary type="default" @click="() => getAppDownload('自由笔记', 'https://caiyun.139.com/m/i?135Clo5BWejq9', 'original')">获取自由笔记</n-button>
             </n-alert>
           </div>
-          <div v-if="['tablet','fold'].includes(deviceStore.deviceType)" class="px-4 flex sm:grid sm:px-0 mt-5">
+          <div class="px-4 flex sm:grid sm:px-0 mt-5">
             <n-alert
+              class="w-full"
               title="蓝牙遥控"
               type="info"
             >
@@ -375,8 +398,9 @@
               <n-button class="mt-2" strong secondary type="info" @click="() => getAppDownload('蓝牙遥控', 'https://caiyun.139.com/m/i?135CmQwFbuC1D', 'original')">获取蓝牙遥控</n-button>
             </n-alert>
           </div>
-          <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="deviceStore.deviceType === 'tablet'">
+          <div class="px-4 flex sm:grid sm:px-0 mt-5">
             <n-alert
+              class="w-full"
               title="Flix"
               type="default"
             >
@@ -389,8 +413,9 @@
               <n-button class="mt-2" strong secondary type="default" @click="() => getAppDownload('Flix', 'https://caiyun.139.com/m/i?135ClTD8sxB0G', 'original')">获取Flix</n-button>
             </n-alert>
           </div>
-          <div v-if="['tablet','fold'].includes(deviceStore.deviceType)" class="px-4 flex sm:grid sm:px-0 mt-5">
+          <div class="px-4 flex sm:grid sm:px-0 mt-5">
             <n-alert
+              class="w-full"
               title="小米白噪音"
               type="success"
             >
@@ -404,6 +429,7 @@
           </div>
           <div v-if="['tablet','fold'].includes(deviceStore.deviceType)" class="px-4 flex sm:grid sm:px-0 mt-5">
             <n-alert
+              class="w-full"
               title="快递100"
               type="info"
             >
@@ -417,6 +443,7 @@
           </div>
           <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="['tablet'].includes(deviceStore.deviceType)">
             <n-alert
+              class="w-full"
               title="小米音乐(平板端)"
               type="success"
             >
@@ -430,6 +457,7 @@
           </div>
           <div v-if="['tablet','fold'].includes(deviceStore.deviceType)" class="px-4 flex sm:grid sm:px-0 mt-5">
             <n-alert
+              class="w-full"
               title="青盐云听"
               type="default"
             >
@@ -440,8 +468,9 @@
               <n-button class="mt-2" strong secondary type="default" @click="() => getAppDownload('青盐云听', 'https://caiyun.139.com/m/i?135ClT9vdg00O', 'original')">获取青盐云听</n-button>
             </n-alert>
           </div>
-          <div v-if="['tablet','fold'].includes(deviceStore.deviceType)" class="px-4 flex sm:grid sm:px-0 mt-5">
+          <div class="px-4 flex sm:grid sm:px-0 mt-5">
             <n-alert
+              class="w-full"
               title="屏幕一览"
               type="info"
             >
@@ -452,8 +481,9 @@
               <n-button class="mt-2" strong secondary type="info" @click="() => getAppDownload('屏幕一览', 'https://caiyun.139.com/m/i?135Cm6wzXEOyx', 'original')">获取屏幕一览</n-button>
             </n-alert>
           </div>
-          <div v-if="['tablet','fold'].includes(deviceStore.deviceType)" class="px-4 flex sm:grid sm:px-0 mt-5">
+          <div class="px-4 flex sm:grid sm:px-0 mt-5">
             <n-alert
+              class="w-full"
               title="网易爆米花"
               type="warning"
             >
@@ -467,6 +497,7 @@
           </div>
           <div v-if="['tablet','fold'].includes(deviceStore.deviceType)" class="px-4 flex sm:grid sm:px-0 mt-5">
             <n-alert
+              class="w-full"
               title="三星浏览器"
               type="info"
             >
@@ -480,6 +511,7 @@
           </div>
           <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="['tablet','fold'].includes(deviceStore.deviceType)">
             <n-alert
+              class="w-full"
               title="波点音乐"
               type="success"
             >
@@ -492,6 +524,7 @@
           </div>
           <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="['tablet','fold'].includes(deviceStore.deviceType)">
             <n-alert
+              class="w-full"
               title="荣耀音乐"
               type="error"
             >
@@ -503,8 +536,9 @@
               <n-button class="mt-2" strong secondary type="error" @click="() => getAppDownload('荣耀音乐', 'https://caiyun.139.com/m/i?135CmrVUbH2y3', 'original')">获取荣耀音乐</n-button>
             </n-alert>
           </div>
-          <div v-if="['tablet','fold'].includes(deviceStore.deviceType)" class="px-4 flex sm:grid sm:px-0 mt-5">
+          <div class="px-4 flex sm:grid sm:px-0 mt-5">
             <n-alert
+              class="w-full"
               title="随身乐队"
               type="info"
             >
@@ -519,6 +553,7 @@
           </div>
           <div v-if="['tablet','fold'].includes(deviceStore.deviceType)" class="px-4 flex sm:grid sm:px-0 mt-5">
             <n-alert
+              class="w-full"
               title="FlipaClip"
               type="default"
             >
@@ -532,6 +567,7 @@
           </div>
           <div v-if="['tablet','fold'].includes(deviceStore.deviceType)" class="px-4 flex sm:grid sm:px-0 mt-5">
             <n-alert
+              class="w-full"
               title="像素习惯"
               type="info"
             >
@@ -545,6 +581,7 @@
           </div>
           <div v-if="['tablet','fold'].includes(deviceStore.deviceType)" class="px-4 flex sm:grid sm:px-0 mt-5">
             <n-alert
+              class="w-full"
               title="机核"
               type="default"
             >
@@ -558,6 +595,7 @@
           </div>
           <div v-if="deviceStore.deviceType === 'tablet'" class="px-4 flex sm:grid sm:px-0 mt-5">
             <n-alert
+            class="w-full"
               title="Redmi Pad Pro X 哈利·波特 联动主题"
               type="warning"
             >
@@ -573,6 +611,7 @@
           </div>
           <div v-if="['tablet','fold'].includes(deviceStore.deviceType)" class="px-4 flex sm:grid sm:px-0 mt-5">
             <n-alert
+            class="w-full"
               title="有诗"
               type="default"
             >
@@ -587,6 +626,7 @@
           </div>
           <div v-if="['tablet','fold'].includes(deviceStore.deviceType)" class="px-4 flex sm:grid sm:px-0 mt-5">
             <n-alert
+              class="w-full"
               title="少数派"
               type="error"
             >
@@ -600,6 +640,7 @@
           </div>
           <div v-if="['tablet','fold'].includes(deviceStore.deviceType)" class="px-4 flex sm:grid sm:px-0 mt-5">
             <n-alert
+              class="w-full"
               title="小睡眠"
               type="info"
             >
