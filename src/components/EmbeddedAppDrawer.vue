@@ -270,6 +270,7 @@ const embeddedAppDrawer = ref({
 					currentSkipSelfAdaptive.value = initialParams.fixedOrientationRule?.disable ?? false;
 				}
 				currentIsShowDivider.value = initialParams.fixedOrientationRule?.isShowDivider ?? false;
+				currentSupportFullSize.value = initialParams.fixedOrientationRule?.supportFullSize ?? false;
 				currentFullRule.value = initialParams.embeddedRules?.fullRule ?? undefined;
 				currentForceFixedOrientation.value =
 					initialParams.fixedOrientationRule?.compatChange
@@ -300,7 +301,6 @@ const embeddedAppDrawer = ref({
 							? fullScreenRuleOptions.value[3]
 							: fullScreenRuleOptions.value[2];
 				}
-				currentSupportFullSize.value = initialParams.embeddedRules?.supportFullSize ?? false;
 				if (
 					initialParams.fixedOrientationRule &&
 					initialParams.fixedOrientationRule.hasOwnProperty('relaunch')
@@ -552,10 +552,10 @@ const handleDrawerSubmit = async () => {
 					deviceStore.androidTargetSdk < 35) && {
 					skipSelfAdaptive: currentSkipSelfAdaptive.value,
 				}),
-			...(currentSettingMode.value === 'fullScreen' && {
+			...((currentSettingMode.value === 'fullScreen' || currentSettingMode.value === 'disabled') && {
 				isShowDivider: currentIsShowDivider.value,
 			}),
-			...(currentSettingMode.value === 'fullScreen' && {
+			...((currentSettingMode.value === 'fullScreen' || currentSettingMode.value === 'disabled') && {
 				supportFullSize: currentSupportFullSize.value,
 			}),
 			...(currentSettingMode.value === 'fixedOrientation' && {
@@ -873,6 +873,32 @@ defineExpose({
 						<n-switch :rail-style="railStyle" v-model:value="currentFixedOrientationRelaunch" size="large">
 							<template #checked>应用比例变化时重载应用</template>
 							<template #unchecked>应用比例变化时不重载应用</template>
+						</n-switch>
+					</n-card>
+					<n-card :bordered="false" title="平行窗口滑动条" size="small">
+						<div class="mb-4">
+							<n-tag :bordered="false" type="success">
+								适用于原生适配
+								<span class="font-bold">Android Embedded</span>
+								的应用
+							</n-tag>
+						</div>
+						<n-switch :rail-style="railStyle" v-model:value="currentIsShowDivider" size="large">
+							<template #checked>启用平行窗口滑动条</template>
+							<template #unchecked>关闭平行窗口滑动条</template>
+						</n-switch>
+					</n-card>
+					<n-card :bordered="false" title="平行窗口可滑动至全屏" v-if="currentIsShowDivider" size="small">
+						<div class="mb-4">
+							<n-tag :bordered="false" type="success">
+								适用于原生适配
+								<span class="font-bold">Android Embedded</span>
+								的应用
+							</n-tag>
+						</div>
+						<n-switch :rail-style="railStyle" v-model:value="currentSupportFullSize" size="large">
+							<template #checked>平行窗口可滑动至全屏</template>
+							<template #unchecked>平行窗口不可滑动至全屏</template>
 						</n-switch>
 					</n-card>
 				</n-tab-pane>

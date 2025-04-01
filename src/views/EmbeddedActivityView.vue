@@ -596,6 +596,8 @@ const openAddEmbeddedApp = async () => {
 								relaunch: addEmbeddedAppRes.modePayload.foRelaunch,
 							}
 						: {}),
+					...(addEmbeddedAppRes.modePayload.supportFullSize ? { supportFullSize: true } : {}),
+					...(addEmbeddedAppRes.modePayload.isShowDivider ? { isShowDivider: true } : {}),
 				};
 			}
 			if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35) {
@@ -973,6 +975,17 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 					const hasCompatChange = currentFixedOrientation.value.hasOwnProperty('compatChange');
 					if (hasCompatChange) {
 						delete currentFixedOrientation.value.compatChange;
+					}
+					const hasIsScale = currentFixedOrientation.value.hasOwnProperty('isScale');
+					if (hasIsScale) {
+						delete currentFixedOrientation.value.isScale;
+					}
+					if (updateEmbeddedAppRes.modePayload.hasOwnProperty('isShowDivider')) {
+						currentFixedOrientation.value.isShowDivider = updateEmbeddedAppRes.modePayload.isShowDivider;
+					}
+					if (updateEmbeddedAppRes.modePayload.hasOwnProperty('supportFullSize')) {
+						currentFixedOrientation.value.supportFullSize =
+							updateEmbeddedAppRes.modePayload.supportFullSize;
 					}
 					if (!isEqual(moduleFixedOrientation.value, currentFixedOrientation.value)) {
 						embeddedStore.customConfigFixedOrientationList[row.name] = {
