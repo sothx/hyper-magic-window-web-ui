@@ -264,29 +264,6 @@ const handleClickSetting = async (row: GameBoosterTableItem, index: number) => {
 const reloadPage = async () => {
 	await gameBoosterStore.initDefault();
 };
-
-const getInstalledAppNameList = async () => {
-	const [getListErr, getListRes] = await $to(installedAppNames.getList());
-	if (getListErr) {
-		modal.create({
-			title: '获取失败',
-			type: 'warning',
-			preset: 'dialog',
-			content: () => <p>您的系统环境暂不支持该功能，获取失败~</p>,
-			negativeText: '确定',
-		});
-	}
-	if (getListRes) {
-		modal.create({
-			title: '获取成功',
-			type: 'success',
-			preset: 'dialog',
-			content: () => <p>好耶OwO，已重新获取当前已安装的应用名称~</p>,
-			negativeText: '确定',
-		});
-	}
-};
-
 const pagination = reactive({
 	page: 1,
 	pageSize: 10,
@@ -301,21 +278,6 @@ const pagination = reactive({
 	},
 });
 
-const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean }) => {
-	const style: CSSProperties = {};
-	if (checked) {
-		style.background = '#2080f0';
-		if (focused) {
-			style.boxShadow = '0 0 0 2px #2080f040';
-		}
-	} else {
-		style.background = '#d03050';
-		if (focused) {
-			style.boxShadow = '0 0 0 2px #d0305040';
-		}
-	}
-	return style;
-};
 
 function createColumns(): DataTableColumns<GameBoosterTableItem> {
 	return [
@@ -325,7 +287,7 @@ function createColumns(): DataTableColumns<GameBoosterTableItem> {
 			key: 'name',
 			render(row, index) {
 				return (
-					<div>
+					<div class="select-text">
 						{row.app_name && <p>{row.app_name}</p>}
 						{row.app_name && (
 							<p>

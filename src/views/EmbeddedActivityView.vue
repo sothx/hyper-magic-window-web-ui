@@ -1610,7 +1610,7 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 			key: 'name',
 			render(row, index) {
 				return (
-					<div>
+					<div class="select-text">
 						{row.applicationName && <p>{row.applicationName}</p>}
 						{row.name && (
 							<p>
