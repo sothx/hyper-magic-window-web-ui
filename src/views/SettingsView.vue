@@ -189,6 +189,7 @@ const getAppDownload = async (title: string, url: string, type: 'system' | 'revi
 		negativeText: '取消',
 		onPositiveClick: () => {
 			navigator.clipboard.writeText(`${url}`);
+			deviceApi.openChinaMobileMCloud()
 		},
 		onNegativeClick: () => {},
 	});

@@ -1,6 +1,7 @@
 import { renderApplicationName } from '@/utils/common';
 import { type ConfigProviderProps, darkTheme, lightTheme, createDiscreteApi } from 'naive-ui';
 import { computed } from 'vue';
+import * as deviceApi from '@/apis/deviceApi';
 import { useDeviceStore } from '@/stores/device';
 import type EmbeddedMergeRuleItem from '@/types/EmbeddedMergeRuleItem';
 export const incompatibleApplicationList: Record<string, (row: EmbeddedMergeRuleItem) => void> = {
@@ -138,6 +139,7 @@ export const incompatibleApplicationList: Record<string, (row: EmbeddedMergeRule
 			negativeText: '取消',
 			onPositiveClick: () => {
 				navigator.clipboard.writeText(`${url}`);
+				deviceApi.openChinaMobileMCloud()
 			},
 			onNegativeClick: () => {},
 		});
@@ -176,6 +178,7 @@ export const incompatibleApplicationList: Record<string, (row: EmbeddedMergeRule
 			negativeText: '取消',
 			onPositiveClick: () => {
 				navigator.clipboard.writeText(`${url}`);
+				deviceApi.openChinaMobileMCloud()
 			},
 			onNegativeClick: () => {},
 		});
@@ -242,6 +245,7 @@ export const incompatibleApplicationList: Record<string, (row: EmbeddedMergeRule
 			negativeText: '取消',
 			onPositiveClick: () => {
 				navigator.clipboard.writeText(`${url}`);
+				deviceApi.openChinaMobileMCloud()
 			},
 			onNegativeClick: () => {},
 		});
@@ -280,6 +284,7 @@ export const incompatibleApplicationList: Record<string, (row: EmbeddedMergeRule
 			negativeText: '取消',
 			onPositiveClick: () => {
 				navigator.clipboard.writeText(`${url}`);
+				deviceApi.openChinaMobileMCloud()
 			},
 			onNegativeClick: () => {},
 		});
@@ -318,6 +323,7 @@ export const incompatibleApplicationList: Record<string, (row: EmbeddedMergeRule
 			negativeText: '取消',
 			onPositiveClick: () => {
 				navigator.clipboard.writeText(`${url}`);
+				deviceApi.openChinaMobileMCloud()
 			},
 			onNegativeClick: () => {},
 		});
@@ -356,6 +362,7 @@ export const incompatibleApplicationList: Record<string, (row: EmbeddedMergeRule
 			negativeText: '取消',
 			onPositiveClick: () => {
 				navigator.clipboard.writeText(`${url}`);
+				deviceApi.openChinaMobileMCloud()
 			},
 			onNegativeClick: () => {},
 		});
@@ -394,6 +401,7 @@ export const incompatibleApplicationList: Record<string, (row: EmbeddedMergeRule
 			negativeText: '取消',
 			onPositiveClick: () => {
 				navigator.clipboard.writeText(`${url}`);
+				deviceApi.openChinaMobileMCloud()
 			},
 			onNegativeClick: () => {},
 		});
@@ -432,6 +440,7 @@ export const incompatibleApplicationList: Record<string, (row: EmbeddedMergeRule
 			negativeText: '取消',
 			onPositiveClick: () => {
 				navigator.clipboard.writeText(`${url}`);
+				deviceApi.openChinaMobileMCloud()
 			},
 			onNegativeClick: () => {},
 		});
@@ -470,6 +479,7 @@ export const incompatibleApplicationList: Record<string, (row: EmbeddedMergeRule
 			negativeText: '取消',
 			onPositiveClick: () => {
 				navigator.clipboard.writeText(`${url}`);
+				deviceApi.openChinaMobileMCloud()
 			},
 			onNegativeClick: () => {},
 		});
@@ -508,6 +518,7 @@ export const incompatibleApplicationList: Record<string, (row: EmbeddedMergeRule
 			negativeText: '取消',
 			onPositiveClick: () => {
 				navigator.clipboard.writeText(`${url}`);
+				deviceApi.openChinaMobileMCloud()
 			},
 			onNegativeClick: () => {},
 		});
@@ -546,6 +557,7 @@ export const incompatibleApplicationList: Record<string, (row: EmbeddedMergeRule
 			negativeText: '取消',
 			onPositiveClick: () => {
 				navigator.clipboard.writeText(`${url}`);
+				deviceApi.openChinaMobileMCloud()
 			},
 			onNegativeClick: () => {},
 		});
@@ -584,6 +596,7 @@ export const incompatibleApplicationList: Record<string, (row: EmbeddedMergeRule
 			negativeText: '取消',
 			onPositiveClick: () => {
 				navigator.clipboard.writeText(`${url}`);
+				deviceApi.openChinaMobileMCloud()
 			},
 			onNegativeClick: () => {},
 		});
@@ -622,6 +635,7 @@ export const incompatibleApplicationList: Record<string, (row: EmbeddedMergeRule
 			negativeText: '取消',
 			onPositiveClick: () => {
 				navigator.clipboard.writeText(`${url}`);
+				deviceApi.openChinaMobileMCloud()
 			},
 			onNegativeClick: () => {},
 		});
@@ -660,6 +674,7 @@ export const incompatibleApplicationList: Record<string, (row: EmbeddedMergeRule
 			negativeText: '取消',
 			onPositiveClick: () => {
 				navigator.clipboard.writeText(`${url}`);
+				deviceApi.openChinaMobileMCloud()
 			},
 			onNegativeClick: () => {},
 		});
@@ -698,6 +713,7 @@ export const incompatibleApplicationList: Record<string, (row: EmbeddedMergeRule
 			negativeText: '取消',
 			onPositiveClick: () => {
 				navigator.clipboard.writeText(`${url}`);
+				deviceApi.openChinaMobileMCloud()
 			},
 			onNegativeClick: () => {},
 		});
@@ -736,6 +752,7 @@ export const incompatibleApplicationList: Record<string, (row: EmbeddedMergeRule
 			negativeText: '取消',
 			onPositiveClick: () => {
 				navigator.clipboard.writeText(`${url}`);
+				deviceApi.openChinaMobileMCloud()
 			},
 			onNegativeClick: () => {},
 		});
@@ -773,6 +790,7 @@ export const incompatibleApplicationList: Record<string, (row: EmbeddedMergeRule
 			negativeText: '取消',
 			onPositiveClick: () => {
 				navigator.clipboard.writeText(`${url}`);
+				deviceApi.openChinaMobileMCloud()
 			},
 			onNegativeClick: () => {},
 		});
@@ -810,6 +828,7 @@ export const incompatibleApplicationList: Record<string, (row: EmbeddedMergeRule
 			negativeText: '取消',
 			onPositiveClick: () => {
 				navigator.clipboard.writeText(`${url}`);
+				deviceApi.openChinaMobileMCloud()
 			},
 			onNegativeClick: () => {},
 		});

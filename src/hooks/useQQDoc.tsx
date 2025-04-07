@@ -24,7 +24,7 @@ export function useQQDoc() {
 			type: 'info',
 			preset: 'dialog',
 			content: () => (
-				<div>
+				<div class="select-text">
 					<p>您可以通过收集表提交您的应用适配需求OwO，提交前请认真阅读须知~</p>
 					<p>https://docs.qq.com/form/page/DRUhJQkhzSnp6dWhm</p>
 				</div>

@@ -117,6 +117,7 @@ const getAppDownload = async () => {
 		negativeText: '取消',
 		onPositiveClick: () => {
 			navigator.clipboard.writeText(`https://caiyun.139.com/m/i?135CeBMHACC6p`);
+			deviceApi.openChinaMobileMCloud()
 		},
 		onNegativeClick: () => {},
 	});

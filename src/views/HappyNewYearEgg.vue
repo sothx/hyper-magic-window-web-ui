@@ -9,29 +9,6 @@
   const { message, modal, notification } = createDiscreteApi(['message', 'modal', 'notification'], {
 	configProviderProps: configProviderPropsRef,
 });
-  const getAppDownload = async (title:string,url:string, type: 'system' | 'revision' | 'original') => {
-	modal.create({
-		title: `获取${title}`,
-		type: 'info',
-		preset: 'dialog',
-		content: () => (
-			<div>
-        <p>确定要下载{title}么？请注意核对部分应用的兼容性。
-        { type === 'system' && <span>（Tips: 系统应用无法通过小米自带的应用包管理器安装，请通过MT管理器安装！）</span> }
-        { type === 'revision' && <span>（Tips: 修改版需搭配核心破解并通过MT管理器安装）</span> }
-      </p>
-				<p>下载地址:</p>
-        <p>{url}</p>
-			</div>
-		),
-		positiveText: '复制下载链接到剪切板',
-		negativeText: '取消',
-		onPositiveClick: () => {
-			navigator.clipboard.writeText(`${url}`);
-		},
-		onNegativeClick: () => {},
-	});
-};
 </script>
 <template>
 	<div class="mt-5 bg-[#313569]">

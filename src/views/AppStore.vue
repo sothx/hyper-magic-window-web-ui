@@ -1,5 +1,6 @@
 <script setup lang="tsx">
   import { useDeviceStore } from '@/stores/device';
+  import * as deviceApi from '@/apis/deviceApi';
   import { computed, type CSSProperties } from 'vue';
   import { createDiscreteApi, darkTheme, lightTheme, type ConfigProviderProps } from 'naive-ui';
   const deviceStore = useDeviceStore();
@@ -29,6 +30,7 @@
 		negativeText: '取消',
 		onPositiveClick: () => {
 			navigator.clipboard.writeText(`${url}`);
+      deviceApi.openChinaMobileMCloud()
 		},
 		onNegativeClick: () => {},
 	});
@@ -66,7 +68,7 @@
         </p>
       </div>
       <div class="mt-6 border-gray-100">
-        <dl class="divide-gray-100 mb-5">
+        <dl class="divide-gray-100 mb-5 select-text">
           <div class="px-4 flex sm:grid sm:px-0">
             <n-alert
               class="w-full"

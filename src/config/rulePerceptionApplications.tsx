@@ -130,7 +130,7 @@ export const embeddedPerceptionApplications: Record<string, EmbeddedPerceptionAp
 								const NCodeTemplate = (code: string) => {
 									return h(NCode, {
 										code: code,
-										class: 'my-5 overflow-y-auto line-clamp-6',
+										class: 'my-5 overflow-y-auto line-clamp-6 select-text',
 										language: 'Base64',
 										wordWrap: true,
 									});
@@ -250,7 +250,7 @@ export const embeddedPerceptionApplications: Record<string, EmbeddedPerceptionAp
 								const NCodeTemplate = (code: string) => {
 									return h(NCode, {
 										code: code,
-										class: 'my-5 overflow-y-auto line-clamp-6',
+										class: 'my-5 overflow-y-auto line-clamp-6 select-text',
 										language: 'Base64',
 										wordWrap: true,
 									});
@@ -432,7 +432,7 @@ export const embeddedPerceptionApplications: Record<string, EmbeddedPerceptionAp
 					const NCodeTemplate = (code: string) => {
 						return h(NCode, {
 							code: code,
-							class: 'my-5 overflow-y-auto line-clamp-6',
+							class: 'my-5 overflow-y-auto line-clamp-6 select-text',
 							language: 'Base64',
 							wordWrap: true,
 						});
@@ -558,7 +558,7 @@ export const embeddedPerceptionApplications: Record<string, EmbeddedPerceptionAp
 					const NCodeTemplate = (code: string) => {
 						return h(NCode, {
 							code: code,
-							class: 'my-5 overflow-y-auto line-clamp-6',
+							class: 'my-5 overflow-y-auto line-clamp-6 select-text',
 							language: 'Base64',
 							wordWrap: true,
 						});
@@ -671,7 +671,7 @@ export const embeddedPerceptionApplications: Record<string, EmbeddedPerceptionAp
 					const NCodeTemplate = (code: string) => {
 						return h(NCode, {
 							code: code,
-							class: 'my-5 overflow-y-auto line-clamp-6',
+							class: 'my-5 overflow-y-auto line-clamp-6 select-text',
 							language: 'Base64',
 							wordWrap: true,
 						});
