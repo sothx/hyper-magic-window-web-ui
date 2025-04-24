@@ -110,13 +110,13 @@ const getAppDownload = async () => {
 					如果规则无法生效，还需要安装修改版的手机/平板管家才会生效，安装后如出现崩溃等异常，推荐清空管家数据并重启设备再尝试~
 				</p>
 				<p>(Tips:需搭配核心破解并通过MT管理器安装)</p>
-				<p>下载地址:https://caiyun.139.com/m/i?135CeBMHACC6p</p>
+				<p>下载地址:https://caiyun.139.com/m/i?135Cm3g2XOMGs</p>
 			</div>
 		),
 		positiveText: '复制下载链接到剪切板',
 		negativeText: '取消',
 		onPositiveClick: () => {
-			navigator.clipboard.writeText(`https://caiyun.139.com/m/i?135CeBMHACC6p`);
+			navigator.clipboard.writeText(`https://caiyun.139.com/m/i?135Cm3g2XOMGs`);
 			deviceApi.openChinaMobileMCloud()
 		},
 		onNegativeClick: () => {},
@@ -287,7 +287,7 @@ function createColumns(): DataTableColumns<GameBoosterTableItem> {
 			key: 'name',
 			render(row, index) {
 				return (
-					<div class="select-text">
+					<div>
 						{row.app_name && <p>{row.app_name}</p>}
 						{row.app_name && (
 							<p>

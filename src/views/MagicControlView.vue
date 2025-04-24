@@ -822,7 +822,7 @@ function createColumns(): DataTableColumns<DotBlackListMergeItem> {
 			key: 'name',
 			render(row, index) {
 				return (
-					<div class="select-text">
+					<div>
 						{row.applicationName && <p>{row.applicationName}</p>}
 						{row.name && (
 							<p>

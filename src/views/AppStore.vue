@@ -68,7 +68,7 @@
         </p>
       </div>
       <div class="mt-6 border-gray-100">
-        <dl class="divide-gray-100 mb-5 select-text">
+        <dl class="divide-gray-100 mb-5">
           <div class="px-4 flex sm:grid sm:px-0">
             <n-alert
               class="w-full"

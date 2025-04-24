@@ -7,8 +7,6 @@ import vueJsx from '@vitejs/plugin-vue-jsx';
 import { fileURLToPath, URL } from 'node:url';
 import postcssPresetEnv from 'postcss-preset-env';
 import vueDevTools from 'vite-plugin-vue-devtools';
-import { visualizer } from 'rollup-plugin-visualizer';
-import legacy from '@vitejs/plugin-legacy';
 
 export default defineConfig({
 	css: {
@@ -110,9 +108,6 @@ export default defineConfig({
 					}
 					if (id.includes('apis')) {
 						return 'apis';
-					}
-					if (id.includes('naive-ui')) {
-						return 'naive-ui';
 					}
 				}
 			}

@@ -172,7 +172,6 @@ onMounted(() => {
 							ref="logInstRef"
 							:row="20"
 							line-height="2"
-							class="select-text"
 							font-size="12"
 							:log="logsStore.content"
 							language="webui-log"

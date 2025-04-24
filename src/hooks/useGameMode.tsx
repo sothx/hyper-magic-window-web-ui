@@ -51,13 +51,13 @@ export function useGameMode() {
 										</span>{' '}
 										，请先替换模块版本~
 									</p>
-									<p>下载地址:https://caiyun.139.com/m/i?135CeBMHACC6p</p>
+									<p>下载地址:https://caiyun.139.com/m/i?135CdgGlXeVEC</p>
 								</div>
 							),
 							positiveText: '复制下载链接到剪切板',
 							negativeText: '取消',
 							onPositiveClick: () => {
-								navigator.clipboard.writeText(`https://caiyun.139.com/m/i?135CeBMHACC6p`);
+								navigator.clipboard.writeText(`https://caiyun.139.com/m/i?135CdgGlXeVEC`);
 							},
 							onNegativeClick: () => {},
 						});

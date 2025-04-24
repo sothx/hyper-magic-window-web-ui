@@ -460,7 +460,6 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 					</div>
 					<div
 						v-if="
-							deviceStore.deviceType === 'tablet' &&
 							(useDisplaySettingsHook.hasMTKDisplayBrightness.value ||
 								useDisplaySettingsHook.hasQComDisplayBrightness.value)
 						"

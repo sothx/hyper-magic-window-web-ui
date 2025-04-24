@@ -126,7 +126,7 @@ const handleSelectGameRatio = (key: string, option: GameRatioOptions) => {
 				type: 'warning',
 				preset: 'dialog',
 				content: () => (
-					<div class="select-text">
+					<div>
 						<p>
 							自定义游戏比例存在使用风险，如果配置了不恰当的自定义游戏比例，可能会触发部分游戏风控导致游戏账号被封！
 						</p>
