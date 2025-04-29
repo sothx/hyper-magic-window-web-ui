@@ -96,7 +96,7 @@
               <p>超级小爱，全生态 AI 智能助手！超级小爱已经在小米平板全面公测，安装后即可体验超级小爱！</p>
               <p>兼容性:  Hyper OS 2 / Hyper OS 1 / MIUI14</p>
               <p>注意事项:  需要核心破解并搭配MT管理器安装，需要同时安装 超级小爱 和 小米澎湃AI引擎，Hyper OS 1和MIUI 14需要安装对应文件夹内的版本，否则存在无法使用的问题！</p>
-              <n-button class="mt-2" strong secondary type="error" @click="() => getAppDownload('超级小爱', 'https://caiyun.139.com/m/i?135CmDfhvmaxV', 'system')">获取超级小爱</n-button>
+              <n-button class="mt-2" strong secondary type="error" @click="() => getAppDownload('超级小爱', 'https://caiyun.139.com/m/i?2mWL9yPJ7qhl2', 'system')">获取超级小爱</n-button>
             </n-alert>
           </div>
           <div class="px-4 flex sm:grid sm:px-0 mt-5">
@@ -162,7 +162,7 @@
                 <li class="ml-3">开启高级材质(最高支持到高级材质3.0，部分被阉割了大文件夹模糊的机型，可以自行通过Hyper Ceiler强制启用桌面大文件夹的模糊)</li>
               </ul>
               <p>注意事项: Magisk模块请通过对应的 ROOT管理器 进行安装！高级材质在[显示与亮度-高级材质]，极致模式在[开发者选项-极致模式]。</p>
-              <n-button class="mt-2" strong secondary type="success" @click="() => getAppDownload('小米平板系统功能补全模块', 'https://caiyun.139.com/m/i?135Ce7Jx2e5nZ', 'magisk')">获取小米平板系统功能补全模块</n-button>
+              <n-button class="mt-2" strong secondary type="success" @click="() => getAppDownload('小米平板系统功能补全模块', 'https://caiyun.139.com/m/i?2mWL9yPJcop5b', 'magisk')">获取小米平板系统功能补全模块</n-button>
             </n-alert>
           </div>
           <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="['phone'].includes(deviceStore.deviceType)">

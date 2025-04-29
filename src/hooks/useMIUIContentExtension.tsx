@@ -33,7 +33,7 @@ export function useMIUIContentExtension() {
 
     const open = async () => {
         if (!isInstallMIUIContentExtension.value) {
-            await navigator.clipboard.writeText(`https://caiyun.139.com/m/i?135CdxVMTx4nf`);
+            await navigator.clipboard.writeText(`https://caiyun.139.com/m/i?2mWL9vPv2H1rh`);
             modal.create({
                 title: '无法打开传送门',
                 type: 'error',
@@ -42,7 +42,7 @@ export function useMIUIContentExtension() {
                     <div>
                         <p>未检测到系统存在传送门，请先通过模块修补传送门再进入~</p>
                         <p>已经复制模块下载链接到剪切板了，请务必选择固化并修复传送门~</p>
-                        <p>下载链接:https://caiyun.139.com/m/i?135CdxVMTx4nf</p>
+                        <p>下载链接:https://caiyun.139.com/m/i?2mWL9vPv2H1rh</p>
                     </div>
                 ),
                 negativeText: '确定',
