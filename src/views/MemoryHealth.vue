@@ -99,20 +99,20 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 									deviceStore.androidTargetSdk >= 35
 								"
 								><n-tag
-									>dm设备映射器: {{ ZRAMWritebackHook.miuiExtmDmOptEnable ? '启用' : '未启用' }}
+									>dm设备映射器: {{ ZRAMWritebackHook.miuiExtmDmOptEnable.value ? '启用' : '未启用' }}
 								</n-tag></div
 							>
 							<div class="mb-3"
-								><n-tag type="error">回写块: {{ ZRAMWritebackHook.backingDev }} </n-tag></div
+								><n-tag type="error">回写块: {{ ZRAMWritebackHook.backingDev.value }} </n-tag></div
 							>
 							<div class="mb-3"
-								><n-tag type="success">已回写: {{ ZRAMWritebackHook.hasWriteBack }} MB</n-tag></div
+								><n-tag type="success">已回写: {{ ZRAMWritebackHook.hasWriteBack.value }} MB</n-tag></div
 							>
 							<div class="mb-3"
-								><n-tag type="info">总读取: {{ ZRAMWritebackHook.totalRead }} MB</n-tag></div
+								><n-tag type="info">总读取: {{ ZRAMWritebackHook.totalRead.value }} MB</n-tag></div
 							>
 							<div
-								><n-tag type="warning">总回写: {{ ZRAMWritebackHook.totalWriteBack }} MB</n-tag></div
+								><n-tag type="warning">总回写: {{ ZRAMWritebackHook.totalWriteBack.value }} MB</n-tag></div
 							>
 							<n-alert class="mt-5" type="warning" :show-icon="false" :bordered="false">
 								<p

@@ -2308,7 +2308,7 @@ export const getMiuiExtmDmOptEnable = (): Promise<string> => {
 			if (import.meta.env.MODE === 'development') {
 				resolve(`true`);
 			} else {
-				const { errno, stdout, stderr }: SmartFocusIOResult = (await exec(shellCommon)) as SmartFocusIOResult;
+				const { errno, stdout, stderr }: ExecResults = (await exec(shellCommon)) as unknown as ExecResults;
 				errno ? reject(stderr) : resolve(stdout);
 			}
 		}),
@@ -2323,7 +2323,7 @@ export const getMiuiExtmDmOptTotalWriteBack = (): Promise<string> => {
 			if (import.meta.env.MODE === 'development') {
 				resolve(`5653`);
 			} else {
-				const { errno, stdout, stderr }: SmartFocusIOResult = (await exec(shellCommon)) as SmartFocusIOResult;
+				const { errno, stdout, stderr }: ExecResults = (await exec(shellCommon)) as unknown as ExecResults;
 				errno ? reject(stderr) : resolve(stdout);
 			}
 		}),
@@ -2338,7 +2338,7 @@ export const getMiuiExtmDmOptTotalRead = (): Promise<string> => {
 			if (import.meta.env.MODE === 'development') {
 				resolve(`1503`);
 			} else {
-				const { errno, stdout, stderr }: SmartFocusIOResult = (await exec(shellCommon)) as SmartFocusIOResult;
+				const { errno, stdout, stderr }: ExecResults = (await exec(shellCommon)) as unknown as ExecResults;
 				errno ? reject(stderr) : resolve(stdout);
 			}
 		}),
@@ -2353,7 +2353,7 @@ export const getMiuiExtmDmOptHasWriteBack = (): Promise<string> => {
 			if (import.meta.env.MODE === 'development') {
 				resolve(`2047`);
 			} else {
-				const { errno, stdout, stderr }: SmartFocusIOResult = (await exec(shellCommon)) as SmartFocusIOResult;
+				const { errno, stdout, stderr }: ExecResults = (await exec(shellCommon)) as unknown as ExecResults;
 				errno ? reject(stderr) : resolve(stdout);
 			}
 		}),
