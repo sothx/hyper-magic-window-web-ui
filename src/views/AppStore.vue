@@ -84,7 +84,7 @@
               <n-button class="mt-2" strong secondary type="info" @click="() => getAppDownload('小米互联互通服务', 'https://caiyun.139.com/m/i?135CmimxMDtEs', 'system')">获取小米互联互通服务</n-button>
             </n-alert>
           </div>
-          <div class="px-4 flex sm:grid sm:px-0 mt-5" v-if="['tablet','fold'].includes(deviceStore.deviceType)">
+          <div class="px-4 flex sm:grid sm:px-0 mt-5">
             <n-alert
               class="w-full"
               title="超级小爱 - Pad / Fold"

@@ -79,6 +79,7 @@ export const useDeviceStore = defineStore(
 		const lastVersionCode = ref<number>();
 		const needReloadData = ref<boolean>(false);
 		const moduleInfo = ref<ModuleProp>();
+		const moduleUpdateInfo = ref<deviceApi.ModuleUpdateInfo>();
 		const enabledMiuiDesktopMode = ref<boolean>(false);
 		const windowWidth = ref(window.innerWidth);
 		const isEnableShowNotificationIconNum = ref<boolean>(false);
@@ -136,7 +137,8 @@ export const useDeviceStore = defineStore(
 			lowWebViewVersion: false,
 			patchModeAlert: false,
 			needInstalledKsuWebUiApk: false,
-			needReloadSystemModuleVer: false
+			needReloadSystemModuleVer: false,
+			needUpdateModuleVer: 0
 		});
 		const showThirdPartySetting = reactive({
 			amktiaoROMInterface: false,
@@ -519,6 +521,7 @@ export const useDeviceStore = defineStore(
 			displayModeList,
 			isDisabledOS2SystemAppOptimize,
 			preStartProp,
+			moduleUpdateInfo,
 			isDisabledOS2InstallModuleTips,
 			DDRVendor,
 			deviceType,

@@ -4,6 +4,7 @@ import HelloWorld from './components/HelloWorld.vue';
 import { Sidebar } from './components/Sidebar';
 import ErrorModal from '@/components/ErrorModal.vue';
 import SplashScreen from '@/components/SplashScreen.vue';
+import * as deviceApi from '@/apis/deviceApi';
 import { ref, onMounted, watch, watchEffect, computed, nextTick } from 'vue';
 import { useDeviceStore } from '@/stores/device';
 import { createDiscreteApi, darkTheme, lightTheme, type ConfigProviderProps } from 'naive-ui';
@@ -34,7 +35,7 @@ const isSplashVisible = ref(true);
 watchEffect(onCleanup => {
 	// 检查 deviceStore.loading 和 embeddedStore.loading 是否都为 false
 	if (!deviceStore.loading) {
-		if (['tablet','fold'].includes(deviceStore.deviceType) && !embeddedStore.loading) {
+		if (['tablet', 'fold'].includes(deviceStore.deviceType) && !embeddedStore.loading) {
 			isSplashVisible.value = false; // 隐藏开屏页
 		}
 		if (['phone'].includes(deviceStore.deviceType)) {
@@ -101,33 +102,33 @@ watchEffect(onCleanup => {
 });
 
 const loadRoutes = async () => {
-  let module;
-  if (deviceStore.deviceType === 'tablet') {
-    module = await import("./router/device_routes/tablet");
-  } else if (deviceStore.deviceType === 'fold') {
-    module = await import("./router/device_routes/fold");
-  } else {
-    module = await import("./router/device_routes/phone");
-  }
+	let module;
+	if (deviceStore.deviceType === 'tablet') {
+		module = await import('./router/device_routes/tablet');
+	} else if (deviceStore.deviceType === 'fold') {
+		module = await import('./router/device_routes/fold');
+	} else {
+		module = await import('./router/device_routes/phone');
+	}
 
-  // 确保路由全部添加完成
-  module.default.forEach((item) => {
-    router.addRoute(item);
-  });
-  // **等待 Vue Router 解析完成**
-  await router.isReady();
+	// 确保路由全部添加完成
+	module.default.forEach(item => {
+		router.addRoute(item);
+	});
+	// **等待 Vue Router 解析完成**
+	await router.isReady();
 
-  // **获取当前路径**
-  const currentPath = router.currentRoute.value.path;
+	// **获取当前路径**
+	const currentPath = router.currentRoute.value.path;
 
-  // **如果当前路径是 `/`，才执行 redirect**
-  const firstRouteRedirect = module.default[0]?.redirect as string | undefined;
-  if (currentPath === '/' && firstRouteRedirect) {
-    router.replace(firstRouteRedirect);
-  } else {
-    // **确保 Vue Router 重新解析当前路径**
-    router.replace({ path: currentPath, replace: true });
-  }
+	// **如果当前路径是 `/`，才执行 redirect**
+	const firstRouteRedirect = module.default[0]?.redirect as string | undefined;
+	if (currentPath === '/' && firstRouteRedirect) {
+		router.replace(firstRouteRedirect);
+	} else {
+		// **确保 Vue Router 重新解析当前路径**
+		router.replace({ path: currentPath, replace: true });
+	}
 };
 
 onMounted(async () => {
@@ -159,7 +160,6 @@ onMounted(async () => {
 						UI，这不是必选项，您可以选择忽略此条建议，但可能导致模块部分功能无法正常工作。
 					</p>
 					<p>下载地址:https://caiyun.139.com/m/i?135CljmnAbpAy</p>
-					
 				</div>
 			),
 			positiveText: '复制下载链接到剪切板',
@@ -173,7 +173,10 @@ onMounted(async () => {
 		});
 	}
 	if (
-		deviceStore.androidTargetSdk === 33 && deviceStore.MIOSVersion && deviceStore.MIOSVersion === 1 && !deviceStore.skipConfirm.needReloadSystemModuleVer
+		deviceStore.androidTargetSdk === 33 &&
+		deviceStore.MIOSVersion &&
+		deviceStore.MIOSVersion === 1 &&
+		!deviceStore.skipConfirm.needReloadSystemModuleVer
 	) {
 		modal.create({
 			title: '模块额外说明',
@@ -182,7 +185,8 @@ onMounted(async () => {
 			content: () => (
 				<div>
 					<p>
-						基于Android 13 的 Hyper OS 1 存在系统异常问题，可能导致「应用横屏布局」和「应用布局优化」的相关修改需要手动重启设备才会生效，请知悉此异常问题~
+						基于Android 13 的 Hyper OS 1
+						存在系统异常问题，可能导致「应用横屏布局」和「应用布局优化」的相关修改需要手动重启设备才会生效，请知悉此异常问题~
 					</p>
 				</div>
 			),
@@ -193,13 +197,49 @@ onMounted(async () => {
 			},
 		});
 	}
-	if (['tablet','fold'].includes(deviceStore.deviceType)) {
+	if (['tablet', 'fold'].includes(deviceStore.deviceType)) {
 		embeddedStore.initDefault();
 		autoUIStore.initDefault();
 		gameBoosterStore.initDefault();
 		if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 1) {
 			dotBlackListStore.initDefault();
 		}
+	}
+	// 获取更新信息
+	if (deviceStore.moduleInfo?.updateJson) {
+		deviceApi.getModuleUpdateMsg(deviceStore.moduleInfo.updateJson).then(res => {
+			deviceStore.moduleUpdateInfo = res;
+			if (
+			deviceStore.moduleInfo && 
+			deviceStore.moduleUpdateInfo?.versionCode &&
+			deviceStore.moduleUpdateInfo.versionCode > deviceStore.moduleInfo?.versionCode &&
+			deviceStore.moduleUpdateInfo.versionCode > deviceStore.skipConfirm.needUpdateModuleVer
+		) {
+			const currentUpdateVer = deviceStore.moduleUpdateInfo.version
+			modal.create({
+				title: '发现模块存在新版本',
+				type: 'info',
+				preset: 'dialog',
+				content: () => (
+					<div>
+						<p>完美横屏应用计划已更新至 { currentUpdateVer }，您可以从网盘或者Github获取最新版本的模块。</p>
+						<p>下载地址:https://caiyun.139.com/m/i?135CdgGlXeVEC</p>
+					</div>
+				),
+				positiveText: '复制下载链接到剪切板',
+				negativeText: '跳过当前版本的更新',
+				onPositiveClick: () => {
+					navigator.clipboard.writeText(`https://caiyun.139.com/m/i?135CdgGlXeVEC`);
+					deviceApi.openChinaMobileMCloud()
+				},
+				onNegativeClick: () => {
+					if (deviceStore.moduleUpdateInfo) {
+						deviceStore.skipConfirm.needUpdateModuleVer = deviceStore.moduleUpdateInfo.versionCode;
+					}
+				},
+			});
+		}
+		});
 	}
 });
 </script>
