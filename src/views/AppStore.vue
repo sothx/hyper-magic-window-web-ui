@@ -87,13 +87,13 @@
           <div class="px-4 flex sm:grid sm:px-0 mt-5">
             <n-alert
               class="w-full"
-              title="超级小爱 - Pad / Fold"
+              title="超级小爱"
               type="error"
             >
             <template #icon>
               <img src="/images/icons/ai_icon.png" />
             </template>
-              <p>超级小爱，全生态 AI 智能助手！超级小爱已经在小米平板全面公测，安装后即可体验超级小爱！</p>
+              <p>超级小爱，全生态 AI 智能助手！超级小爱已经全面公测，安装后即可体验超级小爱！</p>
               <p>兼容性:  Hyper OS 2 / Hyper OS 1 / MIUI14</p>
               <p>注意事项:  需要核心破解并搭配MT管理器安装，需要同时安装 超级小爱 和 小米澎湃AI引擎，Hyper OS 1和MIUI 14需要安装对应文件夹内的版本，否则存在无法使用的问题！</p>
               <n-button class="mt-2" strong secondary type="error" @click="() => getAppDownload('超级小爱', 'https://caiyun.139.com/m/i?2mWL9yPJ7qhl2', 'system')">获取超级小爱</n-button>
