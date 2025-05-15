@@ -216,6 +216,7 @@ onMounted(async () => {
 			deviceStore.moduleUpdateInfo.versionCode > deviceStore.skipConfirm.needUpdateModuleVer
 		) {
 			const currentUpdateVer = deviceStore.moduleUpdateInfo.version
+			const currentChinaMobileMCloudUrl = deviceStore.moduleUpdateInfo.chinaMobileMCloudUrl
 			modal.create({
 				title: '发现模块存在新版本',
 				type: 'info',
@@ -223,13 +224,13 @@ onMounted(async () => {
 				content: () => (
 					<div>
 						<p>完美横屏应用计划已更新至 { currentUpdateVer }，您可以从网盘或者Github获取最新版本的模块。</p>
-						<p>下载地址:https://caiyun.139.com/m/i?135CdgGlXeVEC</p>
+						<p>下载地址:{ currentChinaMobileMCloudUrl }</p>
 					</div>
 				),
 				positiveText: '复制下载链接到剪切板',
 				negativeText: '跳过当前版本的更新',
 				onPositiveClick: () => {
-					navigator.clipboard.writeText(`https://caiyun.139.com/m/i?135CdgGlXeVEC`);
+					navigator.clipboard.writeText(currentChinaMobileMCloudUrl);
 					deviceApi.openChinaMobileMCloud()
 				},
 				onNegativeClick: () => {

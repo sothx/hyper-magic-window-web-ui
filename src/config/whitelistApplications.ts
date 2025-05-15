@@ -329,6 +329,10 @@ const topApplicationList = {
     'com.proximabeta.nikke': 1, // NIKKE
     'com.moondroplab.moondrop.moondrop_app': 1, //MOONDROP
     'com.masseffect.suki': 1, // Suki
+    'com.habby.capybara': 1, // 卡皮巴拉 Go！
+    'com.hexin.plat.android': 1, // 同花顺
+    'com.douban.frodo': 1, // 豆瓣
+
 }
 
 export default {

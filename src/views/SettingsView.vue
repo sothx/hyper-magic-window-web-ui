@@ -189,7 +189,7 @@ const getAppDownload = async (title: string, url: string, type: 'system' | 'revi
 		negativeText: '取消',
 		onPositiveClick: () => {
 			navigator.clipboard.writeText(`${url}`);
-			deviceApi.openChinaMobileMCloud()
+			deviceApi.openChinaMobileMCloud();
 		},
 		onNegativeClick: () => {},
 	});
@@ -279,9 +279,7 @@ const changePatchMode = async (value: boolean) => {
 			embeddedStore.isPatchMode = false;
 		}
 		await deviceStore.getAndroidApplicationPackageNameList();
-		const [submitUpdateEmbeddedAppErr, submitUpdateEmbeddedAppRes] = await $to(
-			embeddedApi.updateEmbeddedApp(),
-		);
+		const [submitUpdateEmbeddedAppErr, submitUpdateEmbeddedAppRes] = await $to(embeddedApi.updateEmbeddedApp());
 		if (submitUpdateEmbeddedAppErr) {
 			modal.create({
 				title: '操作失败',
@@ -359,7 +357,8 @@ const changeDeepPatchMode = async (value: boolean) => {
 								，不再提供{' '}
 								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
 									高频应用适配列表
-								</span>{' '}作为兜底，可以进一步优化老机型由于系统优化不佳而导致的卡顿、掉帧等问题，但后续每次更新模块或者安装新的应用后，均需要前往{' '}
+								</span>{' '}
+								作为兜底，可以进一步优化老机型由于系统优化不佳而导致的卡顿、掉帧等问题，但后续每次更新模块或者安装新的应用后，均需要前往{' '}
 								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
 									应用横屏布局
 								</span>{' '}
@@ -429,9 +428,7 @@ const changeDeepPatchMode = async (value: boolean) => {
 			embeddedStore.isDeepPatchMode = false;
 		}
 		await deviceStore.getAndroidApplicationPackageNameList();
-		const [submitUpdateEmbeddedAppErr, submitUpdateEmbeddedAppRes] = await $to(
-			embeddedApi.updateEmbeddedApp(),
-		);
+		const [submitUpdateEmbeddedAppErr, submitUpdateEmbeddedAppRes] = await $to(embeddedApi.updateEmbeddedApp());
 		if (submitUpdateEmbeddedAppErr) {
 			modal.create({
 				title: '操作失败',
@@ -461,7 +458,8 @@ const changeDeepPatchMode = async (value: boolean) => {
 								，不再提供{' '}
 								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
 									高频应用适配列表
-								</span>{' '}作为兜底，可以进一步解决老机型由于系统优化不佳而导致的卡顿、掉帧等问题，但后续每次更新模块或者安装新的应用后，均需要前往{' '}
+								</span>{' '}
+								作为兜底，可以进一步解决老机型由于系统优化不佳而导致的卡顿、掉帧等问题，但后续每次更新模块或者安装新的应用后，均需要前往{' '}
 								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
 									应用横屏布局
 								</span>{' '}
@@ -481,7 +479,8 @@ const changeDeepPatchMode = async (value: boolean) => {
 								，模块会以更符合大多数人的设备整体应用情况{' '}
 								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
 									修剪模块应用适配列表
-								</span>{' '}。
+								</span>{' '}
+								。
 							</p>
 						)}
 					</div>
@@ -583,7 +582,9 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							{{ deviceStore.moduleInfo.versionCode || '获取失败' }}
 						</dd>
 					</div>
-					<div v-if="['tablet','fold'].includes(deviceStore.deviceType)" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+					<div
+						v-if="['tablet', 'fold'].includes(deviceStore.deviceType)"
+						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
 							模块工作模式
@@ -627,7 +628,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							deviceStore.MIOSVersion &&
 							deviceStore.MIOSVersion >= 2 &&
 							deviceStore.androidTargetSdk >= 35 &&
-							['tablet','fold'].includes(deviceStore.deviceType)
+							['tablet', 'fold'].includes(deviceStore.deviceType)
 						">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
@@ -650,7 +651,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 						v-if="
 							deviceStore.MIOSVersion &&
 							deviceStore.MIOSVersion >= 2 &&
-							deviceStore.androidTargetSdk >= 35 && 
+							deviceStore.androidTargetSdk >= 35 &&
 							['tablet'].includes(deviceStore.deviceType)
 						">
 						<dt
@@ -696,7 +697,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 									deviceStore.androidTargetSdk &&
 									deviceStore.androidTargetSdk >= 34 &&
 									deviceStore.smartFocusIO !== 'on' &&
-									['tablet','fold'].includes(deviceStore.deviceType)
+									['tablet', 'fold'].includes(deviceStore.deviceType)
 								"
 								type="warning"
 								:show-icon="false"
@@ -761,8 +762,8 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							deviceStore.MIOSVersion &&
 							deviceStore.MIOSVersion >= 2 &&
 							deviceStore.androidTargetSdk >= 35 &&
-							ZRAMWritebackHook.isInit.value && 
-							['tablet','fold'].includes(deviceStore.deviceType)
+							ZRAMWritebackHook.isInit.value &&
+							['tablet', 'fold'].includes(deviceStore.deviceType)
 						">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`"
@@ -785,13 +786,17 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 								><n-tag type="error">回写块: {{ ZRAMWritebackHook.backingDev.value }} </n-tag></div
 							>
 							<div class="mb-3"
-								><n-tag type="success">已回写: {{ ZRAMWritebackHook.hasWriteBack.value }} MB</n-tag></div
+								><n-tag type="success"
+									>已回写: {{ ZRAMWritebackHook.hasWriteBack.value }} MB</n-tag
+								></div
 							>
 							<div class="mb-3"
 								><n-tag type="info">总读取: {{ ZRAMWritebackHook.totalRead.value }} MB</n-tag></div
 							>
 							<div
-								><n-tag type="warning">总回写: {{ ZRAMWritebackHook.totalWriteBack.value }} MB</n-tag></div
+								><n-tag type="warning"
+									>总回写: {{ ZRAMWritebackHook.totalWriteBack.value }} MB</n-tag
+								></div
 							>
 							<n-alert class="mt-5" type="warning" :show-icon="false" :bordered="false">
 								<p
@@ -975,7 +980,14 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							</n-button>
 						</dd>
 					</div>
-					<div v-if="['tablet'].includes(deviceStore.deviceType) && deviceStore.androidTargetSdk && deviceStore.androidTargetSdk > 32" id="gameModeSettings" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+					<div
+						v-if="
+							['tablet'].includes(deviceStore.deviceType) &&
+							deviceStore.androidTargetSdk &&
+							deviceStore.androidTargetSdk > 32
+						"
+						id="gameModeSettings"
+						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
 							游戏显示布局
@@ -1014,7 +1026,12 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 						</dt>
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							<n-skeleton v-if="!hideGestureLineHook.isInit.value" :width="137" :sharp="false" :round="true" size="small" />
+							<n-skeleton
+								v-if="!hideGestureLineHook.isInit.value"
+								:width="137"
+								:sharp="false"
+								:round="true"
+								size="small" />
 							<n-switch
 								v-else
 								@update:value="(value: boolean) => hideGestureLineHook.changeIsHideGestureLine(value)"
@@ -1077,7 +1094,13 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 						</dt>
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							{{ deviceStore.deviceType === 'tablet' ? '平板(Pad)' : deviceStore.deviceType === 'fold' ? '折叠屏(Fold)' : '手机(Phone)' }}
+							{{
+								deviceStore.deviceType === 'tablet'
+									? '平板(Pad)'
+									: deviceStore.deviceType === 'fold'
+										? '折叠屏(Fold)'
+										: '手机(Phone)'
+							}}
 						</dd>
 					</div>
 					<div
@@ -1118,7 +1141,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 						</dd>
 					</div>
 					<div
-						v-if="deviceStore.deviceInfo.memoryInfo && ['tablet','fold'].includes(deviceStore.deviceType)"
+						v-if="deviceStore.deviceInfo.memoryInfo && ['tablet', 'fold'].includes(deviceStore.deviceType)"
 						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
@@ -1129,7 +1152,9 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							<div class="whitespace-pre">{{ deviceStore.deviceInfo.memoryInfo || '获取失败' }}</div>
 						</dd>
 					</div>
-					<div v-if="deviceStore.DDRVendor && ['tablet','fold'].includes(deviceStore.deviceType)" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+					<div
+						v-if="deviceStore.DDRVendor && ['tablet', 'fold'].includes(deviceStore.deviceType)"
+						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
 							设备DDR生产厂商
@@ -1140,7 +1165,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 						</dd>
 					</div>
 					<div
-						v-if="useUFSHealthHook.isShow.value && ['tablet','fold'].includes(deviceStore.deviceType)"
+						v-if="useUFSHealthHook.isShow.value && ['tablet', 'fold'].includes(deviceStore.deviceType)"
 						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
@@ -1175,7 +1200,10 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 						</dd>
 					</div>
 					<div
-						v-if="realQuantityHook.qcomBatteryFg1RSocInfo.current && ['tablet','fold'].includes(deviceStore.deviceType)"
+						v-if="
+							realQuantityHook.qcomBatteryFg1RSocInfo.current &&
+							['tablet', 'fold'].includes(deviceStore.deviceType)
+						"
 						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
@@ -1225,7 +1253,10 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 						</dd>
 					</div>
 					<div
-						v-if="realQuantityHook.capacityRawInfo.current && ['tablet','fold'].includes(deviceStore.deviceType)"
+						v-if="
+							realQuantityHook.capacityRawInfo.current &&
+							['tablet', 'fold'].includes(deviceStore.deviceType)
+						"
 						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
@@ -1275,7 +1306,10 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 						</dd>
 					</div>
 					<div
-						v-if="deviceStore.batteryInfo.chargeFullDesign && ['tablet','fold'].includes(deviceStore.deviceType)"
+						v-if="
+							deviceStore.batteryInfo.chargeFullDesign &&
+							['tablet', 'fold'].includes(deviceStore.deviceType)
+						"
 						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
@@ -1287,7 +1321,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 						</dd>
 					</div>
 					<div
-						v-if="deviceStore.batteryInfo.chargeFull && ['tablet','fold'].includes(deviceStore.deviceType)"
+						v-if="deviceStore.batteryInfo.chargeFull && ['tablet', 'fold'].includes(deviceStore.deviceType)"
 						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
@@ -1299,7 +1333,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 						</dd>
 					</div>
 					<div
-						v-if="deviceStore.batteryInfo.cycleCount && ['tablet','fold'].includes(deviceStore.deviceType)"
+						v-if="deviceStore.batteryInfo.cycleCount && ['tablet', 'fold'].includes(deviceStore.deviceType)"
 						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
@@ -1311,7 +1345,11 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 						</dd>
 					</div>
 					<div
-						v-if="deviceStore.batteryInfo.chargeFullDesign && deviceStore.batteryInfo.chargeFull && ['tablet','fold'].includes(deviceStore.deviceType)"
+						v-if="
+							deviceStore.batteryInfo.chargeFullDesign &&
+							deviceStore.batteryInfo.chargeFull &&
+							['tablet', 'fold'].includes(deviceStore.deviceType)
+						"
 						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
@@ -1328,7 +1366,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 						</dd>
 					</div>
 					<div
-						v-if="deviceStore.batteryInfo.sohQcom && ['tablet','fold'].includes(deviceStore.deviceType)"
+						v-if="deviceStore.batteryInfo.sohQcom && ['tablet', 'fold'].includes(deviceStore.deviceType)"
 						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
@@ -1350,7 +1388,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 						</dd>
 					</div>
 					<div
-						v-if="deviceStore.batteryInfo.sohMTK && ['tablet','fold'].includes(deviceStore.deviceType)"
+						v-if="deviceStore.batteryInfo.sohMTK && ['tablet', 'fold'].includes(deviceStore.deviceType)"
 						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
@@ -1373,7 +1411,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 						</dd>
 					</div>
 					<div
-						v-if="deviceStore.batteryInfo.sohXMPower && ['tablet','fold'].includes(deviceStore.deviceType)"
+						v-if="deviceStore.batteryInfo.sohXMPower && ['tablet', 'fold'].includes(deviceStore.deviceType)"
 						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">

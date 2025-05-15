@@ -19,6 +19,7 @@ export interface ModuleUpdateInfo {
 	version: string
 	versionCode: number
 	zipUrl: string
+	chinaMobileMCloudUrl: string
 }
 
 export interface AndroidAppPackageJobsResult extends Omit<ExecResults, 'stdout'> {

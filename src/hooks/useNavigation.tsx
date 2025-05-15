@@ -112,16 +112,16 @@ export function useNavigation() {
 				</svg>
 			),
 		},
-		{
-			name: '新春彩蛋',
-			routeName: 'eggs',
-			href: '/eggs',
-			icon: () => (
-				<svg class='icon' aria-hidden='true'>
-					<use xlinkHref='#icon-chunjie'></use>
-				</svg>
-			),
-		},
+		// {
+		// 	name: '新春彩蛋',
+		// 	routeName: 'eggs',
+		// 	href: '/eggs',
+		// 	icon: () => (
+		// 		<svg class='icon' aria-hidden='true'>
+		// 			<use xlinkHref='#icon-chunjie'></use>
+		// 		</svg>
+		// 	),
+		// },
 	]);
 
     const foldSidebarList = reactive<NavigationItem[]>([

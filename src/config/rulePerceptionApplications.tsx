@@ -714,4 +714,122 @@ export const embeddedPerceptionApplications: Record<string, EmbeddedPerceptionAp
 			});
 		},
 	},
+	'com.hexin.plat.android': {
+		isShow() {
+			const deviceStore = useDeviceStore();
+			return true;
+		},
+		onClick(row: EmbeddedMergeRuleItem) {
+			const deviceStore = useDeviceStore();
+			const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
+				theme: deviceStore.isDarkMode ? darkTheme : lightTheme,
+			}));
+			const { message, modal, notification } = createDiscreteApi(['message', 'modal', 'notification'], {
+				configProviderProps: configProviderPropsRef,
+			});
+			modal.create({
+				title: '应用规则感知',
+				type: 'info',
+				preset: 'dialog',
+				content() {
+					const NCodeTemplate = (code: string) => {
+						return h(NCode, {
+							code: code,
+							class: 'my-5 overflow-y-auto line-clamp-6',
+							language: 'Base64',
+							wordWrap: true,
+						});
+					};
+					return (
+						<div>
+							<p>
+							{' '}
+								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+									{renderApplicationName(row.name, row.applicationName)}
+								</span>{' '}已自适配 Android 原生的平行视界，您可以前往{' '}
+								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+									{renderApplicationName(row.name, row.applicationName)}
+								</span>{' '}的{' '}
+								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+									系统设置
+								</span>{' '}
+								通过{' '}
+								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+									开启平行视窗模式
+								</span>{' '}
+								开关控制应用{' '}
+								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+									全屏显示
+								</span>{' '}
+								还是{' '}
+								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+									平行窗口
+								</span>{' '}~
+							</p>
+						</div>
+					);
+				},
+				positiveText: '确定'
+			});
+		}
+	},
+	'com.douban.frodo': {
+		isShow() {
+			const deviceStore = useDeviceStore();
+			return true;
+		},
+		onClick(row: EmbeddedMergeRuleItem) {
+			const deviceStore = useDeviceStore();
+			const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
+				theme: deviceStore.isDarkMode ? darkTheme : lightTheme,
+			}));
+			const { message, modal, notification } = createDiscreteApi(['message', 'modal', 'notification'], {
+				configProviderProps: configProviderPropsRef,
+			});
+			modal.create({
+				title: '应用规则感知',
+				type: 'info',
+				preset: 'dialog',
+				content() {
+					const NCodeTemplate = (code: string) => {
+						return h(NCode, {
+							code: code,
+							class: 'my-5 overflow-y-auto line-clamp-6',
+							language: 'Base64',
+							wordWrap: true,
+						});
+					};
+					return (
+						<div>
+							<p>
+							{' '}
+								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+									{renderApplicationName(row.name, row.applicationName)}
+								</span>{' '}已自适配 Android 原生的平行视界，您可以前往{' '}
+								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+									{renderApplicationName(row.name, row.applicationName)}
+								</span>{' '}的{' '}
+								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+									设置
+								</span>{' '}
+								通过{' '}
+								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+									双屏模式
+								</span>{' '}
+								开关控制应用{' '}
+								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+									全屏显示
+								</span>{' '}
+								还是{' '}
+								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+									平行窗口
+								</span>{' '}~
+							</p>
+						</div>
+					);
+				},
+				positiveText: '确定'
+			});
+		}
+	}
 };
