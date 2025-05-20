@@ -23,7 +23,7 @@
 			<p class="mt-8">愿<span class="text-[#E9D1A1] font-bold">「新年胜旧年」</span>，多喜乐，长安宁。</p>
 			<p class="mt-8">年年皆胜意，岁岁皆欢愉，祝大家<span class="text-[#E9D1A1] font-bold">「新年快乐」</span>！</p>
 			<p class="mt-8">十分感谢所有给<span class="text-[#E9D1A1] font-bold">「完美横屏应用计划」</span>打赏给予认可的酷友。</p>
-			<p class="mt-8">最后感谢<span class="text-[#E9D1A1] font-bold">「柚稚的孩纸」</span>、<span class="text-[#E9D1A1] font-bold">「Kirara」</span>和<span class="text-[#E9D1A1] font-bold">「御坂初琴」</span>给我提供了不少的帮助！</p>
+			<p class="mt-8">最后感谢<span class="text-[#E9D1A1] font-bold">「柚稚」</span>、<span class="text-[#E9D1A1] font-bold">「Kirara」</span>和<span class="text-[#E9D1A1] font-bold">「御坂初琴」</span>给我提供了不少的帮助！</p>
 			<p class="mt-20"><span class="text-[#E9D1A1] font-bold">「2025年1月1日」 By 做梦书 致辞</span></p>
 		</div>
 	</div>
