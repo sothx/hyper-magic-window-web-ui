@@ -867,6 +867,9 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 						const hasFullRule = currentEmbeddedRules.value.hasOwnProperty('fullRule');
 						if (hasFullRule) {
 							delete currentEmbeddedRules.value.fullRule;
+							if (embeddedStore.customConfigEmbeddedRulesList[row.name]) {
+								delete embeddedStore.customConfigEmbeddedRulesList[row.name].fullRule
+							}
 						}
 					}
 					if (!isEqual(moduleEmbeddedRules.value, currentEmbeddedRules.value)) {
