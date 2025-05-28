@@ -209,6 +209,13 @@ onMounted(async () => {
 	if (deviceStore.moduleInfo?.updateJson) {
 		deviceApi.getModuleUpdateMsg(deviceStore.moduleInfo.updateJson).then(res => {
 			deviceStore.moduleUpdateInfo = res;
+			const changeLogURL = deviceStore.moduleUpdateInfo?.changelog;
+			if (changeLogURL) {
+				deviceApi.getModuleChangelog(changeLogURL).then(res => {
+					console.log(res,'res')
+					deviceStore.changeLogMsg = res;
+				})
+			}
 			if (
 			deviceStore.moduleInfo && 
 			deviceStore.moduleUpdateInfo?.versionCode &&

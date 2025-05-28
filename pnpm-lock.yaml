@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      marked:
+        specifier: ^15.0.12
+        version: 15.0.12
       pinia:
         specifier: ^2.1.7
         version: 2.2.4(typescript@5.4.5)(vue@3.5.11(typescript@5.4.5))
@@ -66,6 +69,9 @@ importers:
       darkreader:
         specifier: ^4.9.95
         version: 4.9.95
+      github-markdown-css:
+        specifier: ^5.8.1
+        version: 5.8.1
       highlight.js:
         specifier: ^11.10.0
         version: 11.10.0
@@ -1937,6 +1943,10 @@ packages:
     resolution: {integrity: sha512-8EHPljDvs7qKykr6uw8b+lqLiUc/vUg+KVTI0uND4s63TdsZM2Xus3mflvF0DDG9SiM4RlCkFGL+7aAjRmV7KA==}
     hasBin: true
 
+  github-markdown-css@5.8.1:
+    resolution: {integrity: sha512-8G+PFvqigBQSWLQjyzgpa2ThD9bo7+kDsriUIidGcRhXgmcaAWUIpCZf8DavJgc+xifjbCG+GvMyWr0XMXmc7g==}
+    engines: {node: '>=10'}
+
   glob-parent@5.1.2:
     resolution: {integrity: sha512-AOIgSQCepiJYwP3ARnGx+5VnTu2HBYdzbGP45eLw1vr3zB3vZLeyed1sC9hnbcOc9/SrMyM5RPQrkGz4aS9Zow==}
     engines: {node: '>= 6'}
@@ -2176,6 +2186,11 @@ packages:
 
   malevic@0.20.2:
     resolution: {integrity: sha512-s44yEUyfDaONt7nPT7NDQ+Z2oAswErG70ok2Q95bJFh1Bdcn4dZQVMrLE02ZIjTtYfQ/LFOVxF+yB3bdGw/GtQ==}
+
+  marked@15.0.12:
+    resolution: {integrity: sha512-8dD6FusOQSrpv9Z1rdNMdlSgQOIP880DHqnohobOmYLElGEqAL/JvxvuxZO16r4HtjTlfPRDC1hbvxC9dPN2nA==}
+    engines: {node: '>= 18'}
+    hasBin: true
 
   memorystream@0.3.1:
     resolution: {integrity: sha512-S3UwM3yj5mtUSEfP41UZmt/0SCoVYUcU1rkXv+BQ5Ig8ndL4sPoJNBUJERafdPb5jjHJGuMgytgKvKIf58XNBw==}
@@ -5159,6 +5174,8 @@ snapshots:
       pathe: 1.1.2
       tar: 6.2.1
 
+  github-markdown-css@5.8.1: {}
+
   glob-parent@5.1.2:
     dependencies:
       is-glob: 4.0.3
@@ -5348,6 +5365,8 @@ snapshots:
       '@jridgewell/sourcemap-codec': 1.5.0
 
   malevic@0.20.2: {}
+
+  marked@15.0.12: {}
 
   memorystream@0.3.1: {}
 

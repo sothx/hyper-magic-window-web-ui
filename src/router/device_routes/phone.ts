@@ -44,6 +44,11 @@ const routes: RouteRecordRaw[] = [
     component: () => import('../../views/SettingsView.vue'),
   },
   {
+    path: '/update-msg',
+    name: 'update-msg',
+    component: () => import('../../views/UpdateMsg.vue'),
+  },
+  {
     path: '/:pathMatch(.*)*', // 捕获所有未匹配的路由
     component: () => import('../../views/NotFoundView.vue'),
   },

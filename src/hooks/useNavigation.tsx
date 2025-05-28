@@ -112,16 +112,19 @@ export function useNavigation() {
 				</svg>
 			),
 		},
-		// {
-		// 	name: '新春彩蛋',
-		// 	routeName: 'eggs',
-		// 	href: '/eggs',
-		// 	icon: () => (
-		// 		<svg class='icon' aria-hidden='true'>
-		// 			<use xlinkHref='#icon-chunjie'></use>
-		// 		</svg>
-		// 	),
-		// },
+		{
+			name: '更新日志',
+			routeName: 'update-msg',
+			href: '/update-msg',
+			isShow() {
+				return Boolean(deviceStore.changeLogMsg);
+			},
+			icon: () => (
+				<svg class='icon' aria-hidden='true'>
+					<use xlinkHref='#icon-gengxin'></use>
+				</svg>
+			),
+		},
 	]);
 
     const foldSidebarList = reactive<NavigationItem[]>([
@@ -222,12 +225,15 @@ export function useNavigation() {
 			),
 		},
 		{
-			name: '新春彩蛋',
-			routeName: 'eggs',
-			href: '/eggs',
+			name: '更新日志',
+			routeName: 'update-msg',
+			href: '/update-msg',
+			isShow() {
+				return Boolean(deviceStore.changeLogMsg);
+			},
 			icon: () => (
 				<svg class='icon' aria-hidden='true'>
-					<use xlinkHref='#icon-chunjie'></use>
+					<use xlinkHref='#icon-gengxin'></use>
 				</svg>
 			),
 		},
@@ -283,7 +289,20 @@ export function useNavigation() {
 					<use xlinkHref='#icon-biaoji'></use>
 				</svg>
 			),
-		}
+		},
+		{
+			name: '更新日志',
+			routeName: 'update-msg',
+			href: '/update-msg',
+			isShow() {
+				return Boolean(deviceStore.changeLogMsg);
+			},
+			icon: () => (
+				<svg class='icon' aria-hidden='true'>
+					<use xlinkHref='#icon-gengxin'></use>
+				</svg>
+			),
+		},
 	]);
 
     const sidebarList = computed(() => {

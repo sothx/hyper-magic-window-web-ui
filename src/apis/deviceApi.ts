@@ -15,11 +15,11 @@ export interface SmartFocusIOResult extends ExecResults {
 }
 
 export interface ModuleUpdateInfo {
-	changelog: string
-	version: string
-	versionCode: number
-	zipUrl: string
-	chinaMobileMCloudUrl: string
+	changelog: string;
+	version: string;
+	versionCode: number;
+	zipUrl: string;
+	chinaMobileMCloudUrl: string;
 }
 
 export interface AndroidAppPackageJobsResult extends Omit<ExecResults, 'stdout'> {
@@ -2182,7 +2182,11 @@ export const removeIsAutoEnableFbo = (): Promise<string> => {
 				resolve(`Remove is_auto_enable_fbo successfully.`);
 			} else {
 				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
-				errno ? reject(stderr) : stdout === 'Remove is_auto_enable_fbo successfully.' ? resolve(stdout) : reject(stdout);
+				errno
+					? reject(stderr)
+					: stdout === 'Remove is_auto_enable_fbo successfully.'
+						? resolve(stdout)
+						: reject(stdout);
 			}
 		}),
 		shellCommon,
@@ -2227,7 +2231,11 @@ export const removeIsAutoRegularlyFbo = (): Promise<string> => {
 				resolve(`Remove is_auto_regularly_fbo successfully.`);
 			} else {
 				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
-				errno ? reject(stderr) : stdout === 'Remove is_auto_regularly_fbo successfully.' ? resolve(stdout) : reject(stdout);
+				errno
+					? reject(stderr)
+					: stdout === 'Remove is_auto_regularly_fbo successfully.'
+						? resolve(stdout)
+						: reject(stdout);
 			}
 		}),
 		shellCommon,
@@ -2497,12 +2505,12 @@ export const getUFSEOLInfo = (): Promise<string> => {
 				resolve(`0x01`);
 			} else {
 				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
-				errno ? reject(stderr) : resolve(stdout)
+				errno ? reject(stderr) : resolve(stdout);
 			}
 		}),
 		shellCommon,
 	);
-}
+};
 
 export const getUFSLifeTimeEstimationA = (): Promise<string> => {
 	const shellCommon = `cat /sys/devices/platform/soc/1d84000.ufshc/health_descriptor/life_time_estimation_a`;
@@ -2512,12 +2520,12 @@ export const getUFSLifeTimeEstimationA = (): Promise<string> => {
 				resolve(`0x02`);
 			} else {
 				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
-				errno ? reject(stderr) : resolve(stdout)
+				errno ? reject(stderr) : resolve(stdout);
 			}
 		}),
 		shellCommon,
 	);
-}
+};
 
 export const getUFSLifeTimeEstimationB = (): Promise<string> => {
 	const shellCommon = `cat /sys/devices/platform/soc/1d84000.ufshc/health_descriptor/life_time_estimation_b`;
@@ -2527,22 +2535,24 @@ export const getUFSLifeTimeEstimationB = (): Promise<string> => {
 				resolve(`0x01`);
 			} else {
 				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
-				errno ? reject(stderr) : resolve(stdout)
+				errno ? reject(stderr) : resolve(stdout);
 			}
 		}),
 		shellCommon,
 	);
-}
+};
 
 export const getUFSHealthInfo = (): Promise<string> => {
 	const shellCommon = `cat /sys/devices/virtual/mi_memory/mi_memory_device/ufshcd0/dump_health_desc`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
-				resolve(`Device Descriptor[Byte offset 0x0]: bLength = 0x2d\nDevice Descriptor[Byte offset 0x1]: bDescriptorType = 0x9\nDevice Descriptor[Byte offset 0x2]: bPreEOLInfo = 0x1\nDevice Descriptor[Byte offset 0x3]: bDeviceLifeTimeEstA = 0x2\nDevice Descriptor[Byte offset 0x4]: bDeviceLifeTimeEstB = 0x1\n`);
+				resolve(
+					`Device Descriptor[Byte offset 0x0]: bLength = 0x2d\nDevice Descriptor[Byte offset 0x1]: bDescriptorType = 0x9\nDevice Descriptor[Byte offset 0x2]: bPreEOLInfo = 0x1\nDevice Descriptor[Byte offset 0x3]: bDeviceLifeTimeEstA = 0x2\nDevice Descriptor[Byte offset 0x4]: bDeviceLifeTimeEstB = 0x1\n`,
+				);
 			} else {
 				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
-				errno ? reject(stderr) : resolve(stdout)
+				errno ? reject(stderr) : resolve(stdout);
 			}
 		}),
 		shellCommon,
@@ -2557,12 +2567,12 @@ export const getDDRVendor = (): Promise<string> => {
 				resolve(`SAMSUNG`);
 			} else {
 				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
-				errno ? reject(stderr) : resolve(stdout)
+				errno ? reject(stderr) : resolve(stdout);
 			}
 		}),
 		shellCommon,
 	);
-}
+};
 
 export const getHasQComDisplayBrightness = (): Promise<string> => {
 	const shellCommon = `ls /sys/devices/platform/soc/ae00000.qcom,mdss_mdp/backlight/panel0-backlight/brightness &>/dev/null && echo "exists" || echo "not exists"`;
@@ -2607,7 +2617,7 @@ export const setQComDisplayBrightnessToZero = (): Promise<string> => {
 		}),
 		shellCommon,
 	);
-}
+};
 
 export const setMTKDisplayBrightnessToZero = (): Promise<string> => {
 	const shellCommon = `settings put system screen_brightness_mode 0 && echo 0 > /sys/devices/platform/soc/soc:mtk_leds/leds/lcd-backlight/brightness`;
@@ -2622,7 +2632,7 @@ export const setMTKDisplayBrightnessToZero = (): Promise<string> => {
 		}),
 		shellCommon,
 	);
-}
+};
 
 export const openChinaMobileMCloud = (): Promise<string> => {
 	const shellCommon = `(pm list packages | grep -q "com.chinamobile.mcloud" && am start -n com.chinamobile.mcloud/.client.ui.logo.LogoActivity) || am start -a android.intent.action.VIEW -d "http://app.xiaomi.com/detail/6527"`;
@@ -2637,20 +2647,83 @@ export const openChinaMobileMCloud = (): Promise<string> => {
 		}),
 		shellCommon,
 	);
-}
+};
 
-export const getModuleUpdateMsg = async (url:string): Promise<ModuleUpdateInfo> => {
-	return new Promise(async (resolve,reject) => {
-		if (import.meta.env.MODE === 'development') {
-			reject('error')
-		} else {
-			const [getUpdateMsgErr,getUpdateMsgRes] = await $to(axios.get(url));
-			if (getUpdateMsgErr) {
-				reject(getUpdateMsgErr)
+export const openUrl = (url: string): Promise<string> => {
+	const shellCommon = `am start -a android.intent.action.VIEW -d "${url}"`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`success`);
 			} else {
-				resolve(getUpdateMsgRes.data)
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const getModuleUpdateMsg = async (url: string): Promise<ModuleUpdateInfo> => {
+	return new Promise(async (resolve, reject) => {
+		if (import.meta.env.MODE === 'development') {
+			resolve({
+				version: '9.99.99',
+				versionCode: 999999,
+				zipUrl: 'https://github.com/sothx/mipad-magic-window/releases/download/2.12.23/pad-ext-2.12.23.zip',
+				changelog: 'https://hyper-magic-window-module-update.sothx.com/release/V10/changelog.md',
+				chinaMobileMCloudUrl: 'https://caiyun.139.com/m/i?135CdgGlXeVEC',
+			});
+		} else {
+			const [getUpdateMsgErr, getUpdateMsgRes] = await $to(axios.get(url));
+			if (getUpdateMsgErr) {
+				reject(getUpdateMsgErr);
+			} else {
+				resolve(getUpdateMsgRes.data);
 			}
 		}
+	});
+};
 
-	})
-}
+export const getModuleChangelog = async (url: string): Promise<string> => {
+	return new Promise(async (resolve, reject) => {
+		if (import.meta.env.MODE === 'development') {
+			resolve(`## 更新日志-正式版
+
+为了确保模块的稳定性，Github推送的版本通常会晚几个版本，如需获取最新版本可以前往网盘获取：
+
+链接: [https://caiyun.139.com/m/i?135CdgGlXeVEC](https://caiyun.139.com/m/i?135CdgGlXeVEC)
+
+
+本次更新内容:
+
+- 小米平板安卓15通用版适配小米平板7 Ultra
+
+- 小米平板安卓15专版适配小米平板6 Max OS2.0.9.0
+
+新功能预告:
+
+- 支持展示和切换系统支持的硬盘IO调度(未上线)
+
+历史重要更新:
+
+- 精选应用新增手机妙享版本下的修改版超级小爱
+
+- 新增模块内Web UI的更新提醒弹窗，当模块存在新版本时，弹窗提示模块更新。
+
+- 小米平板OS2专版适配 小米平板6S Pro/7/7 Pro OS2.0.200.x，低于OS2.0.200.x请切换为通用版模块，否则更新后会卡米
+
+
+
+如果是处于测试版(Beta)的模块，可能存在较多的不稳定性以及异常BUG，如遇问题可反馈，反馈Q群：277757185
+模块首页:[https://hyper-magic-window.sothx.com/](https://hyper-magic-window.sothx.com/)`);
+		} else {
+			const [getUpdateMsgErr, getUpdateMsgRes] = await $to(axios.get(url));
+			if (getUpdateMsgErr) {
+				reject(getUpdateMsgErr);
+			} else {
+				resolve(getUpdateMsgRes.data);
+			}
+		}
+	});
+};

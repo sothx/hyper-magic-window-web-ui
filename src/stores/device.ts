@@ -80,6 +80,7 @@ export const useDeviceStore = defineStore(
 		const needReloadData = ref<boolean>(false);
 		const moduleInfo = ref<ModuleProp>();
 		const moduleUpdateInfo = ref<deviceApi.ModuleUpdateInfo>();
+		const changeLogMsg = ref<string>('');
 		const enabledMiuiDesktopMode = ref<boolean>(false);
 		const windowWidth = ref(window.innerWidth);
 		const isEnableShowNotificationIconNum = ref<boolean>(false);
@@ -526,6 +527,7 @@ export const useDeviceStore = defineStore(
 			DDRVendor,
 			deviceType,
 			muiltdisplayType,
+			changeLogMsg,
 			isInit
 		};
 	},

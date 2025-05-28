@@ -70,9 +70,9 @@ const routes: RouteRecordRaw[] = [
     component: () => import('../../views/MagicControlView.vue'),
   },
   {
-    path: '/eggs',
-    name: 'eggs',
-    component: () => import('../../views/HappyNewYearEgg.vue'),
+    path: '/update-msg',
+    name: 'update-msg',
+    component: () => import('../../views/UpdateMsg.vue'),
   },
   {
     path: '/:pathMatch(.*)*', // 捕获所有未匹配的路由

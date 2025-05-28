@@ -58,6 +58,7 @@
 		"build": "run-p type-check \"build-only {@}\" --"
 	},
 	"dependencies": {
+		"marked": "^15.0.12",
 		"pinia": "^2.1.7",
 		"rollup-plugin-visualizer": "^5.14.0",
 		"vue": "^3.4.29",
@@ -79,6 +80,7 @@
 		"child_process": "^1.0.2",
 		"clsx": "^2.1.1",
 		"darkreader": "^4.9.95",
+		"github-markdown-css": "^5.8.1",
 		"highlight.js": "^11.10.0",
 		"http": "0.0.1-security",
 		"i": "^0.3.7",
