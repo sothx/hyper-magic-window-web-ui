@@ -155,7 +155,7 @@ onBeforeUnmount(() => {
 								leave="ease-in-out duration-300"
 								leave-from="opacity-100"
 								leave-to="opacity-0">
-								<div class="absolute left-full top-0 flex w-16 justify-center pt-5">
+								<div class="absolute left-full top-0 flex w-16 justify-center pt-[calc(1.25rem+var(--window-inset-top,0rem))]">
 									<button type="button" class="-m-2.5 p-2.5" @click="sidebarOpen = false">
 										<span class="sr-only">Close sidebar</span>
 										<XMarkIcon class="h-6 w-6 text-white" aria-hidden="true" />
@@ -167,7 +167,7 @@ onBeforeUnmount(() => {
 									'flex grow flex-col gap-y-5 overflow-y-auto px-6 pb-4',
 									deviceStore.isDarkMode ? 'bg-[#151515]' : 'bg-[#f6f6f6]',
 								]">
-								<div class="flex h-2 shrink-0 items-center"></div>
+								<div class="flex h-[calc(var(--window-inset-top,1.5rem)-1rem)] shrink-0 items-center"></div>
 								<nav class="flex flex-1 flex-col">
 									<ul role="list" class="flex flex-1 flex-col gap-y-7">
 										<li>
@@ -413,7 +413,7 @@ onBeforeUnmount(() => {
 		<div class="min-h-screen lg:pl-72">
 			<div class="sticky top-0 z-40 backdrop-blur-md lg:mx-auto">
 				<div
-					class="flex h-14 items-center gap-x-4 border-b"
+					class="flex h-[calc(3.5rem+var(--window-inset-top,0rem))] pt-[var(--window-inset-top,0rem)] items-center gap-x-4 border-b"
 					:class="deviceStore.isDarkMode ? 'border-gray-700 bg-zinc-900/50' : 'border-gray-200 bg-white/50'">
 					<button type="button" class="m-2.5 p-2.5 text-gray-700 lg:hidden" @click="sidebarOpen = true">
 						<span class="sr-only">Open sidebar</span>
