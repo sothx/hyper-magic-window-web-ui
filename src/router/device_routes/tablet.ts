@@ -70,6 +70,11 @@ const routes: RouteRecordRaw[] = [
     component: () => import('../../views/MagicControlView.vue'),
   },
   {
+    path: '/display-mode-record',
+    name: 'display-mode-record',
+    component: () => import('../../views/DisplayModeRecordView.vue'),
+  },
+  {
     path: '/eggs',
     name: 'eggs',
     component: () => import('../../views/HappyNewYearEgg.vue'),

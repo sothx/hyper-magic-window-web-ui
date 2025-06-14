@@ -124,22 +124,7 @@ const getAppDownload = async () => {
 };
 
 const goToDisplayModeSettings = () => {
-	router.push({ name: 'system-experience-enhance' }).then(() => {
-		const observer = new MutationObserver(() => {
-			const target = document.getElementById('displayModeSettings');
-			if (target) {
-				setTimeout(() => {
-					target.scrollIntoView({ behavior: "smooth", block: 'center' });
-					observer.disconnect(); // 停止观察
-				},0)
-			}
-		});
-
-		observer.observe(document.body, {
-			childList: true,
-			subtree: true,
-		});
-	});
+	router.push({ name: 'display-mode-record' });
 };
 
 const handleClickSetting = async (row: GameBoosterTableItem, index: number) => {

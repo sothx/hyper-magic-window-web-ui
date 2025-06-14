@@ -32,10 +32,6 @@ export function useGameMode() {
 					);
 					const isAllowed = isVersionAllowed || deviceStore.projectTrebleSupportMagicWindowFix;
 					if (!isAllowed) {
-						console.log(
-							deviceStore.projectTrebleSupportMagicWindowFix,
-							'deviceStore.projectTrebleSupportMagicWindowFix',
-						);
 						modal.create({
 							title: '获取专版模块',
 							type: 'info',
