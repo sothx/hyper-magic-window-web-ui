@@ -41,6 +41,21 @@ export const getDeviceCharacteristics = (): Promise<string> => {
 	);
 };
 
+export const getProjectTrebleSupoortMagicWindowFix = (): Promise<string> => {
+	const shellCommon = `getprop ro.config.sothx_project_treble_support_magic_window_fix`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve('true');
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
 export const getMuiltdisplayType = (): Promise<string> => {
 	const shellCommon = `getprop persist.sys.muiltdisplay_type`;
 	return handlePromiseWithLogging(
