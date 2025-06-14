@@ -125,6 +125,7 @@ export const useDeviceStore = defineStore(
 		});
 		const smartFocusIO = ref<deviceApi.SmartFocusIOResult['stdout']>();
 		const miuiCompatEnable = ref<boolean>(false);
+		const projectTrebleSupportMagicWindowFix = ref<boolean>(false);
 		const miuiAppCompatEnable = ref<boolean>(false);
 		const showRotationSuggestions = ref<boolean>(false);
 		const isDarkMode = ref<boolean>(false);
@@ -415,6 +416,13 @@ export const useDeviceStore = defineStore(
 			if (getMiuiCompatEnableRes && getMiuiCompatEnableRes === 'true') {
 				miuiCompatEnable.value = true;
 			}
+			// 移植包是否兼容应用横屏布局服务异常修复
+			const [, getProjectTrebleSupoortMagicWindowFixRes] = await $to<string, string>(
+				deviceApi.getProjectTrebleSupoortMagicWindowFix(),
+			);
+			if (getProjectTrebleSupoortMagicWindowFixRes && getProjectTrebleSupoortMagicWindowFixRes === 'true') {
+				projectTrebleSupportMagicWindowFix.value = true;
+			}
 			// const [, getMiuiAppCompatEnableRes] = await $to(deviceApi.getMiuiAppCompatEnable());
 			// if (getMiuiAppCompatEnableRes && getMiuiCompatEnableRes === 'true') {
 			// 	miuiAppCompatEnable.value = true;
@@ -526,6 +534,7 @@ export const useDeviceStore = defineStore(
 			isDisabledOS2InstallModuleTips,
 			DDRVendor,
 			deviceType,
+			projectTrebleSupportMagicWindowFix,
 			muiltdisplayType,
 			changeLogMsg,
 			isInit

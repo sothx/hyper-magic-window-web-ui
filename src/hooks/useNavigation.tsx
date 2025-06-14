@@ -3,6 +3,7 @@ import { useDeviceStore } from '@/stores/device';
 import { createDiscreteApi, darkTheme, lightTheme, useModal, type ConfigProviderProps } from 'naive-ui'; // 假设你用的是 Naive UI 的 modal
 import type { NavigationItem } from '@/components/Sidebar/Sidebar.vue';
 import { useGameBoosterStore } from '../stores/gameBooster';
+import { useDisplayModeRecord } from './useDisplayModeRecord';
 
 export function useNavigation() {
 	const deviceStore = useDeviceStore();
@@ -13,6 +14,7 @@ export function useNavigation() {
 	const { message, modal } = createDiscreteApi(['message', 'modal'], {
 		configProviderProps: configProviderPropsRef,
 	});
+	const displayModeRecordHook = useDisplayModeRecord();
 	const loading = ref(false);
 
 	const padSidebarList = reactive<NavigationItem[]>([
@@ -57,17 +59,17 @@ export function useNavigation() {
 			),
 		},
 		{
-			name: '窗口控制器',
-			routeName: 'dot-black-list',
-			href: '/dot-black-list',
-			isShow() {
-				return Boolean(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 1);
-			},
+			name: '分辨率与刷新率',
+			routeName: 'display-mode-record',
+			href: '/display-mode-record',
 			icon: () => (
 				<svg class='icon' aria-hidden='true'>
-					<use xlinkHref='#icon-kongzhitai'></use>
+					<use xlinkHref='#icon-shandian3'></use>
 				</svg>
 			),
+			isShow() {
+				return displayModeRecordHook.formatDisplayModeList.value.length > 0
+			},
 		},
 		{
 			name: '系统体验增强',
@@ -80,17 +82,17 @@ export function useNavigation() {
 			),
 		},
 		{
-			name: '触控笔映射(待开发)',
-			routeName: 'magic-control',
-			href: '/magic-control',
+			name: '窗口控制器',
+			routeName: 'dot-black-list',
+			href: '/dot-black-list',
+			isShow() {
+				return Boolean(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 1);
+			},
 			icon: () => (
 				<svg class='icon' aria-hidden='true'>
-					<use xlinkHref='#icon-youxi8'></use>
+					<use xlinkHref='#icon-kongzhitai'></use>
 				</svg>
 			),
-			isShow() {
-				return false;
-			},
 		},
 		{
 			name: '精选应用',
@@ -169,17 +171,17 @@ export function useNavigation() {
 			),
 		},
 		{
-			name: '窗口控制器',
-			routeName: 'dot-black-list',
-			href: '/dot-black-list',
-			isShow() {
-				return Boolean(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 1);
-			},
+			name: '分辨率与刷新率',
+			routeName: 'display-mode-record',
+			href: '/display-mode-record',
 			icon: () => (
 				<svg class='icon' aria-hidden='true'>
-					<use xlinkHref='#icon-kongzhitai'></use>
+					<use xlinkHref='#icon-shandian3'></use>
 				</svg>
 			),
+			isShow() {
+				return displayModeRecordHook.formatDisplayModeList.value.length > 0
+			},
 		},
 		{
 			name: '系统体验增强',
@@ -192,17 +194,17 @@ export function useNavigation() {
 			),
 		},
 		{
-			name: '触控笔映射(待开发)',
-			routeName: 'magic-control',
-			href: '/magic-control',
+			name: '窗口控制器',
+			routeName: 'dot-black-list',
+			href: '/dot-black-list',
+			isShow() {
+				return Boolean(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 1);
+			},
 			icon: () => (
 				<svg class='icon' aria-hidden='true'>
-					<use xlinkHref='#icon-youxi8'></use>
+					<use xlinkHref='#icon-kongzhitai'></use>
 				</svg>
 			),
-			isShow() {
-				return false;
-			},
 		},
 		{
 			name: '精选应用',
@@ -249,6 +251,19 @@ export function useNavigation() {
 					<use xlinkHref='#icon-jiqunchushihua1'></use>
 				</svg>
 			),
+		},
+		{
+			name: '分辨率与刷新率',
+			routeName: 'display-mode-record',
+			href: '/display-mode-record',
+			icon: () => (
+				<svg class='icon' aria-hidden='true'>
+					<use xlinkHref='#icon-shandian3'></use>
+				</svg>
+			),
+			isShow() {
+				return displayModeRecordHook.formatDisplayModeList.value.length > 0
+			},
 		},
 		{
 			name: '存储健康',

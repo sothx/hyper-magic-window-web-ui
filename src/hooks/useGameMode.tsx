@@ -26,12 +26,12 @@ export function useGameMode() {
 				deviceStore.deviceType === 'tablet'
 			) {
 				if (deviceStore.MIOSVersion === 2) {
-					if (
-						!['pad-ext-', 'pad-hyperos2-based-on-vanillaIceCream-'].some(
-							item =>
-								((deviceStore.moduleInfo && deviceStore.moduleInfo.version) || '').indexOf(item) === 0,
-						)
-					) {
+					const version = deviceStore.moduleInfo?.version || '';
+					const isVersionAllowed = ['pad-ext-', 'pad-hyperos2-based-on-vanillaIceCream-'].some(prefix =>
+						version.startsWith(prefix),
+					);
+					const isAllowed = isVersionAllowed || deviceStore.projectTrebleSupportMagicWindowFix;
+					if (!isAllowed) {
 						modal.create({
 							title: '获取专版模块',
 							type: 'info',
@@ -160,25 +160,21 @@ export function useGameMode() {
 				type: 'success',
 				preset: 'dialog',
 				content: () => (
-					<p>
-						好耶w，已经成功{value ? '开启' : '关闭'}游戏显示布局~实际生效还需要重启设备，确定要重启吗？
-					</p>
+					<p>好耶w，已经成功{value ? '开启' : '关闭'}游戏显示布局~实际生效还需要重启设备，确定要重启吗？</p>
 				),
 				positiveText: '立即重启',
 				negativeText: '稍后手动重启',
 				onPositiveClick() {
-					deviceApi
-						.rebootDevice()
-						.catch(err => {
-							modal.create({
-								title: '操作失败',
-								type: 'error',
-								preset: 'dialog',
-								content: () => <p>无法重启设备，详情请查看日志记录~</p>,
-								negativeText: '确定',
-							});
-							return;
+					deviceApi.rebootDevice().catch(err => {
+						modal.create({
+							title: '操作失败',
+							type: 'error',
+							preset: 'dialog',
+							content: () => <p>无法重启设备，详情请查看日志记录~</p>,
+							negativeText: '确定',
 						});
+						return;
+					});
 				},
 			});
 		}

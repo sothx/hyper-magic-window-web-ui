@@ -75,6 +75,11 @@ const routes: RouteRecordRaw[] = [
     component: () => import('../../views/UpdateMsg.vue'),
   },
   {
+    path: '/display-mode-record',
+    name: 'display-mode-record',
+    component: () => import('../../views/DisplayModeRecordView.vue'),
+  },
+  {
     path: '/:pathMatch(.*)*', // 捕获所有未匹配的路由
     component: () => import('../../views/NotFoundView.vue'),
   },

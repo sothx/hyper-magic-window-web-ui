@@ -31,6 +31,11 @@ const routes: RouteRecordRaw[] = [
     component: () => import('../../views/AppStore.vue'),
   },
   {
+    path: '/display-mode-record',
+    name: 'display-mode-record',
+    component: () => import('../../views/DisplayModeRecordView.vue'),
+  },
+  {
     path: '/logs',
     name: 'logs',
     component: () => import('../../views/LogView.vue'),
