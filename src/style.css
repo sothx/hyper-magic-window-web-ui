@@ -60,3 +60,7 @@ body {
 		background-color: #18181A;
 	}
 }
+
+.n-drawer-header {
+	margin-top: var(--window-inset-top, 0rem);
+}
