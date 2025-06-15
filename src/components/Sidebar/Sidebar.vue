@@ -294,7 +294,7 @@ onBeforeUnmount(() => {
 					deviceStore.isDarkMode ? 'border-gray-700 bg-[#151515]' : 'border-gray-200 bg-[#f6f6f6]',
 					'px-6 pb-4',
 				]">
-				<div class="flex h-10 shrink-0 items-center"></div>
+				<div class="flex h-2 shrink-0 items-center"></div>
 				<nav class="flex flex-1 flex-col">
 					<ul role="list" class="flex flex-1 flex-col gap-y-7">
 						<li>

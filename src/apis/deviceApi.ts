@@ -328,6 +328,51 @@ export const getIsDisabledOS2SystemAppOptimize = (): Promise<string> => {
 	);
 };
 
+export const addDisplayModeRecordAutoEnableID = (id:number): Promise<string> => {
+	const shellCommon = `grep -q '^display_mode_record_auto_enable_id=' /data/adb/MIUI_MagicWindow+/config.prop || (echo "display_mode_record_auto_enable_id=${id}" | tee -a /data/adb/MIUI_MagicWindow+/config.prop > /dev/null && echo "Command executed successfully." || echo "Command failed.")`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`Command executed successfully.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : stdout === 'Command executed successfully.' ? resolve(stdout) : reject(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const removeDisplayModeRecordAutoEnableID = (): Promise<string> => {
+	const shellCommon = `sed -i '/^display_mode_record_auto_enable_id=/d' //data/adb/MIUI_MagicWindow+/config.prop && echo "Remove display_mode_record_auto_enable_id successfully." || echo "Remove display_mode_record_auto_enable_id failed."`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`Remove display_mode_record_auto_enable_id successfully.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const getDisplayModeRecordAutoEnableID = (): Promise<string> => {
+	const shellCommon = `grep 'display_mode_record_auto_enable_id=' /data/adb/MIUI_MagicWindow+/config.prop | awk -F'=' '{print $2}'`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`1`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
 export const deleteGameMode = (): Promise<string> => {
 	const shellCommon = `sed -i '/^# 开启游戏显示布局/d; /^ro.config.miui_compat_enable=/d' /data/adb/modules/MIUI_MagicWindow+/system.prop  && echo "Command executed successfully." || echo "Command failed."`;
 	return handlePromiseWithLogging(

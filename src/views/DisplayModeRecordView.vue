@@ -38,7 +38,7 @@ const displayModeRecordHook = useDisplayModeRecord();
 				</h3>
 				<p
 					:class="`mt-1 max-w-2xl text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-500'}`">
-					灵活切换手机/平板分辨率和刷新率，持续到下次设备重启
+					灵活切换设备的分辨率与刷新率，持续到下次设备重启
 				</p>
 			</div>
 			<div class="mt-6 border-gray-100">
@@ -46,7 +46,7 @@ const displayModeRecordHook = useDisplayModeRecord();
           <n-card size="small">
            <div class="grid px-4 sm:px-0 gap-4 lg:grid-cols-2">
 						<n-alert
-							class="mb-5 w-full"
+							class="w-full"
 							:show-icon="false"
 							:title="`ID:${item.id}`"
 							v-for="item in displayModeRecordHook.formatDisplayModeList.value"
@@ -62,8 +62,17 @@ const displayModeRecordHook = useDisplayModeRecord();
                 :loading="deviceStore.loading"
 								size="small"
 								@click="() => displayModeRecordHook.selectDisplayMode(item)"
-								>应用配置</n-button
-							>
+								>应用配置</n-button>
+							<n-button
+								class="ml-2 mt-2"
+								v-if="displayModeRecordHook.isInit.value"
+								strong
+								secondary
+								:type="getType(item.id)"
+                				:loading="deviceStore.loading"
+								size="small"
+								@click="() => displayModeRecordHook.selectAutoEnable(item)"
+								>{{ displayModeRecordHook.autoEnableID.value === Number(item.id) ? '已配置开机自启' : '配置开机自启' }}</n-button>
 						</n-alert>
 					</div>
           </n-card>
