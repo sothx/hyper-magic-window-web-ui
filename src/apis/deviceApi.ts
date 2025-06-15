@@ -363,7 +363,7 @@ export const getDisplayModeRecordAutoEnableID = (): Promise<string> => {
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
-				resolve(`1`);
+				resolve(``);
 			} else {
 				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
 				errno ? reject(stderr) : resolve(stdout);
@@ -2120,6 +2120,68 @@ export const removeDisabledPreStartProc = (): Promise<string> => {
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
 				resolve(`Remove persist.sys.prestart.proc successfully.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const getDeepSleepEnableForBuild = (): Promise<string> => {
+	const toolsFunc = `/data/adb/modules/MIUI_MagicWindow+/common/utils/tools_functions.sh`;
+	const shellCommon = `source ${toolsFunc} && grep_prop persist.sys.deep_sleep.enable /system/product/etc/build.prop`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`true`);
+			} else {
+				const { errno, stdout, stderr }: SmartFocusIOResult = (await exec(shellCommon)) as SmartFocusIOResult;
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const getDeepSleepEnableForModule = (): Promise<string> => {
+	const toolsFunc = `/data/adb/modules/MIUI_MagicWindow+/common/utils/tools_functions.sh`;
+	const shellCommon = `source ${toolsFunc} && grep_prop persist.sys.deep_sleep.enable /data/adb/modules/MIUI_MagicWindow+/system.prop`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`false`);
+			} else {
+				const { errno, stdout, stderr }: SmartFocusIOResult = (await exec(shellCommon)) as SmartFocusIOResult;
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const addDisabledDeepSleepEnable = (): Promise<string> => {
+	const shellCommon = `grep -q '^persist.sys.deep_sleep.enable=' /data/adb/modules/MIUI_MagicWindow+/system.prop || (echo "\npersist.sys.deep_sleep.enable=false\n" | tee -a /data/adb/modules/MIUI_MagicWindow+/system.prop > /dev/null && echo "Command executed successfully." || echo "Command failed.")`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`Command executed successfully.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : stdout === 'Command executed successfully.' ? resolve(stdout) : reject(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const removeDisabledDeepSleepEnable = (): Promise<string> => {
+	const shellCommon = `sed -i '/^persist.sys.deep_sleep.enable=/d' //data/adb/modules/MIUI_MagicWindow+/system.prop && echo "Remove persist.sys.deep_sleep.enable successfully." || echo "Remove persist.sys.deep_sleep.enable failed."`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`Remove persist.sys.deep_sleep.enable successfully.`);
 			} else {
 				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
 				errno ? reject(stderr) : resolve(stdout);

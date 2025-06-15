@@ -4,6 +4,7 @@ import * as deviceApi from '@/apis/deviceApi';
 import { computed, type CSSProperties } from 'vue';
 import { createDiscreteApi, darkTheme, lightTheme, type ConfigProviderProps } from 'naive-ui';
 import { useDisplayModeRecord } from '@/hooks/useDisplayModeRecord';
+import { BoltIcon } from '@heroicons/vue/24/solid';
 const deviceStore = useDeviceStore();
 const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
 	theme: deviceStore.isDarkMode ? darkTheme : lightTheme,
@@ -41,41 +42,68 @@ const displayModeRecordHook = useDisplayModeRecord();
 					灵活切换设备的分辨率与刷新率，持续到下次设备重启
 				</p>
 			</div>
+			<n-card size="small" class="mt-5">
+				<div class="gap-4 sm:px-0">
+					<n-dropdown
+						size="large"
+						trigger="click"
+						:options="[
+							{ label: '打开刷新率监视器', key: 'open' },
+							{ label: '关闭刷新率监视器', key: 'close' },
+						]"
+						@select="(key: string) => { key === 'open' ? deviceApi.setFpsFrameService(true) : deviceApi.setFpsFrameService(false) }">
+						<n-button class="mr-3" type="info" secondary :loading="deviceStore.loading">
+							<template #icon>
+								<n-icon>
+									<BoltIcon />
+								</n-icon>
+							</template>
+							刷新率监视器
+						</n-button>
+					</n-dropdown>
+				</div>
+			</n-card>
 			<div class="mt-6 border-gray-100">
 				<dl class="mb-5 divide-gray-100">
-          <n-card size="small">
-           <div class="grid px-4 sm:px-0 gap-4 lg:grid-cols-2">
-						<n-alert
-							class="w-full"
-							:show-icon="false"
-							:title="`ID:${item.id}`"
-							v-for="item in displayModeRecordHook.formatDisplayModeList.value"
-							:key="item.id"
-							:type="getType(item.id)">
-							<p class="mr-3">分辨率: {{ `${item.width}x${item.height}` }}</p>
-							<p class="mr-3">刷新率: {{ `${item.fps} Hz` }}</p>
-							<n-button
-								class="mt-2"
-								strong
-								secondary
-								:type="getType(item.id)"
-                :loading="deviceStore.loading"
-								size="small"
-								@click="() => displayModeRecordHook.selectDisplayMode(item)"
-								>应用配置</n-button>
-							<n-button
-								class="ml-2 mt-2"
-								v-if="displayModeRecordHook.isInit.value"
-								strong
-								secondary
-								:type="getType(item.id)"
-                				:loading="deviceStore.loading"
-								size="small"
-								@click="() => displayModeRecordHook.selectAutoEnable(item)"
-								>{{ displayModeRecordHook.autoEnableID.value === Number(item.id) ? '已配置开机自启' : '配置开机自启' }}</n-button>
-						</n-alert>
-					</div>
-          </n-card>
+					<n-card size="small">
+						<div class="grid gap-4 sm:px-0 lg:grid-cols-2">
+							<n-alert
+								class="w-full"
+								:show-icon="false"
+								:title="`ID:${item.id}`"
+								v-for="item in displayModeRecordHook.formatDisplayModeList.value"
+								:key="item.id"
+								:type="getType(item.id)">
+								<p class="mr-3">分辨率: {{ `${item.width}x${item.height}` }}</p>
+								<p class="mr-3">刷新率: {{ `${item.fps} Hz` }}</p>
+								<n-button
+									class="mt-2"
+									strong
+									secondary
+									:type="getType(item.id)"
+									:loading="deviceStore.loading"
+									size="small"
+									@click="() => displayModeRecordHook.selectDisplayMode(item)"
+									>应用配置</n-button
+								>
+								<n-button
+									class="ml-2 mt-2"
+									v-if="displayModeRecordHook.isInit.value"
+									strong
+									secondary
+									:type="getType(item.id)"
+									:loading="deviceStore.loading"
+									size="small"
+									@click="() => displayModeRecordHook.selectAutoEnable(item)"
+									>{{
+										displayModeRecordHook.autoEnableID.value === Number(item.id)
+											? '已配置开机自启'
+											: '配置开机自启'
+									}}</n-button
+								>
+							</n-alert>
+						</div>
+					</n-card>
 				</dl>
 			</div>
 		</div>

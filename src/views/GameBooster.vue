@@ -442,8 +442,8 @@ function createColumns(): DataTableColumns<GameBoosterTableItem> {
 					size="large"
 					trigger="click"
 					:options="[
-						{ label: '打开帧率监视器', key: 'open' },
-						{ label: '关闭帧率监视器', key: 'close' },
+						{ label: '打开刷新率监视器', key: 'open' },
+						{ label: '关闭刷新率监视器', key: 'close' },
 					]"
 					@select="(key: string) => { key === 'open' ? deviceApi.setFpsFrameService(true) : deviceApi.setFpsFrameService(false) }">
 					<n-button
@@ -456,7 +456,7 @@ function createColumns(): DataTableColumns<GameBoosterTableItem> {
 								<BoltIcon />
 							</n-icon>
 						</template>
-						帧率监视器
+						刷新率监视器
 					</n-button>
 				</n-dropdown>
 				<n-button

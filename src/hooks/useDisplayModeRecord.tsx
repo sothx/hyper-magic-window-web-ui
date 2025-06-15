@@ -218,9 +218,11 @@ export function useDisplayModeRecord() {
 			} else {
 				autoEnableID.value = undefined;
 			}
-			isInit.value = true;
-			loading.value = false;
-		}
+		} else {
+            autoEnableID.value = undefined;
+        }
+        isInit.value = true;
+		loading.value = false;
 	};
 
 	onMounted(async () => {

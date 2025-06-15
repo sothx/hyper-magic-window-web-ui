@@ -9,6 +9,7 @@ import { useMIUIContentExtension } from '@/hooks/useMIUIContentExtension';
 import $to from 'await-to-js';
 import { useVideoWallpaperLoop } from '@/hooks/useVideoWallpaperLoop';
 import { useDisabledOS2SystemPreStart } from '@/hooks/useDisabledOS2SystemPreStart';
+import { useDisabledDeepSleepEnable } from '@/hooks/useDisabledDeepSleepEnable';
 import { useDisplaySettings } from '@/hooks/useDisplaySettings';
 import { useFbo } from '@/hooks/useFbo';
 import {
@@ -40,6 +41,7 @@ const pointerSpeedHook = usePointerSpeed();
 const developmentSettingsEnabledHook = useDevelopmentSettingsEnabled();
 const videoWallpaperLoopHook = useVideoWallpaperLoop();
 const useDisabledOS2SystemPreStartHook = useDisabledOS2SystemPreStart();
+const useDisabledDeepSleepEnableHook = useDisabledDeepSleepEnable();
 const fboHook = useFbo();
 // const initHooks = () => {
 // 	fboHook.value = useFbo();
@@ -262,6 +264,25 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 								:loading="deviceStore.loading">
 								<template #checked>已开启应用预加载</template>
 								<template #unchecked>已禁用应用预加载</template>
+							</n-switch>
+						</dd>
+					</div>
+					<div
+						v-if="useDisabledDeepSleepEnableHook.isShow.value"
+						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+						<dt
+							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
+							深度睡眠
+						</dt>
+						<dd
+							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
+							<n-switch
+								@update:value="(value: boolean) => useDisabledDeepSleepEnableHook.change(value)"
+								:rail-style="railStyle"
+								:value="deviceStore.deepSleepProp.module"
+								:loading="deviceStore.loading">
+								<template #checked>已开启深度睡眠</template>
+								<template #unchecked>已禁用深度睡眠</template>
 							</n-switch>
 						</dd>
 					</div>
@@ -1349,7 +1370,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
-							帧率监视器
+							刷新率监视器
 						</dt>
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
@@ -1357,8 +1378,8 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 								size="large"
 								trigger="click"
 								:options="[
-									{ label: '打开帧率监视器', key: 'open' },
-									{ label: '关闭帧率监视器', key: 'close' },
+									{ label: '打开刷新率监视器', key: 'open' },
+									{ label: '关闭刷新率监视器', key: 'close' },
 								]"
 								@select="(key: string) => { key === 'open' ? deviceApi.setFpsFrameService(true) : deviceApi.setFpsFrameService(false) }">
 								<n-button
@@ -1372,7 +1393,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 											<BoltIcon />
 										</n-icon>
 									</template>
-									帧率监视器
+									刷新率监视器
 								</n-button>
 							</n-dropdown>
 						</dd>

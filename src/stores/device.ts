@@ -149,6 +149,10 @@ export const useDeviceStore = defineStore(
 			build: false,
 			module: true
 		})
+		const deepSleepProp = reactive({
+			build: false,
+			module: true
+		})
 
 		const isNeedShowErrorModal = computed(() => Boolean(errorLogging.length > 0));
 
@@ -476,6 +480,25 @@ export const useDeviceStore = defineStore(
 				}
 			}
 
+			if (androidTargetSdk.value >= 34 && deviceCharacteristics.value === 'tablet') {
+				const [,getDeepSleepEnableForBuildRes] = await $to<string, string>(
+					deviceApi.getDeepSleepEnableForBuild(),
+				);
+				const [,getDeepSleepEnableForModuleRes] = await $to<string, string>(
+					deviceApi.getDeepSleepEnableForModule(),
+				);
+				if (getDeepSleepEnableForBuildRes === 'true') {
+					deepSleepProp.build = true;
+				} else {
+					deepSleepProp.build = false;
+				}
+				if (getDeepSleepEnableForModuleRes === 'false') {
+					deepSleepProp.module = false;
+				} else {
+					deepSleepProp.module = true;
+				}
+			}
+
 			
 			if (MIOSVersion.value && MIOSVersion.value >= 2 && androidTargetSdk.value >= 35) {
  				const [, getDisabledOS2InstallModuleTipsRes] = await $to<string, string>(deviceApi.getDisabledOS2InstallModuleTips());
@@ -530,6 +553,7 @@ export const useDeviceStore = defineStore(
 			displayModeList,
 			isDisabledOS2SystemAppOptimize,
 			preStartProp,
+			deepSleepProp,
 			moduleUpdateInfo,
 			isDisabledOS2InstallModuleTips,
 			DDRVendor,
