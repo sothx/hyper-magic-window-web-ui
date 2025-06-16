@@ -41,7 +41,7 @@ const routes: RouteRecordRaw[] = [
 	{
 		path: '/appStore',
 		name: 'appStore',
-		component: () => import('../../views/AppStore.vue'),
+		component: () => import('../../views/AppStoreView.vue'),
 	},
 	{
 		path: '/logs',
