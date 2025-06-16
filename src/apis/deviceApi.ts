@@ -705,6 +705,23 @@ export const openInVisibleMode = (): Promise<string> => {
 	);
 };
 
+export const openCarSicknessReliefSettings = (): Promise<string> => {
+	const shellCommon = `am start -n com.miui.securitycenter/com.miui.carsickness.ui.CarSicknessReliefSettingsActivity`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(
+					`Starting: Intent { cmp=com.miui.securitycenter/com.miui.carsickness.ui.CarSicknessReliefSettingsActivity }`,
+				);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
 export const setMiuiCursorStyleType = (mode: 3 | 1 | 0): Promise<string> => {
 	const shellCommon = `settings put system miui_cursor_style ${mode}`;
 	return handlePromiseWithLogging(

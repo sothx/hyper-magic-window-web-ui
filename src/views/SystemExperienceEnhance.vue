@@ -138,7 +138,7 @@ const getAppDownload = async (title: string, url: string, type: 'system' | 'revi
 		negativeText: '取消',
 		onPositiveClick: () => {
 			navigator.clipboard.writeText(`${url}`);
-			deviceApi.openChinaMobileMCloud()
+			deviceApi.openChinaMobileMCloud();
 		},
 		onNegativeClick: () => {},
 	});
@@ -208,7 +208,9 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							</n-switch>
 						</dd>
 					</div>
-					<div v-if="['tablet','fold'].includes(deviceStore.deviceType)" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+					<div
+						v-if="['tablet', 'fold'].includes(deviceStore.deviceType)"
+						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
 							旋转建议提示按钮
@@ -395,16 +397,12 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 								</n-button>
 							</div>
 							<n-alert
-								v-if="
-									MIUIContentExtensionHook.isInstallMIUIContentExtension.value
-								"
+								v-if="MIUIContentExtensionHook.isInstallMIUIContentExtension.value"
 								class="mt-5"
 								type="info"
 								:show-icon="false"
 								:bordered="false">
-								<p
-									v-if="deviceStore.deviceType === 'tablet'"
-									class="mt-5"
+								<p v-if="deviceStore.deviceType === 'tablet'" class="mt-5"
 									>模块安装后可能会导致「传送门」被异常添加到「游戏工具箱」，您可以通过
 									<n-button
 										size="small"
@@ -479,8 +477,8 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 					</div>
 					<div
 						v-if="
-							(useDisplaySettingsHook.hasMTKDisplayBrightness.value ||
-								useDisplaySettingsHook.hasQComDisplayBrightness.value)
+							useDisplaySettingsHook.hasMTKDisplayBrightness.value ||
+							useDisplaySettingsHook.hasQComDisplayBrightness.value
 						"
 						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
@@ -701,7 +699,9 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							</n-alert>
 						</dd>
 					</div>
-					<div v-if="['tablet'].includes(deviceStore.deviceType)" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+					<div
+						v-if="['tablet'].includes(deviceStore.deviceType)"
+						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
 							鼠标光标样式
@@ -754,7 +754,9 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							</n-alert>
 						</dd>
 					</div>
-					<div v-if="['tablet'].includes(deviceStore.deviceType)" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+					<div
+						v-if="['tablet'].includes(deviceStore.deviceType)"
+						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
 							鼠标自然滚动
@@ -784,7 +786,9 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							</n-alert>
 						</dd>
 					</div>
-					<div v-if="['tablet'].includes(deviceStore.deviceType)" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+					<div
+						v-if="['tablet'].includes(deviceStore.deviceType)"
+						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
 							鼠标指针速度
@@ -1022,7 +1026,9 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							</n-alert>
 						</dd>
 					</div>
-					<div v-if="fboHook.isInit.value && ['tablet','fold'].includes(deviceStore.deviceType)" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+					<div
+						v-if="fboHook.isInit.value && ['tablet', 'fold'].includes(deviceStore.deviceType)"
+						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
 							焕新存储
@@ -1147,6 +1153,30 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 							</n-button>
 							<n-alert class="mt-5" type="info" :show-icon="false" :bordered="false">
 								<p>开启后系统将拒绝所有应用录音、定位和拍照，保护您的隐私安全</p>
+							</n-alert>
+						</dd>
+					</div>
+					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+						<dt
+							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
+							晕车缓解
+						</dt>
+						<dd
+							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
+							<n-button
+								size="small"
+								type="info"
+								secondary
+								:loading="deviceStore.loading"
+								@click="() => deviceApi.openCarSicknessReliefSettings()">
+								<template #icon>
+									<EyeSlashIcon />
+								</template>
+								晕车缓解
+							</n-button>
+							<n-alert class="mt-5" type="info" :show-icon="false" :bordered="false">
+								<p>检测到车辆运动时，屏幕两侧显示圆点提示运动状态，可能有助于延缓晕车反应的出现</p>
+								<p>(需要受支持的管家版本才能正常使用)</p>
 							</n-alert>
 						</dd>
 					</div>
