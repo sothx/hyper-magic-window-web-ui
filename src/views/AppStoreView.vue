@@ -105,7 +105,7 @@ const appList: AppInfo[] = [
 		tag: 'original',
 	},
 	{
-		title: '小米平板系统应用补全模块 - 传送门/悬浮球',
+		title: '系统应用补全模块 - 传送门/悬浮球',
 		isShow: () => deviceStore.deviceType === 'tablet',
 		versionNum: 20250617,
 		description: (
@@ -127,7 +127,7 @@ const appList: AppInfo[] = [
 		tag: 'magisk',
 	},
 	{
-		title: '小米平板系统功能补全模块',
+		title: '系统功能补全模块',
 		isShow: () => ['tablet', 'fold'].includes(deviceStore.deviceType),
 		versionNum: 20250617,
 		description: (
@@ -221,7 +221,7 @@ const appList: AppInfo[] = [
 		tag: 'system',
 	},
 	{
-		title: '小米平板系统桌面 - Android 15 Hyper OS 2',
+		title: '小米平板系统桌面',
 		isShow: () => deviceStore.MIOSVersion === 2 && deviceStore.deviceType === 'tablet',
 		versionNum: 20250617,
 		description: (
@@ -240,7 +240,7 @@ const appList: AppInfo[] = [
 		tag: 'system',
 	},
 	{
-		title: '小米平板系统桌面 - Android 14 Hyper OS 2',
+		title: '小米平板系统桌面',
 		isShow: () =>
 			deviceStore.MIOSVersion === 2 && deviceStore.androidTargetSdk === 34 && deviceStore.deviceType === 'tablet',
 		versionNum: 20250617,
