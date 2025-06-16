@@ -12,7 +12,7 @@ export interface DisplayModeItem {
 	vsync?: number;
 	synthetic?: boolean;
 	alternativeRefreshRates: number[];
-	supportedHdrTypes: number[];
+	supportedHdrTypes?: number[];
 }
 
 export function useDisplayModeRecord() {

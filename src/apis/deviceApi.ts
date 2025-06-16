@@ -328,7 +328,7 @@ export const getIsDisabledOS2SystemAppOptimize = (): Promise<string> => {
 	);
 };
 
-export const addDisplayModeRecordAutoEnableID = (id:number): Promise<string> => {
+export const addDisplayModeRecordAutoEnableID = (id: number): Promise<string> => {
 	const shellCommon = `grep -q '^display_mode_record_auto_enable_id=' /data/adb/MIUI_MagicWindow+/config.prop || (echo "display_mode_record_auto_enable_id=${id}" | tee -a /data/adb/MIUI_MagicWindow+/config.prop > /dev/null && echo "Command executed successfully." || echo "Command failed.")`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
@@ -1043,11 +1043,34 @@ const parseDisplayModeRecords = (output: string): DisplayModeItem[] => {
 	const records: DisplayModeItem[] = [];
 	const lines = output.split('\n');
 
+	// 构建正则
+	let pattern = 'id=(\\d+),\\s*width=(\\d+),\\s*height=(\\d+),\\s*fps=([\\d.]+)';
+	const sdk = deviceStore.androidTargetSdk;
+
+	if (sdk >= 35) {
+		pattern += ',\\s*vsync=([\\d.]+),\\s*synthetic=(true|false),\\s*alternativeRefreshRates=\\[([^\\]]*)\\],\\s*supportedHdrTypes=\\[([^\\]]*)\\]';
+	} else if (sdk === 34) {
+		pattern += ',\\s*alternativeRefreshRates=\\[([^\\]]*)\\],\\s*supportedHdrTypes=\\[([^\\]]*)\\]';
+	} else {
+		pattern += ',\\s*alternativeRefreshRates=\\[([^\\]]*)\\]';
+	}
+
+	const regex = new RegExp(pattern);
+
 	lines.forEach(line => {
-		const regex =
-			deviceStore.androidTargetSdk && deviceStore.androidTargetSdk >= 35
-				? /id=(\d+),\s*width=(\d+),\s*height=(\d+),\s*fps=([\d.]+),\s*vsync=([\d.]+),\s*synthetic=(true|false),\s*alternativeRefreshRates=\[([^\]]*)\],\s*supportedHdrTypes=\[([^\]]*)\]/
-				: /id=(\d+),\s*width=(\d+),\s*height=(\d+),\s*fps=([\d.]+),\s*alternativeRefreshRates=\[([^\]]*)\],\s*supportedHdrTypes=\[([^\]]*)\]/;
+		let pattern = 'id=(\\d+),\\s*width=(\\d+),\\s*height=(\\d+),\\s*fps=([\\d.]+)';
+
+		if (deviceStore.androidTargetSdk >= 35) {
+			pattern +=
+				',\\s*vsync=([\\d.]+),\\s*synthetic=(true|false),\\s*alternativeRefreshRates=\\[([^\\]]*)\\],\\s*supportedHdrTypes=\\[([^\\]]*)\\]';
+		} else if (deviceStore.androidTargetSdk === 34) {
+			pattern += ',\\s*alternativeRefreshRates=\\[([^\\]]*)\\],\\s*supportedHdrTypes=\\[([^\\]]*)\\]';
+		} else {
+			pattern += ',\\s*alternativeRefreshRates=\\[([^\\]]*)\\]';
+		}
+
+		const regex = new RegExp(pattern);
+
 		const match = regex.exec(line);
 
 		if (match) {
@@ -1070,7 +1093,7 @@ const parseDisplayModeRecords = (output: string): DisplayModeItem[] => {
 				};
 
 				records.push(record);
-			} else {
+			} else if (deviceStore.androidTargetSdk && deviceStore.androidTargetSdk === 34) {
 				const [_, id, width, height, fps, alternativeRefreshRates, supportedHdrTypes] = match;
 
 				const record: DisplayModeItem = {
@@ -1084,6 +1107,20 @@ const parseDisplayModeRecords = (output: string): DisplayModeItem[] => {
 					supportedHdrTypes: supportedHdrTypes
 						? supportedHdrTypes.split(',').map(type => parseInt(type.trim(), 10))
 						: [],
+				};
+
+				records.push(record);
+			} else {
+				const [_, id, width, height, fps, alternativeRefreshRates] = match;
+
+				const record: DisplayModeItem = {
+					id: parseInt(id, 10),
+					width: parseInt(width, 10),
+					height: parseInt(height, 10),
+					fps: parseFloat(fps),
+					alternativeRefreshRates: alternativeRefreshRates
+						? alternativeRefreshRates.split(',').map(rate => parseFloat(rate.trim()))
+						: []
 				};
 
 				records.push(record);
