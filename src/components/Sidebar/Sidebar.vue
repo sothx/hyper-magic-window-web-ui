@@ -185,6 +185,8 @@ onBeforeUnmount(() => {
 															() => {
 																sidebarOpen = false;
 																item.click && item.click();
+																deviceStore.lastVisitedPath = item.routeName;
+																console.log(deviceStore.lastVisitedPath,'deviceStore.lastVisitedPath')
 															}
 														"
 														:class="[
@@ -227,6 +229,7 @@ onBeforeUnmount(() => {
 														:to="team.href"
 														@click="() => {
 															sidebarOpen = false;
+															deviceStore.lastVisitedPath = undefined;
 														}"
 														:class="[
 															team.href === route.fullPath
@@ -261,6 +264,7 @@ onBeforeUnmount(() => {
 												to="/settings"
 												@click="() => {
 													sidebarOpen = false;
+													deviceStore.lastVisitedPath = 'settings';
 												}"
 												:class="[
 													route.name === 'settings'
@@ -312,6 +316,8 @@ onBeforeUnmount(() => {
 											() => {
 												sidebarOpen = false;
 												item.click && item.click();
+												deviceStore.lastVisitedPath = item.routeName;
+												console.log(deviceStore.lastVisitedPath,'deviceStore.lastVisitedPath')
 											}
 										"
 										:class="[
@@ -353,6 +359,7 @@ onBeforeUnmount(() => {
 									<RouterLink
 									    @click="() => {
 											sidebarOpen = false;
+											deviceStore.lastVisitedPath = undefined;
 										}"
 										:to="team.href"
 										:class="[
@@ -388,6 +395,7 @@ onBeforeUnmount(() => {
 								to="/settings"
 								@click="() => {
 									sidebarOpen = false;
+									deviceStore.lastVisitedPath = 'settings';
 								}"
 								:class="[
 									route.name === 'settings'

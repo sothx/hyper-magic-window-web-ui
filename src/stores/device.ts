@@ -8,6 +8,7 @@ import { useAmktiao, type KeyboardMode, type KeyboardModeOptions } from '@/hooks
 import { parsePropContent } from '@/utils/common';
 import { transformValues } from '@/utils/xmlFormat';
 import type { DisplayModeItem } from '@/hooks/useDisplayModeRecord';
+import type { RouteRecordNameGeneric } from 'vue-router';
 
 export interface ModuleProp {
 	id: string;
@@ -94,6 +95,7 @@ export const useDeviceStore = defineStore(
 		const displayModeList = ref<DisplayModeItem[]>([]);
 		const isDisabledOS2SystemAppOptimize = ref<boolean>(false);
 		const isDisabledOS2InstallModuleTips = ref<boolean>(false);
+		const lastVisitedPath = ref<RouteRecordNameGeneric>();
 		const shamikoInfo = reactive<ShamikoInfo>({
 			installed: false,
 			mode: undefined,
@@ -561,6 +563,7 @@ export const useDeviceStore = defineStore(
 			projectTrebleSupportMagicWindowFix,
 			muiltdisplayType,
 			changeLogMsg,
+			lastVisitedPath,
 			isInit
 		};
 	},
@@ -568,6 +571,7 @@ export const useDeviceStore = defineStore(
 		persist: {
 			pick: [
 				'skipConfirm',
+				'lastVisitedPath',
 				'installedAndroidApplicationPackageNameList',
 				'isDarkMode',
 				'rhythmMode',

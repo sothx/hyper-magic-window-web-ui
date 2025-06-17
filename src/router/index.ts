@@ -2,6 +2,7 @@ import { createRouter, createWebHashHistory, type RouteRecordRaw } from 'vue-rou
 import { createApp, defineAsyncComponent, defineComponent } from 'vue';
 import { createDiscreteApi } from 'naive-ui';
 import SettingsView from '../views/SettingsView.vue';
+import { useDeviceStore } from '@/stores/device';
 
 const { loadingBar } = createDiscreteApi(['loadingBar']);
 
@@ -28,7 +29,7 @@ router.beforeEach((to, from, next) => {
 });
 
 // 进入路由后，结束 loadingBar
-router.afterEach(() => {
+router.afterEach((to) => {
   loadingBar.finish();
 });
 

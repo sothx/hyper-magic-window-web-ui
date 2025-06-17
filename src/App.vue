@@ -121,6 +121,22 @@ const loadRoutes = async () => {
 	// **获取当前路径**
 	const currentPath = router.currentRoute.value.path;
 
+	// 获取上次访问的url
+	const lastPath = deviceStore.lastVisitedPath;
+	console.log(lastPath,typeof lastPath,'lastPath')
+
+	if (lastPath && typeof lastPath === 'string') {
+		const resolved = router.resolve(lastPath);
+		const routeExists = resolved.matched.length > 0;
+
+		if (routeExists) {
+			router.replace(lastPath);
+			return; // 成功跳转后直接 return，避免后续逻辑干扰
+		}
+		router.replace('/');
+		return;
+	}
+
 	// **如果当前路径是 `/`，才执行 redirect**
 	const firstRouteRedirect = module.default[0]?.redirect as string | undefined;
 	if (currentPath === '/' && firstRouteRedirect) {
