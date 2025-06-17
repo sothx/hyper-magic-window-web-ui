@@ -1261,7 +1261,7 @@ const filteredSettingList = computed(() => {
 							clearable
 							v-model:value="searchKeyword"
 							ref="searchKeyWordInput"
-							placeholder="搜索功能名称"
+							placeholder="搜索设置名称"
 							class="w-4/5" />
 						<n-button
 							size="large"
