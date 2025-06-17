@@ -75,49 +75,6 @@ export const parseXMLToObject = <T>(
   return result;
 };
 
-export const testXMLToObject = <T>(
-  xml: string,
-  parentTag: string,
-  childTag: string,
-  isNeedPatchParentTag: boolean = false
-): any => {
-  const parser = new DOMParser();
-  const serializer = new XMLSerializer();
-  let xmlDoc = parser.parseFromString(xml, "application/xml");
-
-  // 检查是否有根节点，如果没有则添加一个虚拟根节点
-  if (isNeedPatchParentTag) {
-    let rootString = `<${parentTag}>\n
-    ${xml}
-    \n</${parentTag}>`;
-    let sanitizedString = rootString.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '');
-    xmlDoc = parser.parseFromString(sanitizedString, "application/xml");
-    // 将临时文档的子节点（即所有 package 节点）插入到 package_config 根节点
-  }
-
-  const packages = xmlDoc.getElementsByTagName(childTag);
-  const result: Record<string, T> = {}; // 使用对象存储结果
-
-  Array.from(packages).forEach((pkg) => {
-    const name = pkg.getAttribute("name");
-    if (name) {
-      const attributes: Record<string, string> = {}; // 属性值都是字符串
-      Array.from(pkg.attributes).forEach((attr) => {
-        // 将每个属性添加到 attributes 对象中
-        attributes[attr.name] = attr.value;
-      });
-
-      // 处理属性并将结果赋值给结果对象
-      result[name] = {
-        name,
-        ...transformValues(attributes), // 将所有属性转换
-      } as T; // 强制转换为所需类型 T
-    }
-  });
-
-  return result
-};
-
 export const parseXMLToArray = <T>(
   xml: string,
   parentTag: string = "package_config",

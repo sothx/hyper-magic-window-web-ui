@@ -317,7 +317,7 @@ const filteredHealthList = computed(() => {
 				<dl :class="`divide-y ${deviceStore.isDarkMode ? 'divide-sothx-gray-color' : 'divide-gray-200'}`">
 					<div
 						v-for="(healthItem, index) in filteredHealthList"
-						:key="healthItem.title"
+						:key="index"
 						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
