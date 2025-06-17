@@ -53,11 +53,9 @@ const healthList: HealthItemInfo[] = [
 		title: 'ZRAM Writeback',
 		content: () => (
 			<>
-				{deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35 && (
-					<div class='mb-3'>
-						<n-tag>dm设备映射器: {ZRAMWritebackHook.miuiExtmDmOptEnable.value ? '启用' : '未启用'}</n-tag>
-					</div>
-				)}
+				<div class='mb-3'>
+					<n-tag>dm设备映射器: {ZRAMWritebackHook.miuiExtmDmOptEnable.value ? '启用' : '未启用'}</n-tag>
+				</div>
 				<div class='mb-3'>
 					<n-tag type='error'>回写块: {ZRAMWritebackHook.backingDev.value} </n-tag>
 				</div>

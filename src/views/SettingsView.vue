@@ -10,6 +10,7 @@ import $to from 'await-to-js';
 import { useEmbeddedStore } from '@/stores/embedded';
 import { keyBy } from 'lodash-es';
 import { useFontStore } from '@/stores/font';
+import { RenderJsx } from '@/components/RenderJSX';
 import { findBase64InString } from '@/utils/common';
 import { arrayBufferToBase64, base64ToArrayBuffer } from '@/utils/format';
 import * as embeddedApi from '@/apis/embeddedApi';
@@ -21,8 +22,13 @@ import { useZRAMWriteback } from '@/hooks/useZRAMWriteback';
 import { useOS2InstallModuleTips } from '@/hooks/useOS2InstallModuleTips';
 import { useUFSHealth } from '@/hooks/useUFSHealth';
 import { ArrowDownCircleIcon } from '@heroicons/vue/24/solid';
+import { MagnifyingGlassIcon, XCircleIcon } from '@heroicons/vue/24/outline';
 import { useDisplayModeRecord, type DisplayModeItem } from '@/hooks/useDisplayModeRecord';
+import type { JSX } from 'vue/jsx-runtime';
 const deviceStore = useDeviceStore();
+const searchKeyword = ref('');
+type SearchKeyWordInputInstance = InstanceType<typeof NInput>;
+const searchKeyWordInput = ref<SearchKeyWordInputInstance | null>(null);
 const embeddedStore = useEmbeddedStore();
 const realQuantityHook = useRealQuantity();
 const hideGestureLineHook = useHideGestureLine();
@@ -54,7 +60,13 @@ const rhythmModeOptions = [
 	},
 ];
 
-const fontModeOptions = ref([
+interface FontModeOption {
+	label: string;
+	key: string;
+	type: string;
+}
+
+const fontModeOptions = ref<FontModeOption[]>([
 	{
 		label: 'MiSans',
 		key: 'MiSans',
@@ -72,7 +84,7 @@ const fontModeOptions = ref([
 	},
 ]);
 
-const fontModeMap = computed(() => {
+const fontModeMap = computed<Record<string, FontModeOption>>(() => {
 	return keyBy(fontModeOptions.value, 'key');
 });
 
@@ -507,6 +519,694 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 	}
 	return style;
 };
+export interface SettingItemInfo {
+	title: string;
+	titleSlot?: () => JSX.Element;
+	content: () => JSX.Element;
+	isShow?: () => boolean;
+}
+const settingList: SettingItemInfo[] = [
+	{
+		title: '模块ID',
+		content: () => <>{deviceStore.moduleInfo?.id ?? '获取失败'}</>,
+		isShow: () => Boolean(deviceStore.moduleInfo?.id),
+	},
+	{
+		title: '模块路径',
+		content: () => <>{deviceStore.moduleInfo?.dir ?? '获取失败'}</>,
+		isShow: () => Boolean(deviceStore.moduleInfo?.id),
+	},
+	{
+		title: '模块版本名',
+		content: () => <>{deviceStore.moduleInfo?.version ?? '获取失败'}</>,
+		isShow: () => Boolean(deviceStore.moduleInfo?.version),
+	},
+	{
+		title: '模块版本号',
+		content: () => <>{deviceStore.moduleInfo?.versionCode ?? '获取失败'}</>,
+		isShow: () => Boolean(deviceStore.moduleInfo?.versionCode),
+	},
+	{
+		title: '模块工作模式',
+		content: () => (
+			<>
+				<n-switch
+					value={embeddedStore.isPatchMode}
+					loading={switchPatchModeLoading.value}
+					disabled={deviceStore.androidTargetSdk && deviceStore.androidTargetSdk < 32}
+					railStyle={railStyle}
+					onUpdateValue={(value: boolean) => changePatchMode(value)}>
+					{{
+						checked: () => '定制模式',
+						unchecked: () => '完整模式',
+					}}
+				</n-switch>
+				{embeddedStore.isPatchMode && (
+					<n-alert class='mt-5' type='warning' show-icon={false} bordered={false}>
+						<p>
+							「定制模式」还额外提供了仅根据当前「已安装应用列表」修剪「模块应用适配列表」的功能，
+							您可以通过启用「深度定制模式」来开启该功能，但启用后模块不再提供「高频应用适配列表」作为兜底，
+							可以进一步优化老机型由于系统优化不佳而导致的卡顿、掉帧等问题，
+							但后续每次更新模块或者安装新的应用后，均需要在前往「应用横屏布局」界面重新「生成定制应用数据」。
+						</p>
+						<n-switch
+							class='mt-5'
+							value={embeddedStore.isDeepPatchMode}
+							loading={switchPatchModeLoading.value}
+							disabled={deviceStore.androidTargetSdk && deviceStore.androidTargetSdk < 32}
+							railStyle={railStyle}
+							onUpdateValue={(value: boolean) => changeDeepPatchMode(value)}>
+							{{
+								checked: () => '已启用深度定制模式',
+								unchecked: () => '未启用深度定制模式',
+							}}
+						</n-switch>
+					</n-alert>
+				)}
+			</>
+		),
+		isShow: () => Boolean(['tablet', 'fold'].includes(deviceStore.deviceType)),
+	},
+	{
+		title: '模块使用须知',
+		content: () => (
+			<n-switch
+				value={deviceStore.isDisabledOS2InstallModuleTips}
+				disabled={deviceStore.androidTargetSdk && deviceStore.androidTargetSdk < 35}
+				railStyle={railStyle}
+				onUpdateValue={(value: boolean) => OS2InstallModuleTipsHook.change(value)}>
+				{{
+					checked: () => '禁用模块使用须知',
+					unchecked: () => '开启模块使用须知',
+				}}
+			</n-switch>
+		),
+		isShow: () =>
+			Boolean(
+				deviceStore.MIOSVersion &&
+					deviceStore.MIOSVersion >= 2 &&
+					deviceStore.androidTargetSdk >= 35 &&
+					['tablet', 'fold'].includes(deviceStore.deviceType),
+			),
+	},
+	{
+		title: '系统应用横屏优化',
+		content: () => (
+			<>
+				<n-switch
+					value={deviceStore.isDisabledOS2SystemAppOptimize}
+					loading={deviceStore.loading}
+					railStyle={railStyle}
+					onUpdateValue={(value: boolean) => disabledOS2SystemAppOptimizeHook.change(value)}>
+					{{
+						checked: () => '已禁用系统应用横屏优化',
+						unchecked: () => '已启用系统应用横屏优化',
+					}}
+				</n-switch>
+
+				<n-alert class='mt-5' type='warning' show-icon={false} bordered={false}>
+					<p>
+						由于小米「应用横屏布局」BUG，Hyper OS 2 下部分系统应用可无法完全横屏工作，模块可以修复这个问题，
+						但每次设备重启或修改模块规则，这些系统应用都将被强制重启，该功能默认启用，
+						如「启用」将代表已接纳并知晓此副作用影响。
+					</p>
+					<p>受此影响的系统应用：</p>
+					<p>超级小爱(com.miui.voiceassist)</p>
+					<p>小米浏览器(com.android.browser)</p>
+					<p>平板/手机管家(com.miui.securitycenter)</p>
+				</n-alert>
+			</>
+		),
+		isShow: () =>
+			Boolean(
+				deviceStore.MIOSVersion &&
+					deviceStore.MIOSVersion >= 2 &&
+					deviceStore.androidTargetSdk >= 35 &&
+					['tablet'].includes(deviceStore.deviceType),
+			),
+	},
+	{
+		title: '智能IO调度',
+		content: () => (
+			<>
+				{deviceStore.smartFocusIO === 'on' ? (
+					<n-tag type='success'>已启用智能IO调度</n-tag>
+				) : (
+					<n-tag type='info'>已启用系统默认调度</n-tag>
+				)}
+
+				{deviceStore.deviceInfo.socModel === 'SM8475' &&
+					deviceStore.androidTargetSdk &&
+					deviceStore.androidTargetSdk >= 34 &&
+					deviceStore.smartFocusIO !== 'on' &&
+					['tablet', 'fold'].includes(deviceStore.deviceType) && (
+						<n-alert class='mt-5' type='warning' show-icon={false} bordered={false}>
+							<p>
+								您当前未启用「智能IO调度」，由于小米「磁盘IO调度」BUG，骁龙8+Gen1机型存在IO调度异常的问题，
+								容易导致系统卡顿或者无响应，您可以通过安装「小米平板系统功能补全模块」来启用「智能IO调度」，提升系统IO性能体验。
+							</p>
+							<n-button
+								class='mt-2'
+								strong
+								size='small'
+								secondary
+								type='warning'
+								onClick={() =>
+									getAppDownload(
+										'小米平板系统功能补全模块',
+										'https://caiyun.139.com/m/i?135CmUuWuqGsk',
+										'magisk',
+									)
+								}>
+								获取小米平板系统功能补全模块
+							</n-button>
+						</n-alert>
+					)}
+
+				{deviceStore.deviceInfo.socModel === 'SM8475' &&
+					deviceStore.androidTargetSdk &&
+					deviceStore.androidTargetSdk >= 34 &&
+					deviceStore.smartFocusIO !== 'on' &&
+					['phone'].includes(deviceStore.deviceType) && (
+						<n-alert class='mt-5' type='warning' show-icon={false} bordered={false}>
+							<p>
+								您当前未启用「智能IO调度」，由于小米「磁盘IO调度」BUG，骁龙8+Gen1机型存在IO调度异常的问题，
+								容易导致系统卡顿或者无响应，您可以通过安装「小米手机系统功能补全模块」来启用「智能IO调度」，提升系统IO性能体验。
+							</p>
+							<n-button
+								class='mt-2'
+								strong
+								size='small'
+								secondary
+								type='warning'
+								onClick={() =>
+									getAppDownload(
+										'小米手机系统功能补全模块',
+										'https://caiyun.139.com/m/i?135CmOdNLkQeu',
+										'magisk',
+									)
+								}>
+								获取小米平板系统功能补全模块
+							</n-button>
+						</n-alert>
+					)}
+			</>
+		),
+		isShow: () =>
+			Boolean(
+				deviceStore.deviceInfo.socModel === 'SM8475' &&
+					deviceStore.androidTargetSdk &&
+					deviceStore.androidTargetSdk >= 34 &&
+					deviceStore.smartFocusIO !== 'on' &&
+					['phone'].includes(deviceStore.deviceType),
+			),
+	},
+	{
+		title: 'ZRAM Writeback',
+		content: () => (
+			<>
+				<div class='mb-3'>
+					<n-tag>dm设备映射器: {ZRAMWritebackHook.miuiExtmDmOptEnable.value ? '启用' : '未启用'}</n-tag>
+				</div>
+				<div class='mb-3'>
+					<n-tag type='error'>回写块: {ZRAMWritebackHook.backingDev.value}</n-tag>
+				</div>
+
+				<div class='mb-3'>
+					<n-tag type='success'>已回写: {ZRAMWritebackHook.hasWriteBack.value} MB</n-tag>
+				</div>
+
+				<div class='mb-3'>
+					<n-tag type='info'>总读取: {ZRAMWritebackHook.totalRead.value} MB</n-tag>
+				</div>
+
+				<div>
+					<n-tag type='warning'>总回写: {ZRAMWritebackHook.totalWriteBack.value} MB</n-tag>
+				</div>
+
+				<n-alert class='mt-5' type='warning' show-icon={false} bordered={false}>
+					<p>
+						通常用于将设备上的冷数据压缩并迁移到磁盘上，是基于「内存扩展」的回写块，
+						该功能依赖「内存扩展」，请确保已经开启「内存扩展」，总回写可以大于「内存扩展」， 初始状态下显示
+						0 MB是正常现象，请持续使用一段时间再观察是否有变化
+					</p>
+				</n-alert>
+			</>
+		),
+		isShow: () =>
+			Boolean(
+				deviceStore.MIOSVersion &&
+					deviceStore.MIOSVersion >= 2 &&
+					deviceStore.androidTargetSdk >= 35 &&
+					ZRAMWritebackHook.isInit.value &&
+					['tablet', 'fold'].includes(deviceStore.deviceType),
+			),
+	},
+	{
+		title: '设备名称',
+		content: () => <>{deviceStore.deviceName || ''}</>,
+		isShow: () => Boolean(deviceStore.deviceName),
+	},
+	{
+		title: 'ROOT管理器',
+		content: () => <>{deviceStore.currentRootManager || '获取失败'}</>,
+	},
+	{
+		title: 'KernelSU 版本',
+		content: () => <>{deviceStore.rootManagerInfo.KSU_VER || '获取失败'}</>,
+		isShow: () => Boolean(deviceStore.currentRootManager === 'KernelSU'),
+	},
+	{
+		title: 'KernelSU 用户空间版本号',
+		content: () => <>{deviceStore.rootManagerInfo.KSU_VER_CODE || '获取失败'}</>,
+		isShow: () => Boolean(deviceStore.currentRootManager === 'KernelSU'),
+	},
+	{
+		title: 'KernelSU 内核空间版本号',
+		content: () => <>{deviceStore.rootManagerInfo.KSU_KERNEL_VER_CODE || '获取失败'}</>,
+		isShow: () => Boolean(deviceStore.currentRootManager === 'KernelSU'),
+	},
+	{
+		title: 'APatch 版本名',
+		content: () => <>{deviceStore.rootManagerInfo.APATCH_VER || '获取失败'}</>,
+		isShow: () => Boolean(deviceStore.currentRootManager === 'APatch'),
+	},
+	{
+		title: 'APatch 版本号',
+		content: () => <>{deviceStore.rootManagerInfo.APATCH_VER_CODE || '获取失败'}</>,
+		isShow: () => Boolean(deviceStore.currentRootManager === 'APatch'),
+	},
+	{
+		title: 'Magisk 版本',
+		content: () => <>{deviceStore.rootManagerInfo.MAGISK_VER || '获取失败'}</>,
+		isShow: () => Boolean(deviceStore.currentRootManager === 'Magisk'),
+	},
+	{
+		title: 'Magisk 版本号',
+		content: () => <>{deviceStore.rootManagerInfo.MAGISK_VER_CODE || '获取失败'}</>,
+		isShow: () => Boolean(deviceStore.currentRootManager === 'Magisk'),
+	},
+	{
+		title: '外观模式',
+		content: () => (
+			<n-dropdown size='large' trigger='click' options={rhythmModeOptions} onSelect={handleSelectRhythmMode}>
+				<n-button
+					size='small'
+					strong
+					secondary
+					type={deviceStore.rhythmMode === 'autoRhythm' ? 'error' : 'success'}>
+					{deviceStore.rhythmMode === 'autoRhythm'
+						? '跟随系统'
+						: deviceStore.rhythmMode === 'lightMode'
+							? '浅色模式'
+							: deviceStore.rhythmMode === 'dartMode'
+								? '深色模式'
+								: ''}
+				</n-button>
+			</n-dropdown>
+		),
+	},
+	{
+		title: '应用字体',
+		content: () => (
+			<n-dropdown size='large' trigger='click' options={fontModeOptions} onSelect={handleSelectFontMode}>
+				<n-button size='small' strong secondary type={fontModeMap.value[fontStore.currentFont]?.type ?? 'info'}>
+					{fontStore.currentFont}
+				</n-button>
+			</n-dropdown>
+		),
+	},
+	{
+		title: '激活口令',
+		content: () => (
+			<n-button
+				size='small'
+				type='warning'
+				secondary
+				loading={deviceStore.loading || activateABTestLoading.value}
+				onClick={() => handleActivateABTest()}>
+				{{
+					icon: () => (
+						<n-icon>
+							<ArrowDownCircleIcon />
+						</n-icon>
+					),
+					default: () => '导入激活口令',
+				}}
+			</n-button>
+		),
+	},
+	{
+		title: '游戏显示布局',
+		content: () => (
+			<n-switch
+				onUpdate:value={(value: boolean) => gameModeHook.changeGameMode(value)}
+				value={gameModeHook.isSupportGameMode.value}
+				rail-style={railStyle}
+				disabled={
+					deviceStore.deviceType !== 'tablet' ||
+					(deviceStore.androidTargetSdk && deviceStore.androidTargetSdk < 32)
+				}>
+				{{
+					checked: () => <>已开启游戏显示布局</>,
+					unchecked: () => (
+						<>
+							{deviceStore.androidTargetSdk && deviceStore.androidTargetSdk < 32
+								? '不支持游戏显示布局'
+								: '未开启游戏显示布局'}
+						</>
+					),
+				}}
+			</n-switch>
+		),
+		isShow: () =>
+			Boolean(
+				['tablet'].includes(deviceStore.deviceType) &&
+					deviceStore.androidTargetSdk &&
+					deviceStore.androidTargetSdk > 32,
+			),
+	},
+	{
+		title: '手势提示线（小白条）',
+		content: () => (
+			<>
+				{!hideGestureLineHook.isInit.value ? (
+					<n-skeleton width={137} sharp={false} round={true} size='small' />
+				) : (
+					<n-switch
+						onUpdate:value={(value: boolean) => hideGestureLineHook.changeIsHideGestureLine(value)}
+						rail-style={railStyle}
+						value={hideGestureLineHook.currentIsHideGestureLine.value === 1}>
+						{{
+							checked: () => <>隐藏手势提示线</>,
+							unchecked: () => <>显示手势提示线</>,
+						}}
+					</n-switch>
+				)}
+			</>
+		),
+		isShow: () =>
+			Boolean(deviceStore.deviceType === 'tablet' && deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2),
+	},
+	{
+		title: 'Xiaomi Hyper OS 版本号',
+		content: () => (
+			<>{`${
+				deviceStore.MIOSVersion
+					? `Xiaomi
+							Hyper OS ${deviceStore.MIOSVersion}`
+					: '当前为MIUI'
+			}`}</>
+		),
+		isShow: () => Boolean(deviceStore.MIOSVersion),
+	},
+	{
+		title: '系统版本',
+		content: () => <>{deviceStore.systemVersion || ''}</>,
+		isShow: () => Boolean(deviceStore.systemVersion),
+	},
+	{
+		title: '上次更新的系统版本',
+		content: () => <>{deviceStore.systemPreVersion || ''}</>,
+		isShow: () => Boolean(deviceStore.systemPreVersion),
+	},
+	{
+		title: 'Android Target Version',
+		content: () => <>{deviceStore.androidTargetSdk || '非Android设备环境'}</>,
+	},
+	{
+		title: '设备类型',
+		content: () => (
+			<>
+				{deviceStore.deviceType === 'tablet'
+					? '平板(Pad)'
+					: deviceStore.deviceType === 'fold'
+						? '折叠屏(Fold)'
+						: '手机(Phone)'}
+			</>
+		),
+	},
+	{
+		title: '设备Soc类型',
+		content: () => (
+			<>{deviceStore.deviceInfo.socModel || '获取失败'}</>
+		),
+		isShow: () => Boolean(deviceStore.deviceInfo.socModel),
+	},
+	{
+		title: '设备Soc名称',
+		content: () => (
+			<>{deviceStore.deviceInfo.socName || '获取失败'}</>
+		),
+		isShow: () => Boolean(deviceStore.deviceInfo.socName),
+	},
+	{
+		title: '设备显示器信息(display0)',
+		content: () => (
+			<>{deviceStore.deviceInfo.display0Panel}</>
+		),
+		isShow: () => Boolean(deviceStore.deviceInfo.display0Panel),
+	},
+	{
+		title: '设备DDR和UFS信息',
+		content: () => (
+			<div class="whitespace-pre">{deviceStore.deviceInfo.memoryInfo ?? '获取失败'}</div>
+		),
+		isShow: () => Boolean(deviceStore.deviceInfo.memoryInfo && ['tablet', 'fold'].includes(deviceStore.deviceType)),
+	},
+	{
+		title: '设备DDR生产厂商',
+		content: () => (
+			<div class="whitespace-pre">{deviceStore.DDRVendor ?? '获取失败'}</div>
+		),
+		isShow: () => Boolean(deviceStore.DDRVendor && ['tablet', 'fold'].includes(deviceStore.deviceType)),
+	},
+		{
+		title: 'UFS 存储健康',
+		content: () => (
+			<>
+				<div class='mb-3'>
+					{useUFSHealthHook.correctedPreEOLStatus.value && (
+						<div class='mb-3'>
+							<n-tag type='info'>寿命阶段: {useUFSHealthHook.correctedPreEOLStatus.value}</n-tag>
+						</div>
+					)}
+					{useUFSHealthHook.deviceLifeTimeEstA.value && (
+						<div class='mb-3'>
+							<n-tag type='success'>
+								用户数据区(已磨损): {useUFSHealthHook.deviceLifeTimeEstA.value}
+							</n-tag>
+						</div>
+					)}
+					{useUFSHealthHook.deviceLifeTimeEstB.value && (
+						<div class='mb-3'>
+							<n-tag type='warning'>
+								高速缓存区(已磨损): {useUFSHealthHook.deviceLifeTimeEstB.value}
+							</n-tag>
+						</div>
+					)}
+				</div>
+				<n-alert class='mt-5' type='info' show-icon={false} bordered={false}>
+					<p>
+						数据仅供参考，通常仅代表当前 UFS 存储设备循环擦写次数与预期设计寿命的比值，不代表 UFS
+						存储设备的实际磨损状况，但仍然建议当前 UFS 存储设备接近预期设计寿命时选择更换存储设备。
+					</p>
+				</n-alert>
+			</>
+		),
+		isShow: () => Boolean(useUFSHealthHook.isShow.value && ['tablet', 'fold'].includes(deviceStore.deviceType)),
+	},
+		{
+		title: '真实电量（高通）',
+		content: () => (
+			<>
+				<p>
+					{`${realQuantityHook.qcomBatteryFg1RSocInfo.current} %`}
+					<n-button
+						class='ml-1'
+						strong
+						secondary
+						size='small'
+						type='success'
+						onClick={() => realQuantityHook.qcomBatteryFg1RSocInfo.reload()}>
+						手动刷新
+					</n-button>
+					<n-switch
+						class='ml-2'
+						v-model:value={realQuantityHook.qcomBatteryFg1RSocInfo.autoReload}
+						rail-style={railStyle}>
+						{{
+							checked: () => '开启自动刷新',
+							unchecked: () => '未开启自动刷新',
+						}}
+					</n-switch>
+				</p>
+
+				{realQuantityHook.qcomBatteryFg1RSocInfo.autoReload && (
+					<div>
+						<p class='my-2'>隔多少秒刷新一次</p>
+						<p>
+							<n-slider
+								v-model:value={realQuantityHook.qcomBatteryFg1RSocInfo.timer}
+								size='small'
+								min={1}
+								max={30}
+								step={1}
+							/>
+							<n-input-number
+								show-button={false}
+								class='pt-3'
+								readonly
+								placeholder='请输入刷新频率间隔时间'
+								v-model:value={realQuantityHook.qcomBatteryFg1RSocInfo.timer}
+								min={0}
+								max={30}
+								step={1}
+							/>
+						</p>
+					</div>
+				)}
+			</>
+		),
+		isShow: () => Boolean(realQuantityHook.qcomBatteryFg1RSocInfo.current && ['tablet', 'fold'].includes(deviceStore.deviceType)),
+	},
+	{
+		title: '真实电量',
+		content: () => (
+			<>
+				<p>
+					{`${realQuantityHook.capacityRawInfo.current / 100} %`}
+					<n-button
+						class='ml-1'
+						strong
+						secondary
+						size='small'
+						type='success'
+						onClick={() => realQuantityHook.capacityRawInfo.reload()}>
+						手动刷新
+					</n-button>
+					<n-switch
+						class='ml-2'
+						v-model:value={realQuantityHook.capacityRawInfo.autoReload}
+						rail-style={railStyle}>
+						{{
+							checked: () => '开启自动刷新',
+							unchecked: () => '未开启自动刷新',
+						}}
+					</n-switch>
+				</p>
+
+				{realQuantityHook.capacityRawInfo.autoReload && (
+					<div>
+						<p class='my-2'>隔多少秒刷新一次</p>
+						<p>
+							<n-slider
+								v-model:value={realQuantityHook.capacityRawInfo.timer}
+								size='small'
+								min={1}
+								max={30}
+								step={1}
+							/>
+							<n-input-number
+								show-button={false}
+								class='pt-3'
+								readonly
+								placeholder='请输入刷新频率间隔时间'
+								v-model:value={realQuantityHook.capacityRawInfo.timer}
+								min={0}
+								max={30}
+								step={1}
+							/>
+						</p>
+					</div>
+				)}
+			</>
+		),
+		isShow: () => Boolean(realQuantityHook.capacityRawInfo.current && ['tablet', 'fold'].includes(deviceStore.deviceType)),
+	},
+	{
+		title: '电池出厂设计容量',
+		content: () => <p>{`${deviceStore.batteryInfo.chargeFullDesign / 1000} mAh`}</p>,
+		isShow: () => Boolean(deviceStore.batteryInfo.chargeFullDesign && ['tablet', 'fold'].includes(deviceStore.deviceType)),
+	},
+	{
+		title: '电池当前预估容量',
+		content: () => <p>{`${deviceStore.batteryInfo.chargeFull / 1000} mAh`}</p>,
+		isShow: () => Boolean(deviceStore.batteryInfo.chargeFull && ['tablet', 'fold'].includes(deviceStore.deviceType)),
+	},
+	{
+		title: '电池循环充电次数',
+		content: () => <p>{`${deviceStore.batteryInfo.cycleCount} 次`}</p>,
+		isShow: () => Boolean(deviceStore.batteryInfo.cycleCount && ['tablet', 'fold'].includes(deviceStore.deviceType)),
+	},
+	{
+		title: '电池预估健康度',
+		content: () => (
+			<p>
+				{`${((deviceStore.batteryInfo.chargeFull / deviceStore.batteryInfo.chargeFullDesign) * 100).toFixed(
+					2,
+				)} %`}
+			</p>
+		),
+		isShow: () => Boolean(deviceStore.batteryInfo.chargeFullDesign && deviceStore.batteryInfo.chargeFull && ['tablet', 'fold'].includes(deviceStore.deviceType)),
+	},
+	{
+		title: '电池售后健康度（高通）',
+		content: () => (
+			<>
+				<p>{`${deviceStore.batteryInfo.sohQcom} %`}</p>
+				<p>{`≈ ${Math.round(
+					(deviceStore.batteryInfo.chargeFullDesign * (deviceStore.batteryInfo.sohQcom / 100)) / 1000,
+				)} mAh`}</p>
+				<n-alert class='mt-5' type='info' show-icon={false} bordered={false}>
+					<p>在设备保修期内健康度低于80%可以申请电池质保</p>
+				</n-alert>
+			</>
+		),
+		isShow: () => Boolean(deviceStore.batteryInfo.sohQcom && ['tablet', 'fold'].includes(deviceStore.deviceType)),
+	},
+	{
+		title: '电池售后健康度',
+		content: () => (
+			<>
+				<p>{`${deviceStore.batteryInfo.sohMTK} %`}</p>
+				<p>{`≈ ${Math.round(
+					(deviceStore.batteryInfo.chargeFullDesign * (deviceStore.batteryInfo.sohMTK / 100)) / 1000,
+				)} mAh`}</p>
+				<n-alert class='mt-5' type='info' show-icon={false} bordered={false}>
+					<p>在设备保修期内健康度低于80%可以申请电池质保</p>
+				</n-alert>
+			</>
+		),
+		isShow: () => Boolean(deviceStore.batteryInfo.sohMTK && ['tablet', 'fold'].includes(deviceStore.deviceType)),
+	},
+	{
+		title: '电池售后健康度（小米）',
+		content: () => (
+			<>
+				<p>{`${deviceStore.batteryInfo.sohXMPower} %`}</p>
+				<p>
+					{`≈ ${Math.round(
+						(deviceStore.batteryInfo.chargeFullDesign * (deviceStore.batteryInfo.sohXMPower / 100)) / 1000,
+					)} mAh`}
+				</p>
+				<n-alert class='mt-5' type='info' show-icon={false} bordered={false}>
+					<p>在设备保修期内健康度低于80%可以申请电池质保</p>
+				</n-alert>
+			</>
+		),
+		isShow: () => Boolean(deviceStore.batteryInfo.sohXMPower && ['tablet', 'fold'].includes(deviceStore.deviceType)),
+	},
+];
+const filteredSettingList = computed(() => {
+	const keyword = searchKeyword.value.toLowerCase();
+	return settingList.filter(item => {
+		const showFlag = item.isShow ? item.isShow() : true;
+		if (!showFlag) return false;
+		if (!keyword) return true;
+		return item.title.toLowerCase().includes(keyword);
+	});
+});
 </script>
 <template>
 	<div class="setting">
@@ -535,901 +1235,87 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 				</p>
 			</div>
 
+						<n-card size="small" class="mt-5">
+				<!-- <div class="flex flex-wrap">
+					<n-button class="mb-3 mr-3" color="#8a2be2">
+						<template #icon>
+							<n-icon>
+								<SquaresPlusIcon />
+							</n-icon>
+						</template>
+						热重载应用数据
+					</n-button>
+					<n-button class="mb-3 mr-3" color="#69b2b6">
+						<template #icon>
+							<n-icon>
+								<CircleStackIcon />
+							</n-icon>
+						</template>
+						获取已安装应用名称
+					</n-button>
+				</div> -->
+				<div class="flex">
+					<n-input-group>
+						<n-input
+							size="large"
+							clearable
+							v-model:value="searchKeyword"
+							ref="searchKeyWordInput"
+							placeholder="搜索功能名称"
+							class="w-4/5" />
+						<n-button
+							size="large"
+							type="primary"
+							@click="
+								() => {
+									searchKeyWordInput?.blur();
+								}
+							">
+							<template #icon>
+								<n-icon>
+									<MagnifyingGlassIcon />
+								</n-icon>
+							</template>
+							<span class="hidden sm:inline-block">搜索</span>
+						</n-button>
+						<n-button
+							size="large"
+							bordered
+							@click="
+								() => {
+									searchKeyword = '';
+								}
+							">
+							<template #icon>
+								<n-icon>
+									<XCircleIcon />
+								</n-icon>
+							</template>
+							<span class="hidden sm:inline-block">清空</span>
+						</n-button>
+					</n-input-group>
+				</div>
+			</n-card>
+
 			<div
 				:class="`mt-3 border-t ${deviceStore.isDarkMode ? 'divide-sothx-gray-color border-sothx-gray-color' : 'divide-gray-200 border-gray-200'}`">
 				<dl :class="`divide-y ${deviceStore.isDarkMode ? 'divide-sothx-gray-color' : 'divide-gray-200'}`">
-					<div v-if="deviceStore.moduleInfo?.id" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-						<dt
-							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
-							模块ID
-						</dt>
-						<dd
-							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							{{ deviceStore.moduleInfo.id || '获取失败' }}
-						</dd>
-					</div>
-					<div v-if="deviceStore.moduleInfo?.dir" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-						<dt
-							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
-							模块路径
-						</dt>
-						<dd
-							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							{{ deviceStore.moduleInfo.dir || '获取失败' }}
-						</dd>
-					</div>
 					<div
-						v-if="deviceStore.moduleInfo?.version"
+						v-for="(settingItem, index) in filteredSettingList"
+						:key="index"
 						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
-							模块版本名
+							{{ settingItem.title }}
+							<RenderJsx
+								v-if="settingItem.titleSlot"
+								:content="settingItem.titleSlot && settingItem.titleSlot()" />
 						</dt>
 						<dd
 							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							{{ deviceStore.moduleInfo.version || '获取失败' }}
-						</dd>
-					</div>
-					<div
-						v-if="deviceStore.moduleInfo?.versionCode"
-						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-						<dt
-							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
-							模块版本号
-						</dt>
-						<dd
-							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							{{ deviceStore.moduleInfo.versionCode || '获取失败' }}
-						</dd>
-					</div>
-					<div
-						v-if="['tablet', 'fold'].includes(deviceStore.deviceType)"
-						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-						<dt
-							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
-							模块工作模式
-						</dt>
-						<dd
-							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							<n-switch
-								@update:value="(value: boolean) => changePatchMode(value)"
-								:rail-style="railStyle"
-								:value="embeddedStore.isPatchMode"
-								:loading="switchPatchModeLoading"
-								:disabled="deviceStore.androidTargetSdk && deviceStore.androidTargetSdk < 32">
-								<template #checked>定制模式</template>
-								<template #unchecked>完整模式</template>
-							</n-switch>
-							<n-alert
-								v-if="embeddedStore.isPatchMode"
-								class="mt-5"
-								type="warning"
-								:show-icon="false"
-								:bordered="false">
-								<p
-									>「定制模式」还额外提供了仅根据当前「已安装应用列表」修剪「模块应用适配列表」的功能，您可以通过启用「深度定制模式」来开启该功能，但启用后模块不再提供「高频应用适配列表」作为兜底，可以进一步优化老机型由于系统优化不佳而导致的卡顿、掉帧等问题，但后续每次更新模块或者安装新的应用后，均需要在前往「应用横屏布局」界面重新「生成定制应用数据」。</p
-								>
-								<n-switch
-									class="mt-5"
-									@update:value="(value: boolean) => changeDeepPatchMode(value)"
-									:rail-style="railStyle"
-									:value="embeddedStore.isDeepPatchMode"
-									:loading="switchPatchModeLoading"
-									:disabled="deviceStore.androidTargetSdk && deviceStore.androidTargetSdk < 32">
-									<template #checked>已启用深度定制模式</template>
-									<template #unchecked>未启用深度定制模式</template>
-								</n-switch>
-							</n-alert>
-						</dd>
-					</div>
-					<div
-						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0"
-						v-if="
-							deviceStore.MIOSVersion &&
-							deviceStore.MIOSVersion >= 2 &&
-							deviceStore.androidTargetSdk >= 35 &&
-							['tablet', 'fold'].includes(deviceStore.deviceType)
-						">
-						<dt
-							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
-							模块使用须知
-						</dt>
-						<dd
-							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							<n-switch
-								@update:value="(value: boolean) => OS2InstallModuleTipsHook.change(value)"
-								:rail-style="railStyle"
-								:value="deviceStore.isDisabledOS2InstallModuleTips"
-								:disabled="deviceStore.androidTargetSdk && deviceStore.androidTargetSdk < 35">
-								<template #checked>禁用模块使用须知</template>
-								<template #unchecked>开启模块使用须知</template>
-							</n-switch>
-						</dd>
-					</div>
-					<div
-						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0"
-						v-if="
-							deviceStore.MIOSVersion &&
-							deviceStore.MIOSVersion >= 2 &&
-							deviceStore.androidTargetSdk >= 35 &&
-							['tablet'].includes(deviceStore.deviceType)
-						">
-						<dt
-							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
-							系统应用横屏优化
-						</dt>
-						<dd
-							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							<n-switch
-								@update:value="(value: boolean) => disabledOS2SystemAppOptimizeHook.change(value)"
-								:rail-style="railStyle"
-								:value="deviceStore.isDisabledOS2SystemAppOptimize"
-								:loading="deviceStore.loading">
-								<template #checked>已禁用系统应用横屏优化</template>
-								<template #unchecked>已启用系统应用横屏优化</template>
-							</n-switch>
-							<n-alert class="mt-5" type="warning" :show-icon="false" :bordered="false">
-								<p
-									>由于小米「应用横屏布局」BUG，Hyper OS 2
-									下部分系统应用可无法完全横屏工作，模块可以修复这个问题，但每次设备重启或修改模块规则，这些系统应用都将被强制重启，该功能默认启用，如「启用」将代表已接纳并知晓此副作用影响。
-								</p>
-								<p>受此影响的系统应用：</p>
-								<p>超级小爱(com.miui.voiceassist)</p>
-								<p>小米浏览器(com.android.browser)</p>
-								<p>平板/手机管家(com.miui.securitycenter)</p>
-							</n-alert>
-						</dd>
-					</div>
-					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-						<dt
-							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`"
-							v-if="deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 1"
-							>智能IO调度</dt
-						>
-						<dd
-							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							<n-tag v-if="deviceStore.smartFocusIO === 'on'" type="success">已启用智能IO调度</n-tag>
-							<n-tag v-else type="info">已启用系统默认调度</n-tag>
-							<n-alert
-								class="mt-5"
-								v-if="
-									deviceStore.deviceInfo.socModel === 'SM8475' &&
-									deviceStore.androidTargetSdk &&
-									deviceStore.androidTargetSdk >= 34 &&
-									deviceStore.smartFocusIO !== 'on' &&
-									['tablet', 'fold'].includes(deviceStore.deviceType)
-								"
-								type="warning"
-								:show-icon="false"
-								:bordered="false">
-								<p
-									>您当前未启用「智能IO调度」，由于小米「磁盘IO调度」BUG，骁龙8+Gen1机型存在IO调度异常的问题，容易导致系统卡顿或者无响应，您可以通过安装「小米平板系统功能补全模块」来启用「智能IO调度」，提升系统IO性能体验。</p
-								>
-								<n-button
-									class="mt-2"
-									strong
-									size="small"
-									secondary
-									type="warning"
-									@click="
-										() =>
-											getAppDownload(
-												'小米平板系统功能补全模块',
-												'https://caiyun.139.com/m/i?135CmUuWuqGsk',
-												'magisk',
-											)
-									"
-									>获取小米平板系统功能补全模块</n-button
-								>
-							</n-alert>
-							<n-alert
-								class="mt-5"
-								v-if="
-									deviceStore.deviceInfo.socModel === 'SM8475' &&
-									deviceStore.androidTargetSdk &&
-									deviceStore.androidTargetSdk >= 34 &&
-									deviceStore.smartFocusIO !== 'on' &&
-									['phone'].includes(deviceStore.deviceType)
-								"
-								type="warning"
-								:show-icon="false"
-								:bordered="false">
-								<p
-									>您当前未启用「智能IO调度」，由于小米「磁盘IO调度」BUG，骁龙8+Gen1机型存在IO调度异常的问题，容易导致系统卡顿或者无响应，您可以通过安装「小米手机系统功能补全模块」来启用「智能IO调度」，提升系统IO性能体验。</p
-								>
-								<n-button
-									class="mt-2"
-									strong
-									size="small"
-									secondary
-									type="warning"
-									@click="
-										() =>
-											getAppDownload(
-												'小米手机系统功能补全模块',
-												'https://caiyun.139.com/m/i?135CmOdNLkQeu',
-												'magisk',
-											)
-									"
-									>获取小米平板系统功能补全模块</n-button
-								>
-							</n-alert>
-						</dd>
-					</div>
-					<div
-						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0"
-						v-if="
-							deviceStore.MIOSVersion &&
-							deviceStore.MIOSVersion >= 2 &&
-							deviceStore.androidTargetSdk >= 35 &&
-							ZRAMWritebackHook.isInit.value &&
-							['tablet', 'fold'].includes(deviceStore.deviceType)
-						">
-						<dt
-							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`"
-							>ZRAM Writeback</dt
-						>
-						<dd
-							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							<div
-								class="mb-3"
-								v-if="
-									deviceStore.MIOSVersion &&
-									deviceStore.MIOSVersion >= 2 &&
-									deviceStore.androidTargetSdk >= 35
-								"
-								><n-tag
-									>dm设备映射器: {{ ZRAMWritebackHook.miuiExtmDmOptEnable.value ? '启用' : '未启用' }}
-								</n-tag></div
-							>
-							<div class="mb-3"
-								><n-tag type="error">回写块: {{ ZRAMWritebackHook.backingDev.value }} </n-tag></div
-							>
-							<div class="mb-3"
-								><n-tag type="success"
-									>已回写: {{ ZRAMWritebackHook.hasWriteBack.value }} MB</n-tag
-								></div
-							>
-							<div class="mb-3"
-								><n-tag type="info">总读取: {{ ZRAMWritebackHook.totalRead.value }} MB</n-tag></div
-							>
-							<div
-								><n-tag type="warning"
-									>总回写: {{ ZRAMWritebackHook.totalWriteBack.value }} MB</n-tag
-								></div
-							>
-							<n-alert class="mt-5" type="warning" :show-icon="false" :bordered="false">
-								<p
-									>通常用于将设备上的冷数据压缩并迁移到磁盘上，是基于「内存扩展」的回写块，该功能依赖「内存扩展」，请确保已经开启「内存扩展」，总回写可以大于「内存扩展」，初始状态下显示
-									0 MB是正常现象，请持续使用一段时间再观察是否有变化</p
-								>
-							</n-alert>
-						</dd>
-					</div>
-					<div v-if="deviceStore.deviceName" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-						<dt
-							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
-							设备名称
-						</dt>
-						<dd
-							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							{{ deviceStore.deviceName || '' }}
-						</dd>
-					</div>
-					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-						<dt
-							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
-							ROOT管理器
-						</dt>
-						<dd
-							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							{{ deviceStore.currentRootManager || '获取失败' }}
-						</dd>
-					</div>
-					<div
-						v-if="deviceStore.currentRootManager === 'KernelSU'"
-						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-						<dt
-							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
-							KernelSU 版本
-						</dt>
-						<dd
-							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							{{ deviceStore.rootManagerInfo.KSU_VER || '获取失败' }}
-						</dd>
-					</div>
-					<div
-						v-if="deviceStore.currentRootManager === 'KernelSU'"
-						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-						<dt
-							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
-							KernelSU 用户空间版本号
-						</dt>
-						<dd
-							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							{{ deviceStore.rootManagerInfo.KSU_VER_CODE || '获取失败' }}
-						</dd>
-					</div>
-					<div
-						v-if="deviceStore.currentRootManager === 'KernelSU'"
-						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-						<dt
-							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
-							KernelSU 内核空间版本号
-						</dt>
-						<dd
-							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							{{ deviceStore.rootManagerInfo.KSU_KERNEL_VER_CODE || '获取失败' }}
-						</dd>
-					</div>
-					<div
-						v-if="deviceStore.currentRootManager === 'APatch'"
-						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-						<dt
-							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
-							APatch 版本名
-						</dt>
-						<dd
-							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							{{ deviceStore.rootManagerInfo.APATCH_VER || '获取失败' }}
-						</dd>
-					</div>
-					<div
-						v-if="deviceStore.currentRootManager === 'APatch'"
-						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-						<dt
-							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
-							APatch 版本号
-						</dt>
-						<dd
-							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							{{ deviceStore.rootManagerInfo.APATCH_VER_CODE || '获取失败' }}
-						</dd>
-					</div>
-					<div
-						v-if="deviceStore.currentRootManager === 'Magisk'"
-						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-						<dt
-							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
-							Magisk 版本
-						</dt>
-						<dd
-							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							{{ deviceStore.rootManagerInfo.MAGISK_VER || '获取失败' }}
-						</dd>
-					</div>
-					<div
-						v-if="deviceStore.currentRootManager === 'Magisk'"
-						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-						<dt
-							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
-							Magisk 版本号
-						</dt>
-						<dd
-							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							{{ deviceStore.rootManagerInfo.MAGISK_VER_CODE || '获取失败' }}
-						</dd>
-					</div>
-					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-						<dt
-							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
-							外观模式
-						</dt>
-						<dd
-							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							<n-dropdown
-								size="large"
-								trigger="click"
-								:options="rhythmModeOptions"
-								@select="handleSelectRhythmMode">
-								<n-button
-									size="small"
-									strong
-									secondary
-									:type="deviceStore.rhythmMode === 'autoRhythm' ? 'error' : 'success'"
-									>{{
-										(deviceStore.rhythmMode === 'autoRhythm' && '跟随系统') ||
-										(deviceStore.rhythmMode === 'lightMode' && '浅色模式') ||
-										(deviceStore.rhythmMode === 'dartMode' && '深色模式')
-									}}</n-button
-								>
-							</n-dropdown>
-						</dd>
-					</div>
-					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-						<dt
-							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
-							应用字体
-						</dt>
-						<dd
-							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							<n-dropdown
-								size="large"
-								trigger="click"
-								:options="fontModeOptions"
-								@select="handleSelectFontMode">
-								<n-button
-									size="small"
-									strong
-									secondary
-									:type="fontModeMap[fontStore.currentFont].type"
-									>{{ fontStore.currentFont }}</n-button
-								>
-							</n-dropdown>
-						</dd>
-					</div>
-					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-						<dt
-							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
-							激活口令
-						</dt>
-						<dd
-							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							<n-button
-								size="small"
-								type="warning"
-								secondary
-								:loading="deviceStore.loading || activateABTestLoading"
-								@click="handleActivateABTest()">
-								<template #icon>
-									<n-icon>
-										<ArrowDownCircleIcon />
-									</n-icon>
-								</template>
-								导入激活口令
-							</n-button>
-						</dd>
-					</div>
-					<div
-						v-if="
-							['tablet'].includes(deviceStore.deviceType) &&
-							deviceStore.androidTargetSdk &&
-							deviceStore.androidTargetSdk > 32
-						"
-						id="gameModeSettings"
-						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-						<dt
-							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
-							游戏显示布局
-						</dt>
-						<dd
-							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							<n-switch
-								@update:value="(value: boolean) => gameModeHook.changeGameMode(value)"
-								:value="gameModeHook.isSupportGameMode"
-								:rail-style="railStyle"
-								:disabled="
-									deviceStore.deviceType !== 'tablet' ||
-									(deviceStore.androidTargetSdk && deviceStore.androidTargetSdk < 32)
-								">
-								<template #checked>已开启游戏显示布局</template>
-								<template #unchecked>
-									{{
-										deviceStore.androidTargetSdk && deviceStore.androidTargetSdk < 32
-											? '不支持游戏显示布局'
-											: '未开启游戏显示布局'
-									}}
-								</template>
-							</n-switch>
-						</dd>
-					</div>
-					<div
-						v-if="
-							deviceStore.deviceType === 'tablet' &&
-							deviceStore.MIOSVersion &&
-							deviceStore.MIOSVersion >= 2
-						"
-						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-						<dt
-							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
-							手势提示线（小白条）
-						</dt>
-						<dd
-							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							<n-skeleton
-								v-if="!hideGestureLineHook.isInit.value"
-								:width="137"
-								:sharp="false"
-								:round="true"
-								size="small" />
-							<n-switch
-								v-else
-								@update:value="(value: boolean) => hideGestureLineHook.changeIsHideGestureLine(value)"
-								:rail-style="railStyle"
-								:value="hideGestureLineHook.currentIsHideGestureLine.value === 1 ? true : false">
-								<template #checked>隐藏手势提示线</template>
-								<template #unchecked>显示手势提示线</template>
-							</n-switch>
-						</dd>
-					</div>
-					<div v-if="deviceStore.MIOSVersion" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-						<dt
-							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
-							Xiaomi Hyper OS 版本号
-						</dt>
-						<dd
-							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							{{
-								deviceStore.MIOSVersion
-									? `Xiaomi
-							Hyper OS ${deviceStore.MIOSVersion}`
-									: '当前为MIUI'
-							}}
-						</dd>
-					</div>
-					<div v-if="deviceStore.systemVersion" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-						<dt
-							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
-							系统版本
-						</dt>
-						<dd
-							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							{{ deviceStore.systemVersion || '' }}
-						</dd>
-					</div>
-					<div v-if="deviceStore.systemPreVersion" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-						<dt
-							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
-							上次更新的系统版本
-						</dt>
-						<dd
-							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							{{ deviceStore.systemPreVersion || '' }}
-						</dd>
-					</div>
-					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-						<dt
-							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
-							Android Target Version
-						</dt>
-						<dd
-							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							{{ deviceStore.androidTargetSdk || '非Android设备环境' }}
-						</dd>
-					</div>
-					<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-						<dt
-							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
-							设备类型
-						</dt>
-						<dd
-							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							{{
-								deviceStore.deviceType === 'tablet'
-									? '平板(Pad)'
-									: deviceStore.deviceType === 'fold'
-										? '折叠屏(Fold)'
-										: '手机(Phone)'
-							}}
-						</dd>
-					</div>
-					<div
-						v-if="deviceStore.deviceInfo.socModel"
-						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-						<dt
-							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
-							设备Soc类型
-						</dt>
-						<dd
-							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							{{ deviceStore.deviceInfo.socModel || '获取失败' }}
-						</dd>
-					</div>
-					<div
-						v-if="deviceStore.deviceInfo.socName"
-						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-						<dt
-							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
-							设备Soc名称
-						</dt>
-						<dd
-							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							{{ deviceStore.deviceInfo.socName || '获取失败' }}
-						</dd>
-					</div>
-					<div
-						v-if="deviceStore.deviceInfo.display0Panel"
-						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-						<dt
-							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
-							设备显示器信息(display0)
-						</dt>
-						<dd
-							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							<!-- {{ 'mdss_dsi_m81_42_02_0b_dualdsi_dsc_lcd_video' || '获取失败' }} -->
-							<p>{{ deviceStore.deviceInfo.display0Panel }}</p>
-						</dd>
-					</div>
-					<div
-						v-if="deviceStore.deviceInfo.memoryInfo && ['tablet', 'fold'].includes(deviceStore.deviceType)"
-						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-						<dt
-							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
-							设备DDR和UFS信息
-						</dt>
-						<dd
-							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							<div class="whitespace-pre">{{ deviceStore.deviceInfo.memoryInfo || '获取失败' }}</div>
-						</dd>
-					</div>
-					<div
-						v-if="deviceStore.DDRVendor && ['tablet', 'fold'].includes(deviceStore.deviceType)"
-						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-						<dt
-							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
-							设备DDR生产厂商
-						</dt>
-						<dd
-							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							<div class="whitespace-pre">{{ deviceStore.DDRVendor }}</div>
-						</dd>
-					</div>
-					<div
-						v-if="useUFSHealthHook.isShow.value && ['tablet', 'fold'].includes(deviceStore.deviceType)"
-						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-						<dt
-							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
-							UFS 存储健康
-						</dt>
-						<dd
-							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							<div class="mb-3">
-								<div v-if="useUFSHealthHook.correctedPreEOLStatus.value" class="mb-3"
-									><n-tag type="info"
-										>寿命阶段: {{ useUFSHealthHook.correctedPreEOLStatus.value }}</n-tag
-									></div
-								>
-								<div v-if="useUFSHealthHook.deviceLifeTimeEstA.value" class="mb-3"
-									><n-tag type="success"
-										>用户数据区(已磨损): {{ useUFSHealthHook.deviceLifeTimeEstA.value }}</n-tag
-									></div
-								>
-								<div v-if="useUFSHealthHook.deviceLifeTimeEstB.value" class="mb-3"
-									><n-tag type="warning"
-										>高速缓存区(已磨损): {{ useUFSHealthHook.deviceLifeTimeEstB.value }}</n-tag
-									></div
-								>
-							</div>
-							<n-alert class="mt-5" type="info" :show-icon="false" :bordered="false">
-								<p
-									>数据仅供参考，通常仅代表当前 UFS 存储设备循环擦写次数与预期设计寿命的比值，不代表
-									UFS 存储设备的实际磨损状况，但仍然建议当前 UFS
-									存储设备接近预期设计寿命时选择更换存储设备。</p
-								>
-							</n-alert>
-						</dd>
-					</div>
-					<div
-						v-if="
-							realQuantityHook.qcomBatteryFg1RSocInfo.current &&
-							['tablet', 'fold'].includes(deviceStore.deviceType)
-						"
-						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-						<dt
-							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
-							真实电量（高通）
-						</dt>
-						<dd
-							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							<p
-								>{{ `${realQuantityHook.qcomBatteryFg1RSocInfo.current} %` }}
-								<n-button
-									class="ml-1"
-									strong
-									secondary
-									size="small"
-									type="success"
-									@click="realQuantityHook.qcomBatteryFg1RSocInfo.reload()"
-									>手动刷新</n-button
-								>
-								<n-switch
-									class="ml-2"
-									v-model:value="realQuantityHook.qcomBatteryFg1RSocInfo.autoReload"
-									:rail-style="railStyle">
-									<template #checked>开启自动刷新</template>
-									<template #unchecked>未开启自动刷新</template>
-								</n-switch>
-							</p>
-							<div v-if="realQuantityHook.qcomBatteryFg1RSocInfo.autoReload">
-								<p class="my-2"> 隔多少秒刷新一次 </p>
-								<p>
-									<n-slider
-										v-model:value="realQuantityHook.qcomBatteryFg1RSocInfo.timer"
-										size="small"
-										:min="1"
-										:max="30"
-										:step="1" />
-									<n-input-number
-										:show-button="false"
-										class="pt-3"
-										readonly
-										placeholder="请输入刷新频率间隔时间"
-										v-model:value="realQuantityHook.qcomBatteryFg1RSocInfo.timer"
-										:min="0"
-										:max="30"
-										:step="1" />
-								</p>
-							</div>
-						</dd>
-					</div>
-					<div
-						v-if="
-							realQuantityHook.capacityRawInfo.current &&
-							['tablet', 'fold'].includes(deviceStore.deviceType)
-						"
-						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-						<dt
-							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
-							真实电量
-						</dt>
-						<dd
-							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							<p
-								>{{ `${realQuantityHook.capacityRawInfo.current / 100} %` }}
-								<n-button
-									class="ml-1"
-									strong
-									secondary
-									size="small"
-									type="success"
-									@click="realQuantityHook.capacityRawInfo.reload()"
-									>手动刷新</n-button
-								>
-								<n-switch
-									class="ml-2"
-									v-model:value="realQuantityHook.capacityRawInfo.autoReload"
-									:rail-style="railStyle">
-									<template #checked>开启自动刷新</template>
-									<template #unchecked>未开启自动刷新</template>
-								</n-switch>
-							</p>
-							<div v-if="realQuantityHook.capacityRawInfo.autoReload">
-								<p class="my-2"> 隔多少秒刷新一次 </p>
-								<p>
-									<n-slider
-										v-model:value="realQuantityHook.capacityRawInfo.timer"
-										size="small"
-										:min="1"
-										:max="30"
-										:step="1" />
-									<n-input-number
-										:show-button="false"
-										class="pt-3"
-										readonly
-										placeholder="请输入刷新频率间隔时间"
-										v-model:value="realQuantityHook.capacityRawInfo.timer"
-										:min="0"
-										:max="30"
-										:step="1" />
-								</p>
-							</div>
-						</dd>
-					</div>
-					<div
-						v-if="
-							deviceStore.batteryInfo.chargeFullDesign &&
-							['tablet', 'fold'].includes(deviceStore.deviceType)
-						"
-						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-						<dt
-							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
-							电池出厂设计容量
-						</dt>
-						<dd
-							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							<p>{{ `${deviceStore.batteryInfo.chargeFullDesign / 1000} mAh` }}</p>
-						</dd>
-					</div>
-					<div
-						v-if="deviceStore.batteryInfo.chargeFull && ['tablet', 'fold'].includes(deviceStore.deviceType)"
-						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-						<dt
-							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
-							电池当前预估容量
-						</dt>
-						<dd
-							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							<p>{{ `${deviceStore.batteryInfo.chargeFull / 1000} mAh` }}</p>
-						</dd>
-					</div>
-					<div
-						v-if="deviceStore.batteryInfo.cycleCount && ['tablet', 'fold'].includes(deviceStore.deviceType)"
-						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-						<dt
-							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
-							电池循环充电次数
-						</dt>
-						<dd
-							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							<p>{{ `${deviceStore.batteryInfo.cycleCount} 次` }}</p>
-						</dd>
-					</div>
-					<div
-						v-if="
-							deviceStore.batteryInfo.chargeFullDesign &&
-							deviceStore.batteryInfo.chargeFull &&
-							['tablet', 'fold'].includes(deviceStore.deviceType)
-						"
-						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-						<dt
-							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
-							电池预估健康度
-						</dt>
-						<dd
-							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							<p>{{
-								`${(
-									(deviceStore.batteryInfo.chargeFull / deviceStore.batteryInfo.chargeFullDesign) *
-									100
-								).toFixed(2)} %`
-							}}</p>
-						</dd>
-					</div>
-					<div
-						v-if="deviceStore.batteryInfo.sohQcom && ['tablet', 'fold'].includes(deviceStore.deviceType)"
-						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-						<dt
-							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
-							电池售后健康度（高通）
-						</dt>
-						<dd
-							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							<p>{{ `${deviceStore.batteryInfo.sohQcom} %` }}</p>
-							<p>{{
-								`≈ ${Math.round(
-									(deviceStore.batteryInfo.chargeFullDesign *
-										(deviceStore.batteryInfo.sohQcom / 100)) /
-										1000,
-								)} mAh`
-							}}</p>
-							<n-alert class="mt-5" type="info" :show-icon="false" :bordered="false">
-								<p>在设备保修期内健康度低于80%可以申请电池质保</p>
-							</n-alert>
-						</dd>
-					</div>
-					<div
-						v-if="deviceStore.batteryInfo.sohMTK && ['tablet', 'fold'].includes(deviceStore.deviceType)"
-						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-						<dt
-							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
-							电池售后健康度
-						</dt>
-						<dd
-							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							<p>{{ `${deviceStore.batteryInfo.sohMTK} %` }}</p>
-							<p>{{
-								`≈ ${Math.round(
-									(deviceStore.batteryInfo.chargeFullDesign *
-										(deviceStore.batteryInfo.sohMTK / 100)) /
-										1000,
-								)}
-								mAh`
-							}}</p>
-							<n-alert class="mt-5" type="info" :show-icon="false" :bordered="false">
-								<p>在设备保修期内健康度低于80%可以申请电池质保</p>
-							</n-alert>
-						</dd>
-					</div>
-					<div
-						v-if="deviceStore.batteryInfo.sohXMPower && ['tablet', 'fold'].includes(deviceStore.deviceType)"
-						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-						<dt
-							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
-							电池售后健康度（小米）
-						</dt>
-						<dd
-							:class="`mt-1 text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-700'} sm:col-span-2 sm:mt-0`">
-							<p>{{ `${deviceStore.batteryInfo.sohXMPower} %` }}</p>
-							<p>{{
-								`≈ ${Math.round(
-									(deviceStore.batteryInfo.chargeFullDesign *
-										(deviceStore.batteryInfo.sohXMPower / 100)) /
-										1000,
-								)} mAh`
-							}}</p>
-							<n-alert class="mt-5" type="info" :show-icon="false" :bordered="false">
-								<p>在设备保修期内健康度低于80%可以申请电池质保</p>
-							</n-alert>
+							<RenderJsx
+								v-if="settingItem.content"
+								:content="settingItem.content && settingItem.content()" />
 						</dd>
 					</div>
 				</dl>

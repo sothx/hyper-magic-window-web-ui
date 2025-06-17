@@ -2,7 +2,6 @@ import { ref, computed } from 'vue';
 import { defineStore } from 'pinia';
 
 export type fontType = 'MiSans' | 'OPPO Sans' | 'HarmonyOS Sans';
-
 export const useFontStore = defineStore(
 	'font',
 	() => {
