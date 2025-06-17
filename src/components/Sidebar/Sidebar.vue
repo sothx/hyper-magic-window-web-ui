@@ -186,7 +186,6 @@ onBeforeUnmount(() => {
 																sidebarOpen = false;
 																item.click && item.click();
 																deviceStore.lastVisitedPath = item.routeName;
-																console.log(deviceStore.lastVisitedPath,'deviceStore.lastVisitedPath')
 															}
 														"
 														:class="[
