@@ -530,7 +530,6 @@ function createColumns(): DataTableColumns<GameBoosterTableItem> {
 					v-model:value="gameBoosterStore.searchKeyWord"
 					ref="searchKeyWordInput"
 					placeholder="搜索游戏名称/游戏包名"
-					autosize
 					:style="{ width: '80%' }" />
 				<n-button
 					size="large"
@@ -545,7 +544,7 @@ function createColumns(): DataTableColumns<GameBoosterTableItem> {
 							<MagnifyingGlassIcon />
 						</n-icon>
 					</template>
-					搜索
+					<span class="hidden sm:inline-block">搜索</span>
 				</n-button>
 				<n-button
 					size="large"
@@ -560,7 +559,7 @@ function createColumns(): DataTableColumns<GameBoosterTableItem> {
 							<XCircleIcon />
 						</n-icon>
 					</template>
-					清空
+					<span class="hidden sm:inline-block">清空</span>
 				</n-button>
 			</n-input-group>
 		</n-card>

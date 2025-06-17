@@ -828,8 +828,7 @@ const filteredAppList = computed(() => {
 							v-model:value="searchKeyword"
 							ref="searchKeyWordInput"
 							placeholder="搜索应用名称"
-							autosize
-							:style="{ width: '80%' }" />
+							class="w-4/5" />
 						<n-button
 							size="large"
 							type="primary"
@@ -843,7 +842,7 @@ const filteredAppList = computed(() => {
 									<MagnifyingGlassIcon />
 								</n-icon>
 							</template>
-							搜索
+							<span class="hidden sm:inline-block">搜索</span>
 						</n-button>
 						<n-button
 							size="large"
@@ -858,7 +857,7 @@ const filteredAppList = computed(() => {
 									<XCircleIcon />
 								</n-icon>
 							</template>
-							清空
+							<span class="hidden sm:inline-block">清空</span>
 						</n-button>
 					</n-input-group>
 				</div>

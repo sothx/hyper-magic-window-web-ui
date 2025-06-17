@@ -1095,7 +1095,6 @@ function createColumns(): DataTableColumns<DotBlackListMergeItem> {
 					v-model:value="dotBlackListStore.searchKeyWord"
 					ref="searchKeyWordInput"
 					placeholder="搜索应用名称/应用包名"
-					autosize
 					:style="{ width: '80%' }" />
 				<n-button
 					size="large"
@@ -1110,7 +1109,7 @@ function createColumns(): DataTableColumns<DotBlackListMergeItem> {
 							<MagnifyingGlassIcon />
 						</n-icon>
 					</template>
-					搜索
+					<span class="hidden sm:inline-block">搜索</span>
 				</n-button>
 				<n-button
 					size="large"
@@ -1125,7 +1124,7 @@ function createColumns(): DataTableColumns<DotBlackListMergeItem> {
 							<XCircleIcon />
 						</n-icon>
 					</template>
-					清空
+					<span class="hidden sm:inline-block">搜索</span>
 				</n-button>
 			</n-input-group>
 		</n-card>
