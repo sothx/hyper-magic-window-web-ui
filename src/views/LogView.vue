@@ -83,13 +83,13 @@ const saveLogs = () => {
 };
 
 onMounted(() => {
-	watchEffect(() => {
+	setTimeout(() => {
 		if (logsStore.content) {
 			setTimeout(() => {
 				logInstRef.value?.scrollTo({ position: 'bottom', silent: true });
 			},0);
 		}
-	});
+	},0);
 });
 </script>
 <template>

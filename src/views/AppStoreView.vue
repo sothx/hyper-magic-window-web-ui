@@ -44,9 +44,9 @@ const getAppDownload = async (title: string, url: string, type: 'system' | 'revi
 	});
 };
 
-interface AppInfo {
+export interface AppInfo {
 	title: string;
-	description: JSX.Element;
+	description: () => JSX.Element;
 	url: string;
 	versionNum: number;
 	type: 'info' | 'error' | 'warning' | 'success' | 'default';
@@ -58,9 +58,9 @@ interface AppInfo {
 const appList: AppInfo[] = [
 	{
 		title: '小米互联互通服务',
-		description: (
+		description: () => (
 			<div>
-				<p>`手机安装后，支持任意应用流转到小米平板！</p>
+				<p>手机安装后，支持任意应用流转到小米平板！</p>
 				<p>兼容性: Hyper OS 2 / Hyper OS 1</p>
 				<p>需要核心破解并搭配MT管理器安装！</p>
 			</div>
@@ -74,7 +74,7 @@ const appList: AppInfo[] = [
 	{
 		title: '超级小爱',
 		versionNum: 20250617,
-		description: (
+		description: () => (
 			<div>
 				<p>超级小爱，全生态 AI 智能助手！超级小爱已经全面公测，安装后即可体验超级小爱！</p>
 				<p>兼容性: Hyper OS 2 / Hyper OS 1 / MIUI14</p>
@@ -92,7 +92,7 @@ const appList: AppInfo[] = [
 	{
 		title: '小米主题壁纸 - 萌宠系列动态壁纸',
 		versionNum: 20250617,
-		description: (
+		description: () => (
 			<div>
 				<p>小米主题 2025 年 新春上新啦~</p>
 				<p>全新萌宠系列动态壁纸，让你萌动整个新春~</p>
@@ -105,10 +105,65 @@ const appList: AppInfo[] = [
 		tag: 'original',
 	},
 	{
+		title: 'WPS Office For PC',
+		isShow: () => deviceStore.deviceType === 'tablet',
+		versionNum: 20250617,
+		description: () => (
+			<div>
+				<p>
+					小米平板上的WPS Office For PC，PC级 WPS 功能体验，操作更高效
+				</p>
+				<p>新版WPS Office For PC支持显示图片缩略图、支持灵犀AI、支持云端字体，建议升级！！！</p>
+				<p>兼容性: MIUI14 / Hyper OS 1 / Hyper OS 2（需要支持PC框架的小米平板系统或者移植包版本）</p>
+				<p>内含对应的镜像文件，可以用于其他linux系统安装食用（需要一定的linux基础，不会折腾的酷友可以无视附带的镜像文件）</p>
+			</div>
+		),
+		url: 'https://caiyun.139.com/w/i/2nQQUpPGxku5m',
+		type: 'info',
+		image: '/images/apps/wpsoffice.png',
+		tag: 'system',
+	},
+	{
+		title: 'CAJViewer For PC',
+		isShow: () => deviceStore.deviceType === 'tablet',
+		versionNum: 20250617,
+		description: () => (
+			<div>
+				<p>
+					小米平板上的CAJViewer For PC，PC级 CAJViewer 功能体验，操作更高效
+				</p>
+				<p>兼容性: Hyper OS 1 / Hyper OS 2（需要支持PC框架的小米平板系统或者移植包版本）</p>
+				<p>内含对应的镜像文件，可以用于其他linux系统安装食用（需要一定的linux基础，不会折腾的酷友可以无视附带的镜像文件）</p>
+			</div>
+		),
+		url: 'https://caiyun.139.com/w/i/2nQQToKd9YKkq',
+		type: 'error',
+		image: '/images/apps/cajviewer.png',
+		tag: 'system',
+	},
+		{
+		title: '中望CAD For PC',
+		isShow: () => deviceStore.deviceType === 'tablet',
+		versionNum: 20250617,
+		description: () => (
+			<div>
+				<p>
+					小米平板上的中望CAD For PC，PC级 中望CAD 功能体验，操作更高效
+				</p>
+				<p>兼容性: Hyper OS 2（需要支持PC框架的小米平板系统或者移植包版本，如打开闪退则不支持）</p>
+				<p>内含对应的镜像文件，可以用于其他linux系统安装食用（需要一定的linux基础，不会折腾的酷友可以无视附带的镜像文件）</p>
+			</div>
+		),
+		url: 'https://caiyun.139.com/w/i/2nQQUpPGxki7a',
+		type: 'info',
+		image: '/images/apps/zwcad.png',
+		tag: 'system',
+	},
+	{
 		title: '系统应用补全模块 - 传送门/悬浮球',
 		isShow: () => deviceStore.deviceType === 'tablet',
 		versionNum: 20250617,
-		description: (
+		description: () => (
 			<div>
 				<p>
 					传送门是小米的一个系统应用，可以方便地识别屏幕上的文字和图片，触发系统的分词、识图、搜索、复制、翻译等能力。
@@ -121,7 +176,7 @@ const appList: AppInfo[] = [
 				</p>
 			</div>
 		),
-		url: 'https://caiyun.139.com/m/i?135CmTzk7BYsS',
+		url: 'https://caiyun.139.com/w/i/2nQQTDLkiU9bm',
 		type: 'info',
 		image: '/images/icons/miui_content_extension_app.webp',
 		tag: 'magisk',
@@ -130,7 +185,7 @@ const appList: AppInfo[] = [
 		title: '系统功能补全模块',
 		isShow: () => ['tablet', 'fold'].includes(deviceStore.deviceType),
 		versionNum: 20250617,
-		description: (
+		description: () => (
 			<div>
 				<p>支持对小米平板/小米折叠屏设备进行以下功能的补全:</p>
 				<ul>
@@ -172,7 +227,7 @@ const appList: AppInfo[] = [
 		title: '小米手机系统功能补全模块',
 		isShow: () => deviceStore.deviceType === 'phone',
 		versionNum: 20250617,
-		description: (
+		description: () => (
 			<div>
 				<p>支持对小米/红米手机设备进行以下功能的补全:</p>
 				<ul>
@@ -208,7 +263,7 @@ const appList: AppInfo[] = [
 		title: '小米平板系统桌面 - Hyper OS 1',
 		isShow: () => deviceStore.MIOSVersion === 1 && deviceStore.deviceType === 'tablet',
 		versionNum: 20250617,
-		description: (
+		description: () => (
 			<div>
 				<p>小米 Hyper OS 系统桌面！该版本提取自小米平板6S Pro，包含新的打断动画和部分动画效果改变！</p>
 				<p>兼容性: Hyper OS 1</p>
@@ -224,7 +279,7 @@ const appList: AppInfo[] = [
 		title: '小米平板系统桌面',
 		isShow: () => deviceStore.MIOSVersion === 2 && deviceStore.deviceType === 'tablet',
 		versionNum: 20250617,
-		description: (
+		description: () => (
 			<div>
 				<p>
 					小米 Hyper OS 系统桌面！该版本提取自小米平板7
@@ -244,7 +299,7 @@ const appList: AppInfo[] = [
 		isShow: () =>
 			deviceStore.MIOSVersion === 2 && deviceStore.androidTargetSdk === 34 && deviceStore.deviceType === 'tablet',
 		versionNum: 20250617,
-		description: (
+		description: () => (
 			<div>
 				<p>小米 Hyper OS 系统桌面！该版本提取自小米平板6，去除部分低端机型的模糊阉割！</p>
 				<p>兼容性: Android 14 Hyper OS 2</p>
@@ -266,7 +321,7 @@ const appList: AppInfo[] = [
 					deviceStore.deviceType === 'tablet',
 			),
 		versionNum: 20250617,
-		description: (
+		description: () => (
 			<div>
 				<p>「WinPlay Mobile」是为小米平板量身定做的「游戏虚拟机」，可以运行市面上常见的 Windows 游戏。</p>
 				<p>兼容性: 小米平板6S Pro - Hyper OS 2</p>
@@ -286,7 +341,7 @@ const appList: AppInfo[] = [
 		title: '小米笔记 - Hyper AI',
 		isShow: () => true,
 		versionNum: 20250617,
-		description: (
+		description: () => (
 			<div>
 				<p>小米笔记，一个好用的文本创作工具</p>
 				<p>使用 AI 写作进行文本摘要、扩写、润色纠错等功能，还可以输入写作需求让AI帮您创作</p>
@@ -303,7 +358,7 @@ const appList: AppInfo[] = [
 		title: 'UU远程',
 		isShow: () => true,
 		versionNum: 20250617,
-		description: (
+		description: () => (
 			<div>
 				<p>网易出品的专为游戏打造的超低延迟远程工具</p>
 				<p>最高支持4K 蓝光 144帧</p>
@@ -319,7 +374,7 @@ const appList: AppInfo[] = [
 		title: '小米录音机 - Hyper AI',
 		isShow: () => true,
 		versionNum: 20250617,
-		description: (
+		description: () => (
 			<div>
 				<p>简单好用的录音应用</p>
 				<p>兼容性: Hyper OS 1 / Hyper OS 2</p>
@@ -335,7 +390,7 @@ const appList: AppInfo[] = [
 		title: '小米远程控制',
 		isShow: () => true,
 		versionNum: 20250617,
-		description: (
+		description: () => (
 			<div>
 				<p>Xiaomi Pad/Phone/Fold 与 Windows PC间的远程控制客户端</p>
 				<p>兼容性: Hyper OS 1 / Hyper OS 2 / MIUI 14</p>
@@ -350,7 +405,7 @@ const appList: AppInfo[] = [
 		title: 'QQ音乐 HD',
 		isShow: () => ['tablet', 'fold'].includes(deviceStore.deviceType),
 		versionNum: 20250617,
-		description: (
+		description: () => (
 			<div>
 				<p>QQ 音乐 HD 6.0，全新版本已增加大屏适配！</p>
 			</div>
@@ -364,7 +419,7 @@ const appList: AppInfo[] = [
 		title: '流舟文件',
 		isShow: () => ['tablet', 'fold'].includes(deviceStore.deviceType),
 		versionNum: 20250617,
-		description: (
+		description: () => (
 			<div>
 				<p>流舟文件是功能强大且免费的本地&网络文件管理器，帮助你高效的管理文件以及应用。</p>
 				<p>支持将「文件夹」或者「文件」映射到「桌面快捷方式」，弥补小米平板文件管理的功能缺失！</p>
@@ -379,7 +434,7 @@ const appList: AppInfo[] = [
 		title: '盖世游戏',
 		isShow: () => true,
 		versionNum: 20250617,
-		description: (
+		description: () => (
 			<div>
 				<p>支持本地运行 3A 游戏，盖世小鸡「盖世游戏」App 开启公测</p>
 				<p>
@@ -405,7 +460,7 @@ const appList: AppInfo[] = [
 		title: 'StarNote',
 		isShow: () => ['tablet'].includes(deviceStore.deviceType),
 		versionNum: 20250617,
-		description: (
+		description: () => (
 			<div>
 				<p>笔尖所到，文星高照！文石出品的平板笔记软件，截止 2025-2-1 前登录账号即可领取永久的笔记Pro会员！</p>
 				<p>兼容性: Hyper OS 1 / Hyper OS 2 / MIUI 14</p>
@@ -421,7 +476,7 @@ const appList: AppInfo[] = [
 		title: '自由笔记',
 		isShow: () => ['tablet'].includes(deviceStore.deviceType),
 		versionNum: 20250617,
-		description: (
+		description: () => (
 			<div>
 				<p>无纸化记笔记，重塑笔记体验！</p>
 				<p>修改系统日期为 2025-2-14 上午 10:30 分即可领取永久的自由笔记免费使用资格！</p>
@@ -436,7 +491,7 @@ const appList: AppInfo[] = [
 		title: '蓝牙遥控',
 		isShow: () => true,
 		versionNum: 20250617,
-		description: (
+		description: () => (
 			<div>
 				<p>蓝牙遥控是一款多功能遥控软件，可以通过蓝牙模拟键盘、鼠标、遥控器、手柄等功能。</p>
 				<p>完美横屏应用计划已为蓝牙遥控通过应用横屏布局适配大屏，欢迎体验！</p>
@@ -451,7 +506,7 @@ const appList: AppInfo[] = [
 		title: 'Flix',
 		isShow: () => true,
 		versionNum: 20250617,
-		description: (
+		description: () => (
 			<div>
 				<p>像聊天一样传文件，支持多种方式连接。同一局域网、同一WiFi，还可扫码快速热点连接。</p>
 				<p>多端同步支持，跨品牌无缝传输。全面支持 Windows，macOS，iOS，Android，Linux，不限系统，不限品牌；</p>
@@ -467,7 +522,7 @@ const appList: AppInfo[] = [
 		title: '小米白噪音',
 		isShow: () => ['tablet', 'fold'].includes(deviceStore.deviceType),
 		versionNum: 20250617,
-		description: (
+		description: () => (
 			<div>
 				<p>
 					小米白噪音能让你更专注，更好的入睡。在这里，您可以倾听大自然的声音，将嘈杂的噪音和噪音隔绝开来，沉浸在大自然的礼物中，享受着夏日的微风吹拂着自己的脸庞，海浪的温柔拍打着自己的脸庞，还有淅淅沥沥的小雨，这一切都是发自内心的快乐。
@@ -484,7 +539,7 @@ const appList: AppInfo[] = [
 		title: '快递100',
 		isShow: () => ['tablet', 'fold'].includes(deviceStore.deviceType),
 		versionNum: 20250617,
-		description: (
+		description: () => (
 			<div>
 				<p>
 					查快递 寄快递
@@ -502,7 +557,7 @@ const appList: AppInfo[] = [
 		title: '小米音乐(平板端)',
 		isShow: () => ['tablet'].includes(deviceStore.deviceType),
 		versionNum: 20250617,
-		description: (
+		description: () => (
 			<div>
 				<p>小米音乐 X QQ音乐！该版本小米已经去除反向适配的平行窗口，拥有更好的大屏体验！</p>
 				<p>注意事项: 如提示系统应用无法安装请从文件管理安装</p>
@@ -517,7 +572,7 @@ const appList: AppInfo[] = [
 		title: '青盐云听',
 		isShow: () => ['tablet', 'fold'].includes(deviceStore.deviceType),
 		versionNum: 20250617,
-		description: (
+		description: () => (
 			<div>
 				<p>椒盐音乐推出的云盘音乐播放器，可挂载阿里云盘内音乐进行播放！</p>
 			</div>
@@ -531,7 +586,7 @@ const appList: AppInfo[] = [
 		title: '屏幕一览',
 		isShow: () => true,
 		versionNum: 20250617,
-		description: (
+		description: () => (
 			<div>
 				<p>通过屏幕一览，您可以详细了解设备的屏幕详细信息，支持测试触控采样率！</p>
 			</div>
@@ -545,7 +600,7 @@ const appList: AppInfo[] = [
 		title: '网易爆米花',
 		isShow: () => true,
 		versionNum: 20250617,
-		description: (
+		description: () => (
 			<>
 				<p>网易出品的智能媒体库，完全免费，无广告！</p>
 				<p>支持本地目录、WebDAV、SMB、中国移动云盘、阿里云盘等方式轻松导入你所有来源的影片！</p>
@@ -560,7 +615,7 @@ const appList: AppInfo[] = [
 		title: '三星浏览器',
 		isShow: () => ['tablet', 'fold'].includes(deviceStore.deviceType),
 		versionNum: 20250617,
-		description: (
+		description: () => (
 			<>
 				<p>三星出品的安全、私密且经优化的移动网络浏览器！</p>
 				<p>注意事项: 没有PC版，如果需要跨PC端书签同步可能需要搭配"三星浏览器"插件。</p>
@@ -575,7 +630,9 @@ const appList: AppInfo[] = [
 		title: '波点音乐',
 		isShow: () => ['tablet', 'fold'].includes(deviceStore.deviceType),
 		versionNum: 20250617,
-		description: <p>酷我出品的音乐APP(腾讯音乐娱乐集团旗下)，全新版本已增加对平板的大屏适配！</p>,
+		description: () => (
+			<p>酷我出品的音乐APP(腾讯音乐娱乐集团旗下)，全新版本已增加对平板的大屏适配！</p>
+		),
 		url: 'https://caiyun.139.com/m/i?135CmXWNtw2yy',
 		type: 'success',
 		image: '/images/apps/bodian.webp',
@@ -585,7 +642,7 @@ const appList: AppInfo[] = [
 		title: '荣耀音乐',
 		isShow: () => ['tablet', 'fold'].includes(deviceStore.deviceType),
 		versionNum: 20250617,
-		description: (
+		description: () => (
 			<>
 				<p>荣耀音乐 X 网易云音乐，跟普通网易云音乐不同的大屏适配体验！</p>
 				<p>
@@ -602,7 +659,7 @@ const appList: AppInfo[] = [
 		title: '随身乐队',
 		isShow: () => true,
 		versionNum: 20250617,
-		description: (
+		description: () => (
 			<>
 				<p>随身乐队是一款为手机/平板设计的支持多音轨录音，乐器弹奏的APP。</p>
 				<p>支持键盘、吉他、架子鼓、电子鼓、贝斯多种乐器，并且带有多音轨录音功能。</p>
@@ -618,7 +675,7 @@ const appList: AppInfo[] = [
 		title: 'FlipaClip',
 		isShow: () => ['tablet', 'fold'].includes(deviceStore.deviceType),
 		versionNum: 20250617,
-		description: (
+		description: () => (
 			<>
 				<p>用动画把你的梦想带进现实！</p>
 				<p>
@@ -636,7 +693,7 @@ const appList: AppInfo[] = [
 		title: '像素习惯',
 		isShow: () => ['tablet', 'fold'].includes(deviceStore.deviceType),
 		versionNum: 20250617,
-		description: (
+		description: () => (
 			<>
 				<p>
 					像素习惯是一款像素风的游戏化习惯养成打卡软件，你可以在里面通过培养习惯来抽装备，集成就，强化数值装备自己，不断进步。
@@ -656,7 +713,7 @@ const appList: AppInfo[] = [
 		title: '机核',
 		isShow: () => ['tablet', 'fold'].includes(deviceStore.deviceType),
 		versionNum: 20250617,
-		description: (
+		description: () => (
 			<>
 				<p>次世代游戏文化社区，机核从2010年开始一直致力于分享游戏玩家的生活，以及深入探讨游戏相关的文化。</p>
 				<p>完美横屏应用计划已为机核通过应用横屏布局适配大屏，欢迎体验！</p>
@@ -671,7 +728,7 @@ const appList: AppInfo[] = [
 		title: 'Redmi Pad Pro X 哈利·波特 联动主题',
 		isShow: () => deviceStore.deviceType === 'tablet',
 		versionNum: 20250617,
-		description: (
+		description: () => (
 			<>
 				<p>换上巫师袍，想象霍格沃茨在召唤你入学！</p>
 				<p>主题以霍格沃茨开学场景为背景，深度定制桌面背景和图标。</p>
@@ -691,7 +748,7 @@ const appList: AppInfo[] = [
 		title: '有诗',
 		isShow: () => ['tablet', 'fold'].includes(deviceStore.deviceType),
 		versionNum: 20250617,
-		description: (
+		description: () => (
 			<>
 				<p>生活不止眼前的苟且，还有诗和远方的田野。</p>
 				<p>
@@ -709,7 +766,7 @@ const appList: AppInfo[] = [
 		title: '少数派',
 		isShow: () => ['tablet', 'fold'].includes(deviceStore.deviceType),
 		versionNum: 20250617,
-		description: (
+		description: () => (
 			<>
 				<p>
 					高效工作，品质生活，少数派是一个帮你发现优质 App
@@ -727,7 +784,7 @@ const appList: AppInfo[] = [
 		title: '小睡眠',
 		isShow: () => ['tablet', 'fold'].includes(deviceStore.deviceType),
 		versionNum: 20250617,
-		description: (
+		description: () => (
 			<>
 				<p>小睡眠提供白噪音、冥想练习、爱豆哄睡、睡眠监测、梦话录音和智能闹钟等功能。</p>
 				<p>专业、全面和暖心的睡眠服务，帮您睡得更好睡得更香。</p>
@@ -790,18 +847,6 @@ const filteredAppList = computed(() => {
 			</div>
 
 			<n-card size="small" class="mt-5">
-				<n-alert
-					type="info"
-					class="mb-3"
-					v-if="!deviceStore.skipConfirm.patchModeAlert"
-					closable
-					@close="
-						() => {
-							deviceStore.skipConfirm.patchModeAlert = true;
-						}
-					">
-					由于小米系统优化不佳的原因，大量的应用适配规则可能导致系统出现卡顿、掉帧等问题，建议老机型可以前往开启模块的定制模式，详情可以前往模块设置中了解。
-				</n-alert>
 				<!-- <div class="flex flex-wrap">
 					<n-button class="mb-3 mr-3" color="#8a2be2">
 						<template #icon>
@@ -870,7 +915,7 @@ const filteredAppList = computed(() => {
 							<template #icon>
 								<img :src="app.image" />
 							</template>
-							<RenderJsx :content="app.description" />
+							<RenderJsx v-if="app.description" :content="app.description && app.description()" />
 							<n-button
 								class="mt-2"
 								strong

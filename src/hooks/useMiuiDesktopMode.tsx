@@ -165,6 +165,7 @@ export function useMiuiDesktopMode() {
 			}
 		}
 		isInit.value = true;
+		console.log(isInit.value,'isInit.value')
 	}
 
 	onMounted(() => {

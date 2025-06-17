@@ -159,7 +159,7 @@
                 <li class="ml-3">隐藏/优化手势提示线(部分机型效果可能不佳)</li>
                 <li class="ml-3">移除OTA验证</li>
                 <li class="ml-3">开启平滑圆角</li>
-                <li class="ml-3">开启高级材质(最高支持到高级材质3.0，部分被阉割了大文件夹模糊的机型，可以自行通过Hyper Ceiler强制启用桌面大文件夹的模糊)</li>
+                <li class="ml-3">开启高级材质(最高支持到高级材质3.0，支持全局侧边栏模糊效果)</li>
               </ul>
               <p>注意事项: Magisk模块请通过对应的 ROOT管理器 进行安装！高级材质在[显示与亮度-高级材质]，极致模式在[开发者选项-极致模式]。</p>
               <n-button class="mt-2" strong secondary type="success" @click="() => getAppDownload('小米平板系统功能补全模块', 'https://caiyun.139.com/m/i?2mWL9yPJcop5b', 'magisk')">获取小米平板系统功能补全模块</n-button>
@@ -188,7 +188,7 @@
                 <li class="ml-3">开启全屏AOD显示(Hyper OS 2+，实际是否支持以系统实际情况为准)</li>
                 <li class="ml-3">移除OTA验证</li>
                 <li class="ml-3">开启平滑圆角</li>
-                <li class="ml-3">开启高级材质(最高支持到高级材质3.0，部分被阉割了大文件夹模糊的机型，可以自行通过Hyper Ceiler强制启用桌面大文件夹的模糊)</li>
+                <li class="ml-3">开启高级材质(最高支持到高级材质3.0，支持全局侧边栏模糊效果)</li>
               </ul>
               <p>注意事项: Magisk模块请通过对应的 ROOT管理器 进行安装！高级材质在[显示与亮度-高级材质]，极致模式在[开发者选项-极致模式]。</p>
               <n-button class="mt-2" strong secondary type="success" @click="() => getAppDownload('小米手机系统功能补全模块', 'https://caiyun.139.com/m/i?135CmOdNLkQeu', 'magisk')">获取小米手机系统功能补全模块</n-button>
