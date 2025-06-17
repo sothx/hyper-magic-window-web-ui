@@ -1199,7 +1199,7 @@ const settingList: SettingItemInfo[] = [
 	},
 ];
 const filteredSettingList = computed(() => {
-	const keyword = searchKeyword.value.toLowerCase();
+	const keyword = searchKeyword.value.trim().toLowerCase();
 	return settingList.filter(item => {
 		const showFlag = item.isShow ? item.isShow() : true;
 		if (!showFlag) return false;

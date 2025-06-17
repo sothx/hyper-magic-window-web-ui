@@ -799,7 +799,7 @@ const appList: AppInfo[] = [
 ];
 
 const filteredAppList = computed(() => {
-	const keyword = searchKeyword.value.toLowerCase();
+	const keyword = searchKeyword.value.trim().toLowerCase();
 	return appList.filter(item => {
 		const showFlag = item.isShow ? item.isShow() : true;
 		if (!showFlag) return false;
