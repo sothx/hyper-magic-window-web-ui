@@ -5,7 +5,7 @@ import { computed, ref, type CSSProperties } from 'vue';
 import { RenderJsx } from '@/components/RenderJSX';
 import { createDiscreteApi, darkTheme, lightTheme, NInput, type ConfigProviderProps } from 'naive-ui';
 import type { JSX } from 'vue/jsx-runtime';
-import { MagnifyingGlassIcon, CircleStackIcon, XCircleIcon, SquaresPlusIcon } from '@heroicons/vue/24/outline';
+import { MagnifyingGlassIcon, XCircleIcon, ArrowPathIcon } from '@heroicons/vue/24/outline';
 const deviceStore = useDeviceStore();
 const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
 	theme: deviceStore.isDarkMode ? darkTheme : lightTheme,
@@ -847,24 +847,24 @@ const filteredAppList = computed(() => {
 			</div>
 
 			<n-card size="small" class="mt-5">
-				<!-- <div class="flex flex-wrap">
-					<n-button class="mb-3 mr-3" color="#8a2be2">
+				<div class="flex flex-wrap">
+					<n-button class="mb-3 mr-3" type="success">
 						<template #icon>
 							<n-icon>
-								<SquaresPlusIcon />
+								<ArrowPathIcon />
 							</n-icon>
 						</template>
-						热重载应用数据
+						更新下载地址(未上线)
 					</n-button>
-					<n-button class="mb-3 mr-3" color="#69b2b6">
+					<!-- <n-button class="mb-3 mr-3" color="#69b2b6">
 						<template #icon>
 							<n-icon>
 								<CircleStackIcon />
 							</n-icon>
 						</template>
 						获取已安装应用名称
-					</n-button>
-				</div> -->
+					</n-button> -->
+				</div>
 				<div class="flex">
 					<n-input-group>
 						<n-input

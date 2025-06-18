@@ -45,7 +45,7 @@ export function useIOScheduler() {
 							<p>
 								{currentScheduler.value !== scheduler && currentPropScheduler.value !== scheduler ? '应用' : '移除并重置'}{' '}
 								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-									磁盘IO调度策略
+									{scheduler}
 								</span>{' '}
 								{
 									currentScheduler.value !== scheduler && currentPropScheduler.value !== scheduler ? '将立即生效，' : '需要设备重启后才会生效，'
