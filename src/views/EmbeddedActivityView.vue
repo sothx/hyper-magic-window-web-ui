@@ -9,6 +9,7 @@ import EmbeddedAppDrawer from '@/components/EmbeddedAppDrawer.vue';
 import { useAutoUIStore } from '@/stores/autoui';
 const autoUIStore = useAutoUIStore();
 import { useInstalledAppNames } from '@/hooks/useInstalledAppNames';
+import { usePatchMode } from '@/hooks/usePatchMode';
 import {
 	NButton,
 	NDataTable,
@@ -76,6 +77,7 @@ const disabledOS2SystemAppOptimizeHook = useDisabledOS2SystemAppOptimize();
 const installedAppNamesHook = useInstalledAppNames();
 const deviceStore = useDeviceStore();
 const embeddedStore = useEmbeddedStore();
+const patchModeHook = usePatchMode();
 const logsStore = useLogsStore();
 const QQDocHook = useQQDoc();
 const importShareRuleLoading = ref(false);
@@ -419,8 +421,6 @@ const pagination = reactive({
 	},
 });
 
-const reloadPatchModeConfigLoading = ref<boolean>(false);
-
 const hotReloadApplicationData = async () => {
 	hotReloadLoading.value = true;
 	await reloadPage();
@@ -445,58 +445,6 @@ const hotReloadApplicationData = async () => {
 			positiveText: '确定',
 		});
 		hotReloadLoading.value = false;
-	}
-};
-
-const reloadPatchModeConfigList = async () => {
-	await deviceStore.getAndroidApplicationPackageNameList();
-	reloadPatchModeConfigLoading.value = true;
-	const [submitUpdateEmbeddedAppErr, submitUpdateEmbeddedAppRes] = await $to(
-		embeddedApi.updateEmbeddedApp(),
-	);
-	if (submitUpdateEmbeddedAppErr) {
-		modal.create({
-			title: '操作失败',
-			type: 'error',
-			preset: 'dialog',
-			content: () => <p>发生异常错误，更新失败了QwQ，详细错误请查看错误日志~</p>,
-		});
-		reloadPatchModeConfigLoading.value = false;
-	} else {
-		embeddedStore.updateMergeRuleList();
-		reloadPatchModeConfigLoading.value = false;
-		modal.create({
-			title: '操作成功',
-			type: 'success',
-			preset: 'dialog',
-			content: () => (
-				<div>
-					{embeddedStore.isDeepPatchMode && (<p>好耶w，检测到您已启用{' '}
-						<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-							深度定制模式
-						</span>{' '}，已根据您当前已安装应用列表重新{' '}
-						<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-							修剪模块应用适配列表
-						</span>{' '}
-						，后续每次更新模块或者安装新的应用后，均需要重新操作{' '}
-						<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-							生成定制应用数据
-						</span>{' '}
-						。</p>)}
-					{!embeddedStore.isDeepPatchMode && (<p>好耶w，已根据您设备当前的整体应用情况重新{' '}
-						<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-							修剪模块应用适配列表
-						</span>{' '}
-						，后续每次更新模块或者安装新的应用后，建议重新操作{' '}
-						<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-							生成定制应用数据
-						</span>{' '}
-						。
-					</p>)}
-				</div>
-			),
-			negativeText: '确定',
-		});
 	}
 };
 
@@ -2019,7 +1967,7 @@ onMounted(() => {
 					}),
 				);
 				if (positiveRes) {
-					reloadPatchModeConfigList();
+					patchModeHook.reloadPatchMode();
 				}
 				embeddedStore.isNeedShowReloadPathModeDialog = false;
 				deviceStore.needReloadData = false;
@@ -2110,8 +2058,8 @@ onMounted(() => {
 					class="mb-3 mr-3"
 					v-if="embeddedStore.isPatchMode"
 					type="error"
-					:loading="deviceStore.loading || embeddedStore.loading || reloadPatchModeConfigLoading"
-					@click="() => reloadPatchModeConfigList()">
+					:loading="deviceStore.loading || embeddedStore.loading || patchModeHook.loading.value"
+					@click="() => patchModeHook.reloadPatchMode()">
 					<template #icon>
 						<n-icon>
 							<ScissorsIcon />

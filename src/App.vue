@@ -2,6 +2,7 @@
 import { RouterLink, RouterView, useRouter } from 'vue-router';
 import HelloWorld from './components/HelloWorld.vue';
 import { Sidebar } from './components/Sidebar';
+import $to from 'await-to-js';
 import ErrorModal from '@/components/ErrorModal.vue';
 import SplashScreen from '@/components/SplashScreen.vue';
 import * as deviceApi from '@/apis/deviceApi';
@@ -12,6 +13,7 @@ import { useEmbeddedStore } from '@/stores/embedded';
 import { useFontStore } from '@/stores/font';
 import { useDotBlackListStore } from '@/stores/dotBlackList';
 import { useLogsStore } from '@/stores/logs';
+import { usePatchMode } from '@/hooks/usePatchMode';
 import { useAutoUIStore } from '@/stores/autoui';
 import { useGameBoosterStore } from './stores/gameBooster';
 const deviceStore = useDeviceStore();
@@ -28,6 +30,7 @@ const { message, modal } = createDiscreteApi(['message', 'modal'], {
 const embeddedStore = useEmbeddedStore();
 const fontStore = useFontStore();
 const autoUIStore = useAutoUIStore();
+const patchModeHook = usePatchMode();
 const dotBlackListStore = useDotBlackListStore();
 const showErrorModal = ref(false);
 const isSplashVisible = ref(true);
@@ -121,11 +124,6 @@ const loadRoutes = async () => {
 	// **获取当前路径**
 	const currentPath = router.currentRoute.value.path;
 
-	if (embeddedStore.isNeedShowReloadPathModeDialog && ['tablet', 'fold'].includes(deviceStore.deviceType)) {
-		router.replace('/');
-		return;
-	}
-
 	// 获取上次访问的url
 	const lastPath = deviceStore.lastVisitedPath;
 
@@ -157,6 +155,7 @@ onMounted(async () => {
 			logsStore.error('[JavaScript Error]', message.toString());
 		}
 	};
+
 	window.addEventListener('unhandledrejection', function (event: PromiseRejectionEvent) {
 		if (logsStore) {
 			logsStore.error('[JavaScript Promise Error]', event.reason.toString());
@@ -218,7 +217,11 @@ onMounted(async () => {
 		});
 	}
 	if (['tablet', 'fold'].includes(deviceStore.deviceType)) {
-		embeddedStore.initDefault();
+		embeddedStore.initDefault().then(() => {
+			if (embeddedStore.isNeedShowReloadPathModeDialog) {
+				patchModeHook.showReloadModal()
+			}
+		});
 		autoUIStore.initDefault();
 		gameBoosterStore.initDefault();
 		if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 1) {
@@ -232,41 +235,43 @@ onMounted(async () => {
 			const changeLogURL = deviceStore.moduleUpdateInfo?.changelog;
 			if (changeLogURL) {
 				deviceApi.getModuleChangelog(changeLogURL).then(res => {
-					console.log(res,'res')
+					console.log(res, 'res');
 					deviceStore.changeLogMsg = res;
-				})
+				});
 			}
 			if (
-			deviceStore.moduleInfo && 
-			deviceStore.moduleUpdateInfo?.versionCode &&
-			deviceStore.moduleUpdateInfo.versionCode > deviceStore.moduleInfo?.versionCode &&
-			deviceStore.moduleUpdateInfo.versionCode > deviceStore.skipConfirm.needUpdateModuleVer
-		) {
-			const currentUpdateVer = deviceStore.moduleUpdateInfo.version
-			const currentChinaMobileMCloudUrl = deviceStore.moduleUpdateInfo.chinaMobileMCloudUrl
-			modal.create({
-				title: '发现模块存在新版本',
-				type: 'info',
-				preset: 'dialog',
-				content: () => (
-					<div>
-						<p>完美横屏应用计划已更新至 { currentUpdateVer }，您可以从网盘或者Github获取最新版本的模块。</p>
-						<p>下载地址:{ currentChinaMobileMCloudUrl }</p>
-					</div>
-				),
-				positiveText: '复制下载链接到剪切板',
-				negativeText: '跳过当前版本的更新',
-				onPositiveClick: () => {
-					navigator.clipboard.writeText(currentChinaMobileMCloudUrl);
-					deviceApi.openChinaMobileMCloud()
-				},
-				onNegativeClick: () => {
-					if (deviceStore.moduleUpdateInfo) {
-						deviceStore.skipConfirm.needUpdateModuleVer = deviceStore.moduleUpdateInfo.versionCode;
-					}
-				},
-			});
-		}
+				deviceStore.moduleInfo &&
+				deviceStore.moduleUpdateInfo?.versionCode &&
+				deviceStore.moduleUpdateInfo.versionCode > deviceStore.moduleInfo?.versionCode &&
+				deviceStore.moduleUpdateInfo.versionCode > deviceStore.skipConfirm.needUpdateModuleVer
+			) {
+				const currentUpdateVer = deviceStore.moduleUpdateInfo.version;
+				const currentChinaMobileMCloudUrl = deviceStore.moduleUpdateInfo.chinaMobileMCloudUrl;
+				modal.create({
+					title: '发现模块存在新版本',
+					type: 'info',
+					preset: 'dialog',
+					content: () => (
+						<div>
+							<p>
+								完美横屏应用计划已更新至 {currentUpdateVer}，您可以从网盘或者Github获取最新版本的模块。
+							</p>
+							<p>下载地址:{currentChinaMobileMCloudUrl}</p>
+						</div>
+					),
+					positiveText: '复制下载链接到剪切板',
+					negativeText: '跳过当前版本的更新',
+					onPositiveClick: () => {
+						navigator.clipboard.writeText(currentChinaMobileMCloudUrl);
+						deviceApi.openChinaMobileMCloud();
+					},
+					onNegativeClick: () => {
+						if (deviceStore.moduleUpdateInfo) {
+							deviceStore.skipConfirm.needUpdateModuleVer = deviceStore.moduleUpdateInfo.versionCode;
+						}
+					},
+				});
+			}
 		});
 	}
 });

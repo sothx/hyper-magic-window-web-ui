@@ -9,6 +9,7 @@ import { parsePropContent } from '@/utils/common';
 import { transformValues } from '@/utils/xmlFormat';
 import type { DisplayModeItem } from '@/hooks/useDisplayModeRecord';
 import type { RouteRecordNameGeneric } from 'vue-router';
+import { useEmbeddedStore } from './embedded';
 
 export interface ModuleProp {
 	id: string;
@@ -141,19 +142,19 @@ export const useDeviceStore = defineStore(
 			patchModeAlert: false,
 			needInstalledKsuWebUiApk: false,
 			needReloadSystemModuleVer: false,
-			needUpdateModuleVer: 0
+			needUpdateModuleVer: 0,
 		});
 		const showThirdPartySetting = reactive({
 			amktiaoROMInterface: false,
 		});
 		const preStartProp = reactive({
 			build: false,
-			module: true
-		})
+			module: true,
+		});
 		const deepSleepProp = reactive({
 			build: false,
-			module: true
-		})
+			module: true,
+		});
 
 		const isNeedShowErrorModal = computed(() => Boolean(errorLogging.length > 0));
 
@@ -169,7 +170,7 @@ export const useDeviceStore = defineStore(
 			} else {
 				return '';
 			}
-		})
+		});
 
 		async function getAndroidApplicationPackageNameList() {
 			return new Promise(async (resolve, reject) => {
@@ -455,12 +456,8 @@ export const useDeviceStore = defineStore(
 			}
 
 			if (MIOSVersion.value && MIOSVersion.value >= 2 && androidTargetSdk.value >= 35) {
-				const [,getPreStartProcForBuildRes] = await $to<string, string>(
-					deviceApi.getPreStartProcForBuild(),
-				);
-				const [,getPreStartProcForModuleRes] = await $to<string, string>(
-					deviceApi.getPreStartProcForModule(),
-				);
+				const [, getPreStartProcForBuildRes] = await $to<string, string>(deviceApi.getPreStartProcForBuild());
+				const [, getPreStartProcForModuleRes] = await $to<string, string>(deviceApi.getPreStartProcForModule());
 				if (getPreStartProcForBuildRes === 'true') {
 					preStartProp.build = true;
 				} else {
@@ -474,10 +471,10 @@ export const useDeviceStore = defineStore(
 			}
 
 			if (androidTargetSdk.value >= 34 && deviceCharacteristics.value === 'tablet') {
-				const [,getDeepSleepEnableForBuildRes] = await $to<string, string>(
+				const [, getDeepSleepEnableForBuildRes] = await $to<string, string>(
 					deviceApi.getDeepSleepEnableForBuild(),
 				);
-				const [,getDeepSleepEnableForModuleRes] = await $to<string, string>(
+				const [, getDeepSleepEnableForModuleRes] = await $to<string, string>(
 					deviceApi.getDeepSleepEnableForModule(),
 				);
 				if (getDeepSleepEnableForBuildRes === 'true') {
@@ -492,15 +489,18 @@ export const useDeviceStore = defineStore(
 				}
 			}
 
-			
 			if (MIOSVersion.value && MIOSVersion.value >= 2 && androidTargetSdk.value >= 35) {
- 				const [, getDisabledOS2InstallModuleTipsRes] = await $to<string, string>(deviceApi.getDisabledOS2InstallModuleTips());
+				const [, getDisabledOS2InstallModuleTipsRes] = await $to<string, string>(
+					deviceApi.getDisabledOS2InstallModuleTips(),
+				);
 				if (getDisabledOS2InstallModuleTipsRes === 'true') {
 					isDisabledOS2InstallModuleTips.value = true;
 				} else {
 					isDisabledOS2InstallModuleTips.value = false;
 				}
 			}
+
+			const embeddedStore = useEmbeddedStore();
 
 			if (!errorLogging.length) {
 				loading.value = false;
@@ -554,7 +554,7 @@ export const useDeviceStore = defineStore(
 			muiltdisplayType,
 			changeLogMsg,
 			lastVisitedPath,
-			isInit
+			isInit,
 		};
 	},
 	{

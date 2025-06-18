@@ -20,6 +20,7 @@ import { useHideGestureLine } from '@/hooks/useHideGestureLine';
 import { useDisabledOS2SystemAppOptimize } from '@/hooks/useDisabledOS2SystemAppOptimize';
 import { useZRAMWriteback } from '@/hooks/useZRAMWriteback';
 import { useOS2InstallModuleTips } from '@/hooks/useOS2InstallModuleTips';
+import { usePatchMode } from '@/hooks/usePatchMode';
 import { useUFSHealth } from '@/hooks/useUFSHealth';
 import { ArrowDownCircleIcon } from '@heroicons/vue/24/solid';
 import { MagnifyingGlassIcon, XCircleIcon } from '@heroicons/vue/24/outline';
@@ -39,6 +40,7 @@ const { activateABTest, loading: activateABTestLoading } = useABTestActivation()
 const OS2InstallModuleTipsHook = useOS2InstallModuleTips();
 const IOSchedulerHook = useIOScheduler();
 const useUFSHealthHook = useUFSHealth();
+const patchModeHook = usePatchMode();
 const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
 	theme: deviceStore.isDarkMode ? darkTheme : lightTheme,
 }));
@@ -178,334 +180,6 @@ const handleActivateABTest = async () => {
 		}
 	}
 };
-const switchPatchModeLoading = ref<boolean>(false);
-const switchDeepPatchModeLoading = ref<boolean>(false);
-const getAppDownload = async (title: string, url: string, type: 'system' | 'revision' | 'original' | 'magisk') => {
-	modal.create({
-		title: `获取${title}`,
-		type: 'info',
-		preset: 'dialog',
-		content: () => (
-			<div>
-				<p>
-					确定要下载{title}么？请注意核对部分应用的兼容性。
-					{type === 'system' && (
-						<span>（Tips: 系统应用无法通过小米自带的应用包管理器安装，请通过MT管理器安装！）</span>
-					)}
-					{type === 'revision' && <span>（Tips: 修改版需搭配核心破解并通过MT管理器安装）</span>}
-					{type === 'magisk' && <span>（Tips: Magisk模块请通过ROOT管理器进行安装）</span>}
-				</p>
-				<p>下载地址:</p>
-				<p>{url}</p>
-			</div>
-		),
-		positiveText: '复制下载链接到剪切板',
-		negativeText: '取消',
-		onPositiveClick: () => {
-			navigator.clipboard.writeText(`${url}`);
-			deviceApi.openChinaMobileMCloud();
-		},
-		onNegativeClick: () => {},
-	});
-};
-const changePatchMode = async (value: boolean) => {
-	const [negativeRes, positiveRes] = await $to(
-		new Promise((resolve, reject) => {
-			modal.create({
-				title: value ? '想切换为定制模式吗？' : '想切换为完整模式吗？',
-				type: 'info',
-				preset: 'dialog',
-				content: () => (
-					<div>
-						{value && (
-							<p>
-								切换为{' '}
-								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-									定制模式
-								</span>{' '}
-								后，模块会以您设备的整体应用情况{' '}
-								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-									修剪模块应用适配列表
-								</span>{' '}
-								，以解决老机型由于系统优化不佳而导致的卡顿、掉帧等问题，后续每次更新模块或者安装新的应用后，建议前往{' '}
-								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-									应用横屏布局
-								</span>{' '}
-								重新{' '}
-								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-									生成定制应用数据
-								</span>{' '}
-								，确定要继续吗？
-							</p>
-						)}
-						{!value && (
-							<p>
-								切换为{' '}
-								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-									完整模式
-								</span>{' '}
-								后，可以获得模块提供的大量应用适配，同时可能会导致部分老机型由于系统优化不佳而导致的卡顿、掉帧等问题，确定要继续吗？
-							</p>
-						)}
-					</div>
-				),
-				positiveText: '确定继续',
-				negativeText: '我再想想',
-				onPositiveClick: () => {
-					resolve('positiveClick');
-				},
-				onNegativeClick: () => {
-					reject('negativeClick');
-				},
-			});
-		}),
-	);
-	if (positiveRes) {
-		switchPatchModeLoading.value = true;
-		const [removeIsPatchModeErr] = await $to(deviceApi.removeIsPatchMode());
-		if (removeIsPatchModeErr) {
-			modal.create({
-				title: '操作失败',
-				type: 'error',
-				preset: 'dialog',
-				content: () => <p>无法移除定制模式的配置项，详情请查看日志记录~</p>,
-				negativeText: '确定',
-			});
-			switchPatchModeLoading.value = false;
-			return;
-		}
-		if (value) {
-			const [addIsPatchModeErr] = await $to(deviceApi.addIsPatchMode());
-			if (addIsPatchModeErr) {
-				modal.create({
-					title: '操作失败',
-					type: 'error',
-					preset: 'dialog',
-					content: () => <p>无法切换为定制模式，详情请查看日志记录~</p>,
-					negativeText: '确定',
-				});
-				switchPatchModeLoading.value = false;
-				return;
-			}
-			embeddedStore.isPatchMode = true;
-		} else {
-			switchPatchModeLoading.value = false;
-			embeddedStore.isPatchMode = false;
-		}
-		await deviceStore.getAndroidApplicationPackageNameList();
-		const [submitUpdateEmbeddedAppErr, submitUpdateEmbeddedAppRes] = await $to(embeddedApi.updateEmbeddedApp());
-		if (submitUpdateEmbeddedAppErr) {
-			modal.create({
-				title: '操作失败',
-				type: 'error',
-				preset: 'dialog',
-				content: () => <p>发生异常错误，更新失败了QwQ，详细错误请查看错误日志~</p>,
-			});
-			embeddedStore.isPatchMode = !embeddedStore.isPatchMode;
-			switchPatchModeLoading.value = false;
-		} else {
-			modal.create({
-				title: '操作成功',
-				type: 'success',
-				preset: 'dialog',
-				content: () => (
-					<div>
-						{value && (
-							<p>
-								好耶w，已成功切换为{' '}
-								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-									定制模式
-								</span>{' '}
-								，模块已根据您设备当前的整体应用情况{' '}
-								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-									修剪模块应用适配列表
-								</span>{' '}
-								，以解决老机型由于系统优化不佳而导致的卡顿、掉帧等问题，建议每次更新模块或者安装新的应用后，均需要在前往{' '}
-								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-									应用横屏布局
-								</span>{' '}
-								界面重新{' '}
-								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-									生成定制应用数据
-								</span>{' '}
-								。
-							</p>
-						)}
-						{!value && (
-							<p>
-								好耶w，已成功切换为{' '}
-								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-									完整模式
-								</span>{' '}
-								，可以获得模块提供的大量应用适配，同时可能会导致部分老机型由于系统优化不佳而导致的卡顿、掉帧等问题。
-							</p>
-						)}
-					</div>
-				),
-				negativeText: '确定',
-			});
-			switchPatchModeLoading.value = false;
-			embeddedStore.updateMergeRuleList();
-		}
-	}
-};
-const changeDeepPatchMode = async (value: boolean) => {
-	const [negativeRes, positiveRes] = await $to(
-		new Promise((resolve, reject) => {
-			modal.create({
-				title: value ? '想启用深度定制模式吗？' : '想关闭深度定制模式吗？',
-				type: 'info',
-				preset: 'dialog',
-				content: () => (
-					<div>
-						{value && (
-							<p>
-								启用{' '}
-								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-									深度定制模式
-								</span>{' '}
-								后，模块将仅根据{' '}
-								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-									当前已安装应用修剪模块应用适配列表
-								</span>{' '}
-								，不再提供{' '}
-								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-									高频应用适配列表
-								</span>{' '}
-								作为兜底，可以进一步优化老机型由于系统优化不佳而导致的卡顿、掉帧等问题，但后续每次更新模块或者安装新的应用后，均需要前往{' '}
-								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-									应用横屏布局
-								</span>{' '}
-								重新{' '}
-								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-									生成定制应用数据
-								</span>{' '}
-								，确定要继续吗？
-							</p>
-						)}
-						{!value && (
-							<p>
-								关闭{' '}
-								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-									深度定制模式
-								</span>{' '}
-								后，模块会以更符合大多数人的设备整体应用情况{' '}
-								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-									修剪模块应用适配列表
-								</span>{' '}
-								，确定要继续吗？
-							</p>
-						)}
-					</div>
-				),
-				positiveText: '确定继续',
-				negativeText: '我再想想',
-				onPositiveClick: () => {
-					resolve('positiveClick');
-				},
-				onNegativeClick: () => {
-					reject('negativeClick');
-				},
-			});
-		}),
-	);
-	if (positiveRes) {
-		switchDeepPatchModeLoading.value = true;
-		const [removeIsDeepPatchModeErr] = await $to(deviceApi.removeIsDeepPatchMode());
-		if (removeIsDeepPatchModeErr) {
-			modal.create({
-				title: '操作失败',
-				type: 'error',
-				preset: 'dialog',
-				content: () => <p>无法移除深度定制模式的配置项，详情请查看日志记录~</p>,
-				negativeText: '确定',
-			});
-			switchDeepPatchModeLoading.value = false;
-			return;
-		}
-		if (value) {
-			const [addIsDeepPatchModeErr] = await $to(deviceApi.addIsDeepPatchMode());
-			if (addIsDeepPatchModeErr) {
-				modal.create({
-					title: '操作失败',
-					type: 'error',
-					preset: 'dialog',
-					content: () => <p>无法切换为深度定制模式，详情请查看日志记录~</p>,
-					negativeText: '确定',
-				});
-				switchDeepPatchModeLoading.value = false;
-				return;
-			}
-			embeddedStore.isDeepPatchMode = true;
-		} else {
-			switchDeepPatchModeLoading.value = false;
-			embeddedStore.isDeepPatchMode = false;
-		}
-		await deviceStore.getAndroidApplicationPackageNameList();
-		const [submitUpdateEmbeddedAppErr, submitUpdateEmbeddedAppRes] = await $to(embeddedApi.updateEmbeddedApp());
-		if (submitUpdateEmbeddedAppErr) {
-			modal.create({
-				title: '操作失败',
-				type: 'error',
-				preset: 'dialog',
-				content: () => <p>发生异常错误，更新失败了QwQ，详细错误请查看错误日志~</p>,
-			});
-			embeddedStore.isPatchMode = !embeddedStore.isPatchMode;
-			switchDeepPatchModeLoading.value = false;
-		} else {
-			modal.create({
-				title: '操作成功',
-				type: 'success',
-				preset: 'dialog',
-				content: () => (
-					<div>
-						{value && (
-							<p>
-								好耶w，已成功启用{' '}
-								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-									深度定制模式
-								</span>{' '}
-								，模块将仅根据当前已安装应用{' '}
-								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-									修剪模块应用适配列表
-								</span>{' '}
-								，不再提供{' '}
-								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-									高频应用适配列表
-								</span>{' '}
-								作为兜底，可以进一步解决老机型由于系统优化不佳而导致的卡顿、掉帧等问题，但后续每次更新模块或者安装新的应用后，均需要前往{' '}
-								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-									应用横屏布局
-								</span>{' '}
-								界面重新{' '}
-								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-									生成定制应用数据
-								</span>{' '}
-								。
-							</p>
-						)}
-						{!value && (
-							<p>
-								好耶w，已成功关闭{' '}
-								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-									深度定制模式
-								</span>{' '}
-								，模块会以更符合大多数人的设备整体应用情况{' '}
-								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-									修剪模块应用适配列表
-								</span>{' '}
-								。
-							</p>
-						)}
-					</div>
-				),
-				negativeText: '确定',
-			});
-			switchDeepPatchModeLoading.value = false;
-			embeddedStore.updateMergeRuleList();
-		}
-	}
-};
 const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean }) => {
 	const style: CSSProperties = {};
 	if (checked) {
@@ -554,10 +228,10 @@ const settingList: SettingItemInfo[] = [
 			<>
 				<n-switch
 					value={embeddedStore.isPatchMode}
-					loading={switchPatchModeLoading.value}
+					loading={patchModeHook.loading.value}
 					disabled={deviceStore.androidTargetSdk && deviceStore.androidTargetSdk < 32}
 					railStyle={railStyle}
-					onUpdateValue={(value: boolean) => changePatchMode(value)}>
+					onUpdateValue={(value: boolean) => patchModeHook.changePatchMode(value)}>
 					{{
 						checked: () => '定制模式',
 						unchecked: () => '完整模式',
@@ -574,10 +248,10 @@ const settingList: SettingItemInfo[] = [
 						<n-switch
 							class='mt-5'
 							value={embeddedStore.isDeepPatchMode}
-							loading={switchPatchModeLoading.value}
+							loading={patchModeHook.loading.value}
 							disabled={deviceStore.androidTargetSdk && deviceStore.androidTargetSdk < 32}
 							railStyle={railStyle}
-							onUpdateValue={(value: boolean) => changeDeepPatchMode(value)}>
+							onUpdateValue={(value: boolean) => patchModeHook.changeDeepPatchMode(value)}>
 							{{
 								checked: () => '已启用深度定制模式',
 								unchecked: () => '未启用深度定制模式',

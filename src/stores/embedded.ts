@@ -261,6 +261,12 @@ export const useEmbeddedStore = defineStore(
 			);
 		}
 
+		async function reloadPatchModeConfigList () {
+				const deviceStore = useDeviceStore();
+				await deviceStore.getAndroidApplicationPackageNameList();
+				
+		}
+
 		async function initDefault() {
 			const deviceStore = useDeviceStore();
 			loading.value = true;
