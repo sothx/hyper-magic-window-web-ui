@@ -752,7 +752,7 @@ const settingList: SettingItemInfo[] = [
 			</>
 		),
 		isShow: () =>
-			Boolean(IOSchedulerHook.isSupportSmartFocusIO.value && ['tablet', 'fold'].includes(deviceStore.deviceType)),
+			Boolean(IOSchedulerHook.isShowList.value && ['tablet', 'fold'].includes(deviceStore.deviceType)),
 	},
 	{
 		title: 'ZRAM Writeback',

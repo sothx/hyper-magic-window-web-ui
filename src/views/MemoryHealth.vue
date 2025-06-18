@@ -188,7 +188,7 @@ const healthList: HealthItemInfo[] = [
 				</n-alert>
 			</>
 		),
-		isShow: () => Boolean(IOSchedulerHook.isSupportSmartFocusIO.value),
+		isShow: () => Boolean(IOSchedulerHook.isShowList.value),
 	},
 	{
 		title: 'UFS 存储健康',

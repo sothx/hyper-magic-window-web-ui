@@ -26,6 +26,10 @@ export function useIOScheduler() {
 		return Array.isArray(schedulerList.value) && schedulerList.value.includes('cpq')
 	})
 
+	const isShowList = computed(() => {
+		return Boolean(Array.isArray(schedulerList.value) && schedulerList.value.length);
+	})
+
 	const { message, modal } = createDiscreteApi(['message', 'modal'], {
 		configProviderProps: configProviderPropsRef,
 	});
@@ -45,9 +49,8 @@ export function useIOScheduler() {
 								</span>{' '}
 								{
 									currentScheduler.value !== scheduler && currentPropScheduler.value !== scheduler ? '将立即生效，' : '需要设备重启后才会生效，'
-								}
+								}是否继续{currentScheduler.value !== scheduler && currentPropScheduler.value !== scheduler ? '应用' : '移除并重置'}该磁盘IO调度策略？
 							</p>
-							<p>是否继续{currentScheduler.value !== scheduler && currentPropScheduler.value !== scheduler ? '应用' : '移除并重置'}该磁盘IO调度策略？</p>
 						</div>
 					),
 					positiveText: '确定',
@@ -169,6 +172,7 @@ export function useIOScheduler() {
 
 	return {
 		smartFocusIO,
+		isShowList,
 		loading,
 		isInit,
 		currentScheduler,
