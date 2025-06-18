@@ -121,9 +121,13 @@ const loadRoutes = async () => {
 	// **获取当前路径**
 	const currentPath = router.currentRoute.value.path;
 
+	if (embeddedStore.isNeedShowReloadPathModeDialog && ['tablet', 'fold'].includes(deviceStore.deviceType)) {
+		router.replace('/');
+		return;
+	}
+
 	// 获取上次访问的url
 	const lastPath = deviceStore.lastVisitedPath;
-	console.log(lastPath,typeof lastPath,'lastPath')
 
 	if (lastPath && typeof lastPath === 'string') {
 		const resolved = router.resolve(lastPath);
