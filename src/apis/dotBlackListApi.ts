@@ -7,10 +7,6 @@ import { useLogsStore } from '@/stores/logs';
 import type DotBlackListItem from '@/types/DotBlackListItem';
 import { cloneDeep } from 'lodash-es';
 
-export interface SmartFocusIOResult extends ExecResults {
-	stdout: 'on' | 'off';
-}
-
 export interface AndroidAppPackageJobsResult extends Omit<ExecResults, 'stdout'> {
 	stdout: number;
 }

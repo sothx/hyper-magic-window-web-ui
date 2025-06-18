@@ -10,9 +10,11 @@ import { MagnifyingGlassIcon, CircleStackIcon, XCircleIcon, SquaresPlusIcon } fr
 import type { JSX } from 'vue/jsx-runtime';
 import type { NInput } from 'naive-ui';
 import { divide } from 'lodash-es';
+import { useIOScheduler } from '@/hooks/useIOScheduler';
 const deviceStore = useDeviceStore();
 const ZRAMWritebackHook = useZRAMWriteback();
 const useUFSHealthHook = useUFSHealth();
+const IOSchedulerHook = useIOScheduler();
 const fboHook = useFbo();
 const searchKeyword = ref('');
 type SearchKeyWordInputInstance = InstanceType<typeof NInput>;
@@ -83,6 +85,96 @@ const healthList: HealthItemInfo[] = [
 					deviceStore.androidTargetSdk >= 35 &&
 					ZRAMWritebackHook.isInit.value,
 			),
+	},
+	{
+		title: '智能IO调度',
+		content: () => (
+			<>
+				{IOSchedulerHook.smartFocusIO.value === 'on' ? (
+					<n-tag type='success'>已启用智能IO调度 [cpq]</n-tag>
+				) : (
+					<n-tag type='error'>未启用智能IO调度 [cpq]</n-tag>
+				)}
+				<n-alert class='mt-5' type='info' show-icon={false} bordered={false}>
+					<p>
+						「智能IO调度 cpq」是小米基于「Linux磁盘IO调度
+						bfq」二次优化改进的版本，一般情况下建议启用，可以一定程度提升系统的IO性能体验。
+					</p>
+				</n-alert>
+				{IOSchedulerHook.isNeedShowModuleTips.value && (
+					<n-alert class='mt-5' type='warning' show-icon={false} bordered={false}>
+						<p>
+							您当前未启用「智能IO调度」，由于小米「磁盘IO调度」BUG，骁龙8+Gen1机型存在IO调度异常的问题，
+							容易导致系统卡顿或者无响应，您可以通过安装「精选应用-系统功能补全模块」来启用「智能IO调度」，提升系统IO性能体验。
+						</p>
+					</n-alert>
+				)}
+			</>
+		),
+		isShow: () => Boolean(IOSchedulerHook.isSupportSmartFocusIO.value),
+	},
+	{
+		title: '磁盘IO调度策略',
+		content: () => (
+			<>
+				<div class='grid gap-4 sm:px-0 grid-cols-2'>
+					{Array.isArray(IOSchedulerHook.schedulerList.value) &&
+						IOSchedulerHook.schedulerList.value.map((schedulerItem, schedulerIndex) => {
+							const getSchedulerType = (
+								schedulerItem: string,
+							): 'info' | 'error' | 'success' | 'warning' => {
+								const current = IOSchedulerHook.currentScheduler.value;
+								const prop = IOSchedulerHook.currentPropScheduler.value;
+
+								if (!prop && current === schedulerItem) return 'error';
+								if (prop === schedulerItem && current === schedulerItem) return 'success';
+								if (prop && current && prop !== current && current === schedulerItem) return 'warning';
+								return 'info';
+							};
+							const currentSchedulerType = getSchedulerType(schedulerItem);
+							return (
+								<n-alert
+									size='small'
+									show-icon={false}
+									type={getSchedulerType(schedulerItem)}
+									title={schedulerItem}
+									class='w-full'>
+									{['error'].includes(currentSchedulerType) ? (
+										<n-tag class='mt-2' bordered={false} type={currentSchedulerType}>
+											{<div>系统默认磁盘调度</div>}
+										</n-tag>
+									) : (
+										<n-button
+											class='mt-2'
+											v-show={IOSchedulerHook.isInit.value}
+											strong
+											secondary
+											type={currentSchedulerType}
+											loading={deviceStore.loading || IOSchedulerHook.loading.value}
+											size='small'
+											onClick={() => IOSchedulerHook.changeIOScheduler(schedulerItem)}>
+											{currentSchedulerType === 'success'
+												? '已应用该配置'
+												: currentSchedulerType === 'warning'
+													? '异常的磁盘调度'
+													: '应用配置'}
+										</n-button>
+									)}
+								</n-alert>
+							);
+						})}
+				</div>
+				<n-alert class='mt-5' type='info' show-icon={false} bordered={false}>
+					<p>
+						这里会显示系统所支持的所有磁盘IO调度策略，方便您灵活切换设备的磁盘IO调度策略
+					</p>
+					<p>
+						(受系统实际支持情况影响，切换其他磁盘IO调度策略可能会导致系统出现未知异常，请自行准备救砖模块)
+					</p>
+				</n-alert>
+			</>
+		),
+		isShow: () => Boolean(IOSchedulerHook.isSupportSmartFocusIO.value),
 	},
 	{
 		title: 'UFS 存储健康',

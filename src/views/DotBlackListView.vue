@@ -1051,7 +1051,7 @@ function createColumns(): DataTableColumns<DotBlackListMergeItem> {
 					</template>
 					应用抽屉
 				</n-button>
-				<n-button
+				<!-- <n-button
 					class="mb-3 mr-3"
 					type="error"
 					secondary
@@ -1063,7 +1063,7 @@ function createColumns(): DataTableColumns<DotBlackListMergeItem> {
 						</n-icon>
 					</template>
 					超级小爱
-				</n-button>
+				</n-button> -->
 				<!-- <n-button
 					class="mb-3 mr-3"
 					type="info"

@@ -3,10 +3,6 @@ import axios from 'axios';
 import handlePromiseWithLogging from '@/utils/handlePromiseWithLogging';
 import type GameBoosterTableItem from '@/types/GameBoosterTableItem';
 
-export interface SmartFocusIOResult extends ExecResults {
-	stdout: 'on' | 'off';
-}
-
 export interface AndroidAppPackageJobsResult extends Omit<ExecResults, 'stdout'> {
 	stdout: number;
 }

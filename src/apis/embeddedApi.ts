@@ -11,10 +11,6 @@ import {
 	thirdPartyAppOptimizeJSONFormatToRunnerShell,
 } from '@/utils/embeddedFun';
 
-export interface SmartFocusIOResult extends ExecResults {
-	stdout: 'on' | 'off';
-}
-
 export interface AndroidAppPackageJobsResult extends Omit<ExecResults, 'stdout'> {
 	stdout: number;
 }

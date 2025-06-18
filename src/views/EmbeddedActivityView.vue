@@ -2173,7 +2173,7 @@ onMounted(() => {
 					</template>
 					应用抽屉
 				</n-button>
-				<n-button
+				<!-- <n-button
 					class="mb-3 mr-3"
 					type="error"
 					secondary
@@ -2185,7 +2185,7 @@ onMounted(() => {
 						</n-icon>
 					</template>
 					超级小爱
-				</n-button>
+				</n-button> -->
 				<n-button
 					class="mb-3 mr-3"
 					type="info"

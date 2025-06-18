@@ -125,7 +125,6 @@ export const useDeviceStore = defineStore(
 			GAME_BOOSTER_RADIO_MANAGER: true,
 			GAME_BOOSTER_CUSTOM_RATIO: false,
 		});
-		const smartFocusIO = ref<deviceApi.SmartFocusIOResult['stdout']>();
 		const miuiCompatEnable = ref<boolean>(false);
 		const projectTrebleSupportMagicWindowFix = ref<boolean>(false);
 		const miuiAppCompatEnable = ref<boolean>(false);
@@ -439,14 +438,6 @@ export const useDeviceStore = defineStore(
 				MIOSVersion.value = getMIOSVersionRes;
 			}
 
-			// 智能IO调度 *弱校验
-			const [, getSmartFocusIO] = await $to<deviceApi.SmartFocusIOResult['stdout'], string>(
-				deviceApi.getSmartFocusIO(),
-			);
-			if (getSmartFocusIO) {
-				smartFocusIO.value = getSmartFocusIO;
-			}
-
 			if (MIOSVersion.value && MIOSVersion.value >= 2 && androidTargetSdk.value >= 35) {
 				const [getIsDisabledOS2SystemAppOptimizeErr, getIsDisabledOS2SystemAppOptimizeRes] = await $to<
 					string,
@@ -531,7 +522,6 @@ export const useDeviceStore = defineStore(
 			batteryInfo,
 			lastVersionCode,
 			needReloadData,
-			smartFocusIO,
 			showRotationSuggestions,
 			installedAndroidApplicationPackageNameList,
 			getAndroidApplicationPackageNameList,

@@ -21,4 +21,24 @@ export const parsePropContent = (content: string): { [key: string]: string } => 
       }
     });
     return result;
-  };
+};
+
+export function parseSchedulerOutput(output: string) {
+  const schedulerList: string[] = []
+  let currentScheduler = ''
+
+  output.trim().split(/\s+/).forEach(item => {
+    if (item.startsWith('[') && item.endsWith(']')) {
+      const queue = item.slice(1, -1)
+      currentScheduler = queue
+      schedulerList.push(queue)
+    } else {
+      schedulerList.push(item)
+    }
+  })
+
+  return {
+    schedulerList,
+    currentScheduler
+  }
+}

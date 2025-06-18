@@ -31,7 +31,7 @@ export const getDeviceCharacteristics = (): Promise<string> => {
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
-				resolve('tablet');
+				resolve('');
 			} else {
 				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
 				errno ? reject(stderr) : resolve(stdout);
@@ -100,21 +100,6 @@ export const getMIOSVersion = (): Promise<number> => {
 		shellCommon,
 	);
 };
-
-// export const getSmartFocusIO = (): Promise<SmartFocusIOResult['stdout']> => {
-// 	const shellCommon = `getprop persist.sys.stability.smartfocusio`;
-// 	return handlePromiseWithLogging(
-// 		new Promise(async (resolve, reject) => {
-// 			if (import.meta.env.MODE === 'development') {
-// 				resolve('on');
-// 			} else {
-// 				const { errno, stdout, stderr }: SmartFocusIOResult = (await exec(shellCommon)) as SmartFocusIOResult;
-// 				errno ? reject(stderr) : resolve(stdout);
-// 			}
-// 		}),
-// 		shellCommon,
-// 	);
-// };
 
 export const getDeviceSocName = (): Promise<string> => {
 	const shellCommon = `getprop ro.vendor.qti.soc_name`;
@@ -1048,7 +1033,8 @@ const parseDisplayModeRecords = (output: string): DisplayModeItem[] => {
 	const sdk = deviceStore.androidTargetSdk;
 
 	if (sdk >= 35) {
-		pattern += ',\\s*vsync=([\\d.]+),\\s*synthetic=(true|false),\\s*alternativeRefreshRates=\\[([^\\]]*)\\],\\s*supportedHdrTypes=\\[([^\\]]*)\\]';
+		pattern +=
+			',\\s*vsync=([\\d.]+),\\s*synthetic=(true|false),\\s*alternativeRefreshRates=\\[([^\\]]*)\\],\\s*supportedHdrTypes=\\[([^\\]]*)\\]';
 	} else if (sdk === 34) {
 		pattern += ',\\s*alternativeRefreshRates=\\[([^\\]]*)\\],\\s*supportedHdrTypes=\\[([^\\]]*)\\]';
 	} else {
@@ -1120,7 +1106,7 @@ const parseDisplayModeRecords = (output: string): DisplayModeItem[] => {
 					fps: parseFloat(fps),
 					alternativeRefreshRates: alternativeRefreshRates
 						? alternativeRefreshRates.split(',').map(rate => parseFloat(rate.trim()))
-						: []
+						: [],
 				};
 
 				records.push(record);
@@ -1902,7 +1888,7 @@ export const openAiDistComputeClient = (): Promise<string> => {
 };
 
 export const openAiDistComputeServer = (): Promise<string> => {
-	const shellCommon = `am start 'intent://settings/#Intent;action=android.intent.action.VIEW;launchFlags=0x14400000;component=com.xiaomi.aicr/.dist.client.activity.DistComputeServerActivity;end'`;
+	const shellCommon = `am start 'intent://settings/#Intent;action=android.intent.action.VIEW;launchFlags=0x14400000;component=com.xiaomi.aicr/.dist.server.activity.DistComputeServerActivity;end'`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -2129,7 +2115,7 @@ export const getPreStartProcForBuild = (): Promise<string> => {
 			if (import.meta.env.MODE === 'development') {
 				resolve(`true`);
 			} else {
-				const { errno, stdout, stderr }: SmartFocusIOResult = (await exec(shellCommon)) as SmartFocusIOResult;
+				const { errno, stdout, stderr }: ExecResults = (await exec(shellCommon)) as ExecResults;
 				errno ? reject(stderr) : resolve(stdout);
 			}
 		}),
@@ -2145,7 +2131,7 @@ export const getPreStartProcForModule = (): Promise<string> => {
 			if (import.meta.env.MODE === 'development') {
 				resolve(`false`);
 			} else {
-				const { errno, stdout, stderr }: SmartFocusIOResult = (await exec(shellCommon)) as SmartFocusIOResult;
+				const { errno, stdout, stderr }: ExecResults = (await exec(shellCommon)) as ExecResults;
 				errno ? reject(stderr) : resolve(stdout);
 			}
 		}),
@@ -2191,7 +2177,7 @@ export const getDeepSleepEnableForBuild = (): Promise<string> => {
 			if (import.meta.env.MODE === 'development') {
 				resolve(`true`);
 			} else {
-				const { errno, stdout, stderr }: SmartFocusIOResult = (await exec(shellCommon)) as SmartFocusIOResult;
+				const { errno, stdout, stderr }: ExecResults = (await exec(shellCommon)) as ExecResults;
 				errno ? reject(stderr) : resolve(stdout);
 			}
 		}),
@@ -2207,7 +2193,7 @@ export const getDeepSleepEnableForModule = (): Promise<string> => {
 			if (import.meta.env.MODE === 'development') {
 				resolve(`false`);
 			} else {
-				const { errno, stdout, stderr }: SmartFocusIOResult = (await exec(shellCommon)) as SmartFocusIOResult;
+				const { errno, stdout, stderr }: ExecResults = (await exec(shellCommon)) as ExecResults;
 				errno ? reject(stderr) : resolve(stdout);
 			}
 		}),
@@ -2267,7 +2253,7 @@ export const getFboEnable = (): Promise<string> => {
 			if (import.meta.env.MODE === 'development') {
 				resolve(`true`);
 			} else {
-				const { errno, stdout, stderr }: SmartFocusIOResult = (await exec(shellCommon)) as SmartFocusIOResult;
+				const { errno, stdout, stderr }: ExecResults = (await exec(shellCommon)) as ExecResults;
 				errno ? reject(stderr) : resolve(stdout);
 			}
 		}),
@@ -2282,7 +2268,7 @@ export const setFboEnable = (): Promise<string> => {
 			if (import.meta.env.MODE === 'development') {
 				resolve(`true`);
 			} else {
-				const { errno, stdout, stderr }: SmartFocusIOResult = (await exec(shellCommon)) as SmartFocusIOResult;
+				const { errno, stdout, stderr }: ExecResults = (await exec(shellCommon)) as ExecResults;
 				errno ? reject(stderr) : resolve(stdout);
 			}
 		}),
@@ -2297,7 +2283,7 @@ export const getFboInstalld = (): Promise<string> => {
 			if (import.meta.env.MODE === 'development') {
 				resolve(`running`);
 			} else {
-				const { errno, stdout, stderr }: SmartFocusIOResult = (await exec(shellCommon)) as SmartFocusIOResult;
+				const { errno, stdout, stderr }: ExecResults = (await exec(shellCommon)) as ExecResults;
 				errno ? reject(stderr) : resolve(stdout);
 			}
 		}),
@@ -2312,7 +2298,7 @@ export const getFboServiceCtrl = (): Promise<string> => {
 			if (import.meta.env.MODE === 'development') {
 				resolve(`true`);
 			} else {
-				const { errno, stdout, stderr }: SmartFocusIOResult = (await exec(shellCommon)) as SmartFocusIOResult;
+				const { errno, stdout, stderr }: ExecResults = (await exec(shellCommon)) as ExecResults;
 				errno ? reject(stderr) : resolve(stdout);
 			}
 		}),
@@ -2327,7 +2313,7 @@ export const setFboServiceCtrl = (): Promise<string> => {
 			if (import.meta.env.MODE === 'development') {
 				resolve(`true`);
 			} else {
-				const { errno, stdout, stderr }: SmartFocusIOResult = (await exec(shellCommon)) as SmartFocusIOResult;
+				const { errno, stdout, stderr }: ExecResults = (await exec(shellCommon)) as ExecResults;
 				errno ? reject(stderr) : resolve(stdout);
 			}
 		}),
@@ -2485,7 +2471,7 @@ export const getBackingDev = (): Promise<string> => {
 			if (import.meta.env.MODE === 'development') {
 				resolve(`/dev/block/dm-56`);
 			} else {
-				const { errno, stdout, stderr }: SmartFocusIOResult = (await exec(shellCommon)) as SmartFocusIOResult;
+				const { errno, stdout, stderr }: ExecResults = (await exec(shellCommon)) as ExecResults;
 				errno ? reject(stderr) : resolve(stdout);
 			}
 		}),
@@ -2902,4 +2888,83 @@ export const getModuleChangelog = async (url: string): Promise<string> => {
 			}
 		}
 	});
+};
+
+export const getIOScheduler = (): Promise<string> => {
+	const shellCommon = `cat /sys/block/sda/queue/scheduler`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`mq-deadline [kyber] bfq cpq none`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : stdout === 'null' ? resolve('') : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const getAutoSettingIOScheduler = (): Promise<string> => {
+	const shellCommon = `grep 'auto_setting_io_scheduler=' /data/adb/MIUI_MagicWindow+/config.prop | awk -F'=' '{print $2}'`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`kyber`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const removeAutoSettingIOScheduler = (): Promise<string> => {
+	const shellCommon = `sed -i '/^auto_setting_io_scheduler=/d' //data/adb/MIUI_MagicWindow+/config.prop && echo "Remove auto_setting_io_scheduler successfully." || echo "Remove auto_setting_io_scheduler failed."`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`Remove auto_setting_io_scheduler successfully.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno
+					? reject(stderr)
+					: stdout === 'Remove auto_setting_io_scheduler successfully.'
+						? resolve(stdout)
+						: reject(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const writeIOScheduler = (scheduler: string): Promise<string> => {
+	const shellCommon = `echo '${scheduler}' > /sys/block/sda/queue/scheduler`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(``);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : stdout === 'null' ? resolve('') : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+}
+
+export const addAutoSettingIOScheduler = (scheduler: string): Promise<string> => {
+	const shellCommon = `grep -q '^auto_setting_io_scheduler=' /data/adb/MIUI_MagicWindow+/config.prop || (echo "auto_setting_io_scheduler=${scheduler}" | tee -a /data/adb/MIUI_MagicWindow+/config.prop > /dev/null && echo "Command executed successfully." || echo "Command failed.")`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`Command executed successfully.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : stdout === 'Command executed successfully.' ? resolve(stdout) : reject(stdout);
+			}
+		}),
+		shellCommon,
+	);
 };

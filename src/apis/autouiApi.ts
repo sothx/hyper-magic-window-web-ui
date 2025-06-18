@@ -7,10 +7,6 @@ import { useDeviceStore } from '@/stores/device';
 import { useLogsStore } from '@/stores/logs';
 import type DotBlackListItem from '@/types/DotBlackListItem';
 
-export interface SmartFocusIOResult extends ExecResults {
-	stdout: 'on' | 'off';
-}
-
 export interface AndroidAppPackageJobsResult extends Omit<ExecResults, 'stdout'> {
 	stdout: number;
 }

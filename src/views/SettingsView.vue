@@ -25,6 +25,7 @@ import { ArrowDownCircleIcon } from '@heroicons/vue/24/solid';
 import { MagnifyingGlassIcon, XCircleIcon } from '@heroicons/vue/24/outline';
 import { useDisplayModeRecord, type DisplayModeItem } from '@/hooks/useDisplayModeRecord';
 import type { JSX } from 'vue/jsx-runtime';
+import { useIOScheduler } from '@/hooks/useIOScheduler';
 const deviceStore = useDeviceStore();
 const searchKeyword = ref('');
 type SearchKeyWordInputInstance = InstanceType<typeof NInput>;
@@ -36,6 +37,7 @@ const disabledOS2SystemAppOptimizeHook = useDisabledOS2SystemAppOptimize();
 const ZRAMWritebackHook = useZRAMWriteback();
 const { activateABTest, loading: activateABTestLoading } = useABTestActivation();
 const OS2InstallModuleTipsHook = useOS2InstallModuleTips();
+const IOSchedulerHook = useIOScheduler();
 const useUFSHealthHook = useUFSHealth();
 const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
 	theme: deviceStore.isDarkMode ? darkTheme : lightTheme,
@@ -649,77 +651,93 @@ const settingList: SettingItemInfo[] = [
 		title: '智能IO调度',
 		content: () => (
 			<>
-				{deviceStore.smartFocusIO === 'on' ? (
-					<n-tag type='success'>已启用智能IO调度</n-tag>
+				{IOSchedulerHook.smartFocusIO.value === 'on' ? (
+					<n-tag type='success'>已启用智能IO调度 [cpq]</n-tag>
 				) : (
-					<n-tag type='info'>已启用系统默认调度</n-tag>
+					<n-tag type='error'>未启用智能IO调度 [cpq]</n-tag>
 				)}
-
-				{deviceStore.deviceInfo.socModel === 'SM8475' &&
-					deviceStore.androidTargetSdk &&
-					deviceStore.androidTargetSdk >= 34 &&
-					deviceStore.smartFocusIO !== 'on' &&
-					['tablet', 'fold'].includes(deviceStore.deviceType) && (
-						<n-alert class='mt-5' type='warning' show-icon={false} bordered={false}>
-							<p>
-								您当前未启用「智能IO调度」，由于小米「磁盘IO调度」BUG，骁龙8+Gen1机型存在IO调度异常的问题，
-								容易导致系统卡顿或者无响应，您可以通过安装「小米平板系统功能补全模块」来启用「智能IO调度」，提升系统IO性能体验。
-							</p>
-							<n-button
-								class='mt-2'
-								strong
-								size='small'
-								secondary
-								type='warning'
-								onClick={() =>
-									getAppDownload(
-										'小米平板系统功能补全模块',
-										'https://caiyun.139.com/m/i?135CmUuWuqGsk',
-										'magisk',
-									)
-								}>
-								获取小米平板系统功能补全模块
-							</n-button>
-						</n-alert>
-					)}
-
-				{deviceStore.deviceInfo.socModel === 'SM8475' &&
-					deviceStore.androidTargetSdk &&
-					deviceStore.androidTargetSdk >= 34 &&
-					deviceStore.smartFocusIO !== 'on' &&
-					['phone'].includes(deviceStore.deviceType) && (
-						<n-alert class='mt-5' type='warning' show-icon={false} bordered={false}>
-							<p>
-								您当前未启用「智能IO调度」，由于小米「磁盘IO调度」BUG，骁龙8+Gen1机型存在IO调度异常的问题，
-								容易导致系统卡顿或者无响应，您可以通过安装「小米手机系统功能补全模块」来启用「智能IO调度」，提升系统IO性能体验。
-							</p>
-							<n-button
-								class='mt-2'
-								strong
-								size='small'
-								secondary
-								type='warning'
-								onClick={() =>
-									getAppDownload(
-										'小米手机系统功能补全模块',
-										'https://caiyun.139.com/m/i?135CmOdNLkQeu',
-										'magisk',
-									)
-								}>
-								获取小米平板系统功能补全模块
-							</n-button>
-						</n-alert>
-					)}
+				<n-alert class='mt-5' type='info' show-icon={false} bordered={false}>
+					<p>
+						「智能IO调度 cpq」是小米基于「Linux磁盘IO调度
+						bfq」二次优化改进的版本，一般情况下建议启用，可以一定程度提升系统的IO性能体验。
+					</p>
+				</n-alert>
+				{IOSchedulerHook.isNeedShowModuleTips.value && (
+					<n-alert class='mt-5' type='warning' show-icon={false} bordered={false}>
+						<p>
+							您当前未启用「智能IO调度」，由于小米「磁盘IO调度」BUG，骁龙8+Gen1机型存在IO调度异常的问题，
+							容易导致系统卡顿或者无响应，您可以通过安装「精选应用-系统功能补全模块」来启用「智能IO调度」，提升系统IO性能体验。
+						</p>
+					</n-alert>
+				)}
 			</>
 		),
 		isShow: () =>
-			Boolean(
-				deviceStore.deviceInfo.socModel === 'SM8475' &&
-					deviceStore.androidTargetSdk &&
-					deviceStore.androidTargetSdk >= 34 &&
-					deviceStore.smartFocusIO !== 'on' &&
-					['phone'].includes(deviceStore.deviceType),
-			),
+			Boolean(IOSchedulerHook.isSupportSmartFocusIO.value && ['tablet', 'fold'].includes(deviceStore.deviceType)),
+	},
+	{
+		title: '磁盘IO调度策略',
+		content: () => (
+			<>
+				<div class='grid gap-4 sm:px-0 lg:grid-cols-2'>
+					{Array.isArray(IOSchedulerHook.schedulerList.value) &&
+						IOSchedulerHook.schedulerList.value.map((schedulerItem, schedulerIndex) => {
+							const getSchedulerType = (
+								schedulerItem: string,
+							): 'info' | 'error' | 'success' | 'warning' => {
+								const current = IOSchedulerHook.currentScheduler.value;
+								const prop = IOSchedulerHook.currentPropScheduler.value;
+
+								if (!prop && current === schedulerItem) return 'error';
+								if (prop === schedulerItem && current === schedulerItem) return 'success';
+								if (prop && current && prop !== current && current === schedulerItem) return 'warning';
+								return 'info';
+							};
+							const currentSchedulerType = getSchedulerType(schedulerItem);
+							return (
+								<n-alert
+									size='small'
+									show-icon={false}
+									type={getSchedulerType(schedulerItem)}
+									title={schedulerItem}
+									class='w-full'>
+									{['error'].includes(currentSchedulerType) ? (
+										<n-tag class='mt-2' bordered={false} type={currentSchedulerType}>
+											{<div>系统默认磁盘调度</div>}
+										</n-tag>
+									) : (
+										<n-button
+											class='mt-2'
+											v-show={IOSchedulerHook.isInit.value}
+											strong
+											secondary
+											type={currentSchedulerType}
+											loading={deviceStore.loading || IOSchedulerHook.loading.value}
+											size='small'
+											onClick={() => IOSchedulerHook.changeIOScheduler(schedulerItem)}>
+											{currentSchedulerType === 'success'
+												? '已应用该配置'
+												: currentSchedulerType === 'warning'
+													? '异常的磁盘调度'
+													: '应用配置'}
+										</n-button>
+									)}
+								</n-alert>
+							);
+						})}
+				</div>
+				<n-alert class='mt-5' type='info' show-icon={false} bordered={false}>
+					<p>
+						这里会显示系统所支持的所有磁盘IO调度策略，方便您灵活切换设备的磁盘IO调度策略
+					</p>
+					<p>
+						(受系统实际支持情况影响，切换其他磁盘IO调度策略可能会导致系统出现未知异常，请自行准备救砖模块)
+					</p>
+				</n-alert>
+			</>
+		),
+		isShow: () =>
+			Boolean(IOSchedulerHook.isSupportSmartFocusIO.value && ['tablet', 'fold'].includes(deviceStore.deviceType)),
 	},
 	{
 		title: 'ZRAM Writeback',
@@ -829,7 +847,11 @@ const settingList: SettingItemInfo[] = [
 	{
 		title: '应用字体',
 		content: () => (
-			<n-dropdown size='large' trigger='click' options={fontModeOptions} onSelect={handleSelectFontMode}>
+			<n-dropdown
+				size='large'
+				trigger='click'
+				options={fontModeOptions.value}
+				onSelect={(item: string) => handleSelectFontMode(item)}>
 				<n-button size='small' strong secondary type={fontModeMap.value[fontStore.currentFont]?.type ?? 'info'}>
 					{fontStore.currentFont}
 				</n-button>
@@ -948,40 +970,30 @@ const settingList: SettingItemInfo[] = [
 	},
 	{
 		title: '设备Soc类型',
-		content: () => (
-			<>{deviceStore.deviceInfo.socModel || '获取失败'}</>
-		),
+		content: () => <>{deviceStore.deviceInfo.socModel || '获取失败'}</>,
 		isShow: () => Boolean(deviceStore.deviceInfo.socModel),
 	},
 	{
 		title: '设备Soc名称',
-		content: () => (
-			<>{deviceStore.deviceInfo.socName || '获取失败'}</>
-		),
+		content: () => <>{deviceStore.deviceInfo.socName || '获取失败'}</>,
 		isShow: () => Boolean(deviceStore.deviceInfo.socName),
 	},
 	{
 		title: '设备显示器信息(display0)',
-		content: () => (
-			<>{deviceStore.deviceInfo.display0Panel}</>
-		),
+		content: () => <>{deviceStore.deviceInfo.display0Panel}</>,
 		isShow: () => Boolean(deviceStore.deviceInfo.display0Panel),
 	},
 	{
 		title: '设备DDR和UFS信息',
-		content: () => (
-			<div class="whitespace-pre">{deviceStore.deviceInfo.memoryInfo ?? '获取失败'}</div>
-		),
+		content: () => <div class='whitespace-pre'>{deviceStore.deviceInfo.memoryInfo ?? '获取失败'}</div>,
 		isShow: () => Boolean(deviceStore.deviceInfo.memoryInfo && ['tablet', 'fold'].includes(deviceStore.deviceType)),
 	},
 	{
 		title: '设备DDR生产厂商',
-		content: () => (
-			<div class="whitespace-pre">{deviceStore.DDRVendor ?? '获取失败'}</div>
-		),
+		content: () => <div class='whitespace-pre'>{deviceStore.DDRVendor ?? '获取失败'}</div>,
 		isShow: () => Boolean(deviceStore.DDRVendor && ['tablet', 'fold'].includes(deviceStore.deviceType)),
 	},
-		{
+	{
 		title: 'UFS 存储健康',
 		content: () => (
 			<>
@@ -1016,7 +1028,7 @@ const settingList: SettingItemInfo[] = [
 		),
 		isShow: () => Boolean(useUFSHealthHook.isShow.value && ['tablet', 'fold'].includes(deviceStore.deviceType)),
 	},
-		{
+	{
 		title: '真实电量（高通）',
 		content: () => (
 			<>
@@ -1068,7 +1080,10 @@ const settingList: SettingItemInfo[] = [
 				)}
 			</>
 		),
-		isShow: () => Boolean(realQuantityHook.qcomBatteryFg1RSocInfo.current && ['tablet', 'fold'].includes(deviceStore.deviceType)),
+		isShow: () =>
+			Boolean(
+				realQuantityHook.qcomBatteryFg1RSocInfo.current && ['tablet', 'fold'].includes(deviceStore.deviceType),
+			),
 	},
 	{
 		title: '真实电量',
@@ -1122,22 +1137,26 @@ const settingList: SettingItemInfo[] = [
 				)}
 			</>
 		),
-		isShow: () => Boolean(realQuantityHook.capacityRawInfo.current && ['tablet', 'fold'].includes(deviceStore.deviceType)),
+		isShow: () =>
+			Boolean(realQuantityHook.capacityRawInfo.current && ['tablet', 'fold'].includes(deviceStore.deviceType)),
 	},
 	{
 		title: '电池出厂设计容量',
 		content: () => <p>{`${deviceStore.batteryInfo.chargeFullDesign / 1000} mAh`}</p>,
-		isShow: () => Boolean(deviceStore.batteryInfo.chargeFullDesign && ['tablet', 'fold'].includes(deviceStore.deviceType)),
+		isShow: () =>
+			Boolean(deviceStore.batteryInfo.chargeFullDesign && ['tablet', 'fold'].includes(deviceStore.deviceType)),
 	},
 	{
 		title: '电池当前预估容量',
 		content: () => <p>{`${deviceStore.batteryInfo.chargeFull / 1000} mAh`}</p>,
-		isShow: () => Boolean(deviceStore.batteryInfo.chargeFull && ['tablet', 'fold'].includes(deviceStore.deviceType)),
+		isShow: () =>
+			Boolean(deviceStore.batteryInfo.chargeFull && ['tablet', 'fold'].includes(deviceStore.deviceType)),
 	},
 	{
 		title: '电池循环充电次数',
 		content: () => <p>{`${deviceStore.batteryInfo.cycleCount} 次`}</p>,
-		isShow: () => Boolean(deviceStore.batteryInfo.cycleCount && ['tablet', 'fold'].includes(deviceStore.deviceType)),
+		isShow: () =>
+			Boolean(deviceStore.batteryInfo.cycleCount && ['tablet', 'fold'].includes(deviceStore.deviceType)),
 	},
 	{
 		title: '电池预估健康度',
@@ -1148,7 +1167,12 @@ const settingList: SettingItemInfo[] = [
 				)} %`}
 			</p>
 		),
-		isShow: () => Boolean(deviceStore.batteryInfo.chargeFullDesign && deviceStore.batteryInfo.chargeFull && ['tablet', 'fold'].includes(deviceStore.deviceType)),
+		isShow: () =>
+			Boolean(
+				deviceStore.batteryInfo.chargeFullDesign &&
+					deviceStore.batteryInfo.chargeFull &&
+					['tablet', 'fold'].includes(deviceStore.deviceType),
+			),
 	},
 	{
 		title: '电池售后健康度（高通）',
@@ -1195,7 +1219,8 @@ const settingList: SettingItemInfo[] = [
 				</n-alert>
 			</>
 		),
-		isShow: () => Boolean(deviceStore.batteryInfo.sohXMPower && ['tablet', 'fold'].includes(deviceStore.deviceType)),
+		isShow: () =>
+			Boolean(deviceStore.batteryInfo.sohXMPower && ['tablet', 'fold'].includes(deviceStore.deviceType)),
 	},
 ];
 const filteredSettingList = computed(() => {
@@ -1235,7 +1260,7 @@ const filteredSettingList = computed(() => {
 				</p>
 			</div>
 
-						<n-card size="small" class="mt-5">
+			<n-card size="small" class="mt-5">
 				<!-- <div class="flex flex-wrap">
 					<n-button class="mb-3 mr-3" color="#8a2be2">
 						<template #icon>
@@ -1243,17 +1268,17 @@ const filteredSettingList = computed(() => {
 								<SquaresPlusIcon />
 							</n-icon>
 						</template>
-						热重载应用数据
-					</n-button>
-					<n-button class="mb-3 mr-3" color="#69b2b6">
-						<template #icon>
+热重载应用数据
+</n-button>
+<n-button class="mb-3 mr-3" color="#69b2b6">
+	<template #icon>
 							<n-icon>
 								<CircleStackIcon />
 							</n-icon>
 						</template>
-						获取已安装应用名称
-					</n-button>
-				</div> -->
+	获取已安装应用名称
+</n-button>
+</div> -->
 				<div class="flex">
 					<n-input-group>
 						<n-input
