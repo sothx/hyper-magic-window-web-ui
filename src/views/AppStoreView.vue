@@ -218,7 +218,7 @@ const appList: AppInfo[] = [
 				</p>
 			</div>
 		),
-		url: 'https://caiyun.139.com/m/i?2mWL9yPJcop5b',
+		url: 'https://caiyun.139.com/w/i/2nQR6WKKg08e2',
 		type: 'success',
 		image: '/images/apps/magisk.webp',
 		tag: 'magisk',
