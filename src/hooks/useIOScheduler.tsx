@@ -29,7 +29,6 @@ export function useIOScheduler() {
 	const { message, modal } = createDiscreteApi(['message', 'modal'], {
 		configProviderProps: configProviderPropsRef,
 	});
-
 	const changeIOScheduler = async (scheduler: string) => {
 		const [negativeRes, positiveRes] = await $to(
 			new Promise((resolve, reject) => {
@@ -104,7 +103,7 @@ export function useIOScheduler() {
 					type: 'success',
 					preset: 'dialog',
 					content: () => (
-						<p>好耶w，已经成功配置磁盘IO调度~实际生效还需要重启设备，确定要重启吗？</p>
+						<p>好耶w，已经成功配置磁盘IO调度~</p>
 					),
 					positiveText: '确定',
 				});
@@ -149,11 +148,10 @@ export function useIOScheduler() {
 		if (getIOSchedulerRes) {
 			const { schedulerList: outputSchedulerList, currentScheduler : outputCurrentScheduler } = parseSchedulerOutput(getIOSchedulerRes);
 			schedulerList.value = outputSchedulerList;
-			console.log(schedulerList.value,'schedulerList.value')
 			currentScheduler.value = outputCurrentScheduler;
 		}
 
-		if (getSmartFocusIORes === 'on' || currentScheduler.value === 'cpq') {
+		if (getSmartFocusIORes === 'on') {
 			smartFocusIO.value = 'on';
 		} else {
 			smartFocusIO.value = 'off';

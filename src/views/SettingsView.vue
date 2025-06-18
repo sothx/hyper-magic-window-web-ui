@@ -649,29 +649,44 @@ const settingList: SettingItemInfo[] = [
 	},
 	{
 		title: '智能IO调度',
-		content: () => (
-			<>
-				{IOSchedulerHook.smartFocusIO.value === 'on' ? (
-					<n-tag type='success'>已启用智能IO调度 [cpq]</n-tag>
-				) : (
-					<n-tag type='error'>未启用智能IO调度 [cpq]</n-tag>
-				)}
-				<n-alert class='mt-5' type='info' show-icon={false} bordered={false}>
-					<p>
-						「智能IO调度 cpq」是小米基于「Linux磁盘IO调度
-						bfq」二次优化改进的版本，一般情况下建议启用，可以一定程度提升系统的IO性能体验。
-					</p>
-				</n-alert>
-				{IOSchedulerHook.isNeedShowModuleTips.value && (
-					<n-alert class='mt-5' type='warning' show-icon={false} bordered={false}>
+		content: () => {
+			const getSmartFocusIOType = (): 'error' | 'success' | 'warning' => {
+				const current = IOSchedulerHook.currentScheduler.value;
+				const currentSmartFocusIO = IOSchedulerHook.smartFocusIO.value;
+				const prop = IOSchedulerHook.currentPropScheduler.value;
+
+				if (current === 'cpq') return 'success';
+				if (currentSmartFocusIO === 'on' && prop && prop !== 'cpq') return 'warning';
+				return 'error';
+			};
+			const currentType = getSmartFocusIOType();
+			return (
+				<>
+					<n-tag type={currentType}>
+						{currentType === 'success'
+							? '已启用智能IO调度 [cpq]'
+							: currentType === 'warning'
+								? `已被模块磁盘IO调度覆盖 [${IOSchedulerHook.currentScheduler.value}]`
+								: '未启用智能IO调度'}
+					</n-tag>
+
+					<n-alert class='mt-5' type='info' show-icon={false} bordered={false}>
 						<p>
-							您当前未启用「智能IO调度」，由于小米「磁盘IO调度」BUG，骁龙8+Gen1机型存在IO调度异常的问题，
-							容易导致系统卡顿或者无响应，您可以通过安装「精选应用-系统功能补全模块」来启用「智能IO调度」，提升系统IO性能体验。
+							「智能IO调度 cpq」是小米基于「Linux磁盘IO调度
+							bfq」二次优化改进的版本，一般情况下建议启用，可以一定程度提升系统的IO性能体验。
 						</p>
 					</n-alert>
-				)}
-			</>
-		),
+					{IOSchedulerHook.isNeedShowModuleTips.value && (
+						<n-alert class='mt-5' type='warning' show-icon={false} bordered={false}>
+							<p>
+								您当前未启用「智能IO调度」，由于小米「磁盘IO调度」BUG，骁龙8+Gen1机型存在IO调度异常的问题，
+								容易导致系统卡顿或者无响应，您可以通过安装「精选应用-系统功能补全模块」来启用「智能IO调度」，提升系统IO性能体验。
+							</p>
+						</n-alert>
+					)}
+				</>
+			);
+		},
 		isShow: () =>
 			Boolean(IOSchedulerHook.isSupportSmartFocusIO.value && ['tablet', 'fold'].includes(deviceStore.deviceType)),
 	},
