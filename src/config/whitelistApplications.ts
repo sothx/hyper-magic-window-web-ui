@@ -332,7 +332,7 @@ const topApplicationList = {
     'com.habby.capybara': 1, // 卡皮巴拉 Go！
     'com.hexin.plat.android': 1, // 同花顺
     'com.douban.frodo': 1, // 豆瓣
-
+    'com.ping.cimoc.manqu': 1, // 漫趣漫画
 }
 
 export default {
