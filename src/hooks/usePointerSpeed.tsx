@@ -20,6 +20,7 @@ export function usePointerSpeed() {
 
     const loading = ref<boolean>(true);
     const isInit = ref<boolean>(false);
+    const isEdit = ref<boolean>(false);
 
     const { message, modal } = createDiscreteApi(['message', 'modal'], {
         configProviderProps: configProviderPropsRef,
@@ -64,6 +65,7 @@ export function usePointerSpeed() {
     return {
         changePointerSpeed,
         currentPointerSpeed,
+        isEdit,
         isInit,
         loading
     };

@@ -18,6 +18,32 @@ export interface DisplayModeItem {
 export function useDisplayModeRecord() {
 	const autoEnableID = ref<number>();
 
+	const propIsSupportIdleDefaultFps = ref<boolean>(false);
+
+	const isSupportIdleDefaultFps = computed(() => {
+		return (
+			propIsSupportIdleDefaultFps.value &&
+			propIdleDefaultFps.value &&
+			fpsList.value.includes(propIdleDefaultFps.value)
+		);
+	});
+
+	const propDisableIdleFps = ref<boolean>(true);
+
+	const propDisableIdleFpsThreshold = ref<number>(0);
+
+	const propIdleDefaultFps = ref<number>();
+
+	const currentIdleDefaultFps = ref<number>();
+
+	const smartPenIdleEnable = ref<boolean>(true);
+
+	const smartPenVVRFps = ref<boolean>(true);
+
+	const isDisabledSysSmartPenOptimize = computed(() => {
+		return !smartPenIdleEnable.value && !smartPenVVRFps.value
+	})
+
 	const loading = ref<boolean>(true);
 
 	const isInit = ref<boolean>(false);
@@ -46,6 +72,188 @@ export function useDisplayModeRecord() {
 		configProviderProps: configProviderPropsRef,
 	});
 
+	const changeDisabledSysSmartPenOptimize = async (value: boolean) => {
+		const [negativeRes, positiveRes] = await $to(
+			new Promise((resolve, reject) => {
+				modal.create({
+					title: value ? '想禁用手写笔刷新率优化吗？' : '想恢复手写笔刷新率优化吗？',
+					type: 'info',
+					preset: 'dialog',
+					content: () => (
+						<div>
+							<p>{value ? '禁用' : `恢复`}手写笔刷新率优化需要设备重启后才会生效，是否继续？</p>
+						</div>
+					),
+					positiveText: '确定',
+					negativeText: '取消',
+					onPositiveClick: () => {
+						resolve('positiveClick');
+					},
+					onNegativeClick: () => {
+						reject('negativeClick');
+					},
+				});
+			}),
+		);
+		if (positiveRes) {
+			const [removeSmartPenIdleEnableErr] = await $to(deviceApi.removeSmartPenIdleEnable());
+			if (removeSmartPenIdleEnableErr) {
+				modal.create({
+					title: '操作失败',
+					type: 'error',
+					preset: 'dialog',
+					content: () => <p>无法修改模块配置文件，详情请查看日志记录~</p>,
+					negativeText: '确定',
+				});
+				return;
+			}
+			const [removeSmartPenVVRFpsErr] = await $to(deviceApi.removeSmartPenVVRFps());
+			if (removeSmartPenVVRFpsErr) {
+				modal.create({
+					title: '操作失败',
+					type: 'error',
+					preset: 'dialog',
+					content: () => <p>无法修改模块配置文件，详情请查看日志记录~</p>,
+					negativeText: '确定',
+				});
+				return;
+			}
+			if (value) {
+				const [addSmartPenIdleEnableIsFalseErr] = await $to(deviceApi.addSmartPenIdleEnableIsFalse());
+				if (addSmartPenIdleEnableIsFalseErr) {
+					modal.create({
+						title: '操作失败',
+						type: 'error',
+						preset: 'dialog',
+						content: () => <p>无法修改模块配置文件，详情请查看日志记录~</p>,
+						negativeText: '确定',
+					});
+					return;
+				}
+				const [addSmartPenVVRFpsIsFalseErr] = await $to(deviceApi.addSmartPenVVRFpsIsFalse());
+				if (addSmartPenIdleEnableIsFalseErr) {
+					modal.create({
+						title: '操作失败',
+						type: 'error',
+						preset: 'dialog',
+						content: () => <p>无法修改模块配置文件，详情请查看日志记录~</p>,
+						negativeText: '确定',
+					});
+					return;
+				}
+			}
+			smartPenIdleEnable.value = value ? false : true;
+			smartPenVVRFps.value = value ? false : true
+			modal.create({
+				title: '操作成功',
+				type: 'success',
+				preset: 'dialog',
+				content: () => (
+					<p>
+						好耶w，已经成功
+						{value ? `禁用` : '恢复'}手写笔刷新率优化~实际生效还需要重启设备，确定要重启吗？
+					</p>
+				),
+				positiveText: '立即重启',
+				negativeText: '稍后手动重启',
+				onPositiveClick() {
+					deviceApi.rebootDevice().catch(err => {
+						modal.create({
+							title: '操作失败',
+							type: 'error',
+							preset: 'dialog',
+							content: () => <p>无法重启设备，详情请查看日志记录~</p>,
+							negativeText: '确定',
+						});
+						return;
+					});
+				},
+			});
+		}
+	};
+
+	const changeIdleDefaultFps = async (fps: number) => {
+		const isRemove = Boolean(fps === currentIdleDefaultFps.value);
+		const [negativeRes, positiveRes] = await $to(
+			new Promise((resolve, reject) => {
+				modal.create({
+					title: isRemove ? '想移除并重置该默认闲置刷新率吗？' : '想应用该默认闲置刷新率吗？',
+					type: 'info',
+					preset: 'dialog',
+					content: () => (
+						<div>
+							<p>
+								{isRemove ? '移除并重置默认闲置刷新率' : `应用 ${fps} Hz 作为默认闲置刷新率`}
+								需要设备重启后才会生效，是否继续？
+							</p>
+						</div>
+					),
+					positiveText: '确定',
+					negativeText: '取消',
+					onPositiveClick: () => {
+						resolve('positiveClick');
+					},
+					onNegativeClick: () => {
+						reject('negativeClick');
+					},
+				});
+			}),
+		);
+		if (positiveRes) {
+			const [removeIdleDefaultFpsErr] = await $to(deviceApi.removeIdleDefaultFps());
+			if (removeIdleDefaultFpsErr) {
+				modal.create({
+					title: '操作失败',
+					type: 'error',
+					preset: 'dialog',
+					content: () => <p>无法修改模块配置文件，详情请查看日志记录~</p>,
+					negativeText: '确定',
+				});
+				return;
+			}
+			if (!isRemove) {
+				const [addIdleDefaultFpsErr] = await $to(deviceApi.addIdleDefaultFps(fps));
+				if (addIdleDefaultFpsErr) {
+					modal.create({
+						title: '操作失败',
+						type: 'error',
+						preset: 'dialog',
+						content: () => <p>无法修改模块配置文件，详情请查看日志记录~</p>,
+						negativeText: '确定',
+					});
+					return;
+				}
+			}
+			currentIdleDefaultFps.value = isRemove ? undefined : fps;
+			modal.create({
+				title: '操作成功',
+				type: 'success',
+				preset: 'dialog',
+				content: () => (
+					<p>
+						好耶w，已经成功
+						{isRemove ? `移除并重置该默认闲置刷新率配置` : `应用 ${fps}Hz 作为默认闲置刷新率配置`}
+						~实际生效还需要重启设备，确定要重启吗？
+					</p>
+				),
+				positiveText: '立即重启',
+				negativeText: '稍后手动重启',
+				onPositiveClick() {
+					deviceApi.rebootDevice().catch(err => {
+						modal.create({
+							title: '操作失败',
+							type: 'error',
+							preset: 'dialog',
+							content: () => <p>无法重启设备，详情请查看日志记录~</p>,
+							negativeText: '确定',
+						});
+						return;
+					});
+				},
+			});
+		}
+	};
+
 	const supportHDRTypes = computed(() => {
 		if (Array.isArray(deviceStore.displayModeList) && deviceStore.displayModeList.length) {
 			return deviceStore.displayModeList[0].supportedHdrTypes;
@@ -55,11 +263,19 @@ export function useDisplayModeRecord() {
 	});
 
 	const formatDisplayModeList = computed(() => {
-		return deviceStore.displayModeList.map(item => ({
+		const modeList = deviceStore.displayModeList.map(item => ({
 			...item,
 			fps: Math.round(item.fps), // 将 fps 转换为整数
 			alternativeRefreshRates: item.alternativeRefreshRates.map(rate => Math.round(rate)), // 将 alternativeRefreshRates 转换为整数数组
 		}));
+
+		console.log(modeList, 'modeList');
+
+		return modeList;
+	});
+
+	const fpsList = computed(() => {
+		return Array.from(new Set(formatDisplayModeList.value.map(item => item.fps))).sort((a, b) => b - a);
 	});
 
 	const selectDisplayMode = async (data: DisplayModeItem) => {
@@ -176,7 +392,7 @@ export function useDisplayModeRecord() {
 						return;
 					}
 					setDisplayMode(data.id - 1);
-                    autoEnableID.value = data.id;
+					autoEnableID.value = data.id;
 				},
 			});
 		}
@@ -219,9 +435,79 @@ export function useDisplayModeRecord() {
 				autoEnableID.value = undefined;
 			}
 		} else {
-            autoEnableID.value = undefined;
-        }
-        isInit.value = true;
+			autoEnableID.value = undefined;
+		}
+		const [getSmartPenIdleEnableErr, getSmartPenIdleEnableRes] = await $to<string, string>(
+			deviceApi.getSmartPenIdleEnable(),
+		);
+		if (getSmartPenIdleEnableRes && getSmartPenIdleEnableRes === 'false') {
+			smartPenIdleEnable.value = false;
+		} else {
+			smartPenIdleEnable.value = true;
+		}
+		const [getSmartPenVVRFpsErr,getSmartPenVVRFpsRes] = await $to<string,string>(
+			deviceApi.getSmartPenVVRFps()
+		)
+		if (getSmartPenVVRFpsRes && getSmartPenVVRFpsRes === 'false') {
+			smartPenVVRFps.value = false;
+		} else {
+			smartPenVVRFps.value = true;
+		}
+		const [getOdmIsSupportIdleDefaultFpsErr, getOdmIsSupportIdleDefaultFpsRes] = await $to<string, string>(
+			deviceApi.getOdmIsSupportIdleDefaultFps(),
+		);
+		if (getOdmIsSupportIdleDefaultFpsRes && getOdmIsSupportIdleDefaultFpsRes === 'true') {
+			propIsSupportIdleDefaultFps.value = true;
+		} else {
+			propIsSupportIdleDefaultFps.value = false;
+		}
+		if (!propIsSupportIdleDefaultFps.value) {
+			const [getVendorIsSupportIdleDefaultFpsErr, getVendorIsSupportIdleDefaultFpsRes] = await $to<string, string>(
+				deviceApi.getVendorIsSupportIdleDefaultFps(),
+			);
+			if (getVendorIsSupportIdleDefaultFpsRes && getVendorIsSupportIdleDefaultFpsRes === 'true') {
+				propIsSupportIdleDefaultFps.value = true;
+			} else {
+				propIsSupportIdleDefaultFps.value = false;
+			}
+		}
+		const [getOdmIdleDefaultFpsErr, getOdmIdleDefaultFpsRes] = await $to<string, string>(
+			deviceApi.getOdmIdleDefaultFps(),
+		);
+		if (getOdmIdleDefaultFpsRes && Number(getOdmIdleDefaultFpsRes) > 0) {
+			propIdleDefaultFps.value = Number(getOdmIdleDefaultFpsRes);
+		} else {
+			propIdleDefaultFps.value = undefined;
+		}
+		if (!propIdleDefaultFps.value) {
+			const [getVendorIdleDefaultFpsErr, getVendorIdleDefaultFpsRes] = await $to<string, string>(
+				deviceApi.getVendorIdleDefaultFps(),
+			);
+			if (getVendorIdleDefaultFpsRes && Number(getVendorIdleDefaultFpsRes) > 0) {
+				propIdleDefaultFps.value = Number(getVendorIdleDefaultFpsRes);
+			} else {
+				propIdleDefaultFps.value = undefined;
+			}
+		}
+		const [getIdleDefaultFpsErr, getIdleDefaultFpsRes] = await $to<string, string>(deviceApi.getIdleDefaultFps());
+		if (getIdleDefaultFpsRes && Number(getIdleDefaultFpsRes) > 0) {
+			currentIdleDefaultFps.value = Number(getIdleDefaultFpsRes);
+		} else {
+			currentIdleDefaultFps.value = undefined;
+		}
+		const [getDisableIdleFpsErr, getDisableIdleFpsRes] = await $to<string, string>(deviceApi.getDisableIdleFps());
+		if (getDisableIdleFpsRes && getDisableIdleFpsRes === 'true') {
+			propDisableIdleFps.value = true;
+		} else {
+			propDisableIdleFps.value = false;
+		}
+		const [getDisableIdleFpsThresholdErr, getDisableIdleFpsThresholdRes] = await $to<string, string>(deviceApi.getDisableIdleFpsThreshold());
+		if (getDisableIdleFpsThresholdRes && Number(getDisableIdleFpsThresholdRes) > 0) {
+			propDisableIdleFpsThreshold.value = Number(getDisableIdleFpsThresholdRes);
+		} else {
+			propDisableIdleFpsThreshold.value = 0;
+		}
+		isInit.value = true;
 		loading.value = false;
 	};
 
@@ -240,5 +526,15 @@ export function useDisplayModeRecord() {
 		setDisplayMode,
 		selectDisplayMode,
 		selectAutoEnable,
+		propIsSupportIdleDefaultFps,
+		isSupportIdleDefaultFps,
+		propIdleDefaultFps,
+		currentIdleDefaultFps,
+		changeIdleDefaultFps,
+		changeDisabledSysSmartPenOptimize,
+		propDisableIdleFps,
+		propDisableIdleFpsThreshold,
+		isDisabledSysSmartPenOptimize,
+		fpsList,
 	};
 }

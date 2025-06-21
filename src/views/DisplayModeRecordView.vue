@@ -39,11 +39,14 @@ const displayModeRecordHook = useDisplayModeRecord();
 				</h3>
 				<p
 					:class="`mt-1 max-w-2xl text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-500'}`">
-					灵活切换设备的分辨率与刷新率，持续到下次设备重启
+					灵活切换设备的分辨率与刷新率，持续到下次设备重启。
 				</p>
 			</div>
-			<n-card size="small" class="mt-5">
-				<div class="gap-4 sm:px-0">
+			<n-card size="small" class="mt-5 mb-5">
+				<n-alert v-if="deviceStore.deviceType === 'tablet'" :show-icon="true" type="info">
+					<p>小米平板手写笔仅能在 60hz 和 120hz 的刷新率下正常工作</p>
+				</n-alert>
+				<div class="gap-4 mt-5 sm:px-0">
 					<n-dropdown
 						size="large"
 						trigger="click"

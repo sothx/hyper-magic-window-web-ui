@@ -6,6 +6,7 @@ import * as deviceApi from '@/apis/deviceApi';
 import { useAmktiao, type KeyboardModeOptions } from '@/hooks/useAmktiao';
 import { useMiuiDesktopMode } from '@/hooks/useMiuiDesktopMode';
 import { RenderJsx } from '@/components/RenderJSX';
+import { useIOScheduler } from '@/hooks/useIOScheduler';
 import { useMIUIContentExtension } from '@/hooks/useMIUIContentExtension';
 import $to from 'await-to-js';
 import { MagnifyingGlassIcon, CircleStackIcon, XCircleIcon, SquaresPlusIcon } from '@heroicons/vue/24/outline';
@@ -35,8 +36,13 @@ import { useMouseGestureNaturalscroll } from '@/hooks/useMouseGestureNaturalscro
 import { usePointerSpeed } from '@/hooks/usePointerSpeed';
 import { useDevelopmentSettingsEnabled } from '@/hooks/useDevelopmentSettingsEnabled';
 import type { JSX } from 'vue/jsx-runtime';
+import { useDisplayModeRecord } from '@/hooks/useDisplayModeRecord';
+import { useHideGestureLine } from '@/hooks/useHideGestureLine';
 const deviceStore = useDeviceStore();
 const searchKeyword = ref('');
+const hideGestureLineHook = useHideGestureLine();
+const displayModeRecordHook = useDisplayModeRecord();
+const IOSchedulerHook = useIOScheduler();
 type SearchKeyWordInputInstance = InstanceType<typeof NInput>;
 const searchKeyWordInput = ref<SearchKeyWordInputInstance | null>(null);
 const miuiDesktopModeHook = useMiuiDesktopMode();
@@ -172,6 +178,46 @@ export interface EnhanceItemInfo {
 }
 const enhanceList: EnhanceItemInfo[] = [
 	{
+		title: '工作台模式',
+		titleSlot: () => (
+			<>
+				{!deviceStore.enabledMiuiDesktopMode && (
+					<p class='mt-2'>
+						<n-button
+							strong
+							secondary
+							size='small'
+							type='warning'
+							onClick={() => miuiDesktopModeHook.changeMiuiDesktopModeEnabled()}>
+							启用功能
+						</n-button>
+					</p>
+				)}
+			</>
+		),
+		content: () => (
+			<>
+				{!miuiDesktopModeHook.isInit.value ? (
+					<n-skeleton width={123} sharp={false} round size='small' />
+				) : (
+					<n-switch
+						onUpdateValue={(value: boolean) => miuiDesktopModeHook.changeMiuiDktMode(value)}
+						railStyle={railStyle}
+						disabled={!deviceStore.enabledMiuiDesktopMode}
+						value={miuiDesktopModeHook.currentMiuiDktMode.value}
+						loading={deviceStore.loading}>
+						{{
+							checked: () => '工作台模式',
+							unchecked: () => '默认桌面模式',
+						}}
+					</n-switch>
+				)}
+			</>
+		),
+		isShow: () =>
+			Boolean(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 1 && deviceStore.deviceType === 'tablet'),
+	},
+	{
 		title: 'Shamiko 工作模式',
 		content: () => (
 			<n-switch
@@ -203,6 +249,33 @@ const enhanceList: EnhanceItemInfo[] = [
 		isShow: () => ['tablet', 'fold'].includes(deviceStore.deviceType),
 	},
 	{
+		title: '手势提示线（小白条）',
+		content: () => (
+			<>
+				{!hideGestureLineHook.isInit.value ? (
+					<n-skeleton width={137} sharp={false} round={true} size='small' />
+				) : (
+					<n-switch
+						onUpdate:value={(value: boolean) => hideGestureLineHook.changeIsHideGestureLine(value)}
+						rail-style={railStyle}
+						value={hideGestureLineHook.currentIsHideGestureLine.value === 1}>
+						{{
+							checked: () => <>隐藏手势提示线</>,
+							unchecked: () => <>显示手势提示线</>,
+						}}
+					</n-switch>
+				)}
+				{deviceStore.deviceType === 'tablet' && (
+					<n-alert class='mt-5' type='info' show-icon={false} bordered={false}>
+						<p>在小米平板上推荐使用 [精选应用-系统功能补全模块] 来隐藏手势提示线（小白条）</p>
+					</n-alert>
+				)}
+			</>
+		),
+		isShow: () =>
+			Boolean(deviceStore.deviceType === 'tablet' && deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2),
+	},
+	{
 		title: '开发者模式',
 		content: () => (
 			<>
@@ -210,13 +283,13 @@ const enhanceList: EnhanceItemInfo[] = [
 					<n-skeleton width={150} sharp={false} round={true} size='small' />
 				) : (
 					<n-switch
-						value={developmentSettingsEnabledHook.isEnabled}
+						value={developmentSettingsEnabledHook.isEnabled.value}
 						railStyle={railStyle}
 						loading={deviceStore.loading || developmentSettingsEnabledHook.loading.value}
 						onUpdateValue={(value: boolean) => developmentSettingsEnabledHook.change(value ? 1 : 0)}>
 						{{
 							checked: () => '已开启开发者模式',
-							unchecked: () => '已关闭开发者模式',
+							unchecked: () => '未开启开发者模式',
 						}}
 					</n-switch>
 				)}
@@ -300,46 +373,6 @@ const enhanceList: EnhanceItemInfo[] = [
 				LSPosed 管理器
 			</n-button>
 		),
-	},
-	{
-		title: '工作台模式',
-		titleSlot: () => (
-			<>
-				{!deviceStore.enabledMiuiDesktopMode && (
-					<p class='mt-2'>
-						<n-button
-							strong
-							secondary
-							size='small'
-							type='warning'
-							onClick={() => miuiDesktopModeHook.changeMiuiDesktopModeEnabled()}>
-							启用功能
-						</n-button>
-					</p>
-				)}
-			</>
-		),
-		content: () => (
-			<>
-				{!miuiDesktopModeHook.isInit.value ? (
-					<n-skeleton width={123} sharp={false} round size='small' />
-				) : (
-					<n-switch
-						onUpdateValue={(value: boolean) => miuiDesktopModeHook.changeMiuiDktMode(value)}
-						railStyle={railStyle}
-						disabled={!deviceStore.enabledMiuiDesktopMode}
-						value={miuiDesktopModeHook.currentMiuiDktMode.value}
-						loading={deviceStore.loading}>
-						{{
-							checked: () => '工作台模式',
-							unchecked: () => '默认桌面模式',
-						}}
-					</n-switch>
-				)}
-			</>
-		),
-		isShow: () =>
-			Boolean(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 1 && deviceStore.deviceType === 'tablet'),
 	},
 	{
 		title: '传送门',
@@ -460,6 +493,104 @@ const enhanceList: EnhanceItemInfo[] = [
 		isShow: () =>
 			useDisplaySettingsHook.hasMTKDisplayBrightness.value ||
 			useDisplaySettingsHook.hasQComDisplayBrightness.value,
+	},
+	{
+		title: '默认闲置刷新率',
+		content: () => (
+			<>
+				<div class='mb-4'>
+					<n-alert bordered={false} show-icon={false} type='info' title='闲置刷新率触发阈值'>
+						{displayModeRecordHook.propDisableIdleFpsThreshold.value &&
+						displayModeRecordHook.propDisableIdleFps.value
+							? `亮度大于 ${displayModeRecordHook.propDisableIdleFpsThreshold.value} 时将触发闲置刷新率`
+							: `全亮度触发闲置刷新率`}
+					</n-alert>
+				</div>
+				<div class='grid gap-4 sm:px-0 lg:grid-cols-2'>
+					{Array.isArray(displayModeRecordHook.fpsList.value) &&
+						displayModeRecordHook.fpsList.value.map((fpsItem, fpsIndex) => {
+							const getAlertType = (fps: number): 'info' | 'error' | 'success' | 'warning' => {
+								const propIdleDefaultFps = displayModeRecordHook.propIdleDefaultFps.value;
+								const currentIdleDefaultFps = displayModeRecordHook.currentIdleDefaultFps.value;
+								if (propIdleDefaultFps && !currentIdleDefaultFps && fps === propIdleDefaultFps)
+									return 'error';
+								if (currentIdleDefaultFps === fps) return 'success';
+								return 'info';
+							};
+							const currenAlertType = getAlertType(fpsItem);
+							return (
+								<n-alert
+									size='small'
+									show-icon={false}
+									type={currenAlertType}
+									title={`${fpsItem} hz`}
+									class='w-full'>
+									{['error'].includes(currenAlertType) ? (
+										<n-tag class='mt-2' bordered={false} type={currenAlertType}>
+											系统默认
+										</n-tag>
+									) : (
+										<n-button
+											class='mt-2'
+											v-show={IOSchedulerHook.isInit.value}
+											strong
+											secondary
+											type={currenAlertType}
+											loading={deviceStore.loading || displayModeRecordHook.loading.value}
+											size='small'
+											onClick={() => displayModeRecordHook.changeIdleDefaultFps(fpsItem)}>
+											{currenAlertType === 'success' ? '已应用该配置' : '应用配置'}
+										</n-button>
+									)}
+								</n-alert>
+							);
+						})}
+				</div>
+				<n-alert class='mt-5' type='info' show-icon={false} bordered={false}>
+					<p>
+						系统会在闲置的时候降低刷新率，您可以修改系统闲置刷新率的默认值，可以优化视频类App弹幕之类的场景体验。
+					</p>
+					{deviceStore.deviceType === 'tablet' && (
+						<p>
+							如果您使用小米平板手写笔，推荐将其修改为 60hz 或者 120hz
+							，以避免系统闲置刷新率导致小米平板手写笔断触。
+						</p>
+					)}
+					<p>(受系统实际支持情况影响，切换其他闲置刷新率可能会导致系统出现未知异常，请自行准备救砖模块)</p>
+				</n-alert>
+			</>
+		),
+		isShow: () => Boolean(displayModeRecordHook.isSupportIdleDefaultFps.value),
+	},
+	{
+		title: '禁用手写笔刷新率优化',
+		content: () => (
+			<>
+				{!displayModeRecordHook.isInit.value ? (
+					<n-skeleton width={80} sharp={false} round size='small' />
+				) : (
+					<n-switch
+						railStyle={railStyle}
+						value={displayModeRecordHook.isDisabledSysSmartPenOptimize.value ? true : false}
+						loading={deviceStore.loading || displayModeRecordHook.loading.value}
+						onUpdate:value={(value: boolean) =>
+							displayModeRecordHook.changeDisabledSysSmartPenOptimize(value)
+						}>
+						{{
+							checked: () => <>已禁用</>,
+							unchecked: () => <>未禁用</>,
+						}}
+					</n-switch>
+				)}
+				<n-alert class='mt-5' type='info' show-icon={false} bordered={false}>
+					<p>
+						小米平板在连接和使用手写笔的情况下，系统会强制接管闲置刷新率与动态刷新率，您可以选择禁用该系统行为，禁用后连接和使用手写笔的情况下系统不再主动接管刷新率，请注意小米平板手写笔仅能在
+						60hz 和 120hz 下正常工作。
+					</p>
+				</n-alert>
+			</>
+		),
+		isShow: () => deviceStore.deviceType === 'tablet',
 	},
 	{
 		title: '第三方触控笔管理（水龙）',
@@ -687,30 +818,52 @@ const enhanceList: EnhanceItemInfo[] = [
 					</div>
 				) : (
 					<div>
-						<n-slider
-							size='small'
-							min={-7}
-							max={7}
-							step={1}
-							value={pointerSpeedHook.currentPointerSpeed.value}
-							onUpdateValue={(value: number) => {
-								pointerSpeedHook.currentPointerSpeed.value = value;
-								deviceApi.setPointerSpeed(value);
-							}}
-						/>
-						<n-input-number
-							showButton={false}
-							class='pt-3'
-							readonly
-							value={pointerSpeedHook.currentPointerSpeed.value}
-							placeholder='请输入鼠标指针速度'
-							min={-7}
-							max={7}
-							step={1}
-							onUpdateValue={(value: number) => {
-								pointerSpeedHook.currentPointerSpeed.value = value;
-							}}
-						/>
+						{pointerSpeedHook.isEdit.value ? (
+							<>
+								<n-slider
+									size='small'
+									min={-7}
+									max={7}
+									disabled={!pointerSpeedHook.isEdit.value}
+									step={1}
+									value={pointerSpeedHook.currentPointerSpeed.value}
+									onUpdateValue={(value: number) => {
+										pointerSpeedHook.currentPointerSpeed.value = value;
+										deviceApi.setPointerSpeed(value);
+									}}
+								/>
+								<n-input-number
+									showButton={false}
+									class='pt-3'
+									readonly
+									value={pointerSpeedHook.currentPointerSpeed.value}
+									placeholder='请输入鼠标指针速度'
+									min={-7}
+									max={7}
+									step={1}
+									onUpdateValue={(value: number) => {
+										pointerSpeedHook.currentPointerSpeed.value = value;
+									}}
+								/>
+							</>
+						) : (
+							<>
+								<div class='mb-5'>
+									<n-tag bordered={false} type='info'>
+										当前指针速度 : {pointerSpeedHook.currentPointerSpeed.value}
+									</n-tag>
+								</div>
+								<n-button
+									size='small'
+									type='info'
+									loading={deviceStore.loading}
+									onClick={() => (pointerSpeedHook.isEdit.value = true)}>
+									{{
+										default: () => <>修改指针速度</>,
+									}}
+								</n-button>
+							</>
+						)}
 					</div>
 				)}
 			</>

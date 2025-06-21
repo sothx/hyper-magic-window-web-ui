@@ -16,7 +16,6 @@ import { arrayBufferToBase64, base64ToArrayBuffer } from '@/utils/format';
 import * as embeddedApi from '@/apis/embeddedApi';
 import pako from 'pako';
 import { useRealQuantity } from '@/hooks/useRealQuantity';
-import { useHideGestureLine } from '@/hooks/useHideGestureLine';
 import { useDisabledOS2SystemAppOptimize } from '@/hooks/useDisabledOS2SystemAppOptimize';
 import { useZRAMWriteback } from '@/hooks/useZRAMWriteback';
 import { useOS2InstallModuleTips } from '@/hooks/useOS2InstallModuleTips';
@@ -24,7 +23,6 @@ import { usePatchMode } from '@/hooks/usePatchMode';
 import { useUFSHealth } from '@/hooks/useUFSHealth';
 import { ArrowDownCircleIcon } from '@heroicons/vue/24/solid';
 import { MagnifyingGlassIcon, XCircleIcon } from '@heroicons/vue/24/outline';
-import { useDisplayModeRecord, type DisplayModeItem } from '@/hooks/useDisplayModeRecord';
 import type { JSX } from 'vue/jsx-runtime';
 import { useIOScheduler } from '@/hooks/useIOScheduler';
 const deviceStore = useDeviceStore();
@@ -33,7 +31,6 @@ type SearchKeyWordInputInstance = InstanceType<typeof NInput>;
 const searchKeyWordInput = ref<SearchKeyWordInputInstance | null>(null);
 const embeddedStore = useEmbeddedStore();
 const realQuantityHook = useRealQuantity();
-const hideGestureLineHook = useHideGestureLine();
 const disabledOS2SystemAppOptimizeHook = useDisabledOS2SystemAppOptimize();
 const ZRAMWritebackHook = useZRAMWriteback();
 const { activateABTest, loading: activateABTestLoading } = useABTestActivation();
@@ -596,28 +593,6 @@ const settingList: SettingItemInfo[] = [
 					deviceStore.androidTargetSdk &&
 					deviceStore.androidTargetSdk > 32,
 			),
-	},
-	{
-		title: '手势提示线（小白条）',
-		content: () => (
-			<>
-				{!hideGestureLineHook.isInit.value ? (
-					<n-skeleton width={137} sharp={false} round={true} size='small' />
-				) : (
-					<n-switch
-						onUpdate:value={(value: boolean) => hideGestureLineHook.changeIsHideGestureLine(value)}
-						rail-style={railStyle}
-						value={hideGestureLineHook.currentIsHideGestureLine.value === 1}>
-						{{
-							checked: () => <>隐藏手势提示线</>,
-							unchecked: () => <>显示手势提示线</>,
-						}}
-					</n-switch>
-				)}
-			</>
-		),
-		isShow: () =>
-			Boolean(deviceStore.deviceType === 'tablet' && deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2),
 	},
 	{
 		title: 'Xiaomi Hyper OS 版本号',

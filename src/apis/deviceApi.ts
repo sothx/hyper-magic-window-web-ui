@@ -2544,10 +2544,10 @@ export const getDevelopmentSettingsEnabled = (): Promise<string> => {
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
-				resolve(`true`);
+				resolve(`false`);
 			} else {
 				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
-				errno ? reject(stderr) : stdout === 'null' ? resolve('') : resolve(stdout);
+				errno ? reject(stderr) : stdout === 'null' ? resolve('false') : resolve(stdout);
 			}
 		}),
 		shellCommon,
@@ -2963,6 +2963,253 @@ export const addAutoSettingIOScheduler = (scheduler: string): Promise<string> =>
 			} else {
 				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
 				errno ? reject(stderr) : stdout === 'Command executed successfully.' ? resolve(stdout) : reject(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const getSmartPenIdleEnable = (): Promise<string> => {
+	const toolsFunc = `/data/adb/modules/MIUI_MagicWindow+/common/utils/tools_functions.sh`;
+	const shellCommon = `source ${toolsFunc} && grep_prop ro.vendor.display.smartpen.idle.enable /data/adb/modules/MIUI_MagicWindow+/system.prop`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`false`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const getSmartPenVVRFps = (): Promise<string> => {
+	const toolsFunc = `/data/adb/modules/MIUI_MagicWindow+/common/utils/tools_functions.sh`;
+	const shellCommon = `source ${toolsFunc} && grep_prop ro.vendor.display.smartpen_vrr_fps /data/adb/modules/MIUI_MagicWindow+/system.prop`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`false`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const removeSmartPenIdleEnable = (): Promise<string> => {
+	const shellCommon = `sed -i '/^ro.vendor.display.smartpen.idle.enable=/d' //data/adb/modules/MIUI_MagicWindow+/system.prop && echo "Remove ro.vendor.display.smartpen.idle.enable successfully." || echo "Remove ro.vendor.display.smartpen.idle.enable failed."`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`Remove ro.vendor.display.smartpen.idle.enable successfully.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno
+					? reject(stderr)
+					: stdout === 'Remove ro.vendor.display.smartpen.idle.enable successfully.'
+						? resolve(stdout)
+						: reject(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const removeSmartPenVVRFps = (): Promise<string> => {
+	const toolsFunc = `/data/adb/modules/MIUI_MagicWindow+/common/utils/tools_functions.sh`;
+	const shellCommon = `sed -i '/^ro.vendor.display.smartpen_vrr_fps=/d' //data/adb/modules/MIUI_MagicWindow+/system.prop && echo "Remove ro.vendor.display.smartpen_vrr_fps successfully." || echo "Remove ro.vendor.display.smartpen_vrr_fps failed."`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`Remove ro.vendor.display.smartpen_vrr_fps successfully.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno
+					? reject(stderr)
+					: stdout === 'Remove ro.vendor.display.smartpen_vrr_fps successfully.'
+						? resolve(stdout)
+						: reject(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const addSmartPenIdleEnableIsFalse = (): Promise<string> => {
+	const shellCommon = `grep -q '^ro.vendor.display.smartpen.idle.enable=' /data/adb/modules/MIUI_MagicWindow+/system.prop || (echo "ro.vendor.display.smartpen.idle.enable=false" | tee -a /data/adb/modules/MIUI_MagicWindow+/system.prop > /dev/null && echo "Command executed successfully." || echo "Command failed.")`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`Command executed successfully.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : stdout === 'Command executed successfully.' ? resolve(stdout) : reject(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const addSmartPenVVRFpsIsFalse = (): Promise<string> => {
+	const shellCommon = `grep -q '^ro.vendor.display.smartpen_vrr_fps=' /data/adb/modules/MIUI_MagicWindow+/system.prop || (echo "ro.vendor.display.smartpen_vrr_fps=false" | tee -a /data/adb/modules/MIUI_MagicWindow+/system.prop > /dev/null && echo "Command executed successfully." || echo "Command failed.")`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`Command executed successfully.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : stdout === 'Command executed successfully.' ? resolve(stdout) : reject(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+
+export const getOdmIdleDefaultFps = (): Promise<string> => {
+	const toolsFunc = `/data/adb/modules/MIUI_MagicWindow+/common/utils/tools_functions.sh`;
+	const shellCommon = `source ${toolsFunc} && grep_prop ro.vendor.display.idle_default_fps /odm/etc/build.prop`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`50`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const getOdmIsSupportIdleDefaultFps = (): Promise<string> => {
+	const toolsFunc = `/data/adb/modules/MIUI_MagicWindow+/common/utils/tools_functions.sh`;
+	const shellCommon = `source ${toolsFunc} && grep_prop ro.vendor.display.idle_default_fps.support /odm/etc/build.prop`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`true`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const getVendorIdleDefaultFps = (): Promise<string> => {
+	const toolsFunc = `/data/adb/modules/MIUI_MagicWindow+/common/utils/tools_functions.sh`;
+	const shellCommon = `source ${toolsFunc} && grep_prop ro.vendor.display.idle_default_fps /vendor/build.prop`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`50`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const getVendorIsSupportIdleDefaultFps = (): Promise<string> => {
+	const toolsFunc = `/data/adb/modules/MIUI_MagicWindow+/common/utils/tools_functions.sh`;
+	const shellCommon = `source ${toolsFunc} && grep_prop ro.vendor.display.idle_default_fps.support /vendor/build.prop`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`true`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const getIdleDefaultFps = (): Promise<string> => {
+	const toolsFunc = `/data/adb/modules/MIUI_MagicWindow+/common/utils/tools_functions.sh`;
+	const shellCommon = `source ${toolsFunc} && grep_prop ro.vendor.display.idle_default_fps /data/adb/modules/MIUI_MagicWindow+/system.prop`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`60`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const removeIdleDefaultFps = (): Promise<string> => {
+	const shellCommon = `sed -i '/^ro.vendor.display.idle_default_fps=/d' //data/adb/modules/MIUI_MagicWindow+/system.prop && echo "Remove ro.vendor.display.idle_default_fps successfully." || echo "Remove ro.vendor.display.idle_default_fps failed."`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`Remove ro.vendor.display.idle_default_fps successfully.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno
+					? reject(stderr)
+					: stdout === 'Remove ro.vendor.display.idle_default_fps successfully.'
+						? resolve(stdout)
+						: reject(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const addIdleDefaultFps = (fps:number): Promise<string> => {
+	const shellCommon = `grep -q '^ro.vendor.display.idle_default_fps=' /data/adb/modules/MIUI_MagicWindow+/system.prop || (echo "ro.vendor.display.idle_default_fps=${fps}" | tee -a /data/adb/modules/MIUI_MagicWindow+/system.prop > /dev/null && echo "Command executed successfully." || echo "Command failed.")`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`Command executed successfully.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : stdout === 'Command executed successfully.' ? resolve(stdout) : reject(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+
+export const getDisableIdleFps = (): Promise<string> => {
+	const shellCommon = `getprop persist.vendor.disable_idle_fps`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve('true');
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const getDisableIdleFpsThreshold = (): Promise<string> => {
+	const shellCommon = `getprop persist.vendor.disable_idle_fps.threshold`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve('528');
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
 			}
 		}),
 		shellCommon,
