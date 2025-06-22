@@ -6,6 +6,7 @@ import { RenderJsx } from '@/components/RenderJSX';
 import { createDiscreteApi, darkTheme, lightTheme, NInput, type ConfigProviderProps } from 'naive-ui';
 import type { JSX } from 'vue/jsx-runtime';
 import { MagnifyingGlassIcon, XCircleIcon, ArrowPathIcon } from '@heroicons/vue/24/outline';
+import axios from 'axios';
 const deviceStore = useDeviceStore();
 const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
 	theme: deviceStore.isDarkMode ? darkTheme : lightTheme,
@@ -816,6 +817,20 @@ const mergeAppList = computed(() => {
 	});
 })
 
+const getRemoteDownloadAppMap = () => {
+	axios.get('https://hyper-magic-window-module-update.sothx.com/apis/remoteDownloadAppUrlMap.json', {
+		withCredentials: false,
+		headers: {
+			'Cache-Control': 'no-cache',
+			'Pragma': 'no-cache',
+			'Expires': '0'
+		}
+	}).then((res) => {
+		// github pages不支持跨域访问，web ui里面应该没影响
+		console.log(res.data,'resdata')
+	});
+}
+
 const filteredAppList = computed(() => {
 	const keyword = searchKeyword.value.trim().toLowerCase();
 	return mergeAppList.value.filter(item => {
@@ -866,7 +881,7 @@ const filteredAppList = computed(() => {
 
 			<n-card size="small" class="mt-5">
 				<div class="flex flex-wrap">
-					<n-button class="mb-3 mr-3" type="success">
+					<n-button @click="getRemoteDownloadAppMap()" class="mb-3 mr-3" type="success">
 						<template #icon>
 							<n-icon>
 								<ArrowPathIcon />
