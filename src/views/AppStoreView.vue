@@ -46,6 +46,7 @@ const getAppDownload = async (title: string, url: string, type: 'system' | 'revi
 
 export interface AppInfo {
 	title: string;
+	packageName?: string;
 	description: () => JSX.Element;
 	url: string;
 	versionNum: number;
@@ -58,6 +59,7 @@ export interface AppInfo {
 const appList: AppInfo[] = [
 	{
 		title: '小米互联互通服务',
+		packageName: 'com.xiaomi.mi_connect_service',
 		description: () => (
 			<div>
 				<p>手机安装后，支持任意应用流转到小米平板！</p>
@@ -73,6 +75,7 @@ const appList: AppInfo[] = [
 	},
 	{
 		title: '超级小爱',
+		packageName: 'com.miui.voiceassist',
 		versionNum: 20250617,
 		description: () => (
 			<div>
@@ -91,6 +94,7 @@ const appList: AppInfo[] = [
 	},
 	{
 		title: '小米主题壁纸 - 萌宠系列动态壁纸',
+		packageName: 'mi_theme_pets_2025',
 		versionNum: 20250617,
 		description: () => (
 			<div>
@@ -106,6 +110,7 @@ const appList: AppInfo[] = [
 	},
 	{
 		title: 'WPS Office For PC',
+		packageName: 'com.xiaomi.wpslauncher',
 		isShow: () => deviceStore.deviceType === 'tablet',
 		versionNum: 20250617,
 		description: () => (
@@ -125,6 +130,7 @@ const appList: AppInfo[] = [
 	},
 	{
 		title: 'CAJViewer For PC',
+		packageName: 'com.xiaomi.cajlauncher',
 		isShow: () => deviceStore.deviceType === 'tablet',
 		versionNum: 20250617,
 		description: () => (
@@ -143,6 +149,7 @@ const appList: AppInfo[] = [
 	},
 		{
 		title: '中望CAD For PC',
+		packageName: 'com.xiaomi.cadlauncher',
 		isShow: () => deviceStore.deviceType === 'tablet',
 		versionNum: 20250617,
 		description: () => (
@@ -161,6 +168,7 @@ const appList: AppInfo[] = [
 	},
 	{
 		title: '系统应用补全模块 - 传送门/悬浮球',
+		packageName: 'xiaomi-pad-application-mixin',
 		isShow: () => deviceStore.deviceType === 'tablet',
 		versionNum: 20250617,
 		description: () => (
@@ -183,6 +191,7 @@ const appList: AppInfo[] = [
 	},
 	{
 		title: '系统功能补全模块',
+		packageName: 'mipad-programmable-completion',
 		isShow: () => ['tablet', 'fold'].includes(deviceStore.deviceType),
 		versionNum: 20250617,
 		description: () => (
