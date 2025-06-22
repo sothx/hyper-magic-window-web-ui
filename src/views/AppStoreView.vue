@@ -807,9 +807,18 @@ const appList: AppInfo[] = [
 	},
 ];
 
+const mergeAppList = computed(() => {
+	return appList.map((item) => {
+		if (item.packageName && deviceStore.remoteDownloadAppUrlMap[item.packageName]) {
+			item.url = deviceStore.remoteDownloadAppUrlMap[item.packageName]
+		}
+		return item;
+	});
+})
+
 const filteredAppList = computed(() => {
 	const keyword = searchKeyword.value.trim().toLowerCase();
-	return appList.filter(item => {
+	return mergeAppList.value.filter(item => {
 		const showFlag = item.isShow ? item.isShow() : true;
 		if (!showFlag) return false;
 		if (!keyword) return true;

@@ -94,7 +94,7 @@ export const useDeviceStore = defineStore(
 		const currentRootManager = ref<ROOT_MANAGER_TYPE>('Magisk');
 		const hasNeedUpdateModule = ref<boolean>(false);
 		const displayModeList = ref<DisplayModeItem[]>([]);
-		const remoteAppDownloadUrl = ref<Record<string, string>>({});
+		const remoteDownloadAppUrlMap = ref<Record<string, string>>({});
 		const isDisabledOS2SystemAppOptimize = ref<boolean>(false);
 		const isDisabledOS2InstallModuleTips = ref<boolean>(false);
 		const lastVisitedPath = ref<RouteRecordNameGeneric>();
@@ -556,6 +556,7 @@ export const useDeviceStore = defineStore(
 			changeLogMsg,
 			lastVisitedPath,
 			isInit,
+			remoteDownloadAppUrlMap
 		};
 	},
 	{
@@ -570,7 +571,7 @@ export const useDeviceStore = defineStore(
 				'installedAppNameList',
 				'lastVersionCode',
 				'showThirdPartySetting',
-				'remoteAppDownloadUrl'
+				'remoteDownloadAppUrlMap'
 			],
 		},
 	},
