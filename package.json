@@ -58,6 +58,9 @@
 		"build": "run-p type-check \"build-only {@}\" --"
 	},
 	"dependencies": {
+		"@types/crypto-js": "^4.2.2",
+		"crypto-es": "^2.1.0",
+		"crypto-js": "^4.2.0",
 		"marked": "^15.0.12",
 		"pinia": "^2.1.7",
 		"rollup-plugin-visualizer": "^5.14.0",

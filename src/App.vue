@@ -16,6 +16,9 @@ import { useLogsStore } from '@/stores/logs';
 import { usePatchMode } from '@/hooks/usePatchMode';
 import { useAutoUIStore } from '@/stores/autoui';
 import { useGameBoosterStore } from './stores/gameBooster';
+import axios from 'axios';
+import { decryptAesEcb, fetchAndDecryptJsonFile, generateKey } from './utils/joyoseConfig/decryptor';
+import { compressJson, encryptAesEcb } from './utils/joyoseConfig/encryptor';
 const deviceStore = useDeviceStore();
 const logsStore = useLogsStore();
 const router = useRouter();
@@ -149,7 +152,73 @@ const loadRoutes = async () => {
 	}
 };
 
+function downloadEncryptedFile(encryptedBytes: Uint8Array, fileName = 'encrypted.json') {
+  const blob = new Blob([encryptedBytes], { type: 'application/octet-stream' });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = fileName;
+  a.style.display = 'none';
+
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+
+  URL.revokeObjectURL(url); // 清理 blob URL
+
+  console.log(`📦 加密文件已下载为：${fileName}`);
+}
+
+
+async function testEncryptDecryptConsistency() {
+  // 1. 解密原始加密文件
+  const result = await fetchAndDecryptJsonFile('./data/joyose/encrypt_default_cloud.json');
+
+  console.log('✅ 解密后的 JSON 数据:', result.data);
+
+  // 2. 压缩 JSON 为单行字符串（用于加密）
+  const compressed = compressJson(JSON.stringify(result.data));
+  console.log('✅ 压缩后的 JSON 字符串:', compressed);
+
+  // 3. 再次加密为 Uint8Array
+  const key = generateKey();
+  const encryptedBytes = encryptAesEcb(compressed, key);
+
+  console.log('✅ 重新加密完成，长度:', encryptedBytes.length);
+
+  // 4. 再次解密为字符串
+  const decryptedAgain = decryptAesEcb(encryptedBytes.buffer, key);
+  console.log('✅ 再次解密字符串:', decryptedAgain);
+
+  // 5. 尝试解析为 JSON
+  let parsed;
+  try {
+    parsed = JSON.parse(decryptedAgain);
+    console.log('✅ 二次解密后 JSON 解析成功');
+  } catch (e) {
+    console.error('❌ 二次解密后 JSON 解析失败');
+  }
+
+  // 6. 检查是否与第一次解密的内容一致
+  const original = JSON.stringify(result.data);
+  const afterCycle = JSON.stringify(parsed);
+
+  if (original === afterCycle) {
+    console.log('✅ 加解密过程一致 ✅');
+	  // ✅ 触发下载
+  		downloadEncryptedFile(encryptedBytes, result.fileName);
+  } else {
+    console.warn('⚠️ 加解密过程不一致 ❌');
+    console.log('原始:', original);
+    console.log('再解密:', afterCycle);
+  }
+}
+
 onMounted(async () => {
+
+	// testEncryptDecryptConsistency();
+
 	window.onerror = function (message, source, lineno, colno, error) {
 		if (logsStore) {
 			logsStore.error('[JavaScript Error]', message.toString());
@@ -219,7 +288,7 @@ onMounted(async () => {
 	if (['tablet', 'fold'].includes(deviceStore.deviceType)) {
 		embeddedStore.initDefault().then(() => {
 			if (embeddedStore.isNeedShowReloadPathModeDialog) {
-				patchModeHook.showReloadModal()
+				patchModeHook.showReloadModal();
 			}
 		});
 		autoUIStore.initDefault();
