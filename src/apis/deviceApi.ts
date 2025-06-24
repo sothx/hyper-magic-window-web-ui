@@ -816,6 +816,25 @@ export const killMiWallpaper = (): Promise<string> => {
 	);
 };
 
+export const clearJoyose = (): Promise<string> => {
+	const shellCommon = `killall -9 com.xiaomi.joyose && am force-stop com.xiaomi.joyose && am kill com.xiaomi.joyose && pm clear com.xiaomi.joyose >/dev/null && pm enable com.xiaomi.joyose/com.xiaomi.joyose.cloud.CloudServerReceiver >/dev/null && am startservice com.xiaomi.joyose/com.xiaomi.joyose.smartop.SmartOpService >/dev/null && echo "clear command executed successfully." || echo "clear command failed."`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`clear command executed successfully.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno
+					? reject(stderr)
+					: stdout === 'clear command executed successfully.'
+						? resolve(stdout)
+						: reject(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
 export const setPointerSpeed = (value: number): Promise<string> => {
 	const shellCommon = `settings put system pointer_speed ${value}`;
 	return handlePromiseWithLogging(

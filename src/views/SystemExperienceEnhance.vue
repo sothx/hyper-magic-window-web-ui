@@ -14,6 +14,7 @@ import { useVideoWallpaperLoop } from '@/hooks/useVideoWallpaperLoop';
 import { useDisabledOS2SystemPreStart } from '@/hooks/useDisabledOS2SystemPreStart';
 import { useDisabledDeepSleepEnable } from '@/hooks/useDisabledDeepSleepEnable';
 import { useDisplaySettings } from '@/hooks/useDisplaySettings';
+import { useJoyose } from '@/hooks/useJoyose';
 import { useFbo } from '@/hooks/useFbo';
 import {
 	BoltIcon,
@@ -55,6 +56,7 @@ const videoWallpaperLoopHook = useVideoWallpaperLoop();
 const useDisabledOS2SystemPreStartHook = useDisabledOS2SystemPreStart();
 const useDisabledDeepSleepEnableHook = useDisabledDeepSleepEnable();
 const fboHook = useFbo();
+const joyoseHook = useJoyose();
 // const initHooks = () => {
 // 	fboHook.value = useFbo();
 // }
@@ -1186,6 +1188,29 @@ const enhanceList: EnhanceItemInfo[] = [
 
 				<n-alert class='mt-5' type='info' show-icon={false} bordered={false}>
 					<p>开启后系统将拒绝所有应用录音、定位和拍照，保护您的隐私安全</p>
+				</n-alert>
+			</>
+		),
+	},
+	{
+		title: 'Joyose 云控数据',
+		content: () => (
+			<>
+				<n-button
+					size='small'
+					type='error'
+					secondary
+					loading={deviceStore.loading}
+					onClick={() => joyoseHook.clearCloudData()}>
+					{{
+						icon: () => <CircleStackIcon />,
+						default: () => '重置 Joyose 云控',
+					}}
+				</n-button>
+
+				<n-alert class='mt-5' type='error' show-icon={false} bordered={false}>
+					<p>重置 Joyose 云控数据后系统会尝试重新获取 Joyose 的云控数据，清确保当前在 Wifi 网络环境下，否则无法正常获取云控数据。</p>
+					<p>(如仍然无法获取到新的 Joyose 云控数据，请尝试重启设备)</p>
 				</n-alert>
 			</>
 		),
