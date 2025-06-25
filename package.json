@@ -13,9 +13,6 @@
 			"onFail": "error"
 		}
 	},
-	"browserslist": [
-		"android >= 11"
-	],
 	"scripts": {
 		"dev": "vite",
 		"clean": "rimraf dist",
