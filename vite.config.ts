@@ -1,12 +1,11 @@
-import { parse } from 'node:url';
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import { exec } from 'child_process';
 import tailwindcss from 'tailwindcss';
 import vueJsx from '@vitejs/plugin-vue-jsx';
-import { fileURLToPath, URL } from 'node:url';
 import postcssPresetEnv from 'postcss-preset-env';
 import vueDevTools from 'vite-plugin-vue-devtools';
+import { parse, fileURLToPath, URL } from 'node:url';
 
 export default defineConfig({
 	css: {
@@ -64,33 +63,33 @@ export default defineConfig({
 		// 	open: true,
 		// 	gzipSize: false
 		// }),
-        // legacy({
-        //     targets: ['defaults', 'not IE 11', 'chrome >= 87', 'android >= 5.0'],
-        //     additionalLegacyPolyfills: ['regenerator-runtime/runtime'],
-        //     renderLegacyChunks: true,
-        //     polyfills: [
-        //       'es.symbol',
-        //       'es.promise',
-        //       'es.promise.finally',
-        //       'es/map',
-        //       'es/set',
-        //       'es.array.filter',
-        //       'es.array.for-each',
-        //       'es.array.flat-map',
-        //       'es.object.define-properties',
-        //       'es.object.define-property',
-        //       'es.object.get-own-property-descriptor',
-        //       'es.object.get-own-property-descriptors',
-        //       'es.object.keys',
-        //       'es.object.to-string',
-        //       'web.dom-collections.for-each',
-        //       'esnext.global-this',
-        //       'esnext.string.match-all'
-        //     ]
-        //   })
+		// legacy({
+		//     targets: ['defaults', 'not IE 11', 'chrome >= 87', 'android >= 5.0'],
+		//     additionalLegacyPolyfills: ['regenerator-runtime/runtime'],
+		//     renderLegacyChunks: true,
+		//     polyfills: [
+		//       'es.symbol',
+		//       'es.promise',
+		//       'es.promise.finally',
+		//       'es/map',
+		//       'es/set',
+		//       'es.array.filter',
+		//       'es.array.for-each',
+		//       'es.array.flat-map',
+		//       'es.object.define-properties',
+		//       'es.object.define-property',
+		//       'es.object.get-own-property-descriptor',
+		//       'es.object.get-own-property-descriptors',
+		//       'es.object.keys',
+		//       'es.object.to-string',
+		//       'web.dom-collections.for-each',
+		//       'esnext.global-this',
+		//       'esnext.string.match-all'
+		//     ]
+		//   })
 	],
 	build: {
-		minify:'terser',
+		minify: 'terser',
 		rollupOptions: {
 			output: {
 				manualChunks(id) {
@@ -109,9 +108,9 @@ export default defineConfig({
 					if (id.includes('apis')) {
 						return 'apis';
 					}
-				}
-			}
-		}
+				},
+			},
+		},
 	},
 	assetsInclude: ['**/*.xml'], // 添加这一行以包括 XML 文件
 	resolve: {
