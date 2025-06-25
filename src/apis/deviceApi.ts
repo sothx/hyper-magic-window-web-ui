@@ -9,6 +9,7 @@ import type { KeyboardMode, PenEnable, PenUpdate } from '@/hooks/useAmktiao';
 import type { DisplayModeItem } from '@/hooks/useDisplayModeRecord';
 import type GameBoosterTableItem from '@/types/GameBoosterTableItem';
 import type { miuiCursorStyleType } from '@/hooks/useMiuiCursorStyle';
+const toolsFunc = `/data/adb/modules/MIUI_MagicWindow+/common/utils/tools_functions.sh`;
 
 export interface SmartFocusIOResult extends ExecResults {
 	stdout: 'on' | 'off';
@@ -179,7 +180,7 @@ export const getModuleInfo = (): Promise<string> => {
 };
 
 export const addIsPatchMode = (): Promise<string> => {
-	const shellCommon = `grep -q '^is_patch_mode=' /data/adb/MIUI_MagicWindow+/config.prop || (echo "is_patch_mode=true" | tee -a /data/adb/MIUI_MagicWindow+/config.prop > /dev/null && echo "Command executed successfully." || echo "Command failed.")`;
+	const shellCommon = `grep -q '^is_patch_mode=' /data/adb/MIUI_MagicWindow+/config.prop || (source ${toolsFunc} && add_lines "is_patch_mode=true" /data/adb/MIUI_MagicWindow+/config.prop) && echo "Command executed successfully." || echo "Command failed.")`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -224,7 +225,7 @@ export const getIsPatchMode = (): Promise<string> => {
 };
 
 export const addIsDeepPatchMode = (): Promise<string> => {
-	const shellCommon = `grep -q '^is_deep_patch_mode=' /data/adb/MIUI_MagicWindow+/config.prop || (echo "is_deep_patch_mode=true" | tee -a /data/adb/MIUI_MagicWindow+/config.prop > /dev/null && echo "Command executed successfully." || echo "Command failed.")`;
+	const shellCommon = `grep -q '^is_deep_patch_mode=' /data/adb/MIUI_MagicWindow+/config.prop || (echo "\nis_deep_patch_mode=true" | tee -a /data/adb/MIUI_MagicWindow+/config.prop > /dev/null && echo "Command executed successfully." || echo "Command failed.")`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -269,7 +270,7 @@ export const getIsDeepPatchMode = (): Promise<string> => {
 };
 
 export const addIsDisabledOS2SystemAppOptimize = (): Promise<string> => {
-	const shellCommon = `grep -q '^is_disabled_os2_system_app_optimize=' /data/adb/MIUI_MagicWindow+/config.prop || (echo "is_disabled_os2_system_app_optimize=true" | tee -a /data/adb/MIUI_MagicWindow+/config.prop > /dev/null && echo "Command executed successfully." || echo "Command failed.")`;
+	const shellCommon = `grep -q '^is_disabled_os2_system_app_optimize=' /data/adb/MIUI_MagicWindow+/config.prop || (echo "\nis_disabled_os2_system_app_optimize=true" | tee -a /data/adb/MIUI_MagicWindow+/config.prop > /dev/null && echo "Command executed successfully." || echo "Command failed.")`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -314,7 +315,7 @@ export const getIsDisabledOS2SystemAppOptimize = (): Promise<string> => {
 };
 
 export const addDisplayModeRecordAutoEnableID = (id: number): Promise<string> => {
-	const shellCommon = `grep -q '^display_mode_record_auto_enable_id=' /data/adb/MIUI_MagicWindow+/config.prop || (echo "display_mode_record_auto_enable_id=${id}" | tee -a /data/adb/MIUI_MagicWindow+/config.prop > /dev/null && echo "Command executed successfully." || echo "Command failed.")`;
+	const shellCommon = `grep -q '^display_mode_record_auto_enable_id=' /data/adb/MIUI_MagicWindow+/config.prop || (echo "\ndisplay_mode_record_auto_enable_id=${id}" | tee -a /data/adb/MIUI_MagicWindow+/config.prop > /dev/null && echo "Command executed successfully." || echo "Command failed.")`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -584,7 +585,7 @@ export const setRotationSuggestions = (mode: 1 | 0): Promise<string> => {
 };
 
 export const addIsHideGestureLine = (): Promise<string> => {
-	const shellCommon = `grep -q '^is_hide_gesture_line=' /data/adb/MIUI_MagicWindow+/config.prop || (echo "is_hide_gesture_line=true" | tee -a /data/adb/MIUI_MagicWindow+/config.prop > /dev/null && echo "Command executed successfully." || echo "Command failed.")`;
+	const shellCommon = `grep -q '^is_hide_gesture_line=' /data/adb/MIUI_MagicWindow+/config.prop || (echo "\nis_hide_gesture_line=true" | tee -a /data/adb/MIUI_MagicWindow+/config.prop > /dev/null && echo "Command executed successfully." || echo "Command failed.")`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -1308,7 +1309,7 @@ export const putCurrentPenUpdate = (mode: PenUpdate): Promise<string> => {
 };
 
 export const addIsAmktiaoPenUpdate = (): Promise<string> => {
-	const shellCommon = `grep -q '^is_amktiao_pen_update=' /data/adb/MIUI_MagicWindow+/config.prop || (echo "is_amktiao_pen_update=true" | tee -a /data/adb/MIUI_MagicWindow+/config.prop > /dev/null && echo "Command executed successfully." || echo "Command failed.")`;
+	const shellCommon = `grep -q '^is_amktiao_pen_update=' /data/adb/MIUI_MagicWindow+/config.prop || (echo "\nis_amktiao_pen_update=true" | tee -a /data/adb/MIUI_MagicWindow+/config.prop > /dev/null && echo "Command executed successfully." || echo "Command failed.")`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -1368,7 +1369,7 @@ export const putCurrentPenEnable = (mode: PenEnable): Promise<string> => {
 };
 
 export const addIsAmktiaoPenEnable = (): Promise<string> => {
-	const shellCommon = `grep -q '^is_amktiao_pen_enable=' /data/adb/MIUI_MagicWindow+/config.prop || (echo "is_amktiao_pen_enable=true" | tee -a /data/adb/MIUI_MagicWindow+/config.prop > /dev/null && echo "Command executed successfully." || echo "Command failed.")`;
+	const shellCommon = `grep -q '^is_amktiao_pen_enable=' /data/adb/MIUI_MagicWindow+/config.prop || (echo "\nis_amktiao_pen_enable=true" | tee -a /data/adb/MIUI_MagicWindow+/config.prop > /dev/null && echo "Command executed successfully." || echo "Command failed.")`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -1443,7 +1444,7 @@ export const getMiuiDesktopModeEnabled = (): Promise<string> => {
 };
 
 export const addIsAddDesktopModeEnabled = (): Promise<string> => {
-	const shellCommon = `grep -q '^is_add_miui_desktop_mode_enabled=' /data/adb/MIUI_MagicWindow+/config.prop || (echo "is_add_miui_desktop_mode_enabled=true" | tee -a /data/adb/MIUI_MagicWindow+/config.prop > /dev/null && echo "Command executed successfully." || echo "Command failed.")`;
+	const shellCommon = `grep -q '^is_add_miui_desktop_mode_enabled=' /data/adb/MIUI_MagicWindow+/config.prop || (echo "\nis_add_miui_desktop_mode_enabled=true" | tee -a /data/adb/MIUI_MagicWindow+/config.prop > /dev/null && echo "Command executed successfully." || echo "Command failed.")`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -1535,7 +1536,7 @@ export const putCurrentMiuiDktMode = (mode: MiuiDKTMode): Promise<string> => {
 };
 
 export const addIsEnableShowNotificationIconNum = (): Promise<string> => {
-	const shellCommon = `grep -q '^is_enable_show_notification_icon_num=' /data/adb/MIUI_MagicWindow+/config.prop || (echo "is_enable_show_notification_icon_num=true" | tee -a /data/adb/MIUI_MagicWindow+/config.prop > /dev/null && echo "Command executed successfully." || echo "Command failed.")`;
+	const shellCommon = `grep -q '^is_enable_show_notification_icon_num=' /data/adb/MIUI_MagicWindow+/config.prop || (echo "\nis_enable_show_notification_icon_num=true" | tee -a /data/adb/MIUI_MagicWindow+/config.prop > /dev/null && echo "Command executed successfully." || echo "Command failed.")`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -1610,7 +1611,7 @@ export const removeShowNotificationIconNum = (): Promise<string> => {
 };
 
 export const addShowNotificationIconNum = (num: number): Promise<string> => {
-	const shellCommon = `grep -q '^show_notification_icon_num=' /data/adb/MIUI_MagicWindow+/config.prop || (echo "show_notification_icon_num=${num}" | tee -a /data/adb/MIUI_MagicWindow+/config.prop > /dev/null && echo "Command executed successfully." || echo "Command failed.")`;
+	const shellCommon = `grep -q '^show_notification_icon_num=' /data/adb/MIUI_MagicWindow+/config.prop || (echo "\nshow_notification_icon_num=${num}" | tee -a /data/adb/MIUI_MagicWindow+/config.prop > /dev/null && echo "Command executed successfully." || echo "Command failed.")`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -2111,7 +2112,6 @@ export const setMIUIContentExtensionAuth = (authCode: number): Promise<string> =
 };
 
 export const getSmartFocusIOForBuild = (): Promise<SmartFocusIOResult['stdout']> => {
-	const toolsFunc = `/data/adb/modules/MIUI_MagicWindow+/common/utils/tools_functions.sh`;
 	const shellCommon = `source ${toolsFunc} && grep_prop persist.sys.stability.smartfocusio /system/product/etc/build.prop`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
@@ -2127,7 +2127,6 @@ export const getSmartFocusIOForBuild = (): Promise<SmartFocusIOResult['stdout']>
 };
 
 export const getPreStartProcForBuild = (): Promise<string> => {
-	const toolsFunc = `/data/adb/modules/MIUI_MagicWindow+/common/utils/tools_functions.sh`;
 	const shellCommon = `source ${toolsFunc} && grep_prop persist.sys.prestart.proc /system/product/etc/build.prop`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
@@ -2143,7 +2142,6 @@ export const getPreStartProcForBuild = (): Promise<string> => {
 };
 
 export const getPreStartProcForModule = (): Promise<string> => {
-	const toolsFunc = `/data/adb/modules/MIUI_MagicWindow+/common/utils/tools_functions.sh`;
 	const shellCommon = `source ${toolsFunc} && grep_prop persist.sys.prestart.proc /data/adb/modules/MIUI_MagicWindow+/system.prop`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
@@ -2189,7 +2187,6 @@ export const removeDisabledPreStartProc = (): Promise<string> => {
 };
 
 export const getDeepSleepEnableForBuild = (): Promise<string> => {
-	const toolsFunc = `/data/adb/modules/MIUI_MagicWindow+/common/utils/tools_functions.sh`;
 	const shellCommon = `source ${toolsFunc} && grep_prop persist.sys.deep_sleep.enable /system/product/etc/build.prop`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
@@ -2205,7 +2202,6 @@ export const getDeepSleepEnableForBuild = (): Promise<string> => {
 };
 
 export const getDeepSleepEnableForModule = (): Promise<string> => {
-	const toolsFunc = `/data/adb/modules/MIUI_MagicWindow+/common/utils/tools_functions.sh`;
 	const shellCommon = `source ${toolsFunc} && grep_prop persist.sys.deep_sleep.enable /data/adb/modules/MIUI_MagicWindow+/system.prop`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
@@ -2375,7 +2371,7 @@ export const removeIsAutoEnableFbo = (): Promise<string> => {
 };
 
 export const addIsAutoEnableFbo = (): Promise<string> => {
-	const shellCommon = `grep -q '^is_auto_enable_fbo=' /data/adb/MIUI_MagicWindow+/config.prop || (echo "is_auto_enable_fbo=true" | tee -a /data/adb/MIUI_MagicWindow+/config.prop > /dev/null && echo "Command executed successfully." || echo "Command failed.")`;
+	const shellCommon = `grep -q '^is_auto_enable_fbo=' /data/adb/MIUI_MagicWindow+/config.prop || (echo "\nis_auto_enable_fbo=true" | tee -a /data/adb/MIUI_MagicWindow+/config.prop > /dev/null && echo "Command executed successfully." || echo "Command failed.")`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -2424,7 +2420,7 @@ export const removeIsAutoRegularlyFbo = (): Promise<string> => {
 };
 
 export const addIsAutoRegularlyFbo = (): Promise<string> => {
-	const shellCommon = `grep -q '^is_auto_regularly_fbo=' /data/adb/MIUI_MagicWindow+/config.prop || (echo "is_auto_regularly_fbo=true" | tee -a /data/adb/MIUI_MagicWindow+/config.prop > /dev/null && echo "Command executed successfully." || echo "Command failed.")`;
+	const shellCommon = `grep -q '^is_auto_regularly_fbo=' /data/adb/MIUI_MagicWindow+/config.prop || (echo "\nis_auto_regularly_fbo=true" | tee -a /data/adb/MIUI_MagicWindow+/config.prop > /dev/null && echo "Command executed successfully." || echo "Command failed.")`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -2469,7 +2465,7 @@ export const removeAutoStartMiuiCursorStyleType = (): Promise<string> => {
 };
 
 export const addAutoStartMiuiCursorStyleType = (type: miuiCursorStyleType): Promise<string> => {
-	const shellCommon = `grep -q '^is_auto_start_miui_cursor_style_type=' /data/adb/MIUI_MagicWindow+/config.prop || (echo "is_auto_start_miui_cursor_style_type=${type}" | tee -a /data/adb/MIUI_MagicWindow+/config.prop > /dev/null && echo "Command executed successfully." || echo "Command failed.")`;
+	const shellCommon = `grep -q '^is_auto_start_miui_cursor_style_type=' /data/adb/MIUI_MagicWindow+/config.prop || (echo "\nis_auto_start_miui_cursor_style_type=${type}" | tee -a /data/adb/MIUI_MagicWindow+/config.prop > /dev/null && echo "Command executed successfully." || echo "Command failed.")`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -2974,7 +2970,7 @@ export const writeIOScheduler = (scheduler: string): Promise<string> => {
 }
 
 export const addAutoSettingIOScheduler = (scheduler: string): Promise<string> => {
-	const shellCommon = `grep -q '^auto_setting_io_scheduler=' /data/adb/MIUI_MagicWindow+/config.prop || (echo "auto_setting_io_scheduler=${scheduler}" | tee -a /data/adb/MIUI_MagicWindow+/config.prop > /dev/null && echo "Command executed successfully." || echo "Command failed.")`;
+	const shellCommon = `grep -q '^auto_setting_io_scheduler=' /data/adb/MIUI_MagicWindow+/config.prop || (echo "\nauto_setting_io_scheduler=${scheduler}" | tee -a /data/adb/MIUI_MagicWindow+/config.prop > /dev/null && echo "Command executed successfully." || echo "Command failed.")`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -2989,7 +2985,6 @@ export const addAutoSettingIOScheduler = (scheduler: string): Promise<string> =>
 };
 
 export const getSmartPenIdleEnable = (): Promise<string> => {
-	const toolsFunc = `/data/adb/modules/MIUI_MagicWindow+/common/utils/tools_functions.sh`;
 	const shellCommon = `source ${toolsFunc} && grep_prop ro.vendor.display.smartpen.idle.enable /data/adb/modules/MIUI_MagicWindow+/system.prop`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
@@ -3005,7 +3000,6 @@ export const getSmartPenIdleEnable = (): Promise<string> => {
 };
 
 export const getSmartPenVVRFps = (): Promise<string> => {
-	const toolsFunc = `/data/adb/modules/MIUI_MagicWindow+/common/utils/tools_functions.sh`;
 	const shellCommon = `source ${toolsFunc} && grep_prop ro.vendor.display.smartpen_vrr_fps /data/adb/modules/MIUI_MagicWindow+/system.prop`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
@@ -3040,7 +3034,6 @@ export const removeSmartPenIdleEnable = (): Promise<string> => {
 };
 
 export const removeSmartPenVVRFps = (): Promise<string> => {
-	const toolsFunc = `/data/adb/modules/MIUI_MagicWindow+/common/utils/tools_functions.sh`;
 	const shellCommon = `sed -i '/^ro.vendor.display.smartpen_vrr_fps=/d' //data/adb/modules/MIUI_MagicWindow+/system.prop && echo "Remove ro.vendor.display.smartpen_vrr_fps successfully." || echo "Remove ro.vendor.display.smartpen_vrr_fps failed."`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
@@ -3060,7 +3053,7 @@ export const removeSmartPenVVRFps = (): Promise<string> => {
 };
 
 export const addSmartPenIdleEnableIsFalse = (): Promise<string> => {
-	const shellCommon = `grep -q '^ro.vendor.display.smartpen.idle.enable=' /data/adb/modules/MIUI_MagicWindow+/system.prop || (echo "ro.vendor.display.smartpen.idle.enable=false" | tee -a /data/adb/modules/MIUI_MagicWindow+/system.prop > /dev/null && echo "Command executed successfully." || echo "Command failed.")`;
+	const shellCommon = `grep -q '^ro.vendor.display.smartpen.idle.enable=' /data/adb/modules/MIUI_MagicWindow+/system.prop || (echo "\nro.vendor.display.smartpen.idle.enable=false\n" | tee -a /data/adb/modules/MIUI_MagicWindow+/system.prop > /dev/null && echo "Command executed successfully." || echo "Command failed.")`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -3075,7 +3068,7 @@ export const addSmartPenIdleEnableIsFalse = (): Promise<string> => {
 };
 
 export const addSmartPenVVRFpsIsFalse = (): Promise<string> => {
-	const shellCommon = `grep -q '^ro.vendor.display.smartpen_vrr_fps=' /data/adb/modules/MIUI_MagicWindow+/system.prop || (echo "ro.vendor.display.smartpen_vrr_fps=false" | tee -a /data/adb/modules/MIUI_MagicWindow+/system.prop > /dev/null && echo "Command executed successfully." || echo "Command failed.")`;
+	const shellCommon = `grep -q '^ro.vendor.display.smartpen_vrr_fps=' /data/adb/modules/MIUI_MagicWindow+/system.prop || (echo "\nro.vendor.display.smartpen_vrr_fps=false\n" | tee -a /data/adb/modules/MIUI_MagicWindow+/system.prop > /dev/null && echo "Command executed successfully." || echo "Command failed.")`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -3091,7 +3084,6 @@ export const addSmartPenVVRFpsIsFalse = (): Promise<string> => {
 
 
 export const getOdmIdleDefaultFps = (): Promise<string> => {
-	const toolsFunc = `/data/adb/modules/MIUI_MagicWindow+/common/utils/tools_functions.sh`;
 	const shellCommon = `source ${toolsFunc} && grep_prop ro.vendor.display.idle_default_fps /odm/etc/build.prop`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
@@ -3107,7 +3099,6 @@ export const getOdmIdleDefaultFps = (): Promise<string> => {
 };
 
 export const getOdmIsSupportIdleDefaultFps = (): Promise<string> => {
-	const toolsFunc = `/data/adb/modules/MIUI_MagicWindow+/common/utils/tools_functions.sh`;
 	const shellCommon = `source ${toolsFunc} && grep_prop ro.vendor.display.idle_default_fps.support /odm/etc/build.prop`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
@@ -3123,7 +3114,6 @@ export const getOdmIsSupportIdleDefaultFps = (): Promise<string> => {
 };
 
 export const getVendorIdleDefaultFps = (): Promise<string> => {
-	const toolsFunc = `/data/adb/modules/MIUI_MagicWindow+/common/utils/tools_functions.sh`;
 	const shellCommon = `source ${toolsFunc} && grep_prop ro.vendor.display.idle_default_fps /vendor/build.prop`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
@@ -3139,7 +3129,6 @@ export const getVendorIdleDefaultFps = (): Promise<string> => {
 };
 
 export const getVendorIsSupportIdleDefaultFps = (): Promise<string> => {
-	const toolsFunc = `/data/adb/modules/MIUI_MagicWindow+/common/utils/tools_functions.sh`;
 	const shellCommon = `source ${toolsFunc} && grep_prop ro.vendor.display.idle_default_fps.support /vendor/build.prop`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
@@ -3155,7 +3144,6 @@ export const getVendorIsSupportIdleDefaultFps = (): Promise<string> => {
 };
 
 export const getIdleDefaultFps = (): Promise<string> => {
-	const toolsFunc = `/data/adb/modules/MIUI_MagicWindow+/common/utils/tools_functions.sh`;
 	const shellCommon = `source ${toolsFunc} && grep_prop ro.vendor.display.idle_default_fps /data/adb/modules/MIUI_MagicWindow+/system.prop`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
@@ -3190,7 +3178,7 @@ export const removeIdleDefaultFps = (): Promise<string> => {
 };
 
 export const addIdleDefaultFps = (fps:number): Promise<string> => {
-	const shellCommon = `grep -q '^ro.vendor.display.idle_default_fps=' /data/adb/modules/MIUI_MagicWindow+/system.prop || (echo "ro.vendor.display.idle_default_fps=${fps}" | tee -a /data/adb/modules/MIUI_MagicWindow+/system.prop > /dev/null && echo "Command executed successfully." || echo "Command failed.")`;
+	const shellCommon = `grep -q '^ro.vendor.display.idle_default_fps=' /data/adb/modules/MIUI_MagicWindow+/system.prop || (echo "\nro.vendor.display.idle_default_fps=${fps}\n" | tee -a /data/adb/modules/MIUI_MagicWindow+/system.prop > /dev/null && echo "Command executed successfully." || echo "Command failed.")`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
