@@ -14,7 +14,7 @@ const systemApplicationList = {
     'com.xiaomi.mico': 1, // 小米音箱
     'com.xiaomi.mi_connect_service': 1, // 小米互联通信服务
     'cn.wps.moffice_eng.xiaomi.lite': 1, // 小米文档查看器（WPS定制）
-    'com.android.providers.downloads.ui': 1, // 下载管理
+    'com.android.providers.downloads': 1, // 下载管理
     'com.mi.android.globalFileexplorer': 1, // 小米文件管理国际版
     'com.mi.car.mobile': 1, // 小米汽车
     'com.mi.global.bbs': 1, // 小米社区国际版
@@ -333,6 +333,7 @@ const topApplicationList = {
     'com.hexin.plat.android': 1, // 同花顺
     'com.douban.frodo': 1, // 豆瓣
     'com.ping.cimoc.manqu': 1, // 漫趣漫画
+    'com.tencent.tmgp.jnbg2': 1, // 纪念碑谷2
 }
 
 export default {
