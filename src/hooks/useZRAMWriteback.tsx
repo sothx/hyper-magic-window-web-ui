@@ -49,10 +49,11 @@ export function useZRAMWriteback() {
 		]);
 	
 		// 赋值
-		if (getMiuiExtmDmOptEnableResolve === 'true') miuiExtmDmOptEnable.value = false;
 		if (getBackingDevResolve) backingDev.value = getBackingDevResolve;
 		if (backingDev.value.indexOf('dm-') > -1) {
 			miuiExtmDmOptEnable.value = true;
+		} else {
+			miuiExtmDmOptEnable.value = false;
 		}
 		if (Number(getMiuiExtmDmOptTotalWriteBackResolve) > 0) totalWriteBack.value = Number(getMiuiExtmDmOptTotalWriteBackResolve);
 		if (Number(getMiuiExtmDmOptTotalReadResolve) > 0) totalRead.value = Number(getMiuiExtmDmOptTotalReadResolve);

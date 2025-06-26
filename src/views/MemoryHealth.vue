@@ -56,7 +56,7 @@ const healthList: HealthItemInfo[] = [
 		content: () => (
 			<>
 				<div class='mb-3'>
-					<n-tag>dm设备映射器: {ZRAMWritebackHook.miuiExtmDmOptEnable.value ? '启用' : '未启用'}</n-tag>
+					<n-tag>dm设备映射器: {ZRAMWritebackHook.miuiExtmDmOptEnable.value ? '已生效' : '未生效'}</n-tag>
 				</div>
 				<div class='mb-3'>
 					<n-tag type='error'>回写块: {ZRAMWritebackHook.backingDev.value} </n-tag>
