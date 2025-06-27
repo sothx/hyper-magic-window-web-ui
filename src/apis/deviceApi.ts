@@ -3190,7 +3190,7 @@ export const removeIdleDefaultFps = (): Promise<string> => {
 };
 
 export const addIdleDefaultFps = (fps:number): Promise<string> => {
-	const shellCommon = `grep -q '^ro.vendor.display.idle_default_fps=' /data/adb/modules/MIUI_MagicWindow+/system.prop || (source ${toolsFunc} && add_lines "is_hide_gesture_line=${fps}" /data/adb/modules/MIUI_MagicWindow+/system.prop && echo "Command executed successfully." || echo "Command failed.");`
+	const shellCommon = `grep -q '^ro.vendor.display.idle_default_fps=' /data/adb/modules/MIUI_MagicWindow+/system.prop || (source ${toolsFunc} && add_lines "ro.vendor.display.idle_default_fps=${fps}" /data/adb/modules/MIUI_MagicWindow+/system.prop && echo "Command executed successfully." || echo "Command failed.");`
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
