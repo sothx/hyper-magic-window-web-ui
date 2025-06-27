@@ -117,9 +117,12 @@ importers:
       postcss-preset-env:
         specifier: ^10.0.7
         version: 10.0.7(postcss@8.4.47)
+      prettier:
+        specifier: ^3.6.1
+        version: 3.6.1
       prettier-plugin-tailwindcss:
         specifier: ^0.6.8
-        version: 0.6.8(prettier@3.3.3)
+        version: 0.6.8(prettier@3.6.1)
       rimraf:
         specifier: ^6.0.1
         version: 6.0.1
@@ -2702,8 +2705,8 @@ packages:
       prettier-plugin-svelte:
         optional: true
 
-  prettier@3.3.3:
-    resolution: {integrity: sha512-i2tDNA0O5IrMO757lfrdQZCc2jPNDVntV0m/+4whiDfWaTKfMNgR7Qz0NAeGz/nRqF4m5/6CLzbP4/liHt12Ew==}
+  prettier@3.6.1:
+    resolution: {integrity: sha512-5xGWRa90Sp2+x1dQtNpIpeOQpTDBs9cZDmA/qs2vDNN2i18PdapqY7CmBeyLlMuGqXJRIOPaCaVZTLNQRWUH/A==}
     engines: {node: '>=14'}
     hasBin: true
 
@@ -5859,11 +5862,11 @@ snapshots:
       picocolors: 1.1.0
       source-map-js: 1.2.1
 
-  prettier-plugin-tailwindcss@0.6.8(prettier@3.3.3):
+  prettier-plugin-tailwindcss@0.6.8(prettier@3.6.1):
     dependencies:
-      prettier: 3.3.3
+      prettier: 3.6.1
 
-  prettier@3.3.3: {}
+  prettier@3.6.1: {}
 
   proxy-from-env@1.1.0: {}
 

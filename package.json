@@ -13,41 +13,6 @@
 			"onFail": "error"
 		}
 	},
-	"browserslist": [
-		"android >= 11"
-	],
-	"prettier": {
-		"semi": true,
-		"tabWidth": 4,
-		"useTabs": true,
-		"endOfLine": "lf",
-		"printWidth": 120,
-		"singleQuote": true,
-		"jsxSingleQuote": true,
-		"trailingComma": "all",
-		"arrowParens": "avoid",
-		"bracketSameLine": true,
-		"htmlWhitespaceSensitivity": "strict",
-		"tailwindConfig": "./tailwind.config.ts",
-		"plugins": [
-			"prettier-plugin-tailwindcss"
-		],
-		"overrides": [
-			{
-				"files": "*.yml",
-				"options": {
-					"useTabs": false
-				}
-			},
-			{
-				"files": "*.md",
-				"options": {
-					"tabWidth": 2,
-					"useTabs": false
-				}
-			}
-		]
-	},
 	"scripts": {
 		"dev": "vite",
 		"clean": "rimraf dist",
@@ -96,6 +61,7 @@
 		"pako": "^2.1.0",
 		"pinia-plugin-persistedstate": "^4.1.1",
 		"postcss-preset-env": "^10.0.7",
+		"prettier": "^3.6.1",
 		"prettier-plugin-tailwindcss": "^0.6.8",
 		"rimraf": "^6.0.1",
 		"tailwindcss": "^3.4.13",
@@ -108,5 +74,12 @@
 		"vite-plugin-compression": "^0.5.1",
 		"vite-plugin-vue-devtools": "^7.3.1",
 		"vue-tsc": "^2.0.21"
+	},
+	"pnpm": {
+		"onlyBuiltDependencies": [
+			"core-js",
+			"esbuild",
+			"vue-demi"
+		]
 	}
 }
