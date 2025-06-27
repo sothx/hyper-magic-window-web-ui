@@ -23,6 +23,7 @@
 		"build": "run-p type-check \"build-only {@}\" --"
 	},
 	"dependencies": {
+		"hyper-magic-window-fonts": "git+ssh://git@github.com:sothx/hyper-magic-window-fonts.git#publish/v1.0.0",
 		"@types/crypto-js": "^4.2.2",
 		"crypto-es": "^2.1.0",
 		"crypto-js": "^4.2.0",
