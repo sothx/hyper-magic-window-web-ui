@@ -830,23 +830,35 @@ export const killMiWallpaper = (): Promise<string> => {
 };
 
 export const clearJoyose = (): Promise<string> => {
-	const shellCommon = `killall -9 com.xiaomi.joyose && am force-stop com.xiaomi.joyose && am kill com.xiaomi.joyose && pm clear com.xiaomi.joyose >/dev/null && pm enable com.xiaomi.joyose/com.xiaomi.joyose.cloud.CloudServerReceiver >/dev/null && am startservice com.xiaomi.joyose/com.xiaomi.joyose.smartop.SmartOpService >/dev/null && echo "clear command executed successfully." || echo "clear command failed."`;
+	const shellCommands = [
+		'killall -9 com.xiaomi.joyose || true',
+		'am force-stop com.xiaomi.joyose',
+		'am kill com.xiaomi.joyose',
+		'pm clear com.xiaomi.joyose >/dev/null',
+		'pm enable com.xiaomi.joyose/com.xiaomi.joyose.cloud.CloudServerReceiver >/dev/null',
+		'am startservice com.xiaomi.joyose/com.xiaomi.joyose.smartop.SmartOpService',
+	];
+
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
-				resolve(`clear command executed successfully.`);
+				reject('clear command executed successfully.');
 			} else {
-				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
-				errno
-					? reject(stderr)
-					: stdout === 'clear command executed successfully.'
-						? resolve(stdout)
-						: reject(stdout);
+				for (const cmd of shellCommands) {
+					const { errno, stdout, stderr }: ExecResults = await exec(cmd);
+
+					// 如果有错误，直接返回 stderr 或 stdout
+					if (errno) {
+						return reject(stderr || stdout || `Shell command failed: ${cmd}`);
+					}
+				}
+				resolve('clear command executed successfully.');
 			}
 		}),
-		shellCommon,
+		shellCommands.join(' && '),
 	);
 };
+
 
 export const setPointerSpeed = (value: number): Promise<string> => {
 	const shellCommon = `settings put system pointer_speed ${value}`;
