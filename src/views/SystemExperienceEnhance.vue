@@ -595,6 +595,32 @@ const enhanceList: EnhanceItemInfo[] = [
 		isShow: () => deviceStore.deviceType === 'tablet',
 	},
 	{
+		title: '强制竖屏上下分屏（移植包）',
+		content: () => (
+			<>
+				{!amktiaoHook.isInit.value ? (
+					<n-skeleton width={80} sharp={false} round size='small' />
+				) : (
+					<n-switch
+						railStyle={railStyle}
+						disabled={!deviceStore.showThirdPartySetting.amktiaoROMInterface}
+						value={amktiaoHook.currentPenEnable.value ? true : false}
+						loading={deviceStore.loading}
+						onUpdate:value={(value: boolean) => amktiaoHook.changePenEnableMode(value)}>
+						{{
+							checked: () => <>已启用</>,
+							unchecked: () => <>未启用</>,
+						}}
+					</n-switch>
+				)}
+				<n-alert class='mt-5' type='warning' show-icon={false} bordered={false}>
+					仅支持该功能的移植包可用，由于并非系统本身支持竖屏上下分屏，因此强制启用后会有部分系统界面显示异常（如分屏界面），请悉知~
+				</n-alert>
+			</>
+		),
+		isShow: () => deviceStore.deviceType === 'tablet' && deviceStore.MIOSVersion === 2,
+	},
+	{
 		title: '第三方触控笔管理（水龙）',
 		titleSlot: () => (
 			<>

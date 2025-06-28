@@ -39,8 +39,8 @@ export const getDeviceCharacteristics = (): Promise<string> => {
 	);
 };
 
-export const getProjectTrebleSupoortMagicWindowFix = (): Promise<string> => {
-	const shellCommon = `getprop ro.config.sothx_project_treble_support_magic_window_fix`;
+export const getProjectTrebleSupoortVerticalScreenSplit = (): Promise<string> => {
+	const shellCommon = `getprop ro.config.sothx_project_treble_support_vertical_screen_split`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -3238,6 +3238,21 @@ export const getDisableIdleFpsThreshold = (): Promise<string> => {
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
 				resolve('528');
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const getProjectTrebleSupoortMagicWindowFix = (): Promise<string> => {
+	const shellCommon = `getprop ro.config.sothx_project_treble_support_magic_window_fix`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve('true');
 			} else {
 				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
 				errno ? reject(stderr) : resolve(stdout);
