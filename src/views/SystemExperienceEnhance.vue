@@ -16,6 +16,7 @@ import { useDisabledDeepSleepEnable } from '@/hooks/useDisabledDeepSleepEnable';
 import { useDisplaySettings } from '@/hooks/useDisplaySettings';
 import { useJoyose } from '@/hooks/useJoyose';
 import { useFbo } from '@/hooks/useFbo';
+import { useProjectTrebleVerticalScreenSplit } from '@/hooks/useProjectTrebleVerticalScreenSplit';
 import {
 	BoltIcon,
 	CpuChipIcon,
@@ -55,6 +56,7 @@ const developmentSettingsEnabledHook = useDevelopmentSettingsEnabled();
 const videoWallpaperLoopHook = useVideoWallpaperLoop();
 const useDisabledOS2SystemPreStartHook = useDisabledOS2SystemPreStart();
 const useDisabledDeepSleepEnableHook = useDisabledDeepSleepEnable();
+const projectTrebleVerticalScreenSplitHook = useProjectTrebleVerticalScreenSplit();
 const fboHook = useFbo();
 const joyoseHook = useJoyose();
 // const initHooks = () => {
@@ -598,15 +600,14 @@ const enhanceList: EnhanceItemInfo[] = [
 		title: '强制竖屏上下分屏（移植包）',
 		content: () => (
 			<>
-				{!amktiaoHook.isInit.value ? (
+				{!projectTrebleVerticalScreenSplitHook.isInit.value ? (
 					<n-skeleton width={80} sharp={false} round size='small' />
 				) : (
 					<n-switch
 						railStyle={railStyle}
-						disabled={!deviceStore.showThirdPartySetting.amktiaoROMInterface}
-						value={amktiaoHook.currentPenEnable.value ? true : false}
+						value={projectTrebleVerticalScreenSplitHook.isEnable.value ? true : false}
 						loading={deviceStore.loading}
-						onUpdate:value={(value: boolean) => amktiaoHook.changePenEnableMode(value)}>
+						onUpdate:value={(value: boolean) => projectTrebleVerticalScreenSplitHook.changeEnableMode(value)}>
 						{{
 							checked: () => <>已启用</>,
 							unchecked: () => <>未启用</>,
@@ -614,11 +615,11 @@ const enhanceList: EnhanceItemInfo[] = [
 					</n-switch>
 				)}
 				<n-alert class='mt-5' type='warning' show-icon={false} bordered={false}>
-					仅支持该功能的移植包可用，由于并非系统本身支持竖屏上下分屏，因此强制启用后会有部分系统界面显示异常（如分屏界面），请悉知~
+					仅支持该功能的移植包可用，由于并非系统本身支持竖屏上下分屏，因此强制启用后可能会导致部分系统界面显示异常甚至触发异常崩溃，强制启用该功能代表已阅读并了解使用须知，请悉知~
 				</n-alert>
 			</>
 		),
-		isShow: () => deviceStore.deviceType === 'tablet' && deviceStore.MIOSVersion === 2,
+		isShow: () => deviceStore.deviceType === 'tablet' && deviceStore.MIOSVersion === 2 && projectTrebleVerticalScreenSplitHook.isSupport.value,
 	},
 	{
 		title: '第三方触控笔管理（水龙）',

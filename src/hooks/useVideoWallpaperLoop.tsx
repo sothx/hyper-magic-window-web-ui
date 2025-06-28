@@ -79,7 +79,7 @@ export function useVideoWallpaperLoop() {
                             type: 'error',
                             preset: 'dialog',
                             content: () => (
-                                <p>发生异常错误，重启系统界面作用域失败QwQ，详细错误请查看日志~</p>
+                                <p>发生异常错误，重启壁纸作用域失败QwQ，详细错误请查看日志~</p>
                             ),
                         });
                     });

@@ -39,21 +39,6 @@ export const getDeviceCharacteristics = (): Promise<string> => {
 	);
 };
 
-export const getProjectTrebleSupoortVerticalScreenSplit = (): Promise<string> => {
-	const shellCommon = `getprop ro.config.sothx_project_treble_support_vertical_screen_split`;
-	return handlePromiseWithLogging(
-		new Promise(async (resolve, reject) => {
-			if (import.meta.env.MODE === 'development') {
-				resolve('true');
-			} else {
-				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
-				errno ? reject(stderr) : resolve(stdout);
-			}
-		}),
-		shellCommon,
-	);
-};
-
 export const getMuiltdisplayType = (): Promise<string> => {
 	const shellCommon = `getprop persist.sys.muiltdisplay_type`;
 	return handlePromiseWithLogging(
@@ -3255,6 +3240,51 @@ export const getProjectTrebleSupoortMagicWindowFix = (): Promise<string> => {
 				resolve('true');
 			} else {
 				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const getProjectTrebleSupoortVerticalScreenSplit = (): Promise<string> => {
+	const shellCommon = `getprop ro.config.sothx_project_treble_support_vertical_screen_split`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve('true');
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const getProjectTrebleVerticalScreenSplitEnable = (): Promise<string> => {
+	const shellCommon = `getprop ro.config.sothx_project_treble_vertical_screen_split_enable`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`true`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const changeProjectTrebleVerticalScreenSplitEnable = (mode:boolean): Promise<string> => {
+	const shellCommon = `setprop ro.config.sothx_project_treble_vertical_screen_split_enable ${mode}`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`success`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = (await exec(shellCommon)) as ExecResults;
 				errno ? reject(stderr) : resolve(stdout);
 			}
 		}),
