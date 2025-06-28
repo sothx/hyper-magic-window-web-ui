@@ -3263,7 +3263,7 @@ export const getProjectTrebleSupoortVerticalScreenSplit = (): Promise<string> =>
 };
 
 export const getProjectTrebleVerticalScreenSplitEnable = (): Promise<string> => {
-	const shellCommon = `getprop ro.config.sothx_project_treble_vertical_screen_split_enable`;
+	const shellCommon = `getprop persist.config.sothx_project_treble_vertical_screen_split_enable`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -3278,7 +3278,7 @@ export const getProjectTrebleVerticalScreenSplitEnable = (): Promise<string> => 
 };
 
 export const changeProjectTrebleVerticalScreenSplitEnable = (mode:boolean): Promise<string> => {
-	const shellCommon = `setprop ro.config.sothx_project_treble_vertical_screen_split_enable ${mode}`;
+	const shellCommon = `setprop persist.config.sothx_project_treble_vertical_screen_split_enable ${mode}`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
