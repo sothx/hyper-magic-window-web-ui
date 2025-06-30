@@ -182,6 +182,31 @@ export interface EnhanceItemInfo {
 }
 const enhanceList: EnhanceItemInfo[] = [
 	{
+		title: '强制竖屏上下分屏（移植包）',
+		content: () => (
+			<>
+				{!projectTrebleVerticalScreenSplitHook.isInit.value ? (
+					<n-skeleton width={80} sharp={false} round size='small' />
+				) : (
+					<n-switch
+						railStyle={railStyle}
+						value={projectTrebleVerticalScreenSplitHook.isEnable.value ? true : false}
+						loading={deviceStore.loading}
+						onUpdate:value={(value: boolean) => projectTrebleVerticalScreenSplitHook.changeEnableMode(value)}>
+						{{
+							checked: () => <>已启用</>,
+							unchecked: () => <>未启用</>,
+						}}
+					</n-switch>
+				)}
+				<n-alert class='mt-5' type='warning' show-icon={false} bordered={false}>
+					仅支持该功能的移植包可用，由于并非系统本身支持竖屏上下分屏（移植包修改系统界面参数另类实现），因此强制启用后可能会导致部分系统界面显示异常甚至触发异常崩溃，强制启用该功能代表已阅读并了解使用须知，请悉知~
+				</n-alert>
+			</>
+		),
+		isShow: () => Boolean(deviceStore.deviceType === 'tablet' && deviceStore.androidTargetSdk && deviceStore.androidTargetSdk === 35 && projectTrebleVerticalScreenSplitHook.isSupport.value),
+	},
+	{
 		title: '工作台模式',
 		titleSlot: () => (
 			<>
@@ -595,31 +620,6 @@ const enhanceList: EnhanceItemInfo[] = [
 			</>
 		),
 		isShow: () => deviceStore.deviceType === 'tablet',
-	},
-	{
-		title: '强制竖屏上下分屏（移植包）',
-		content: () => (
-			<>
-				{!projectTrebleVerticalScreenSplitHook.isInit.value ? (
-					<n-skeleton width={80} sharp={false} round size='small' />
-				) : (
-					<n-switch
-						railStyle={railStyle}
-						value={projectTrebleVerticalScreenSplitHook.isEnable.value ? true : false}
-						loading={deviceStore.loading}
-						onUpdate:value={(value: boolean) => projectTrebleVerticalScreenSplitHook.changeEnableMode(value)}>
-						{{
-							checked: () => <>已启用</>,
-							unchecked: () => <>未启用</>,
-						}}
-					</n-switch>
-				)}
-				<n-alert class='mt-5' type='warning' show-icon={false} bordered={false}>
-					仅支持该功能的移植包可用，由于并非系统本身支持竖屏上下分屏（移植包修改系统界面参数另类实现），因此强制启用后可能会导致部分系统界面显示异常甚至触发异常崩溃，强制启用该功能代表已阅读并了解使用须知，请悉知~
-				</n-alert>
-			</>
-		),
-		isShow: () => deviceStore.deviceType === 'tablet' && deviceStore.MIOSVersion === 2 && projectTrebleVerticalScreenSplitHook.isSupport.value,
 	},
 	{
 		title: '第三方触控笔管理（水龙）',
