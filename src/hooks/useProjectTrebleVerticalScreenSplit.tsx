@@ -45,6 +45,47 @@ export function useProjectTrebleVerticalScreenSplit() {
 
 	const isInit = ref<boolean>(false);
 
+	const reloadSystemUI = () => {
+		modal.create({
+			title: '确定要重启系统界面么？',
+			type: 'info',
+			preset: 'dialog',
+			content: () => (
+				<>
+					<p>
+						由于小米平板并不支持竖屏上下分屏，模块通过修改系统逻辑以实现竖屏上下分屏，可能存在不稳定等情况。
+					</p>
+					<p>
+						{' '}
+						如出现系统界面异常可以切换启用状态为 [未启用] 后，通过重启系统界面解决界面异常问题，确定要继续吗？
+					</p>
+				</>
+			),
+			positiveText: '确定',
+			negativeText: '取消',
+			onPositiveClick() {
+				deviceApi
+					.killAndroidSystemUI()
+					.then(async res => {
+						modal.create({
+							title: '重启系统界面成功',
+							type: 'success',
+							preset: 'dialog',
+							content: () => <p>已经成功为你重启系统界面的作用域，请查看是否生效~</p>,
+						});
+					})
+					.catch(err => {
+						modal.create({
+							title: '重启系统界面失败',
+							type: 'error',
+							preset: 'dialog',
+							content: () => <p>发生异常错误，重启系统界面作用域失败QwQ，详细错误请查看日志~</p>,
+						});
+					});
+			},
+		});
+	};
+
 	const changeEnableMode = async (mode: boolean, type: 'prop' | 'settings') => {
 		const [negativeRes, positiveRes] = await $to(
 			new Promise((resolve, reject) => {
@@ -154,11 +195,7 @@ export function useProjectTrebleVerticalScreenSplit() {
 							title: '操作成功',
 							type: 'success',
 							preset: 'dialog',
-							content: () => (
-								<p>
-									好耶w，已经成功{mode ? '启用' : '禁用'}竖屏上下分屏，请查看是否生效~
-								</p>
-							),
+							content: () => <p>好耶w，已经成功{mode ? '启用' : '禁用'}竖屏上下分屏，请查看是否生效~</p>,
 							positiveText: '确定',
 						});
 					})
@@ -223,6 +260,7 @@ export function useProjectTrebleVerticalScreenSplit() {
 		isSupportProp,
 		isEnableProp,
 		splitScreenPlusIsInstalled,
+		reloadSystemUI,
 		isEnableSettings,
 		changeEnableMode,
 		isInit,
