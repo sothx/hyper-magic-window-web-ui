@@ -201,7 +201,7 @@ const enhanceList: EnhanceItemInfo[] = [
 					</n-switch>
 				)}
 				<n-alert class='mt-5' type='info' show-icon={false} bordered={false}>
-					<p>激活状态:<n-tag type={projectTrebleVerticalScreenSplitHook.splitScreenPlusIsInstalled.value ? 'success': 'error'} class="ml-2">当前未激活</n-tag></p>
+					<p>激活状态:<n-tag type={projectTrebleVerticalScreenSplitHook.splitScreenPlusIsInstalled.value ? 'success': 'error'} class="ml-2">{ projectTrebleVerticalScreenSplitHook.splitScreenPlusIsInstalled.value ? '当前已激活' : '当前未激活' }</n-tag></p>
 					<p>需要安装 焕晨(HChen) 开发的 LSPosed 模块 SplitScreenPlus 可激活此功能，您可以前往 SplitScreenPlus 的Github Release 下载~</p>
 					<n-button type="info" secondary onClick={deviceApi.openUrl('https://github.com/HChenX/SplitScreenPlus/releases')}>下载 SplitScreenPlus</n-button>
 				</n-alert>
