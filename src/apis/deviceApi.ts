@@ -3263,14 +3263,14 @@ export const getSplitScreenPlusIsEnabled = (): Promise<string> => {
 };
 
 export const getProjectTrebleSupoortVerticalScreenSplitForSettings = (): Promise<string> => {
-	const shellCommon = `settings system get sothx_project_treble_vertical_screen_split_enable`;
+	const shellCommon = `settings get system sothx_project_treble_vertical_screen_split_enable`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
 				resolve('1');
 			} else {
-				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
-				errno ? reject(stderr) : stdout === 'installed' ?  resolve(stdout) :  reject(stdout);
+				const { errno, stdout, stderr }: ExecResults = (await exec(shellCommon)) as ExecResults;
+				errno ? reject(stderr) : resolve(stdout);
 			}
 		}),
 		shellCommon,

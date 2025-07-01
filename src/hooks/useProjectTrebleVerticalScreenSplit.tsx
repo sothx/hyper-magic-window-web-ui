@@ -187,7 +187,7 @@ export function useProjectTrebleVerticalScreenSplit() {
 		);
 		if (
 			getProjectTrebleSupoortVerticalScreenSplitForSettingsRes &&
-			getProjectTrebleSupoortVerticalScreenSplitForSettingsRes === '1'
+			Number(getProjectTrebleSupoortVerticalScreenSplitForSettingsRes) === 1
 		) {
 			isEnableSettings.value = true;
 		} else {
