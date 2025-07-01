@@ -182,6 +182,34 @@ export interface EnhanceItemInfo {
 }
 const enhanceList: EnhanceItemInfo[] = [
 	{
+		title: '强制竖屏上下分屏（LSPosed模块）',
+		content: () => (
+			<>
+				{!projectTrebleVerticalScreenSplitHook.isInit.value ? (
+					<n-skeleton width={80} sharp={false} round size='small' />
+				) : (
+					<n-switch
+						railStyle={railStyle}
+						disabled={!projectTrebleVerticalScreenSplitHook.splitScreenPlusIsInstalled.value}
+						value={projectTrebleVerticalScreenSplitHook.isEnableSettings.value ? true : false}
+						loading={deviceStore.loading}
+						onUpdate:value={(value: boolean) => projectTrebleVerticalScreenSplitHook.changeEnableMode(value, 'settings')}>
+						{{
+							checked: () => <>已启用</>,
+							unchecked: () => <>未启用</>,
+						}}
+					</n-switch>
+				)}
+				<n-alert class='mt-5' type='info' show-icon={false} bordered={false}>
+					<p>激活状态:<n-tag type={projectTrebleVerticalScreenSplitHook.splitScreenPlusIsInstalled.value ? 'success': 'error'} class="ml-2">当前未激活</n-tag></p>
+					<p>需要安装 焕晨(HChen) 开发的 LSPosed 模块 SplitScreenPlus 可激活此功能，您可以前往 SplitScreenPlus 的Github Release 下载~</p>
+					<n-button type="info" secondary onClick={deviceApi.openUrl('https://github.com/HChenX/SplitScreenPlus/releases')}>下载 SplitScreenPlus</n-button>
+				</n-alert>
+			</>
+		),
+		isShow: () => Boolean(deviceStore.deviceType === 'tablet' && deviceStore.androidTargetSdk && deviceStore.androidTargetSdk === 35),
+	},
+	{
 		title: '强制竖屏上下分屏（移植包）',
 		content: () => (
 			<>
@@ -190,9 +218,9 @@ const enhanceList: EnhanceItemInfo[] = [
 				) : (
 					<n-switch
 						railStyle={railStyle}
-						value={projectTrebleVerticalScreenSplitHook.isEnable.value ? true : false}
+						value={projectTrebleVerticalScreenSplitHook.isEnableProp.value ? true : false}
 						loading={deviceStore.loading}
-						onUpdate:value={(value: boolean) => projectTrebleVerticalScreenSplitHook.changeEnableMode(value)}>
+						onUpdate:value={(value: boolean) => projectTrebleVerticalScreenSplitHook.changeEnableMode(value, 'prop')}>
 						{{
 							checked: () => <>已启用</>,
 							unchecked: () => <>未启用</>,
@@ -204,7 +232,7 @@ const enhanceList: EnhanceItemInfo[] = [
 				</n-alert>
 			</>
 		),
-		isShow: () => Boolean(deviceStore.deviceType === 'tablet' && deviceStore.androidTargetSdk && deviceStore.androidTargetSdk === 35 && projectTrebleVerticalScreenSplitHook.isSupport.value),
+		isShow: () => Boolean(deviceStore.deviceType === 'tablet' && deviceStore.androidTargetSdk && deviceStore.androidTargetSdk === 35 && projectTrebleVerticalScreenSplitHook.isSupportProp.value),
 	},
 	{
 		title: '工作台模式',

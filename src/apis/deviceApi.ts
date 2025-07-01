@@ -3247,7 +3247,55 @@ export const getProjectTrebleSupoortMagicWindowFix = (): Promise<string> => {
 	);
 };
 
-export const getProjectTrebleSupoortVerticalScreenSplit = (): Promise<string> => {
+export const getSplitScreenPlusIsEnabled = (): Promise<string> => {
+	const shellCommon = `pm list packages com.hchen.cherry.splitscreenplus | grep -q com.hchen.cherry.splitscreenplus && echo installed || echo not_installed`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve('installed');
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : stdout === 'installed' ?  resolve(stdout) :  reject(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const getProjectTrebleSupoortVerticalScreenSplitForSettings = (): Promise<string> => {
+	const shellCommon = `settings system get sothx_project_treble_vertical_screen_split_enable`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve('1');
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : stdout === 'installed' ?  resolve(stdout) :  reject(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+
+export const changeProjectTrebleVerticalScreenSplitEnableForSettings = (mode: 1 | 0): Promise<string> => {
+	const shellCommon = `settings put system sothx_project_treble_vertical_screen_split_enable ${mode}`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`success`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = (await exec(shellCommon)) as ExecResults;
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+
+
+export const getProjectTrebleSupoortVerticalScreenSplitForProp = (): Promise<string> => {
 	const shellCommon = `getprop ro.config.sothx_project_treble_support_vertical_screen_split`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
@@ -3262,7 +3310,7 @@ export const getProjectTrebleSupoortVerticalScreenSplit = (): Promise<string> =>
 	);
 };
 
-export const getProjectTrebleVerticalScreenSplitEnable = (): Promise<string> => {
+export const getProjectTrebleVerticalScreenSplitEnableForProp = (): Promise<string> => {
 	const shellCommon = `getprop persist.config.sothx_project_treble_vertical_screen_split_enable`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
@@ -3277,7 +3325,7 @@ export const getProjectTrebleVerticalScreenSplitEnable = (): Promise<string> => 
 	);
 };
 
-export const changeProjectTrebleVerticalScreenSplitEnable = (mode:boolean): Promise<string> => {
+export const changeProjectTrebleVerticalScreenSplitEnableForProp = (mode:boolean): Promise<string> => {
 	const shellCommon = `setprop persist.config.sothx_project_treble_vertical_screen_split_enable ${mode}`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
