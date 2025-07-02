@@ -3,25 +3,15 @@ import { parse } from 'node:url';
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import { exec } from 'child_process';
-import tailwindcss from 'tailwindcss';
+import legacy from '@vitejs/plugin-legacy';
 import vueJsx from '@vitejs/plugin-vue-jsx';
-import postcssPresetEnv from 'postcss-preset-env';
 import vueDevTools from 'vite-plugin-vue-devtools';
 
 export default defineConfig({
-	css: {
-		postcss: {
-			plugins: [
-				tailwindcss(),
-				postcssPresetEnv({
-					stage: 4,
-				}),
-			],
-		},
-	},
 	plugins: [
 		vue(),
 		vueJsx(),
+		legacy(),
 		vueDevTools(),
 		{
 			name: 'run-powershell-command',

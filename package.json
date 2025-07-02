@@ -46,18 +46,20 @@
 		"@types/lodash-es": "^4.17.12",
 		"@types/node": "^24.0.10",
 		"@types/pako": "^2.0.3",
-		"@vitejs/plugin-legacy": "^5.4.3",
-		"@vitejs/plugin-vue": "^5.0.5",
-		"@vitejs/plugin-vue-jsx": "^4.0.0",
+		"@vitejs/plugin-legacy": "^7.0.0",
+		"@vitejs/plugin-vue": "^6.0.0",
+		"@vitejs/plugin-vue-jsx": "^5.0.1",
+		"postcss": "^8.5.6",
+		"postcss-load-config": "^6.0.1",
 		"postcss-preset-env": "^10.2.4",
 		"prettier": "^3.6.2",
 		"prettier-plugin-tailwindcss": "^0.6.13",
 		"rimraf": "^6.0.1",
 		"tailwindcss": "^3.4.17",
-		"terser": "^5.36.0",
+		"terser": "^5.43.1",
 		"typescript": "~5.8.3",
-		"vite": "^5.3.1",
-		"vite-plugin-vue-devtools": "^7.3.1"
+		"vite": "^7.0.0",
+		"vite-plugin-vue-devtools": "^7.7.7"
 	},
 	"pnpm": {
 		"onlyBuiltDependencies": [
