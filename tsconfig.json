@@ -1,20 +1,19 @@
 {
-  "files": [],
-  "references": [
-    {
-      "path": "./tsconfig.node.json"
-    },
-    {
-      "path": "./tsconfig.app.json"
-    }
-  ],
-  "compilerOptions": {
-    "lib": ["DOM","ESNext"],
-    "target": "ESNext",
-    "module": "ESNext",
-    "strict": true,
-    "verbatimModuleSyntax": true,
-    "jsx": "preserve",
-    "jsxImportSource": "vue"
-  }
+	"compilerOptions": {
+		"strict": true,
+		"jsx": "preserve",
+		"target": "ESNext",
+		"module": "ESNext",
+		"esModuleInterop": true,
+		"jsxImportSource": "vue",
+		"verbatimModuleSyntax": true,
+		"moduleResolution": "Bundler",
+		"types": ["node"],
+		"paths": {
+			"@/*": ["./src/*"],
+			"$/*": ["./node_modules/*"]
+		}
+	},
+	"include": ["**/*.ts", "src/**/*.vue"],
+	"exclude": ["node_modules", "dist"]
 }
