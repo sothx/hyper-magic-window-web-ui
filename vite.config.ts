@@ -1,3 +1,5 @@
+import path from 'node:path';
+import { parse } from 'node:url';
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import { exec } from 'child_process';
@@ -5,7 +7,6 @@ import tailwindcss from 'tailwindcss';
 import vueJsx from '@vitejs/plugin-vue-jsx';
 import postcssPresetEnv from 'postcss-preset-env';
 import vueDevTools from 'vite-plugin-vue-devtools';
-import { parse, fileURLToPath, URL } from 'node:url';
 
 export default defineConfig({
 	css: {
@@ -115,7 +116,8 @@ export default defineConfig({
 	assetsInclude: ['**/*.xml'], // 添加这一行以包括 XML 文件
 	resolve: {
 		alias: {
-			'@': fileURLToPath(new URL('./src', import.meta.url)),
+			'@': path.resolve(import.meta.dirname, './src'),
+			$: path.resolve(import.meta.dirname, './node_modules'),
 		},
 	},
 });
