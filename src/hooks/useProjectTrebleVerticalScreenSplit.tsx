@@ -78,22 +78,20 @@ export function useProjectTrebleVerticalScreenSplit() {
 			preset: 'dialog',
 			content: () => (
 				<>
-					<p class="my-5">请授予剪切板相关应用权限，否则可能无法正常复制到剪切板~</p>
-					<div class="my-8">
-						{
-							NButtonTemplate && NButtonTemplate('通过 移动网盘 下载', 'info', () => {
+					<p class='my-5'>请授予剪切板相关应用权限，否则可能无法正常复制到剪切板~</p>
+					<div class='my-8'>
+						{NButtonTemplate &&
+							NButtonTemplate('通过 移动网盘 下载', 'info', () => {
 								navigator.clipboard.writeText(`https://caiyun.139.com/w/i/2nQQUYS9D30nv`);
 								deviceApi.openChinaMobileMCloud();
-							})
-						}
+							})}
 					</div>
-					<div class="my-8">
-						{
-							NButtonTemplate && NButtonTemplate('通过 Github Release 下载', 'info', () => {
+					<div class='my-8'>
+						{NButtonTemplate &&
+							NButtonTemplate('通过 Github Release 下载', 'info', () => {
 								navigator.clipboard.writeText(`https://github.com/HChenX/SplitScreenPlus/releases`);
-								deviceApi.openUrl('https://github.com/HChenX/SplitScreenPlus/releases')
-							})
-						}
+								deviceApi.openUrl('https://github.com/HChenX/SplitScreenPlus/releases');
+							})}
 					</div>
 				</>
 			),
@@ -308,8 +306,43 @@ export function useProjectTrebleVerticalScreenSplit() {
 							title: '操作成功',
 							type: 'success',
 							preset: 'dialog',
-							content: () => <p>好耶w，已经成功{mode ? '启用' : '禁用'}竖屏上下分屏，请查看是否生效~</p>,
-							positiveText: '确定',
+							content: () => (
+								<>
+									<p>好耶w，已经成功{mode ? '启用' : '禁用'}竖屏上下分屏，请查看是否生效~</p>
+									<p>
+										是否需要额外重启{' '}
+										<span
+											class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+											系统界面
+										</span>{' '}
+										的作用域？
+									</p>
+								</>
+							),
+							positiveText: '重启作用域',
+							negativeText: '关闭',
+							onPositiveClick() {
+								deviceApi
+									.killAndroidSystemUI()
+									.then(async res => {
+										modal.create({
+											title: '重启作用域成功',
+											type: 'success',
+											preset: 'dialog',
+											content: () => <p>已经成功为你重启对应的作用域，请查看是否生效~</p>,
+										});
+									})
+									.catch(err => {
+										modal.create({
+											title: '重启作用域失败',
+											type: 'error',
+											preset: 'dialog',
+											content: () => (
+												<p>发生异常错误，重启系统界面作用域失败QwQ，详细错误请查看日志~</p>
+											),
+										});
+									});
+							},
 						});
 					})
 					.catch(err => {
