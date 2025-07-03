@@ -3310,6 +3310,21 @@ export const getProjectTrebleSupoortVerticalScreenSplitForProp = (): Promise<str
 	);
 };
 
+export const getProjectTrebleVerticalScreenSplitVersion = (): Promise<string> => {
+	const shellCommon = `getprop ro.config.sothx_project_treble_vertical_screen_split_version`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve('2');
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
 export const getProjectTrebleVerticalScreenSplitEnableForProp = (): Promise<string> => {
 	const shellCommon = `getprop persist.config.sothx_project_treble_vertical_screen_split_enable`;
 	return handlePromiseWithLogging(

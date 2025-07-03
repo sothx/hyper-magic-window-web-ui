@@ -193,7 +193,7 @@ const enhanceList: EnhanceItemInfo[] = [
 						disabled={!projectTrebleVerticalScreenSplitHook.splitScreenPlusIsInstalled.value}
 						value={projectTrebleVerticalScreenSplitHook.isEnableSettings.value ? true : false}
 						loading={deviceStore.loading}
-						onUpdate:value={(value: boolean) => projectTrebleVerticalScreenSplitHook.changeEnableMode(value, 'settings')}>
+						onUpdate:value={(value: boolean) => projectTrebleVerticalScreenSplitHook.changeEnableMode(value, 'module')}>
 						{{
 							checked: () => <>已启用</>,
 							unchecked: () => <>未启用</>,
@@ -202,16 +202,16 @@ const enhanceList: EnhanceItemInfo[] = [
 				)}
 				<n-alert class='mt-5' type='info' show-icon={false} bordered={false}>
 					<p class="mb-2">安装状态:{ !projectTrebleVerticalScreenSplitHook.isInit.value ? (<n-skeleton text class="ml-2" height={25} width={80} sharp={false} size='small' />) : (<n-tag type={projectTrebleVerticalScreenSplitHook.splitScreenPlusIsInstalled.value ? 'success': 'error'} class="ml-2">{ projectTrebleVerticalScreenSplitHook.splitScreenPlusIsInstalled.value ? '当前已安装' : '当前未安装' }</n-tag>)}</p>
-					<p>需要安装 焕晨(HChen) 开发的 LSPosed 模块 SplitScreenPlus 可激活此功能，您可以前往 SplitScreenPlus 的 Github Release 下载~</p>
-					<n-button class="mt-2" type="info" secondary onClick={() => deviceApi.openUrl('https://github.com/HChenX/SplitScreenPlus/releases')}>下载 SplitScreenPlus</n-button>
+					<p>安装 焕晨(HChen) 开发的 LSPosed 模块 SplitScreenPlus 可激活此功能~</p>
+					<n-button size="small" class="mt-2" type="info" secondary onClick={() => projectTrebleVerticalScreenSplitHook.openModuleDownloadUrl()}>获取 SplitScreenPlus</n-button>
 					<div class="mt-3">
-						<p>由于小米平板并不支持竖屏上下分屏，模块通过修改系统逻辑以实现竖屏上下分屏，可能存在不稳定等情况，如出现系统界面异常可以切换启用状态为 [未启用] 后，通过下方 [重启系统界面] 的功能解决界面异常问题。</p>
-						<n-button class="mt-2" type="error" secondary onClick={() => projectTrebleVerticalScreenSplitHook.reloadSystemUI()}>重启系统界面</n-button>
+						<p>由于{ deviceStore.deviceType === 'tablet' ? '小米平板' : '小米大折叠屏' }并不支持竖屏上下分屏，模块通过修改系统逻辑以实现竖屏上下分屏，可能存在不稳定等情况，如出现系统界面异常可以切换启用状态为 [未启用] 后，通过下方 [重启系统界面] 的功能解决界面异常问题。</p>
+						<n-button size="small" class="mt-2" type="error" secondary onClick={() => projectTrebleVerticalScreenSplitHook.reloadSystemUI()}>重启系统界面</n-button>
 					</div>
 				</n-alert>
 			</>
 		),
-		isShow: () => Boolean(deviceStore.deviceType === 'tablet' && deviceStore.androidTargetSdk && deviceStore.androidTargetSdk === 35),
+		isShow: () => Boolean(['tablet','fold'].includes(deviceStore.deviceType) && deviceStore.androidTargetSdk && deviceStore.androidTargetSdk === 35),
 	},
 	{
 		title: '强制竖屏上下分屏（移植包）',
@@ -222,9 +222,9 @@ const enhanceList: EnhanceItemInfo[] = [
 				) : (
 					<n-switch
 						railStyle={railStyle}
-						value={projectTrebleVerticalScreenSplitHook.isEnableProp.value ? true : false}
+						value={projectTrebleVerticalScreenSplitHook.isEnableProjectTreble.value ? true : false}
 						loading={deviceStore.loading}
-						onUpdate:value={(value: boolean) => projectTrebleVerticalScreenSplitHook.changeEnableMode(value, 'prop')}>
+						onUpdate:value={(value: boolean) => projectTrebleVerticalScreenSplitHook.changeEnableMode(value, 'projectTreble')}>
 						{{
 							checked: () => <>已启用</>,
 							unchecked: () => <>未启用</>,
@@ -236,7 +236,7 @@ const enhanceList: EnhanceItemInfo[] = [
 				</n-alert>
 			</>
 		),
-		isShow: () => Boolean(deviceStore.deviceType === 'tablet' && deviceStore.androidTargetSdk && deviceStore.androidTargetSdk === 35 && projectTrebleVerticalScreenSplitHook.isSupportProp.value),
+		isShow: () => Boolean(['tablet','fold'].includes(deviceStore.deviceType) && deviceStore.androidTargetSdk && deviceStore.androidTargetSdk === 35 && projectTrebleVerticalScreenSplitHook.isSupportProp.value),
 	},
 	{
 		title: '工作台模式',

@@ -1,11 +1,13 @@
-import { ref, computed, onMounted, nextTick } from 'vue';
+import { ref, computed, onMounted, nextTick, h } from 'vue';
 import { useDeviceStore } from '@/stores/device';
 import $to from 'await-to-js';
+import { RenderJsx } from '@/components/RenderJSX';
 import {
 	NButton,
 	createDiscreteApi,
 	darkTheme,
 	lightTheme,
+	type ButtonProps,
 	type ConfigProviderProps,
 	type DataTableColumns,
 	type NInput,
@@ -35,15 +37,69 @@ export function useProjectTrebleVerticalScreenSplit() {
 
 	const isSupportProp = ref<boolean>(false);
 
+	const currentVerison = ref<number>(1);
+
 	const isEnableProp = ref<boolean>(false);
 
 	const isEnableSettings = ref<boolean>(false);
 
 	const splitScreenPlusIsInstalled = ref<boolean>(false);
 
+	const isEnableProjectTreble = computed(() => {
+		if (currentVerison.value === 2) {
+			return isEnableSettings.value;
+		} else {
+			return isEnableProp.value;
+		}
+	});
+
 	const loading = ref<boolean>(true);
 
 	const isInit = ref<boolean>(false);
+
+	const openModuleDownloadUrl = () => {
+		const NButtonTemplate = (text: string, type: ButtonProps['type'], onClick: ButtonProps['onClick']) => {
+			return h(
+				NButton,
+				{
+					type,
+					size: 'small',
+					class: 'my-3',
+					block: true,
+					dashed: true,
+					onClick,
+				},
+				text,
+			);
+		};
+		modal.create({
+			title: '请选择模块的下载方式',
+			type: 'info',
+			preset: 'dialog',
+			content: () => (
+				<>
+					<p class="my-5">请授予剪切板相关应用权限，否则可能无法正常复制到剪切板~</p>
+					<div class="my-8">
+						{
+							NButtonTemplate && NButtonTemplate('通过 移动网盘 下载', 'info', () => {
+								navigator.clipboard.writeText(`https://caiyun.139.com/w/i/2nQQUYS9D30nv`);
+								deviceApi.openChinaMobileMCloud();
+							})
+						}
+					</div>
+					<div class="my-8">
+						{
+							NButtonTemplate && NButtonTemplate('通过 Github Release 下载', 'info', () => {
+								navigator.clipboard.writeText(`https://github.com/HChenX/SplitScreenPlus/releases`);
+								deviceApi.openUrl('https://github.com/HChenX/SplitScreenPlus/releases')
+							})
+						}
+					</div>
+				</>
+			),
+			negativeText: '关闭',
+		});
+	};
 
 	const reloadSystemUI = () => {
 		modal.create({
@@ -57,7 +113,8 @@ export function useProjectTrebleVerticalScreenSplit() {
 					</p>
 					<p>
 						{' '}
-						如出现系统界面异常可以切换启用状态为 [未启用] 后，通过重启系统界面解决界面异常问题，确定要继续吗？
+						如出现系统界面异常可以切换启用状态为 [未启用]
+						后，通过重启系统界面解决界面异常问题，确定要继续吗？
 					</p>
 				</>
 			),
@@ -86,7 +143,7 @@ export function useProjectTrebleVerticalScreenSplit() {
 		});
 	};
 
-	const changeEnableMode = async (mode: boolean, type: 'prop' | 'settings') => {
+	const changeEnableMode = async (mode: boolean, type: 'projectTreble' | 'module') => {
 		const [negativeRes, positiveRes] = await $to(
 			new Promise((resolve, reject) => {
 				modal.create({
@@ -106,7 +163,7 @@ export function useProjectTrebleVerticalScreenSplit() {
 									{mode
 										? '启用小米平板在竖屏下使用上下分屏，由于并非系统本身支持竖屏上下分屏（修改系统逻辑实现），因此启用后可能会存在不稳定等情况，如果使用则代表您愿意承担一切后果。'
 										: '恢复小米平板系统默认情况下在竖屏下左右分屏的体验。'}
-									{type === 'prop' && (
+									{type === 'projectTreble' && (
 										<p>
 											实际生效还需要重启{' '}
 											<span
@@ -132,60 +189,116 @@ export function useProjectTrebleVerticalScreenSplit() {
 			}),
 		);
 		if (positiveRes) {
-			if (type === 'prop') {
-				deviceApi
-					.changeProjectTrebleVerticalScreenSplitEnableForProp(mode)
-					.then(res => {
-						isEnableProp.value = mode;
-						modal.create({
-							title: '操作成功',
-							type: 'success',
-							preset: 'dialog',
-							content: () => (
-								<p>
-									好耶w，已经成功{mode ? '启用' : '禁用'}竖屏上下分屏~实际生效还需要重启{' '}
-									<span
-										class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-										系统界面
-									</span>{' '}
-									的作用域，确定要继续吗？
-								</p>
-							),
-							positiveText: '确定重启作用域',
-							negativeText: '稍后手动重启',
-							onPositiveClick() {
-								deviceApi
-									.killAndroidSystemUI()
-									.then(async res => {
-										modal.create({
-											title: '重启作用域成功',
-											type: 'success',
-											preset: 'dialog',
-											content: () => <p>已经成功为你重启对应的作用域，请查看是否生效~</p>,
+			if (type === 'projectTreble') {
+				if (currentVerison.value === 2) {
+					deviceApi
+						.changeProjectTrebleVerticalScreenSplitEnableForSettings(mode ? 1 : 0)
+						.then(res => {
+							isEnableSettings.value = mode;
+							modal.create({
+								title: '操作成功',
+								type: 'success',
+								preset: 'dialog',
+								content: () => (
+									<p>
+										好耶w，已经成功{mode ? '启用' : '禁用'}竖屏上下分屏~实际生效还需要重启{' '}
+										<span
+											class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+											系统界面
+										</span>{' '}
+										的作用域，确定要继续吗？
+									</p>
+								),
+								positiveText: '确定重启作用域',
+								negativeText: '稍后手动重启',
+								onPositiveClick() {
+									deviceApi
+										.killAndroidSystemUI()
+										.then(async res => {
+											modal.create({
+												title: '重启作用域成功',
+												type: 'success',
+												preset: 'dialog',
+												content: () => <p>已经成功为你重启对应的作用域，请查看是否生效~</p>,
+											});
+										})
+										.catch(err => {
+											modal.create({
+												title: '重启作用域失败',
+												type: 'error',
+												preset: 'dialog',
+												content: () => (
+													<p>发生异常错误，重启系统界面作用域失败QwQ，详细错误请查看日志~</p>
+												),
+											});
 										});
-									})
-									.catch(err => {
-										modal.create({
-											title: '重启作用域失败',
-											type: 'error',
-											preset: 'dialog',
-											content: () => (
-												<p>发生异常错误，重启系统界面作用域失败QwQ，详细错误请查看日志~</p>
-											),
+								},
+							});
+						})
+						.catch(() => {
+							modal.create({
+								title: '操作失败',
+								type: 'error',
+								preset: 'dialog',
+								content: () => <p>修改失败，详情请查看日志记录~</p>,
+								negativeText: '确定',
+							});
+						});
+				} else {
+					deviceApi
+						.changeProjectTrebleVerticalScreenSplitEnableForProp(mode)
+						.then(res => {
+							isEnableProp.value = mode;
+							modal.create({
+								title: '操作成功',
+								type: 'success',
+								preset: 'dialog',
+								content: () => (
+									<p>
+										好耶w，已经成功{mode ? '启用' : '禁用'}竖屏上下分屏~实际生效还需要重启{' '}
+										<span
+											class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+											系统界面
+										</span>{' '}
+										的作用域，确定要继续吗？
+									</p>
+								),
+								positiveText: '确定重启作用域',
+								negativeText: '稍后手动重启',
+								onPositiveClick() {
+									deviceApi
+										.killAndroidSystemUI()
+										.then(async res => {
+											modal.create({
+												title: '重启作用域成功',
+												type: 'success',
+												preset: 'dialog',
+												content: () => <p>已经成功为你重启对应的作用域，请查看是否生效~</p>,
+											});
+										})
+										.catch(err => {
+											modal.create({
+												title: '重启作用域失败',
+												type: 'error',
+												preset: 'dialog',
+												content: () => (
+													<p>发生异常错误，重启系统界面作用域失败QwQ，详细错误请查看日志~</p>
+												),
+											});
 										});
-									});
-							},
+								},
+							});
+						})
+						.catch(err => {
+							modal.create({
+								title: '操作失败',
+								type: 'error',
+								preset: 'dialog',
+								content: () => <p>修改失败，详情请查看日志记录~</p>,
+								negativeText: '确定',
+							});
 						});
-					})
-					.catch(err => {
-						modal.create({
-							title: '操作失败',
-							type: 'error',
-							preset: 'dialog',
-							content: () => <p>修改失败，详情请查看日志记录~</p>,
-							negativeText: '确定',
-						});
-					});
+				}
 			} else {
 				deviceApi
 					.changeProjectTrebleVerticalScreenSplitEnableForSettings(mode ? 1 : 0)
@@ -230,6 +343,17 @@ export function useProjectTrebleVerticalScreenSplit() {
 		} else {
 			isEnableSettings.value = false;
 		}
+		const [, getProjectTrebleVerticalScreenSplitVersionRes] = await $to<string, string>(
+			deviceApi.getProjectTrebleVerticalScreenSplitVersion(),
+		);
+		if (
+			getProjectTrebleVerticalScreenSplitVersionRes &&
+			typeof Number(getProjectTrebleVerticalScreenSplitVersionRes) === 'number'
+		) {
+			currentVerison.value = Number(getProjectTrebleVerticalScreenSplitVersionRes);
+		} else {
+			currentVerison.value = 2;
+		}
 		const [, getProjectTrebleSupoortVerticalScreenSplitRes] = await $to<string, string>(
 			deviceApi.getProjectTrebleSupoortVerticalScreenSplitForProp(),
 		);
@@ -257,8 +381,11 @@ export function useProjectTrebleVerticalScreenSplit() {
 	});
 
 	return {
+		currentVerison,
 		isSupportProp,
+		openModuleDownloadUrl,
 		isEnableProp,
+		isEnableProjectTreble,
 		splitScreenPlusIsInstalled,
 		reloadSystemUI,
 		isEnableSettings,
