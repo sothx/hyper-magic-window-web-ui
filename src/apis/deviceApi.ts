@@ -3354,3 +3354,67 @@ export const changeProjectTrebleVerticalScreenSplitEnableForProp = (mode:boolean
 		shellCommon,
 	);
 };
+
+
+export const getProjectTrebleSupoortCvwFullForSettings = (): Promise<string> => {
+	const shellCommon = `settings get system sothx_project_treble_cvw_full_enable`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve('1');
+			} else {
+				const { errno, stdout, stderr }: ExecResults = (await exec(shellCommon)) as ExecResults;
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+
+export const changeProjectTrebleSupoortCvwFullForSettings = (mode: 1 | 0): Promise<string> => {
+	const shellCommon = `settings put system sothx_project_treble_cvw_full_enable ${mode}`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`success`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = (await exec(shellCommon)) as ExecResults;
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+
+
+export const getProjectTrebleSupoortCvwFullForProp = (): Promise<string> => {
+	const shellCommon = `getprop ro.config.sothx_project_treble_support_cvw_full`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve('true');
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const getProjectTrebleCvwFullVersion = (): Promise<string> => {
+	const shellCommon = `getprop ro.config.sothx_project_cvw_full_version`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve('2');
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};

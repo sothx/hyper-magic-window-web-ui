@@ -239,6 +239,31 @@ const enhanceList: EnhanceItemInfo[] = [
 		isShow: () => Boolean(['tablet','fold'].includes(deviceStore.deviceType) && deviceStore.androidTargetSdk && deviceStore.androidTargetSdk === 35 && projectTrebleVerticalScreenSplitHook.isSupportProp.value),
 	},
 	{
+		title: '工作台任意应用小窗无极调节（移植包）',
+		content: () => (
+			<>
+				{!projectTrebleVerticalScreenSplitHook.isInit.value ? (
+					<n-skeleton width={80} sharp={false} round size='small' />
+				) : (
+					<n-switch
+						railStyle={railStyle}
+						value={projectTrebleVerticalScreenSplitHook.isEnableProjectTreble.value ? true : false}
+						loading={deviceStore.loading}
+						onUpdate:value={(value: boolean) => projectTrebleVerticalScreenSplitHook.changeEnableMode(value, 'projectTreble')}>
+						{{
+							checked: () => <>已启用</>,
+							unchecked: () => <>未启用</>,
+						}}
+					</n-switch>
+				)}
+				<n-alert class='mt-5' type='warning' show-icon={false} bordered={false}>
+					仅支持该功能的移植包可用，开启后在工作台模式下任意应用小窗支持无级调节
+				</n-alert>
+			</>
+		),
+		isShow: () => Boolean(['tablet'].includes(deviceStore.deviceType) && deviceStore.androidTargetSdk && deviceStore.androidTargetSdk === 35 && projectTrebleVerticalScreenSplitHook.isSupportProp.value),
+	},
+	{
 		title: '工作台模式',
 		titleSlot: () => (
 			<>
