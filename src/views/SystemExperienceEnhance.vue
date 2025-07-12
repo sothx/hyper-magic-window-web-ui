@@ -40,6 +40,7 @@ import { useDevelopmentSettingsEnabled } from '@/hooks/useDevelopmentSettingsEna
 import type { JSX } from 'vue/jsx-runtime';
 import { useDisplayModeRecord } from '@/hooks/useDisplayModeRecord';
 import { useHideGestureLine } from '@/hooks/useHideGestureLine';
+import { useProjectTrebleCvwFull } from '@/hooks/useProjectTrebleCvwFull';
 const deviceStore = useDeviceStore();
 const searchKeyword = ref('');
 const hideGestureLineHook = useHideGestureLine();
@@ -57,6 +58,7 @@ const videoWallpaperLoopHook = useVideoWallpaperLoop();
 const useDisabledOS2SystemPreStartHook = useDisabledOS2SystemPreStart();
 const useDisabledDeepSleepEnableHook = useDisabledDeepSleepEnable();
 const projectTrebleVerticalScreenSplitHook = useProjectTrebleVerticalScreenSplit();
+const projectTrebleCvwFullHook = useProjectTrebleCvwFull();
 const fboHook = useFbo();
 const joyoseHook = useJoyose();
 // const initHooks = () => {
@@ -239,17 +241,17 @@ const enhanceList: EnhanceItemInfo[] = [
 		isShow: () => Boolean(['tablet','fold'].includes(deviceStore.deviceType) && deviceStore.androidTargetSdk && deviceStore.androidTargetSdk === 35 && projectTrebleVerticalScreenSplitHook.isSupportProp.value),
 	},
 	{
-		title: '工作台任意应用小窗无极调节（移植包）',
+		title: '工作台无极小窗（移植包）',
 		content: () => (
 			<>
-				{!projectTrebleVerticalScreenSplitHook.isInit.value ? (
+				{!projectTrebleCvwFullHook.isInit.value ? (
 					<n-skeleton width={80} sharp={false} round size='small' />
 				) : (
 					<n-switch
 						railStyle={railStyle}
-						value={projectTrebleVerticalScreenSplitHook.isEnableProjectTreble.value ? true : false}
+						value={projectTrebleCvwFullHook.isEnable.value ? true : false}
 						loading={deviceStore.loading}
-						onUpdate:value={(value: boolean) => projectTrebleVerticalScreenSplitHook.changeEnableMode(value, 'projectTreble')}>
+						onUpdate:value={(value: boolean) => projectTrebleCvwFullHook.changeEnableMode(value)}>
 						{{
 							checked: () => <>已启用</>,
 							unchecked: () => <>未启用</>,
@@ -257,11 +259,11 @@ const enhanceList: EnhanceItemInfo[] = [
 					</n-switch>
 				)}
 				<n-alert class='mt-5' type='warning' show-icon={false} bordered={false}>
-					仅支持该功能的移植包可用，开启后在工作台模式下任意应用小窗支持无级调节
+					仅支持该功能的移植包可用，开启后在工作台模式下任意应用小窗支持无级调节~
 				</n-alert>
 			</>
 		),
-		isShow: () => Boolean(['tablet'].includes(deviceStore.deviceType) && deviceStore.androidTargetSdk && deviceStore.androidTargetSdk === 35 && projectTrebleVerticalScreenSplitHook.isSupportProp.value),
+		isShow: () => Boolean(['tablet'].includes(deviceStore.deviceType) && deviceStore.androidTargetSdk && deviceStore.androidTargetSdk === 35 && projectTrebleCvwFullHook.isSupportProp.value),
 	},
 	{
 		title: '工作台模式',
