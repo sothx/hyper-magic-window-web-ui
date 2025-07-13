@@ -265,6 +265,98 @@ const enhanceList: EnhanceItemInfo[] = [
 		),
 		isShow: () => Boolean(['tablet'].includes(deviceStore.deviceType) && deviceStore.androidTargetSdk && deviceStore.androidTargetSdk === 35 && projectTrebleCvwFullHook.isSupportProp.value),
 	},
+	// {
+	// 	title: '工作台前台应用数量（移植包）',
+	// 			titleSlot: () => (
+	// 		<>
+	// 			{!deviceStore.enabledMiuiDesktopMode && (
+	// 				<p class='mt-2'>
+	// 					<n-button
+	// 						strong
+	// 						secondary
+	// 						size='small'
+	// 						type='warning'
+	// 						onClick={() => miuiDesktopModeHook.changeMiuiDesktopModeEnabled()}>
+	// 						启用功能
+	// 					</n-button>
+	// 				</p>
+	// 			)}
+	// 		</>
+	// 	),
+	// 	content: () => (
+	// 		<>
+	// 			{!miuiDesktopModeHook.isInit.value ? (
+	// 				<div>
+	// 					<n-skeleton text repeat={1} sharp={false} round />
+	// 					<n-skeleton text repeat={1} sharp={false} size='small' />
+	// 				</div>
+	// 			) : (
+	// 				<div>
+	// 					{miuiDesktopModeHook.isEditFreeformMaxNum.value ? (
+	// 						<>
+	// 							<n-slider
+	// 								size='small'
+	// 								min={4}
+	// 								max={20}
+	// 								disabled={!miuiDesktopModeHook.isEditFreeformMaxNum.value}
+	// 								step={1}
+	// 								value={miuiDesktopModeHook.currentFreeformMaxNum.value}
+	// 								onUpdateValue={(value: number) => {
+	// 									miuiDesktopModeHook.currentFreeformMaxNum.value = value;
+	// 								}}
+	// 							/>
+	// 							<n-input-number
+	// 								showButton={false}
+	// 								class='pt-3'
+	// 								readonly
+	// 								value={miuiDesktopModeHook.currentFreeformMaxNum.value}
+	// 								placeholder='请输入前台应用数量'
+	// 								min={4}
+	// 								max={20}
+	// 								step={1}
+	// 								onUpdateValue={(value: number) => {
+	// 									miuiDesktopModeHook.currentFreeformMaxNum.value = value;
+	// 								}}
+	// 							/>
+	// 							<n-button
+	// 								size='small'
+	// 								type='info'
+	// 								class="mt-5"
+	// 								loading={deviceStore.loading}
+	// 								onClick={() => miuiDesktopModeHook.changeFreeformMaxNum(miuiDesktopModeHook.currentFreeformMaxNum.value)}>
+	// 								{{
+	// 									default: () => <>保存修改</>,
+	// 								}}
+	// 							</n-button>
+	// 						</>
+	// 					) : (
+	// 						<>
+	// 							<div class='mb-5'>
+	// 								<n-tag bordered={false} type='info'>
+	// 									当前前台应用数量 : {miuiDesktopModeHook.currentFreeformMaxNum.value}
+	// 								</n-tag>
+	// 							</div>
+	// 							<n-button
+	// 								size='small'
+	// 								type='info'
+	// 								loading={deviceStore.loading}
+	// 								onClick={() => (miuiDesktopModeHook.isEditFreeformMaxNum.value = true)}>
+	// 								{{
+	// 									default: () => <>修改前台应用数量</>,
+	// 								}}
+	// 							</n-button>
+	// 						</>
+	// 					)}
+	// 				</div>
+	// 			)}
+	// 			<n-alert class='mt-5' type='warning' show-icon={false} bordered={false}>
+	// 				<p>仅支持该功能的移植包可用，配置后在工作台模式下支持更多数量的前台应用显示~</p>
+	// 				<p>需要保存修改才会生效~</p>
+	// 			</n-alert>
+	// 		</>
+	// 	),
+	// 	isShow: () => ['tablet'].includes(deviceStore.deviceType) && miuiDesktopModeHook.isSupportFreeformMaxNum.value,
+	// },
 	{
 		title: '工作台模式',
 		titleSlot: () => (

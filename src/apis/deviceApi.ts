@@ -3418,3 +3418,50 @@ export const getProjectTrebleCvwFullVersion = (): Promise<string> => {
 		shellCommon,
 	);
 };
+
+
+export const getProjectTrebleSupportDesktopModeFreeformMaxNum = (): Promise<string> => {
+	const shellCommon = `getprop ro.config.sothx_project_treble_support_desktop_mode_freeform_max_num`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`true`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+
+export const setMiuiDesktopModeFreeformMaxNum = (value: number): Promise<number> => {
+	const shellCommon = `settings put system sothx_project_treble_desktop_mode_freeform_max_num ${value}`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(value);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = (await exec(shellCommon)) as ExecResults;
+				errno ? reject(stderr) : resolve(value);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const getMiuiDesktopModeFreeformMaxNum = (): Promise<number> => {
+	const shellCommon = `settings get system sothx_project_treble_desktop_mode_freeform_max_num`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(4);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : typeof Number(stdout) === 'number' && Number(stdout) >= 4 ? resolve(Number(stdout)) : resolve(4);
+			}
+		}),
+		shellCommon,
+	);
+};
