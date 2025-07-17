@@ -13,7 +13,7 @@ import {
 	type NInput,
 } from 'naive-ui';
 import * as deviceApi from '@/apis/deviceApi';
-export function useProjectTrebleCvwFull() {
+export function useProjectTrebleDisableResizeBlackList() {
 	const deviceStore = useDeviceStore();
 	const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
 		theme: deviceStore.isDarkMode ? darkTheme : lightTheme,
@@ -29,87 +29,42 @@ export function useProjectTrebleCvwFull() {
 
 	const isEnable = ref<boolean>(false);
 
-	const splitScreenPlusIsInstalled = ref<boolean>(false);
-
 	const loading = ref<boolean>(true);
 
 	const isInit = ref<boolean>(false);
-
-	const reloadSystemUI = () => {
-		modal.create({
-			title: '确定要重启系统界面么？',
-			type: 'info',
-			preset: 'dialog',
-			content: () => (
-				<>
-					<p>
-						由于小米平板并不支持竖屏上下分屏，模块通过修改系统逻辑以实现竖屏上下分屏，可能存在不稳定等情况。
-					</p>
-					<p>
-						{' '}
-						如出现系统界面异常可以切换启用状态为 [未启用]
-						后，通过重启系统界面解决界面异常问题，确定要继续吗？
-					</p>
-				</>
-			),
-			positiveText: '确定',
-			negativeText: '取消',
-			onPositiveClick() {
-				deviceApi
-					.killAndroidSystemUI()
-					.then(async res => {
-						modal.create({
-							title: '重启系统界面成功',
-							type: 'success',
-							preset: 'dialog',
-							content: () => <p>已经成功为你重启系统界面的作用域，请查看是否生效~</p>,
-						});
-					})
-					.catch(err => {
-						modal.create({
-							title: '重启系统界面失败',
-							type: 'error',
-							preset: 'dialog',
-							content: () => <p>发生异常错误，重启系统界面作用域失败QwQ，详细错误请查看日志~</p>,
-						});
-					});
-			},
-		});
-	};
 
 	const changeEnableMode = async (mode: boolean) => {
 		const [negativeRes, positiveRes] = await $to(
 			new Promise((resolve, reject) => {
 				modal.create({
-					title: `想${mode ? '启用' : '禁用'}工作台无极小窗吗？`,
+					title: `想${mode ? '禁用' : '恢复'}分屏黑名单吗？`,
 					type: 'info',
 					preset: 'dialog',
 					content: () => (
 						<div>
 							{
 								<div>
-									{mode ? '启用' : '禁用'}{' '}
+									{mode ? '禁用' : '恢复'}{' '}
 									<span
 										class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-										工作台无极小窗
+										分屏黑名单
 									</span>{' '}
 									后，
 									{mode
-										? '工作台模式下任意应用小窗支持无级调节~'
-										: '将恢复小米平板系统默认工作台模式下的应用小窗体验~'}
+										? '将支持更多应用分屏~'
+										: '将恢复由系统根据黑名单判定应用是否支持分屏~'}
 										<p>
 											实际生效还需要重启{' '}
 											<span
 												class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-												系统界面
-											</span>{' '}
-											作用域，确定要继续吗？
+												系统
+											</span>{' '}，确定要继续吗？
 										</p>
 								</div>
 							}
 						</div>
 					),
-					positiveText: `确定${mode ? '启用' : '禁用'}工作台无极小窗`,
+					positiveText: `确定${mode ? '禁用' : '恢复'}分屏黑名单`,
 					negativeText: '我再想想',
 					onPositiveClick: () => {
 						resolve('positiveClick');
@@ -122,7 +77,7 @@ export function useProjectTrebleCvwFull() {
 		);
 		if (positiveRes) {
 			deviceApi
-				.changeProjectTrebleSupoortCvwFullForSettings(mode ? 1 : 0)
+				.changeProjectTrebleSupportDisableResizeBlackListForSettings(mode ? 1 : 0)
 				.then(res => {
 					isEnable.value = mode;
 					modal.create({
@@ -131,33 +86,32 @@ export function useProjectTrebleCvwFull() {
 						preset: 'dialog',
 						content: () => (
 							<p>
-								好耶w，已经成功{mode ? '启用' : '禁用'}工作台无极小窗~实际生效还需要重启{' '}
+								好耶w，已经成功{mode ? '禁用' : '恢复'}分屏黑名单~实际生效还需要重启{' '}
 								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-									系统界面
-								</span>{' '}
-								的作用域，确定要继续吗？
+									系统
+								</span>{' '}，确定要继续吗？
 							</p>
 						),
 						positiveText: '确定重启作用域',
 						negativeText: '稍后手动重启',
 						onPositiveClick() {
 							deviceApi
-								.killAndroidSystemUI()
+								.rebootDevice()
 								.then(async res => {
 									modal.create({
-										title: '重启作用域成功',
+										title: '重启系统成功',
 										type: 'success',
 										preset: 'dialog',
-										content: () => <p>已经成功为你重启对应的作用域，请查看是否生效~</p>,
+										content: () => <p>已经成功为你重启系统，请查看是否生效~</p>,
 									});
 								})
 								.catch(err => {
 									modal.create({
-										title: '重启作用域失败',
+										title: '重启系统失败',
 										type: 'error',
 										preset: 'dialog',
 										content: () => (
-											<p>发生异常错误，重启系统界面作用域失败QwQ，详细错误请查看日志~</p>
+											<p>发生异常错误，重启系统失败QwQ，详细错误请查看日志~</p>
 										),
 									});
 								});
@@ -177,29 +131,29 @@ export function useProjectTrebleCvwFull() {
 	};
 
 	const fetchData = async () => {
-		const [, getProjectTrebleSupportCvwFullForSettingsRes] = await $to<string, string>(
-			deviceApi.getProjectTrebleSupportCvwFullForSettings(),
+		const [, getProjectTrebleSupoortDisableResizeBlackListForSettingsRes] = await $to<string, string>(
+			deviceApi.getProjectTrebleSupoortDisableResizeBlackListForSettings(),
 		);
 		if (
-			getProjectTrebleSupportCvwFullForSettingsRes &&
-			Number(getProjectTrebleSupportCvwFullForSettingsRes) === 1
+			getProjectTrebleSupoortDisableResizeBlackListForSettingsRes &&
+			Number(getProjectTrebleSupoortDisableResizeBlackListForSettingsRes) === 1
 		) {
 			isEnable.value = true;
 		} else {
 			isEnable.value = false;
 		}
-		const [, getProjectTrebleCvwFullVersionRes] = await $to<string, string>(
-			deviceApi.getProjectTrebleCvwFullVersion(),
+		const [, getProjectTrebleDisableResizeBlackListVersionRes] = await $to<string, string>(
+			deviceApi.getProjectTrebleDisableResizeBlackListVersion(),
 		);
-		if (getProjectTrebleCvwFullVersionRes && typeof Number(getProjectTrebleCvwFullVersionRes) === 'number') {
-			currentVerison.value = Number(getProjectTrebleCvwFullVersionRes);
+		if (getProjectTrebleDisableResizeBlackListVersionRes && typeof Number(getProjectTrebleDisableResizeBlackListVersionRes) === 'number') {
+			currentVerison.value = Number(getProjectTrebleDisableResizeBlackListVersionRes);
 		} else {
 			currentVerison.value = 1;
 		}
-		const [, getProjectTrebleSupoortCvwFullForPropRes] = await $to<string, string>(
-			deviceApi.getProjectTrebleSupoortCvwFullForProp(),
+		const [, getProjectTrebleSupoortDisableResizeBlackListForPropRes] = await $to<string, string>(
+			deviceApi.getProjectTrebleSupoortDisableResizeBlackListForProp(),
 		);
-		if (getProjectTrebleSupoortCvwFullForPropRes && getProjectTrebleSupoortCvwFullForPropRes === 'true') {
+		if (getProjectTrebleSupoortDisableResizeBlackListForPropRes && getProjectTrebleSupoortDisableResizeBlackListForPropRes === 'true') {
 			isSupportProp.value = true;
 		} else {
 			isSupportProp.value = false;
@@ -217,8 +171,6 @@ export function useProjectTrebleCvwFull() {
 	return {
 		currentVerison,
 		isSupportProp,
-		splitScreenPlusIsInstalled,
-		reloadSystemUI,
 		isEnable,
 		changeEnableMode,
 		isInit,

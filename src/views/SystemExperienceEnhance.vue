@@ -41,6 +41,8 @@ import type { JSX } from 'vue/jsx-runtime';
 import { useDisplayModeRecord } from '@/hooks/useDisplayModeRecord';
 import { useHideGestureLine } from '@/hooks/useHideGestureLine';
 import { useProjectTrebleCvwFull } from '@/hooks/useProjectTrebleCvwFull';
+import { useFreeformBlackList } from '@/hooks/useFreeformBlackList';
+import { useProjectTrebleDisableResizeBlackList } from '@/hooks/useProjectTrebleDisableResizeBlackList';
 const deviceStore = useDeviceStore();
 const searchKeyword = ref('');
 const hideGestureLineHook = useHideGestureLine();
@@ -59,6 +61,8 @@ const useDisabledOS2SystemPreStartHook = useDisabledOS2SystemPreStart();
 const useDisabledDeepSleepEnableHook = useDisabledDeepSleepEnable();
 const projectTrebleVerticalScreenSplitHook = useProjectTrebleVerticalScreenSplit();
 const projectTrebleCvwFullHook = useProjectTrebleCvwFull();
+const freeformBlackListHook = useFreeformBlackList();
+const projectTrebleDisableResizeBlackListHook = useProjectTrebleDisableResizeBlackList();
 const fboHook = useFbo();
 const joyoseHook = useJoyose();
 // const initHooks = () => {
@@ -183,6 +187,55 @@ export interface EnhanceItemInfo {
 	isShow?: () => boolean;
 }
 const enhanceList: EnhanceItemInfo[] = [
+	{
+		title: '禁用分屏黑名单（移植包）',
+		content: () => (
+			<>
+				{!projectTrebleDisableResizeBlackListHook.isInit.value ? (
+					<n-skeleton width={80} sharp={false} round size='small' />
+				) : (
+					<n-switch
+						railStyle={railStyle}
+						value={projectTrebleDisableResizeBlackListHook.isEnable.value ? true : false}
+						loading={deviceStore.loading}
+						onUpdate:value={(value: boolean) => projectTrebleDisableResizeBlackListHook.changeEnableMode(value)}>
+						{{
+							checked: () => <>已启用</>,
+							unchecked: () => <>未启用</>,
+						}}
+					</n-switch>
+				)}
+				<n-alert class='mt-5' type='warning' show-icon={false} bordered={false}>
+					仅支持该功能的移植包可用，开启后支持更多应用分屏~
+				</n-alert>
+			</>
+		),
+		isShow: () => Boolean(['tablet'].includes(deviceStore.deviceType) && deviceStore.androidTargetSdk && deviceStore.androidTargetSdk === 35 && projectTrebleDisableResizeBlackListHook.isSupportProp.value),
+	},
+	{
+		title: '禁用小窗黑名单',
+		content: () => (
+			<>
+				{!freeformBlackListHook.isInit.value ? (
+					<n-skeleton width={80} sharp={false} round size='small' />
+				) : (
+					<n-switch
+						railStyle={railStyle}
+						value={freeformBlackListHook.isEnable.value ? true : false}
+						loading={deviceStore.loading}
+						onUpdate:value={(value: boolean) => freeformBlackListHook.changeEnableMode(value)}>
+						{{
+							checked: () => <>已禁用</>,
+							unchecked: () => <>未禁用</>,
+						}}
+					</n-switch>
+				)}
+				<n-alert class='mt-5' type='warning' show-icon={false} bordered={false}>
+					禁用小窗黑名单可以让更多应用使用小窗，该功能受系统支持影响，开启后是否生效请以实际清空为准。
+				</n-alert>
+			</>
+		),
+	},
 	{
 		title: '强制竖屏上下分屏（LSPosed模块）',
 		content: () => (
