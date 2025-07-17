@@ -50,16 +50,15 @@ export function useProjectTrebleDisableResizeBlackList() {
 										分屏黑名单
 									</span>{' '}
 									后，
-									{mode
-										? '将支持更多应用分屏~'
-										: '将恢复由系统根据黑名单判定应用是否支持分屏~'}
-										<p>
-											实际生效还需要重启{' '}
-											<span
-												class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-												系统
-											</span>{' '}，确定要继续吗？
-										</p>
+									{mode ? '将支持更多应用分屏~' : '将恢复由系统根据黑名单判定应用是否支持分屏~'}
+									<p>
+										实际生效还需要重启{' '}
+										<span
+											class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+											系统界面
+										</span>{' '}
+										作用域，确定要继续吗？
+									</p>
 								</div>
 							}
 						</div>
@@ -88,30 +87,31 @@ export function useProjectTrebleDisableResizeBlackList() {
 							<p>
 								好耶w，已经成功{mode ? '禁用' : '恢复'}分屏黑名单~实际生效还需要重启{' '}
 								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-									系统
-								</span>{' '}，确定要继续吗？
+									系统界面
+								</span>{' '}
+								作用域，确定要继续吗？
 							</p>
 						),
 						positiveText: '确定重启作用域',
 						negativeText: '稍后手动重启',
 						onPositiveClick() {
 							deviceApi
-								.rebootDevice()
+								.killAndroidSystemUI()
 								.then(async res => {
 									modal.create({
-										title: '重启系统成功',
+										title: '重启系统界面成功',
 										type: 'success',
 										preset: 'dialog',
-										content: () => <p>已经成功为你重启系统，请查看是否生效~</p>,
+										content: () => <p>已经成功为你重启系统界面的作用域，请查看是否生效~</p>,
 									});
 								})
 								.catch(err => {
 									modal.create({
-										title: '重启系统失败',
+										title: '重启系统界面失败',
 										type: 'error',
 										preset: 'dialog',
 										content: () => (
-											<p>发生异常错误，重启系统失败QwQ，详细错误请查看日志~</p>
+											<p>发生异常错误，重启系统界面作用域失败QwQ，详细错误请查看日志~</p>
 										),
 									});
 								});
@@ -145,7 +145,10 @@ export function useProjectTrebleDisableResizeBlackList() {
 		const [, getProjectTrebleDisableResizeBlackListVersionRes] = await $to<string, string>(
 			deviceApi.getProjectTrebleDisableResizeBlackListVersion(),
 		);
-		if (getProjectTrebleDisableResizeBlackListVersionRes && typeof Number(getProjectTrebleDisableResizeBlackListVersionRes) === 'number') {
+		if (
+			getProjectTrebleDisableResizeBlackListVersionRes &&
+			typeof Number(getProjectTrebleDisableResizeBlackListVersionRes) === 'number'
+		) {
 			currentVerison.value = Number(getProjectTrebleDisableResizeBlackListVersionRes);
 		} else {
 			currentVerison.value = 1;
@@ -153,7 +156,10 @@ export function useProjectTrebleDisableResizeBlackList() {
 		const [, getProjectTrebleSupoortDisableResizeBlackListForPropRes] = await $to<string, string>(
 			deviceApi.getProjectTrebleSupoortDisableResizeBlackListForProp(),
 		);
-		if (getProjectTrebleSupoortDisableResizeBlackListForPropRes && getProjectTrebleSupoortDisableResizeBlackListForPropRes === 'true') {
+		if (
+			getProjectTrebleSupoortDisableResizeBlackListForPropRes &&
+			getProjectTrebleSupoortDisableResizeBlackListForPropRes === 'true'
+		) {
 			isSupportProp.value = true;
 		} else {
 			isSupportProp.value = false;
