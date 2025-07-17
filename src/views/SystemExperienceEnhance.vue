@@ -197,11 +197,11 @@ const enhanceList: EnhanceItemInfo[] = [
 					<n-switch
 						railStyle={railStyle}
 						value={projectTrebleDisableResizeBlackListHook.isEnable.value ? true : false}
-						loading={deviceStore.loading}
+						loading={deviceStore.loading || projectTrebleDisableResizeBlackListHook.loading.value}
 						onUpdate:value={(value: boolean) => projectTrebleDisableResizeBlackListHook.changeEnableMode(value)}>
 						{{
-							checked: () => <>已启用</>,
-							unchecked: () => <>未启用</>,
+							checked: () => <>已禁用</>,
+							unchecked: () => <>未禁用</>,
 						}}
 					</n-switch>
 				)}
@@ -222,7 +222,7 @@ const enhanceList: EnhanceItemInfo[] = [
 					<n-switch
 						railStyle={railStyle}
 						value={freeformBlackListHook.isEnable.value ? true : false}
-						loading={deviceStore.loading}
+						loading={deviceStore.loading || freeformBlackListHook.loading.value}
 						onUpdate:value={(value: boolean) => freeformBlackListHook.changeEnableMode(value)}>
 						{{
 							checked: () => <>已禁用</>,
@@ -247,7 +247,7 @@ const enhanceList: EnhanceItemInfo[] = [
 						railStyle={railStyle}
 						disabled={!projectTrebleVerticalScreenSplitHook.splitScreenPlusIsInstalled.value}
 						value={projectTrebleVerticalScreenSplitHook.isEnableSettings.value ? true : false}
-						loading={deviceStore.loading}
+						loading={deviceStore.loading || projectTrebleVerticalScreenSplitHook.loading.value}
 						onUpdate:value={(value: boolean) => projectTrebleVerticalScreenSplitHook.changeEnableMode(value, 'module')}>
 						{{
 							checked: () => <>已启用</>,
@@ -278,7 +278,7 @@ const enhanceList: EnhanceItemInfo[] = [
 					<n-switch
 						railStyle={railStyle}
 						value={projectTrebleVerticalScreenSplitHook.isEnableProjectTreble.value ? true : false}
-						loading={deviceStore.loading}
+						loading={deviceStore.loading || projectTrebleVerticalScreenSplitHook.loading.value}
 						onUpdate:value={(value: boolean) => projectTrebleVerticalScreenSplitHook.changeEnableMode(value, 'projectTreble')}>
 						{{
 							checked: () => <>已启用</>,
@@ -303,7 +303,7 @@ const enhanceList: EnhanceItemInfo[] = [
 					<n-switch
 						railStyle={railStyle}
 						value={projectTrebleCvwFullHook.isEnable.value ? true : false}
-						loading={deviceStore.loading}
+						loading={deviceStore.loading || projectTrebleCvwFullHook.loading.value}
 						onUpdate:value={(value: boolean) => projectTrebleCvwFullHook.changeEnableMode(value)}>
 						{{
 							checked: () => <>已启用</>,
