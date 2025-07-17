@@ -13,17 +13,6 @@ import {
 	type NInput,
 } from 'naive-ui';
 import * as deviceApi from '@/apis/deviceApi';
-export interface KeyboardModeOptions {
-	label: string;
-	type: string;
-	key: 0 | 1 | 2;
-}
-
-export type PenUpdate = 0 | 1;
-
-export type PenEnable = 0 | 1;
-
-export type KeyboardMode = 0 | 1 | 2;
 export function useProjectTrebleCvwFull() {
 	const deviceStore = useDeviceStore();
 	const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
@@ -88,11 +77,11 @@ export function useProjectTrebleCvwFull() {
 		});
 	};
 
-	const changeEnableMode = async (mode: boolean, type: 'projectTreble' | 'module') => {
+	const changeEnableMode = async (mode: boolean) => {
 		const [negativeRes, positiveRes] = await $to(
 			new Promise((resolve, reject) => {
 				modal.create({
-					title: `想${mode ? '启用' : '禁用'}竖屏上下分屏吗？`,
+					title: `想${mode ? '启用' : '禁用'}工作台无极小窗吗？`,
 					type: 'info',
 					preset: 'dialog',
 					content: () => (
@@ -102,27 +91,25 @@ export function useProjectTrebleCvwFull() {
 									{mode ? '启用' : '禁用'}{' '}
 									<span
 										class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-										竖屏上下分屏
+										工作台无极小窗
 									</span>{' '}
 									后，
 									{mode
-										? '启用小米平板在竖屏下使用上下分屏，由于并非系统本身支持竖屏上下分屏（修改系统逻辑实现），因此启用后可能会存在不稳定等情况，如果使用则代表您愿意承担一切后果。'
-										: '恢复小米平板系统默认情况下在竖屏下左右分屏的体验。'}
-									{type === 'projectTreble' && (
+										? '工作台模式下任意应用小窗支持无级调节~'
+										: '将恢复小米平板系统默认工作台模式下的应用小窗体验~'}
 										<p>
 											实际生效还需要重启{' '}
 											<span
 												class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
 												系统界面
 											</span>{' '}
-											作用域才会生效，确定要继续吗？
+											作用域，确定要继续吗？
 										</p>
-									)}
 								</div>
 							}
 						</div>
 					),
-					positiveText: `确定${mode ? '启用' : '禁用'}竖屏上下分屏`,
+					positiveText: `确定${mode ? '启用' : '禁用'}工作台无极小窗`,
 					negativeText: '我再想想',
 					onPositiveClick: () => {
 						resolve('positiveClick');
@@ -135,7 +122,7 @@ export function useProjectTrebleCvwFull() {
 		);
 		if (positiveRes) {
 			deviceApi
-				.changeProjectTrebleVerticalScreenSplitEnableForProp(mode)
+				.changeProjectTrebleSupoortCvwFullForSettings(mode ? 1 : 0)
 				.then(res => {
 					isEnable.value = mode;
 					modal.create({
@@ -144,7 +131,7 @@ export function useProjectTrebleCvwFull() {
 						preset: 'dialog',
 						content: () => (
 							<p>
-								好耶w，已经成功{mode ? '启用' : '禁用'}竖屏上下分屏~实际生效还需要重启{' '}
+								好耶w，已经成功{mode ? '启用' : '禁用'}工作台无极小窗~实际生效还需要重启{' '}
 								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
 									系统界面
 								</span>{' '}
@@ -230,7 +217,6 @@ export function useProjectTrebleCvwFull() {
 	return {
 		currentVerison,
 		isSupportProp,
-		openModuleDownloadUrl,
 		splitScreenPlusIsInstalled,
 		reloadSystemUI,
 		isEnable,
