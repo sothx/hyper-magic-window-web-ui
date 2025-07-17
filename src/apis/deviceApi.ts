@@ -3356,7 +3356,7 @@ export const changeProjectTrebleVerticalScreenSplitEnableForProp = (mode:boolean
 };
 
 
-export const getProjectTrebleSupoortCvwFullForSettings = (): Promise<string> => {
+export const getProjectTrebleSupportCvwFullForSettings = (): Promise<string> => {
 	const shellCommon = `settings get system sothx_project_treble_cvw_full_enable`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
@@ -3460,6 +3460,100 @@ export const getMiuiDesktopModeFreeformMaxNum = (): Promise<number> => {
 			} else {
 				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
 				errno ? reject(stderr) : typeof Number(stdout) === 'number' && Number(stdout) >= 4 ? resolve(Number(stdout)) : resolve(4);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const getEnableDebugModeForFreeFormBlackList = (): Promise<string> => {
+	const shellCommon = `settings get secure enable_debug_mode_for_freeform_black_list`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve('1');
+			} else {
+				const { errno, stdout, stderr }: ExecResults = (await exec(shellCommon)) as ExecResults;
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+
+export const changeEnableDebugModeForFreeFormBlackList = (mode: 1 | 0): Promise<string> => {
+	const shellCommon = `settings put secure enable_debug_mode_for_freeform_black_list ${mode}`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`success`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = (await exec(shellCommon)) as ExecResults;
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const getProjectTrebleSupoortDisableResizeBlackListForSettings = (): Promise<string> => {
+	const shellCommon = `settings get system sothx_project_treble_disable_resize_black_list_enable`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve('1');
+			} else {
+				const { errno, stdout, stderr }: ExecResults = (await exec(shellCommon)) as ExecResults;
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+
+export const changeProjectTrebleSupportDisableResizeBlackListForSettings = (mode: 1 | 0): Promise<string> => {
+	const shellCommon = `settings put system sothx_project_treble_disable_resize_black_list_enable ${mode}`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`success`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = (await exec(shellCommon)) as ExecResults;
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+
+
+export const getProjectTrebleSupoortDisableResizeBlackListForProp = (): Promise<string> => {
+	const shellCommon = `getprop ro.config.sothx_project_treble_support_disable_resize_black_list`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve('true');
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const getProjectTrebleDisableResizeBlackListVersion = (): Promise<string> => {
+	const shellCommon = `getprop sothx_project_treble_support_disable_resize_black_list`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve('1');
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
 			}
 		}),
 		shellCommon,
