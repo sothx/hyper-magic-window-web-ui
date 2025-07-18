@@ -43,6 +43,7 @@ import { useHideGestureLine } from '@/hooks/useHideGestureLine';
 import { useProjectTrebleCvwFull } from '@/hooks/useProjectTrebleCvwFull';
 import { useFreeformBlackList } from '@/hooks/useFreeformBlackList';
 import { useProjectTrebleDisableResizeBlackList } from '@/hooks/useProjectTrebleDisableResizeBlackList';
+import { useProjectTrebleMaxFreeformCount } from '@/hooks/useProjectTrebleMaxFreeformCount';
 const deviceStore = useDeviceStore();
 const searchKeyword = ref('');
 const hideGestureLineHook = useHideGestureLine();
@@ -63,6 +64,7 @@ const projectTrebleVerticalScreenSplitHook = useProjectTrebleVerticalScreenSplit
 const projectTrebleCvwFullHook = useProjectTrebleCvwFull();
 const freeformBlackListHook = useFreeformBlackList();
 const projectTrebleDisableResizeBlackListHook = useProjectTrebleDisableResizeBlackList();
+const projectTrebleMaxFreeformCountHook = useProjectTrebleMaxFreeformCount();
 const fboHook = useFbo();
 const joyoseHook = useJoyose();
 // const initHooks = () => {
@@ -188,6 +190,158 @@ export interface EnhanceItemInfo {
 }
 const enhanceList: EnhanceItemInfo[] = [
 	{
+		title: '工作台小窗数量上限（移植包）',
+		content: () => (
+			<>
+				{!projectTrebleMaxFreeformCountHook.isInit.value ? (
+					<div>
+						<n-skeleton text repeat={1} sharp={false} round />
+						<n-skeleton text repeat={1} sharp={false} size='small' />
+					</div>
+				) : (
+					<div>
+						{projectTrebleMaxFreeformCountHook.isEditMiuiDesktopModeMaxFreeformMaxCount.value ? (
+							<>
+								<n-slider
+									size='small'
+									min={4}
+									max={8}
+									disabled={!projectTrebleMaxFreeformCountHook.isEditMiuiDesktopModeMaxFreeformMaxCount.value}
+									step={1}
+									value={projectTrebleMaxFreeformCountHook.currentMiuiDesktopModeMaxFreeformMaxCount.value}
+									onUpdateValue={(value: number) => {
+										projectTrebleMaxFreeformCountHook.currentMiuiDesktopModeMaxFreeformMaxCount.value = value;
+									}}
+								/>
+								<n-input-number
+									showButton={false}
+									class='pt-3'
+									readonly
+									value={projectTrebleMaxFreeformCountHook.currentMiuiDesktopModeMaxFreeformMaxCount.value}
+									placeholder='请输入工作台小窗数量上限'
+									min={4}
+									max={8}
+									step={1}
+									onUpdateValue={(value: number) => {
+										projectTrebleMaxFreeformCountHook.currentMiuiDesktopModeMaxFreeformMaxCount.value = value;
+									}}
+								/>
+								<n-button
+									size='small'
+									type='info'
+									class="mt-5"
+									loading={deviceStore.loading}
+									onClick={() => projectTrebleMaxFreeformCountHook.changeMaxFreeformCount('MiuiDesktopMode',projectTrebleMaxFreeformCountHook.currentMiuiDesktopModeMaxFreeformMaxCount.value)}>
+									{{
+										default: () => <>保存修改</>,
+									}}
+								</n-button>
+							</>
+						) : (
+							<>
+								<div class='mb-5'>
+									<n-tag bordered={false} type='info'>
+										当前工作台小窗数量上限 : {projectTrebleMaxFreeformCountHook.currentMiuiDesktopModeMaxFreeformMaxCount.value}
+									</n-tag>
+								</div>
+								<n-button
+									size='small'
+									type='info'
+									loading={deviceStore.loading}
+									onClick={() => (projectTrebleMaxFreeformCountHook.isEditMiuiDesktopModeMaxFreeformMaxCount.value = true)}>
+									{{
+										default: () => <>修改工作台小窗数量上限</>,
+									}}
+								</n-button>
+							</>
+						)}
+					</div>
+				)}
+				<n-alert class='mt-5' type='warning' show-icon={false} bordered={false}>
+					<p>仅支持该功能的移植包可用，配置后在工作台模式下支持更多数量的小窗显示~</p>
+					<p>需要保存修改才会生效~</p>
+				</n-alert>
+			</>
+		),
+		isShow: () => ['tablet'].includes(deviceStore.deviceType) && projectTrebleMaxFreeformCountHook.isSupportMiuiDesktopModeMaxFreeformMaxCount.value,
+	},
+		{
+		title: '默认桌面小窗数量上限（移植包）',
+		content: () => (
+			<>
+				{!projectTrebleMaxFreeformCountHook.isInit.value ? (
+					<div>
+						<n-skeleton text repeat={1} sharp={false} round />
+						<n-skeleton text repeat={1} sharp={false} size='small' />
+					</div>
+				) : (
+					<div>
+						{projectTrebleMaxFreeformCountHook.isEditDefaultDesktopModeMaxFreeformMaxCount.value ? (
+							<>
+								<n-slider
+									size='small'
+									min={2}
+									max={8}
+									disabled={!projectTrebleMaxFreeformCountHook.isEditDefaultDesktopModeMaxFreeformMaxCount.value}
+									step={1}
+									value={projectTrebleMaxFreeformCountHook.currentDefaultDesktopModeMaxFreeformMaxCount.value}
+									onUpdateValue={(value: number) => {
+										projectTrebleMaxFreeformCountHook.currentDefaultDesktopModeMaxFreeformMaxCount.value = value;
+									}}
+								/>
+								<n-input-number
+									showButton={false}
+									class='pt-3'
+									readonly
+									value={projectTrebleMaxFreeformCountHook.currentDefaultDesktopModeMaxFreeformMaxCount.value}
+									placeholder='请输入默认桌面小窗数量上限'
+									min={2}
+									max={8}
+									step={1}
+									onUpdateValue={(value: number) => {
+										projectTrebleMaxFreeformCountHook.currentDefaultDesktopModeMaxFreeformMaxCount.value = value;
+									}}
+								/>
+								<n-button
+									size='small'
+									type='info'
+									class="mt-5"
+									loading={deviceStore.loading}
+									onClick={() => projectTrebleMaxFreeformCountHook.changeMaxFreeformCount('MiuiDesktopMode',projectTrebleMaxFreeformCountHook.currentDefaultDesktopModeMaxFreeformMaxCount.value)}>
+									{{
+										default: () => <>保存修改</>,
+									}}
+								</n-button>
+							</>
+						) : (
+							<>
+								<div class='mb-5'>
+									<n-tag bordered={false} type='info'>
+										当前默认桌面小窗数量上限 : {projectTrebleMaxFreeformCountHook.currentDefaultDesktopModeMaxFreeformMaxCount.value}
+									</n-tag>
+								</div>
+								<n-button
+									size='small'
+									type='info'
+									loading={deviceStore.loading}
+									onClick={() => (projectTrebleMaxFreeformCountHook.isEditDefaultDesktopModeMaxFreeformMaxCount.value = true)}>
+									{{
+										default: () => <>修改默认桌面小窗数量上限</>,
+									}}
+								</n-button>
+							</>
+						)}
+					</div>
+				)}
+				<n-alert class='mt-5' type='warning' show-icon={false} bordered={false}>
+					<p>仅支持该功能的移植包可用，配置后在默认桌面下支持更多数量的小窗显示~</p>
+					<p>需要保存修改才会生效~</p>
+				</n-alert>
+			</>
+		),
+		isShow: () => ['tablet'].includes(deviceStore.deviceType) && projectTrebleMaxFreeformCountHook.isSupportMiuiDesktopModeMaxFreeformMaxCount.value,
+	},
+	{
 		title: '禁用分屏黑名单（移植包）',
 		content: () => (
 			<>
@@ -231,7 +385,7 @@ const enhanceList: EnhanceItemInfo[] = [
 					</n-switch>
 				)}
 				<n-alert class='mt-5' type='warning' show-icon={false} bordered={false}>
-					禁用小窗黑名单可以让更多应用使用小窗，该功能受系统支持影响，开启后是否生效请以实际清空为准。
+					禁用小窗黑名单可以让更多应用使用小窗，该功能受系统支持影响，开启后是否生效请以实际情况为准。
 				</n-alert>
 			</>
 		),
@@ -318,98 +472,6 @@ const enhanceList: EnhanceItemInfo[] = [
 		),
 		isShow: () => Boolean(['tablet'].includes(deviceStore.deviceType) && deviceStore.androidTargetSdk && deviceStore.androidTargetSdk === 35 && projectTrebleCvwFullHook.isSupportProp.value),
 	},
-	// {
-	// 	title: '工作台前台应用数量（移植包）',
-	// 			titleSlot: () => (
-	// 		<>
-	// 			{!deviceStore.enabledMiuiDesktopMode && (
-	// 				<p class='mt-2'>
-	// 					<n-button
-	// 						strong
-	// 						secondary
-	// 						size='small'
-	// 						type='warning'
-	// 						onClick={() => miuiDesktopModeHook.changeMiuiDesktopModeEnabled()}>
-	// 						启用功能
-	// 					</n-button>
-	// 				</p>
-	// 			)}
-	// 		</>
-	// 	),
-	// 	content: () => (
-	// 		<>
-	// 			{!miuiDesktopModeHook.isInit.value ? (
-	// 				<div>
-	// 					<n-skeleton text repeat={1} sharp={false} round />
-	// 					<n-skeleton text repeat={1} sharp={false} size='small' />
-	// 				</div>
-	// 			) : (
-	// 				<div>
-	// 					{miuiDesktopModeHook.isEditFreeformMaxNum.value ? (
-	// 						<>
-	// 							<n-slider
-	// 								size='small'
-	// 								min={4}
-	// 								max={20}
-	// 								disabled={!miuiDesktopModeHook.isEditFreeformMaxNum.value}
-	// 								step={1}
-	// 								value={miuiDesktopModeHook.currentFreeformMaxNum.value}
-	// 								onUpdateValue={(value: number) => {
-	// 									miuiDesktopModeHook.currentFreeformMaxNum.value = value;
-	// 								}}
-	// 							/>
-	// 							<n-input-number
-	// 								showButton={false}
-	// 								class='pt-3'
-	// 								readonly
-	// 								value={miuiDesktopModeHook.currentFreeformMaxNum.value}
-	// 								placeholder='请输入前台应用数量'
-	// 								min={4}
-	// 								max={20}
-	// 								step={1}
-	// 								onUpdateValue={(value: number) => {
-	// 									miuiDesktopModeHook.currentFreeformMaxNum.value = value;
-	// 								}}
-	// 							/>
-	// 							<n-button
-	// 								size='small'
-	// 								type='info'
-	// 								class="mt-5"
-	// 								loading={deviceStore.loading}
-	// 								onClick={() => miuiDesktopModeHook.changeFreeformMaxNum(miuiDesktopModeHook.currentFreeformMaxNum.value)}>
-	// 								{{
-	// 									default: () => <>保存修改</>,
-	// 								}}
-	// 							</n-button>
-	// 						</>
-	// 					) : (
-	// 						<>
-	// 							<div class='mb-5'>
-	// 								<n-tag bordered={false} type='info'>
-	// 									当前前台应用数量 : {miuiDesktopModeHook.currentFreeformMaxNum.value}
-	// 								</n-tag>
-	// 							</div>
-	// 							<n-button
-	// 								size='small'
-	// 								type='info'
-	// 								loading={deviceStore.loading}
-	// 								onClick={() => (miuiDesktopModeHook.isEditFreeformMaxNum.value = true)}>
-	// 								{{
-	// 									default: () => <>修改前台应用数量</>,
-	// 								}}
-	// 							</n-button>
-	// 						</>
-	// 					)}
-	// 				</div>
-	// 			)}
-	// 			<n-alert class='mt-5' type='warning' show-icon={false} bordered={false}>
-	// 				<p>仅支持该功能的移植包可用，配置后在工作台模式下支持更多数量的前台应用显示~</p>
-	// 				<p>需要保存修改才会生效~</p>
-	// 			</n-alert>
-	// 		</>
-	// 	),
-	// 	isShow: () => ['tablet'].includes(deviceStore.deviceType) && miuiDesktopModeHook.isSupportFreeformMaxNum.value,
-	// },
 	{
 		title: '工作台模式',
 		titleSlot: () => (

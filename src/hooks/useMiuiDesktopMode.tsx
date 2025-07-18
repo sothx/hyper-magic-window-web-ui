@@ -25,13 +25,7 @@ export function useMiuiDesktopMode() {
 
 	const isInit = ref<boolean>(false);
 
-	const isEditFreeformMaxNum = ref<boolean>(false);
-
-	const currentFreeformMaxNum = ref<number>(4);
-
 	const currentMiuiDktMode = ref<boolean>(false);
-
-	const isSupportFreeformMaxNum = ref<boolean>(false);
 
 	const changeMiuiDktMode = async (value: boolean) => {
 		const [putCurrentPenEnableErr, putCurrentPenEnableRes] = await $to(
@@ -47,58 +41,6 @@ export function useMiuiDesktopMode() {
 			});
 		} else {
 			currentMiuiDktMode.value = value;
-		}
-	};
-
-	const changeFreeformMaxNum = async (value: number) => {
-		const [setMiuiDesktopModeFreeformMaxNumErr, setMiuiDesktopModeFreeformMaxNumRes] = await $to(
-			deviceApi.setMiuiDesktopModeFreeformMaxNum(value),
-		);
-		if (setMiuiDesktopModeFreeformMaxNumErr) {
-			modal.create({
-				title: '操作失败',
-				type: 'error',
-				preset: 'dialog',
-				content: () => <p>修改失败，详情请查看日志记录~</p>,
-				negativeText: '确定',
-			});
-		} else {
-			currentFreeformMaxNum.value = value;
-			isEditFreeformMaxNum.value = false;
-			modal.create({
-				title: '操作成功',
-				type: 'success',
-				preset: 'dialog',
-				content: () => (
-					<p>
-						好耶w，已经成功修改工作台模式下的最大前台应用数量~实际生效还需要重启系统界面作用域，确定要继续吗？
-					</p>
-				),
-				positiveText: '立即重启作用域',
-				negativeText: '稍后手动重启',
-				onPositiveClick() {
-					deviceApi
-						.killAndroidSystemUI()
-						.then(() => {
-							modal.create({
-								title: '重启系统界面成功',
-								type: 'success',
-								preset: 'dialog',
-								content: () => <p>已经成功为你重启系统界面的作用域，请查看是否生效~</p>,
-							});
-						})
-						.catch(err => {
-							modal.create({
-								title: '重启系统界面失败',
-								type: 'error',
-								preset: 'dialog',
-								content: () => <p>发生异常错误，重启系统界面作用域失败QwQ，详细错误请查看日志~</p>,
-								negativeText: '确定',
-							});
-							return;
-						});
-				},
-			});
 		}
 	};
 
@@ -216,21 +158,6 @@ export function useMiuiDesktopMode() {
 				currentMiuiDktMode.value = true;
 			}
 		}
-		const [, getProjectTrebleSupportDesktopModeFreeformMaxNumResolve] = await $to<string>(
-			deviceApi.getProjectTrebleSupportDesktopModeFreeformMaxNum(),
-		);
-		if (getProjectTrebleSupportDesktopModeFreeformMaxNumResolve === 'true') {
-			isSupportFreeformMaxNum.value = true;
-		}
-
-		if (isSupportFreeformMaxNum.value) {
-			const [, getMiuiDesktopModeFreeformMaxNumRes] = await $to<number>(deviceApi.getMiuiDesktopModeFreeformMaxNum());
-			if (Number(getMiuiDesktopModeFreeformMaxNumRes) && Number(getMiuiDesktopModeFreeformMaxNumRes) >= 4) {
-				currentFreeformMaxNum.value = Number(getMiuiDesktopModeFreeformMaxNumRes);
-			} else {
-				currentFreeformMaxNum.value = 4;
-			}
-		}
 
 		isInit.value = true;
 	};
@@ -244,10 +171,6 @@ export function useMiuiDesktopMode() {
 	return {
 		currentMiuiDktMode,
 		changeMiuiDktMode,
-		isEditFreeformMaxNum,
-		changeFreeformMaxNum,
-		currentFreeformMaxNum,
-		isSupportFreeformMaxNum,
 		changeMiuiDesktopModeEnabled,
 		isInit,
 	};
