@@ -307,7 +307,7 @@ const enhanceList: EnhanceItemInfo[] = [
 									type='info'
 									class="mt-5"
 									loading={deviceStore.loading}
-									onClick={() => projectTrebleMaxFreeformCountHook.changeMaxFreeformCount('MiuiDesktopMode',projectTrebleMaxFreeformCountHook.currentDefaultDesktopModeMaxFreeformMaxCount.value)}>
+									onClick={() => projectTrebleMaxFreeformCountHook.changeMaxFreeformCount('DefaultDesktopMode',projectTrebleMaxFreeformCountHook.currentDefaultDesktopModeMaxFreeformMaxCount.value)}>
 									{{
 										default: () => <>保存修改</>,
 									}}
