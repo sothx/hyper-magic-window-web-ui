@@ -73,7 +73,7 @@ export function useFreeformBlackList() {
         );
         if (positiveRes) {
             deviceApi
-                .changeProjectTrebleSupoortCvwFullForSettings(mode ? 1 : 0)
+                .changeEnableDebugModeForFreeFormBlackList(mode ? 1 : 0)
                 .then(res => {
                     isEnable.value = mode;
                     modal.create({
