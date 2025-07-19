@@ -3603,3 +3603,65 @@ export const putCurrentMiuiDesktopMaxFreeformMaxCount = (countNum: number): Prom
 		shellCommon,
 	);
 };
+
+export const getProjectTrebleSupportCvwFullGlobalEnable = (): Promise<string> => {
+	const shellCommon = `settings get system sothx_project_treble_cvw_full_global_enable`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve('1');
+			} else {
+				const { errno, stdout, stderr }: ExecResults = (await exec(shellCommon)) as ExecResults;
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+
+export const changeProjectTrebleCvwFullGlobalEnable = (mode: 1 | 0): Promise<string> => {
+	const shellCommon = `settings put system sothx_project_treble_cvw_full_global_enable ${mode}`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`success`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = (await exec(shellCommon)) as ExecResults;
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const getProjectTrebleCvwFullDefaultDesktopEnable = (): Promise<string> => {
+	const shellCommon = `settings get system sothx_project_treble_cvw_full_default_desktop_enable`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve('1');
+			} else {
+				const { errno, stdout, stderr }: ExecResults = (await exec(shellCommon)) as ExecResults;
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+
+export const changeProjectTrebleCvwFullDefaultDesktopEnable = (mode: 1 | 0): Promise<string> => {
+	const shellCommon = `settings put system sothx_project_treble_cvw_full_default_desktop_enable ${mode}`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`success`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = (await exec(shellCommon)) as ExecResults;
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};

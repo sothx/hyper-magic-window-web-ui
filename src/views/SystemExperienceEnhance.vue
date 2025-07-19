@@ -40,6 +40,7 @@ import { useDevelopmentSettingsEnabled } from '@/hooks/useDevelopmentSettingsEna
 import type { JSX } from 'vue/jsx-runtime';
 import { useDisplayModeRecord } from '@/hooks/useDisplayModeRecord';
 import { useHideGestureLine } from '@/hooks/useHideGestureLine';
+import { useOldProjectTrebleCvwFull } from '@/hooks/useOldProjectTrebleCvwFull';
 import { useProjectTrebleCvwFull } from '@/hooks/useProjectTrebleCvwFull';
 import { useFreeformBlackList } from '@/hooks/useFreeformBlackList';
 import { useProjectTrebleDisableResizeBlackList } from '@/hooks/useProjectTrebleDisableResizeBlackList';
@@ -61,6 +62,7 @@ const videoWallpaperLoopHook = useVideoWallpaperLoop();
 const useDisabledOS2SystemPreStartHook = useDisabledOS2SystemPreStart();
 const useDisabledDeepSleepEnableHook = useDisabledDeepSleepEnable();
 const projectTrebleVerticalScreenSplitHook = useProjectTrebleVerticalScreenSplit();
+const oldProjectTrebleCvwFullHook = useOldProjectTrebleCvwFull();
 const projectTrebleCvwFullHook = useProjectTrebleCvwFull();
 const freeformBlackListHook = useFreeformBlackList();
 const projectTrebleDisableResizeBlackListHook = useProjectTrebleDisableResizeBlackList();
@@ -189,6 +191,56 @@ export interface EnhanceItemInfo {
 	isShow?: () => boolean;
 }
 const enhanceList: EnhanceItemInfo[] = [
+	{
+		title: '工作台无极小窗（移植包）',
+		content: () => (
+			<>
+				{!projectTrebleCvwFullHook.isInit.value ? (
+					<n-skeleton width={80} sharp={false} round size='small' />
+				) : (
+					<n-switch
+						railStyle={railStyle}
+						value={projectTrebleCvwFullHook.isGlobalEnable.value ? true : false}
+						loading={deviceStore.loading || projectTrebleCvwFullHook.loading.value}
+						onUpdate:value={(value: boolean) => projectTrebleCvwFullHook.changeEnableMode(value,'MiuiDesktopMode')}>
+						{{
+							checked: () => <>已启用</>,
+							unchecked: () => <>未启用</>,
+						}}
+					</n-switch>
+				)}
+				<n-alert class='mt-5' type='warning' show-icon={false} bordered={false}>
+					仅支持该功能的移植包可用，开启后在工作台模式下任意应用小窗支持无级调节~
+				</n-alert>
+			</>
+		),
+		isShow: () => Boolean(['tablet'].includes(deviceStore.deviceType) && deviceStore.androidTargetSdk && deviceStore.androidTargetSdk === 35 && projectTrebleCvwFullHook.isSupport.value && projectTrebleCvwFullHook.currentVerison.value >= 2),
+	},
+	{
+		title: '普通桌面无极小窗（移植包）',
+		content: () => (
+			<>
+				{!projectTrebleCvwFullHook.isInit.value ? (
+					<n-skeleton width={80} sharp={false} round size='small' />
+				) : (
+					<n-switch
+						railStyle={railStyle}
+						value={projectTrebleCvwFullHook.isDefaultDesktopEnable.value ? true : false}
+						loading={deviceStore.loading || projectTrebleCvwFullHook.loading.value}
+						onUpdate:value={(value: boolean) => projectTrebleCvwFullHook.changeEnableMode(value,'DefaultDesktopMode')}>
+						{{
+							checked: () => <>已启用</>,
+							unchecked: () => <>未启用</>,
+						}}
+					</n-switch>
+				)}
+				<n-alert class='mt-5' type='warning' show-icon={false} bordered={false}>
+					仅支持该功能的移植包可用，开启后在普通桌面模式下任意应用小窗支持无级调节~
+				</n-alert>
+			</>
+		),
+		isShow: () => Boolean(['tablet'].includes(deviceStore.deviceType) && deviceStore.androidTargetSdk && deviceStore.androidTargetSdk === 35 && projectTrebleCvwFullHook.isSupport.value && projectTrebleCvwFullHook.currentVerison.value >= 2),
+	},
 	{
 		title: '工作台小窗数量上限（移植包）',
 		content: () => (
@@ -451,14 +503,14 @@ const enhanceList: EnhanceItemInfo[] = [
 		title: '工作台无极小窗（移植包）',
 		content: () => (
 			<>
-				{!projectTrebleCvwFullHook.isInit.value ? (
+				{!oldProjectTrebleCvwFullHook.isInit.value ? (
 					<n-skeleton width={80} sharp={false} round size='small' />
 				) : (
 					<n-switch
 						railStyle={railStyle}
-						value={projectTrebleCvwFullHook.isEnable.value ? true : false}
-						loading={deviceStore.loading || projectTrebleCvwFullHook.loading.value}
-						onUpdate:value={(value: boolean) => projectTrebleCvwFullHook.changeEnableMode(value)}>
+						value={oldProjectTrebleCvwFullHook.isEnable.value ? true : false}
+						loading={deviceStore.loading || oldProjectTrebleCvwFullHook.loading.value}
+						onUpdate:value={(value: boolean) => oldProjectTrebleCvwFullHook.changeEnableMode(value)}>
 						{{
 							checked: () => <>已启用</>,
 							unchecked: () => <>未启用</>,
@@ -470,7 +522,32 @@ const enhanceList: EnhanceItemInfo[] = [
 				</n-alert>
 			</>
 		),
-		isShow: () => Boolean(['tablet'].includes(deviceStore.deviceType) && deviceStore.androidTargetSdk && deviceStore.androidTargetSdk === 35 && projectTrebleCvwFullHook.isSupportProp.value),
+		isShow: () => Boolean(['tablet'].includes(deviceStore.deviceType) && deviceStore.androidTargetSdk && deviceStore.androidTargetSdk === 35 && oldProjectTrebleCvwFullHook.isSupportProp.value && oldProjectTrebleCvwFullHook.currentVerison.value === 1),
+	},
+	{
+		title: '工作台无极小窗（移植包）',
+		content: () => (
+			<>
+				{!oldProjectTrebleCvwFullHook.isInit.value ? (
+					<n-skeleton width={80} sharp={false} round size='small' />
+				) : (
+					<n-switch
+						railStyle={railStyle}
+						value={oldProjectTrebleCvwFullHook.isEnable.value ? true : false}
+						loading={deviceStore.loading || oldProjectTrebleCvwFullHook.loading.value}
+						onUpdate:value={(value: boolean) => oldProjectTrebleCvwFullHook.changeEnableMode(value)}>
+						{{
+							checked: () => <>已启用</>,
+							unchecked: () => <>未启用</>,
+						}}
+					</n-switch>
+				)}
+				<n-alert class='mt-5' type='warning' show-icon={false} bordered={false}>
+					仅支持该功能的移植包可用，开启后在工作台模式下任意应用小窗支持无级调节~
+				</n-alert>
+			</>
+		),
+		isShow: () => Boolean(['tablet'].includes(deviceStore.deviceType) && deviceStore.androidTargetSdk && deviceStore.androidTargetSdk === 35 && oldProjectTrebleCvwFullHook.isSupportProp.value && oldProjectTrebleCvwFullHook.currentVerison.value === 1),
 	},
 	{
 		title: '工作台模式',

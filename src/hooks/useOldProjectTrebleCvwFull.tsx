@@ -13,7 +13,7 @@ import {
 	type NInput,
 } from 'naive-ui';
 import * as deviceApi from '@/apis/deviceApi';
-export function useProjectTrebleCvwFull() {
+export function useOldProjectTrebleCvwFull() {
 	const deviceStore = useDeviceStore();
 	const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
 		theme: deviceStore.isDarkMode ? darkTheme : lightTheme,
@@ -23,44 +23,78 @@ export function useProjectTrebleCvwFull() {
 		configProviderProps: configProviderPropsRef,
 	});
 
-	const isProjectTrebleSupport = ref<boolean>(false);
+	const isSupportProp = ref<boolean>(false);
 
 	const currentVerison = ref<number>(1);
 
-	const isGlobalEnable = ref<boolean>(false);
-
-	const isDefaultDesktopEnable = ref<boolean>(false);
+	const isEnable = ref<boolean>(false);
 
 	const loading = ref<boolean>(true);
 
 	const isInit = ref<boolean>(false);
 
-	type DesktopModeType  = 'DefaultDesktopMode' | 'MiuiDesktopMode'
+	const reloadSystemUI = () => {
+		modal.create({
+			title: '确定要重启系统界面么？',
+			type: 'info',
+			preset: 'dialog',
+			content: () => (
+				<>
+					<p>
+						由于小米平板并不支持竖屏上下分屏，模块通过修改系统逻辑以实现竖屏上下分屏，可能存在不稳定等情况。
+					</p>
+					<p>
+						{' '}
+						如出现系统界面异常可以切换启用状态为 [未启用]
+						后，通过重启系统界面解决界面异常问题，确定要继续吗？
+					</p>
+				</>
+			),
+			positiveText: '确定',
+			negativeText: '取消',
+			onPositiveClick() {
+				deviceApi
+					.killAndroidSystemUI()
+					.then(async res => {
+						modal.create({
+							title: '重启系统界面成功',
+							type: 'success',
+							preset: 'dialog',
+							content: () => <p>已经成功为你重启系统界面的作用域，请查看是否生效~</p>,
+						});
+					})
+					.catch(err => {
+						modal.create({
+							title: '重启系统界面失败',
+							type: 'error',
+							preset: 'dialog',
+							content: () => <p>发生异常错误，重启系统界面作用域失败QwQ，详细错误请查看日志~</p>,
+						});
+					});
+			},
+		});
+	};
 
-    const isSupport = computed(() => {
-        return isProjectTrebleSupport.value && currentVerison.value >= 2;
-    })
-
-	const changeEnableMode = async (switchMode: boolean, desktopMode: DesktopModeType) => {
+	const changeEnableMode = async (mode: boolean) => {
 		const [negativeRes, positiveRes] = await $to(
 			new Promise((resolve, reject) => {
 				modal.create({
-					title: `想${switchMode ? '启用' : '禁用'}${desktopMode === 'DefaultDesktopMode' ? '普通桌面' : '工作台'}无极小窗吗？`,
+					title: `想${mode ? '启用' : '禁用'}工作台无极小窗吗？`,
 					type: 'info',
 					preset: 'dialog',
 					content: () => (
 						<div>
 							{
 								<div>
-									{switchMode ? '启用' : '禁用'}{' '}
+									{mode ? '启用' : '禁用'}{' '}
 									<span
 										class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-										{ desktopMode === 'DefaultDesktopMode' ? '普通桌面无极小窗' : '工作台无极小窗' }
+										工作台无极小窗
 									</span>{' '}
 									后，
-									{switchMode
-										? `${desktopMode === 'DefaultDesktopMode' ? '普通桌面' : '工作台'}模式下任意应用小窗支持无级调节~`
-										: `将恢复小米平板系统默认${desktopMode === 'DefaultDesktopMode' ? '普通桌面' : '工作台'}模式下的应用小窗体验~`}
+									{mode
+										? '工作台模式下任意应用小窗支持无级调节~'
+										: '将恢复小米平板系统默认工作台模式下的应用小窗体验~'}
 									<p>
 										实际生效还需要重启{' '}
 										<span
@@ -73,7 +107,7 @@ export function useProjectTrebleCvwFull() {
 							}
 						</div>
 					),
-					positiveText: `确定${switchMode ? '启用' : '禁用'}${desktopMode === 'DefaultDesktopMode' ? '普通桌面' : '工作台'}无极小窗`,
+					positiveText: `确定${mode ? '启用' : '禁用'}工作台无极小窗`,
 					negativeText: '我再想想',
 					onPositiveClick: () => {
 						resolve('positiveClick');
@@ -85,21 +119,17 @@ export function useProjectTrebleCvwFull() {
 			}),
 		);
 		if (positiveRes) {
-			const currentApi = desktopMode === 'DefaultDesktopMode' ? deviceApi.changeProjectTrebleCvwFullDefaultDesktopEnable : deviceApi.changeProjectTrebleCvwFullGlobalEnable
-			currentApi(switchMode ? 1 : 0)
+			deviceApi
+				.changeProjectTrebleSupoortCvwFullForSettings(mode ? 1 : 0)
 				.then(res => {
-					if (desktopMode === 'DefaultDesktopMode') {
-						isDefaultDesktopEnable.value = true;
-					} else {
-						isGlobalEnable.value = switchMode;
-					}
+					isEnable.value = mode;
 					modal.create({
 						title: '操作成功',
 						type: 'success',
 						preset: 'dialog',
 						content: () => (
 							<p>
-								好耶w，已经成功{switchMode ? '启用' : '禁用'}${desktopMode === 'DefaultDesktopMode' ? '普通桌面' : '工作台'}模式下的无极小窗~实际生效还需要重启{' '}
+								好耶w，已经成功{mode ? '启用' : '禁用'}工作台无极小窗~实际生效还需要重启{' '}
 								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
 									系统界面
 								</span>{' '}
@@ -153,37 +183,28 @@ export function useProjectTrebleCvwFull() {
 		} else {
 			currentVerison.value = 1;
 		}
-		if (currentVerison.value >= 2) {
-            const [, getProjectTrebleSupoortCvwFullForPropRes] = await $to<string, string>(
+		if (currentVerison.value === 1) {
+			const [, getProjectTrebleSupportCvwFullForSettingsRes] = await $to<string, string>(
+				deviceApi.getProjectTrebleSupportCvwFullForSettings(),
+			);
+			if (
+				getProjectTrebleSupportCvwFullForSettingsRes &&
+				Number(getProjectTrebleSupportCvwFullForSettingsRes) === 1
+			) {
+				isEnable.value = true;
+			} else {
+				isEnable.value = false;
+			}
+			const [, getProjectTrebleSupoortCvwFullForPropRes] = await $to<string, string>(
 				deviceApi.getProjectTrebleSupoortCvwFullForProp(),
 			);
-            if (getProjectTrebleSupoortCvwFullForPropRes && getProjectTrebleSupoortCvwFullForPropRes === 'true') {
-				isProjectTrebleSupport.value = true;
+			if (getProjectTrebleSupoortCvwFullForPropRes && getProjectTrebleSupoortCvwFullForPropRes === 'true') {
+				isSupportProp.value = true;
 			} else {
-				isProjectTrebleSupport.value = false;
+				isSupportProp.value = false;
 			}
-			const [, getProjectTrebleSupportCvwFullGlobalEnableRes] = await $to<string, string>(
-				deviceApi.getProjectTrebleSupportCvwFullGlobalEnable(),
-			);
-			if (
-				getProjectTrebleSupportCvwFullGlobalEnableRes &&
-				Number(getProjectTrebleSupportCvwFullGlobalEnableRes) === 1
-			) {
-				isGlobalEnable.value = true;
-			} else {
-				isGlobalEnable.value = false;
-			}
-            const [, getProjectTrebleCvwFullDefaultDesktopEnableRes] = await $to<string, string>(
-				deviceApi.getProjectTrebleCvwFullDefaultDesktopEnable(),
-			);
-			if (
-				getProjectTrebleCvwFullDefaultDesktopEnableRes &&
-				Number(getProjectTrebleCvwFullDefaultDesktopEnableRes) === 1
-			) {
-				isDefaultDesktopEnable.value = true;
-			} else {
-				isDefaultDesktopEnable.value = false;
-			}
+		} else {
+			isSupportProp.value = false;
 		}
 		isInit.value = true;
 		loading.value = false;
@@ -197,9 +218,9 @@ export function useProjectTrebleCvwFull() {
 
 	return {
 		currentVerison,
-		isSupport,
-		isGlobalEnable,
-        isDefaultDesktopEnable,
+		isSupportProp,
+		reloadSystemUI,
+		isEnable,
 		changeEnableMode,
 		isInit,
 		loading,
