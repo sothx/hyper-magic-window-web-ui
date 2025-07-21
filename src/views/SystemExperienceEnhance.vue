@@ -198,23 +198,45 @@ const enhanceList: EnhanceItemInfo[] = [
 				{!projectTrebleCvwFullHook.isInit.value ? (
 					<n-skeleton width={80} sharp={false} round size='small' />
 				) : (
-					<n-switch
-						railStyle={railStyle}
-						value={projectTrebleCvwFullHook.isGlobalEnable.value ? true : false}
-						loading={deviceStore.loading || projectTrebleCvwFullHook.loading.value}
-						onUpdate:value={(value: boolean) => projectTrebleCvwFullHook.changeEnableMode(value,'MiuiDesktopMode')}>
-						{{
-							checked: () => <>已启用</>,
-							unchecked: () => <>未启用</>,
-						}}
-					</n-switch>
+					<>
+						<n-switch
+							railStyle={railStyle}
+							disabled={projectTrebleCvwFullHook.isDefaultDesktopEnable.value}
+							value={
+								projectTrebleCvwFullHook.isGlobalEnable.value ||
+								projectTrebleCvwFullHook.isDefaultDesktopEnable.value
+									? true
+									: false
+							}
+							loading={deviceStore.loading || projectTrebleCvwFullHook.loading.value}
+							onUpdate:value={(value: boolean) =>
+								projectTrebleCvwFullHook.changeEnableMode(value, 'MiuiDesktopMode')
+							}>
+							{{
+								checked: () => <>已启用</>,
+								unchecked: () => <>未启用</>,
+							}}
+						</n-switch>
+					</>
+				)}
+				{projectTrebleCvwFullHook.isDefaultDesktopEnable.value && (
+					<n-alert class='mt-5' type='success' bordered={true}>
+						您已启用普通桌面无极小窗，工作台无极小窗将默认同时启用且无法被关闭。
+					</n-alert>
 				)}
 				<n-alert class='mt-5' type='warning' show-icon={false} bordered={false}>
-					仅支持该功能的移植包可用，开启后在工作台模式下任意应用小窗支持无级调节~
+					开启后在工作台模式下任意应用小窗支持无级调节~
 				</n-alert>
 			</>
 		),
-		isShow: () => Boolean(['tablet'].includes(deviceStore.deviceType) && deviceStore.androidTargetSdk && deviceStore.androidTargetSdk === 35 && projectTrebleCvwFullHook.isSupport.value && projectTrebleCvwFullHook.currentVerison.value >= 2),
+		isShow: () =>
+			Boolean(
+				['tablet'].includes(deviceStore.deviceType) &&
+					deviceStore.androidTargetSdk &&
+					deviceStore.androidTargetSdk === 35 &&
+					projectTrebleCvwFullHook.isSupport.value &&
+					projectTrebleCvwFullHook.currentVerison.value >= 2,
+			),
 	},
 	{
 		title: '普通桌面无极小窗（移植包）',
@@ -227,7 +249,9 @@ const enhanceList: EnhanceItemInfo[] = [
 						railStyle={railStyle}
 						value={projectTrebleCvwFullHook.isDefaultDesktopEnable.value ? true : false}
 						loading={deviceStore.loading || projectTrebleCvwFullHook.loading.value}
-						onUpdate:value={(value: boolean) => projectTrebleCvwFullHook.changeEnableMode(value,'DefaultDesktopMode')}>
+						onUpdate:value={(value: boolean) =>
+							projectTrebleCvwFullHook.changeEnableMode(value, 'DefaultDesktopMode')
+						}>
 						{{
 							checked: () => <>已启用</>,
 							unchecked: () => <>未启用</>,
@@ -235,11 +259,18 @@ const enhanceList: EnhanceItemInfo[] = [
 					</n-switch>
 				)}
 				<n-alert class='mt-5' type='warning' show-icon={false} bordered={false}>
-					仅支持该功能的移植包可用，开启后在普通桌面模式下任意应用小窗支持无级调节~
+					开启后在普通桌面模式下任意应用小窗支持无级调节~
 				</n-alert>
 			</>
 		),
-		isShow: () => Boolean(['tablet'].includes(deviceStore.deviceType) && deviceStore.androidTargetSdk && deviceStore.androidTargetSdk === 35 && projectTrebleCvwFullHook.isSupport.value && projectTrebleCvwFullHook.currentVerison.value >= 2),
+		isShow: () =>
+			Boolean(
+				['tablet'].includes(deviceStore.deviceType) &&
+					deviceStore.androidTargetSdk &&
+					deviceStore.androidTargetSdk === 35 &&
+					projectTrebleCvwFullHook.isSupport.value &&
+					projectTrebleCvwFullHook.currentVerison.value >= 2,
+			),
 	},
 	{
 		title: '工作台小窗数量上限（移植包）',
@@ -258,32 +289,49 @@ const enhanceList: EnhanceItemInfo[] = [
 									size='small'
 									min={4}
 									max={8}
-									disabled={!projectTrebleMaxFreeformCountHook.isEditMiuiDesktopModeMaxFreeformMaxCount.value}
+									disabled={
+										!projectTrebleMaxFreeformCountHook.isEditMiuiDesktopModeMaxFreeformMaxCount
+											.value
+									}
 									step={1}
-									value={projectTrebleMaxFreeformCountHook.currentMiuiDesktopModeMaxFreeformMaxCount.value}
+									value={
+										projectTrebleMaxFreeformCountHook.currentMiuiDesktopModeMaxFreeformMaxCount
+											.value
+									}
 									onUpdateValue={(value: number) => {
-										projectTrebleMaxFreeformCountHook.currentMiuiDesktopModeMaxFreeformMaxCount.value = value;
+										projectTrebleMaxFreeformCountHook.currentMiuiDesktopModeMaxFreeformMaxCount.value =
+											value;
 									}}
 								/>
 								<n-input-number
 									showButton={false}
 									class='pt-3'
 									readonly
-									value={projectTrebleMaxFreeformCountHook.currentMiuiDesktopModeMaxFreeformMaxCount.value}
+									value={
+										projectTrebleMaxFreeformCountHook.currentMiuiDesktopModeMaxFreeformMaxCount
+											.value
+									}
 									placeholder='请输入工作台小窗数量上限'
 									min={4}
 									max={8}
 									step={1}
 									onUpdateValue={(value: number) => {
-										projectTrebleMaxFreeformCountHook.currentMiuiDesktopModeMaxFreeformMaxCount.value = value;
+										projectTrebleMaxFreeformCountHook.currentMiuiDesktopModeMaxFreeformMaxCount.value =
+											value;
 									}}
 								/>
 								<n-button
 									size='small'
 									type='info'
-									class="mt-5"
+									class='mt-5'
 									loading={deviceStore.loading}
-									onClick={() => projectTrebleMaxFreeformCountHook.changeMaxFreeformCount('MiuiDesktopMode',projectTrebleMaxFreeformCountHook.currentMiuiDesktopModeMaxFreeformMaxCount.value)}>
+									onClick={() =>
+										projectTrebleMaxFreeformCountHook.changeMaxFreeformCount(
+											'MiuiDesktopMode',
+											projectTrebleMaxFreeformCountHook.currentMiuiDesktopModeMaxFreeformMaxCount
+												.value,
+										)
+									}>
 									{{
 										default: () => <>保存修改</>,
 									}}
@@ -292,15 +340,21 @@ const enhanceList: EnhanceItemInfo[] = [
 						) : (
 							<>
 								<div class='mb-5'>
-									<n-tag bordered={false} type='info'>
-										当前工作台小窗数量上限 : {projectTrebleMaxFreeformCountHook.currentMiuiDesktopModeMaxFreeformMaxCount.value}
+									<n-tag type='info'>
+										当前工作台小窗数量上限 :{' '}
+										{
+											projectTrebleMaxFreeformCountHook.currentMiuiDesktopModeMaxFreeformMaxCount
+												.value
+										}
 									</n-tag>
 								</div>
 								<n-button
 									size='small'
 									type='info'
 									loading={deviceStore.loading}
-									onClick={() => (projectTrebleMaxFreeformCountHook.isEditMiuiDesktopModeMaxFreeformMaxCount.value = true)}>
+									onClick={() =>
+										(projectTrebleMaxFreeformCountHook.isEditMiuiDesktopModeMaxFreeformMaxCount.value = true)
+									}>
 									{{
 										default: () => <>修改工作台小窗数量上限</>,
 									}}
@@ -310,14 +364,15 @@ const enhanceList: EnhanceItemInfo[] = [
 					</div>
 				)}
 				<n-alert class='mt-5' type='warning' show-icon={false} bordered={false}>
-					<p>仅支持该功能的移植包可用，配置后在工作台模式下支持更多数量的小窗显示~</p>
-					<p>需要保存修改才会生效~</p>
+					<p>配置后在工作台模式下支持更多数量的小窗显示~</p>
 				</n-alert>
 			</>
 		),
-		isShow: () => ['tablet'].includes(deviceStore.deviceType) && projectTrebleMaxFreeformCountHook.isSupportMiuiDesktopModeMaxFreeformMaxCount.value,
+		isShow: () =>
+			['tablet'].includes(deviceStore.deviceType) &&
+			projectTrebleMaxFreeformCountHook.isSupportMiuiDesktopModeMaxFreeformMaxCount.value,
 	},
-		{
+	{
 		title: '默认桌面小窗数量上限（移植包）',
 		content: () => (
 			<>
@@ -334,32 +389,49 @@ const enhanceList: EnhanceItemInfo[] = [
 									size='small'
 									min={2}
 									max={8}
-									disabled={!projectTrebleMaxFreeformCountHook.isEditDefaultDesktopModeMaxFreeformMaxCount.value}
+									disabled={
+										!projectTrebleMaxFreeformCountHook.isEditDefaultDesktopModeMaxFreeformMaxCount
+											.value
+									}
 									step={1}
-									value={projectTrebleMaxFreeformCountHook.currentDefaultDesktopModeMaxFreeformMaxCount.value}
+									value={
+										projectTrebleMaxFreeformCountHook.currentDefaultDesktopModeMaxFreeformMaxCount
+											.value
+									}
 									onUpdateValue={(value: number) => {
-										projectTrebleMaxFreeformCountHook.currentDefaultDesktopModeMaxFreeformMaxCount.value = value;
+										projectTrebleMaxFreeformCountHook.currentDefaultDesktopModeMaxFreeformMaxCount.value =
+											value;
 									}}
 								/>
 								<n-input-number
 									showButton={false}
 									class='pt-3'
 									readonly
-									value={projectTrebleMaxFreeformCountHook.currentDefaultDesktopModeMaxFreeformMaxCount.value}
+									value={
+										projectTrebleMaxFreeformCountHook.currentDefaultDesktopModeMaxFreeformMaxCount
+											.value
+									}
 									placeholder='请输入默认桌面小窗数量上限'
 									min={2}
 									max={8}
 									step={1}
 									onUpdateValue={(value: number) => {
-										projectTrebleMaxFreeformCountHook.currentDefaultDesktopModeMaxFreeformMaxCount.value = value;
+										projectTrebleMaxFreeformCountHook.currentDefaultDesktopModeMaxFreeformMaxCount.value =
+											value;
 									}}
 								/>
 								<n-button
 									size='small'
 									type='info'
-									class="mt-5"
+									class='mt-5'
 									loading={deviceStore.loading}
-									onClick={() => projectTrebleMaxFreeformCountHook.changeMaxFreeformCount('DefaultDesktopMode',projectTrebleMaxFreeformCountHook.currentDefaultDesktopModeMaxFreeformMaxCount.value)}>
+									onClick={() =>
+										projectTrebleMaxFreeformCountHook.changeMaxFreeformCount(
+											'DefaultDesktopMode',
+											projectTrebleMaxFreeformCountHook
+												.currentDefaultDesktopModeMaxFreeformMaxCount.value,
+										)
+									}>
 									{{
 										default: () => <>保存修改</>,
 									}}
@@ -367,16 +439,22 @@ const enhanceList: EnhanceItemInfo[] = [
 							</>
 						) : (
 							<>
-								<div class='mb-5'>
-									<n-tag bordered={false} type='info'>
-										当前默认桌面小窗数量上限 : {projectTrebleMaxFreeformCountHook.currentDefaultDesktopModeMaxFreeformMaxCount.value}
+								<div class='mb-5 flex'>
+									<n-tag type='info'>
+										当前默认桌面小窗数量上限 :{' '}
+										{
+											projectTrebleMaxFreeformCountHook
+												.currentDefaultDesktopModeMaxFreeformMaxCount.value
+										}
 									</n-tag>
 								</div>
 								<n-button
 									size='small'
 									type='info'
 									loading={deviceStore.loading}
-									onClick={() => (projectTrebleMaxFreeformCountHook.isEditDefaultDesktopModeMaxFreeformMaxCount.value = true)}>
+									onClick={() =>
+										(projectTrebleMaxFreeformCountHook.isEditDefaultDesktopModeMaxFreeformMaxCount.value = true)
+									}>
 									{{
 										default: () => <>修改默认桌面小窗数量上限</>,
 									}}
@@ -386,12 +464,13 @@ const enhanceList: EnhanceItemInfo[] = [
 					</div>
 				)}
 				<n-alert class='mt-5' type='warning' show-icon={false} bordered={false}>
-					<p>仅支持该功能的移植包可用，配置后在默认桌面下支持更多数量的小窗显示~</p>
-					<p>需要保存修改才会生效~</p>
+					<p>配置后在默认桌面下支持更多数量的小窗显示~</p>
 				</n-alert>
 			</>
 		),
-		isShow: () => ['tablet'].includes(deviceStore.deviceType) && projectTrebleMaxFreeformCountHook.isSupportMiuiDesktopModeMaxFreeformMaxCount.value,
+		isShow: () =>
+			['tablet'].includes(deviceStore.deviceType) &&
+			projectTrebleMaxFreeformCountHook.isSupportMiuiDesktopModeMaxFreeformMaxCount.value,
 	},
 	{
 		title: '禁用分屏黑名单（移植包）',
@@ -404,7 +483,9 @@ const enhanceList: EnhanceItemInfo[] = [
 						railStyle={railStyle}
 						value={projectTrebleDisableResizeBlackListHook.isEnable.value ? true : false}
 						loading={deviceStore.loading || projectTrebleDisableResizeBlackListHook.loading.value}
-						onUpdate:value={(value: boolean) => projectTrebleDisableResizeBlackListHook.changeEnableMode(value)}>
+						onUpdate:value={(value: boolean) =>
+							projectTrebleDisableResizeBlackListHook.changeEnableMode(value)
+						}>
 						{{
 							checked: () => <>已禁用</>,
 							unchecked: () => <>未禁用</>,
@@ -412,11 +493,17 @@ const enhanceList: EnhanceItemInfo[] = [
 					</n-switch>
 				)}
 				<n-alert class='mt-5' type='warning' show-icon={false} bordered={false}>
-					仅支持该功能的移植包可用，开启后支持更多应用分屏~
+					开启后支持更多应用分屏~
 				</n-alert>
 			</>
 		),
-		isShow: () => Boolean(['tablet'].includes(deviceStore.deviceType) && deviceStore.androidTargetSdk && deviceStore.androidTargetSdk === 35 && projectTrebleDisableResizeBlackListHook.isSupportProp.value),
+		isShow: () =>
+			Boolean(
+				['tablet'].includes(deviceStore.deviceType) &&
+					deviceStore.androidTargetSdk &&
+					deviceStore.androidTargetSdk === 35 &&
+					projectTrebleDisableResizeBlackListHook.isSupportProp.value,
+			),
 	},
 	{
 		title: '禁用小窗黑名单',
@@ -454,7 +541,9 @@ const enhanceList: EnhanceItemInfo[] = [
 						disabled={!projectTrebleVerticalScreenSplitHook.splitScreenPlusIsInstalled.value}
 						value={projectTrebleVerticalScreenSplitHook.isEnableSettings.value ? true : false}
 						loading={deviceStore.loading || projectTrebleVerticalScreenSplitHook.loading.value}
-						onUpdate:value={(value: boolean) => projectTrebleVerticalScreenSplitHook.changeEnableMode(value, 'module')}>
+						onUpdate:value={(value: boolean) =>
+							projectTrebleVerticalScreenSplitHook.changeEnableMode(value, 'module')
+						}>
 						{{
 							checked: () => <>已启用</>,
 							unchecked: () => <>未启用</>,
@@ -462,17 +551,57 @@ const enhanceList: EnhanceItemInfo[] = [
 					</n-switch>
 				)}
 				<n-alert class='mt-5' type='info' show-icon={false} bordered={false}>
-					<p class="mb-2">安装状态:{ !projectTrebleVerticalScreenSplitHook.isInit.value ? (<n-skeleton text class="ml-2" height={25} width={80} sharp={false} size='small' />) : (<n-tag type={projectTrebleVerticalScreenSplitHook.splitScreenPlusIsInstalled.value ? 'success': 'error'} class="ml-2">{ projectTrebleVerticalScreenSplitHook.splitScreenPlusIsInstalled.value ? '当前已安装' : '当前未安装' }</n-tag>)}</p>
+					<p class='mb-2'>
+						安装状态:
+						{!projectTrebleVerticalScreenSplitHook.isInit.value ? (
+							<n-skeleton text class='ml-2' height={25} width={80} sharp={false} size='small' />
+						) : (
+							<n-tag
+								type={
+									projectTrebleVerticalScreenSplitHook.splitScreenPlusIsInstalled.value
+										? 'success'
+										: 'error'
+								}
+								class='ml-2'>
+								{projectTrebleVerticalScreenSplitHook.splitScreenPlusIsInstalled.value
+									? '当前已安装'
+									: '当前未安装'}
+							</n-tag>
+						)}
+					</p>
 					<p>安装 焕晨(HChen) 开发的 LSPosed 模块 SplitScreenPlus 可激活此功能~</p>
-					<n-button size="small" class="mt-2" type="info" secondary onClick={() => projectTrebleVerticalScreenSplitHook.openModuleDownloadUrl()}>获取 SplitScreenPlus</n-button>
-					<div class="mt-3">
-						<p>由于{ deviceStore.deviceType === 'tablet' ? '小米平板' : '小米大折叠屏' }并不支持竖屏上下分屏，模块通过修改系统逻辑以实现竖屏上下分屏，可能存在不稳定等情况，如出现系统界面异常可以切换启用状态为 [未启用] 后，通过下方 [重启系统界面] 的功能解决界面异常问题。</p>
-						<n-button size="small" class="mt-2" type="error" secondary onClick={() => projectTrebleVerticalScreenSplitHook.reloadSystemUI()}>重启系统界面</n-button>
+					<n-button
+						size='small'
+						class='mt-2'
+						type='info'
+						secondary
+						onClick={() => projectTrebleVerticalScreenSplitHook.openModuleDownloadUrl()}>
+						获取 SplitScreenPlus
+					</n-button>
+					<div class='mt-3'>
+						<p>
+							由于{deviceStore.deviceType === 'tablet' ? '小米平板' : '小米大折叠屏'}
+							并不支持竖屏上下分屏，模块通过修改系统逻辑以实现竖屏上下分屏，可能存在不稳定等情况，如出现系统界面异常可以切换启用状态为
+							[未启用] 后，通过下方 [重启系统界面] 的功能解决界面异常问题。
+						</p>
+						<n-button
+							size='small'
+							class='mt-2'
+							type='error'
+							secondary
+							onClick={() => projectTrebleVerticalScreenSplitHook.reloadSystemUI()}>
+							重启系统界面
+						</n-button>
 					</div>
 				</n-alert>
 			</>
 		),
-		isShow: () => Boolean(['tablet','fold'].includes(deviceStore.deviceType) && deviceStore.androidTargetSdk && deviceStore.androidTargetSdk === 35),
+		isShow: () =>
+			Boolean(
+				['tablet', 'fold'].includes(deviceStore.deviceType) &&
+					deviceStore.androidTargetSdk &&
+					deviceStore.androidTargetSdk === 35,
+			),
 	},
 	{
 		title: '强制竖屏上下分屏（移植包）',
@@ -485,7 +614,9 @@ const enhanceList: EnhanceItemInfo[] = [
 						railStyle={railStyle}
 						value={projectTrebleVerticalScreenSplitHook.isEnableProjectTreble.value ? true : false}
 						loading={deviceStore.loading || projectTrebleVerticalScreenSplitHook.loading.value}
-						onUpdate:value={(value: boolean) => projectTrebleVerticalScreenSplitHook.changeEnableMode(value, 'projectTreble')}>
+						onUpdate:value={(value: boolean) =>
+							projectTrebleVerticalScreenSplitHook.changeEnableMode(value, 'projectTreble')
+						}>
 						{{
 							checked: () => <>已启用</>,
 							unchecked: () => <>未启用</>,
@@ -493,11 +624,17 @@ const enhanceList: EnhanceItemInfo[] = [
 					</n-switch>
 				)}
 				<n-alert class='mt-5' type='warning' show-icon={false} bordered={false}>
-					仅支持该功能的移植包可用，由于并非系统本身支持竖屏上下分屏（移植包修改系统界面参数另类实现），因此强制启用后可能会导致部分系统界面显示异常甚至触发异常崩溃，强制启用该功能代表已阅读并了解使用须知，请悉知~
+					由于并非系统本身支持竖屏上下分屏（移植包修改系统界面参数另类实现），因此强制启用后可能会导致部分系统界面显示异常甚至触发异常崩溃，强制启用该功能代表已阅读并了解使用须知，请悉知~
 				</n-alert>
 			</>
 		),
-		isShow: () => Boolean(['tablet','fold'].includes(deviceStore.deviceType) && deviceStore.androidTargetSdk && deviceStore.androidTargetSdk === 35 && projectTrebleVerticalScreenSplitHook.isSupportProp.value),
+		isShow: () =>
+			Boolean(
+				['tablet', 'fold'].includes(deviceStore.deviceType) &&
+					deviceStore.androidTargetSdk &&
+					deviceStore.androidTargetSdk === 35 &&
+					projectTrebleVerticalScreenSplitHook.isSupportProp.value,
+			),
 	},
 	{
 		title: '工作台无极小窗（移植包）',
@@ -518,36 +655,18 @@ const enhanceList: EnhanceItemInfo[] = [
 					</n-switch>
 				)}
 				<n-alert class='mt-5' type='warning' show-icon={false} bordered={false}>
-					仅支持该功能的移植包可用，开启后在工作台模式下任意应用小窗支持无级调节~
+					开启后在工作台模式下任意应用小窗支持无级调节~
 				</n-alert>
 			</>
 		),
-		isShow: () => Boolean(['tablet'].includes(deviceStore.deviceType) && deviceStore.androidTargetSdk && deviceStore.androidTargetSdk === 35 && oldProjectTrebleCvwFullHook.isSupportProp.value && oldProjectTrebleCvwFullHook.currentVerison.value === 1),
-	},
-	{
-		title: '工作台无极小窗（移植包）',
-		content: () => (
-			<>
-				{!oldProjectTrebleCvwFullHook.isInit.value ? (
-					<n-skeleton width={80} sharp={false} round size='small' />
-				) : (
-					<n-switch
-						railStyle={railStyle}
-						value={oldProjectTrebleCvwFullHook.isEnable.value ? true : false}
-						loading={deviceStore.loading || oldProjectTrebleCvwFullHook.loading.value}
-						onUpdate:value={(value: boolean) => oldProjectTrebleCvwFullHook.changeEnableMode(value)}>
-						{{
-							checked: () => <>已启用</>,
-							unchecked: () => <>未启用</>,
-						}}
-					</n-switch>
-				)}
-				<n-alert class='mt-5' type='warning' show-icon={false} bordered={false}>
-					仅支持该功能的移植包可用，开启后在工作台模式下任意应用小窗支持无级调节~
-				</n-alert>
-			</>
-		),
-		isShow: () => Boolean(['tablet'].includes(deviceStore.deviceType) && deviceStore.androidTargetSdk && deviceStore.androidTargetSdk === 35 && oldProjectTrebleCvwFullHook.isSupportProp.value && oldProjectTrebleCvwFullHook.currentVerison.value === 1),
+		isShow: () =>
+			Boolean(
+				['tablet'].includes(deviceStore.deviceType) &&
+					deviceStore.androidTargetSdk &&
+					deviceStore.androidTargetSdk === 35 &&
+					oldProjectTrebleCvwFullHook.isSupportProp.value &&
+					oldProjectTrebleCvwFullHook.currentVerison.value === 1,
+			),
 	},
 	{
 		title: '工作台模式',
@@ -1579,7 +1698,10 @@ const enhanceList: EnhanceItemInfo[] = [
 				</n-button>
 
 				<n-alert class='mt-5' type='error' show-icon={false} bordered={false}>
-					<p>重置 Joyose 云控数据后系统会尝试重新获取 Joyose 的云控数据，清确保当前在 Wifi 网络环境下，否则无法正常获取云控数据。</p>
+					<p>
+						重置 Joyose 云控数据后系统会尝试重新获取 Joyose 的云控数据，清确保当前在 Wifi
+						网络环境下，否则无法正常获取云控数据。
+					</p>
 					<p>(如仍然无法获取到新的 Joyose 云控数据，请尝试重启设备)</p>
 				</n-alert>
 			</>
@@ -1890,17 +2012,17 @@ const filteredEnhanceList = computed(() => {
 								<SquaresPlusIcon />
 							</n-icon>
 						</template>
-						热重载应用数据
-					</n-button>
-					<n-button class="mb-3 mr-3" color="#69b2b6">
-						<template #icon>
+热重载应用数据
+</n-button>
+<n-button class="mb-3 mr-3" color="#69b2b6">
+	<template #icon>
 							<n-icon>
 								<CircleStackIcon />
 							</n-icon>
 						</template>
-						获取已安装应用名称
-					</n-button>
-				</div> -->
+	获取已安装应用名称
+</n-button>
+</div> -->
 				<div class="flex">
 					<n-input-group>
 						<n-input

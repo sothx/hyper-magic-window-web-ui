@@ -3405,7 +3405,7 @@ export const getProjectTrebleSupoortCvwFullForProp = (): Promise<string> => {
 };
 
 export const getProjectTrebleCvwFullVersion = (): Promise<string> => {
-	const shellCommon = `getprop ro.config.sothx_project_cvw_full_version`;
+	const shellCommon = `getprop ro.config.sothx_project_treble_cvw_full_version`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {

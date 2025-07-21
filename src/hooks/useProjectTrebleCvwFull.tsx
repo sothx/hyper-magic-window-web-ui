@@ -89,7 +89,7 @@ export function useProjectTrebleCvwFull() {
 			currentApi(switchMode ? 1 : 0)
 				.then(res => {
 					if (desktopMode === 'DefaultDesktopMode') {
-						isDefaultDesktopEnable.value = true;
+						isDefaultDesktopEnable.value = switchMode;
 					} else {
 						isGlobalEnable.value = switchMode;
 					}
