@@ -3680,3 +3680,48 @@ export const isInstalledXiaomiPadCvwFullModule = (): Promise<string> => {
 		shellCommon,
 	);
 };
+
+export const getIsSupportDisableFreeformBottomCaption = (): Promise<string> => {
+	const shellCommon = `getprop ro.config.sothx_project_treble_support_disable_freeform_bottom_caption`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve('true');
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const getIsDisableFreeformBottomCaption = (): Promise<string> => {
+	const shellCommon = `settings get system sothx_project_treble_disable_freeform_bottom_caption_enable`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve('1');
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const putIsDisableFreeformBottomCaption = (mode: 1 | 0): Promise<string> => {
+	const shellCommon = `settings put system sothx_project_treble_disable_freeform_bottom_caption_enable ${mode}`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`success`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = (await exec(shellCommon)) as ExecResults;
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};

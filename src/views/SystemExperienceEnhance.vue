@@ -45,6 +45,7 @@ import { useProjectTrebleCvwFull } from '@/hooks/useProjectTrebleCvwFull';
 import { useFreeformBlackList } from '@/hooks/useFreeformBlackList';
 import { useProjectTrebleDisableResizeBlackList } from '@/hooks/useProjectTrebleDisableResizeBlackList';
 import { useProjectTrebleMaxFreeformCount } from '@/hooks/useProjectTrebleMaxFreeformCount';
+import { useDisabledFreeformBottomCaption } from '@/hooks/useDisabledFreeformBottomCaption';
 const deviceStore = useDeviceStore();
 const searchKeyword = ref('');
 const hideGestureLineHook = useHideGestureLine();
@@ -67,6 +68,7 @@ const projectTrebleCvwFullHook = useProjectTrebleCvwFull();
 const freeformBlackListHook = useFreeformBlackList();
 const projectTrebleDisableResizeBlackListHook = useProjectTrebleDisableResizeBlackList();
 const projectTrebleMaxFreeformCountHook = useProjectTrebleMaxFreeformCount();
+const disabledFreeformBottomCaptionHook = useDisabledFreeformBottomCaption();
 const fboHook = useFbo();
 const joyoseHook = useJoyose();
 // const initHooks = () => {
@@ -192,6 +194,59 @@ export interface EnhanceItemInfo {
 	isShow?: () => boolean;
 }
 const enhanceList: EnhanceItemInfo[] = [
+	{
+		title: '禁用小窗黑名单',
+		content: () => (
+			<>
+				{!freeformBlackListHook.isInit.value ? (
+					<n-skeleton width={80} sharp={false} round size='small' />
+				) : (
+					<n-switch
+						railStyle={railStyle}
+						value={freeformBlackListHook.isEnable.value ? true : false}
+						loading={deviceStore.loading || freeformBlackListHook.loading.value}
+						onUpdate:value={(value: boolean) => freeformBlackListHook.changeEnableMode(value)}>
+						{{
+							checked: () => <>已禁用</>,
+							unchecked: () => <>未禁用</>,
+						}}
+					</n-switch>
+				)}
+				<n-alert class='mt-5' type='warning' show-icon={false} bordered={false}>
+					禁用小窗黑名单可以让更多应用使用小窗，建议同时开启开发者模式下[强制将 activity 设为可调整大小]和[启用可自由调整的窗口]两个相关的小窗特性。
+				</n-alert>
+			</>
+		),
+	},
+	{
+		title: (titleText:string) => <>{`${titleText}${deviceStore.isInstalledXiaomiPadCvwFullModule ? `（附加模块）` : `（移植包）`}`}</>,
+		titleText: '禁用小窗手势提示线',
+		content: () => (
+			<>
+				{!disabledFreeformBottomCaptionHook.isInit.value ? (
+					<n-skeleton width={80} sharp={false} round size='small' />
+				) : (
+					<n-switch
+						railStyle={railStyle}
+						value={disabledFreeformBottomCaptionHook.isEnable.value ? true : false}
+						loading={deviceStore.loading || disabledFreeformBottomCaptionHook.loading.value}
+						onUpdate:value={(value: boolean) => disabledFreeformBottomCaptionHook.changeEnableMode(value)}>
+						{{
+							checked: () => <>已禁用</>,
+							unchecked: () => <>未禁用</>,
+						}}
+					</n-switch>
+				)}
+				<n-alert class='mt-5' type='warning' show-icon={false} bordered={false}>
+					禁用后所有小窗将不再显示手势提示线（小白条）~
+				</n-alert>
+			</>
+		),
+		isShow: () =>
+			Boolean(
+					disabledFreeformBottomCaptionHook.isSupport.value
+		),
+	},
 	{
 		title: (titleText:string) => <>{`${titleText}${deviceStore.isInstalledXiaomiPadCvwFullModule ? `（附加模块）` : `（移植包）`}`}</>,
 		titleText: '工作台无极小窗',
@@ -499,30 +554,6 @@ const enhanceList: EnhanceItemInfo[] = [
 			Boolean(
 					projectTrebleDisableResizeBlackListHook.isSupportProp.value,
 			),
-	},
-	{
-		title: '禁用小窗黑名单',
-		content: () => (
-			<>
-				{!freeformBlackListHook.isInit.value ? (
-					<n-skeleton width={80} sharp={false} round size='small' />
-				) : (
-					<n-switch
-						railStyle={railStyle}
-						value={freeformBlackListHook.isEnable.value ? true : false}
-						loading={deviceStore.loading || freeformBlackListHook.loading.value}
-						onUpdate:value={(value: boolean) => freeformBlackListHook.changeEnableMode(value)}>
-						{{
-							checked: () => <>已禁用</>,
-							unchecked: () => <>未禁用</>,
-						}}
-					</n-switch>
-				)}
-				<n-alert class='mt-5' type='warning' show-icon={false} bordered={false}>
-					禁用小窗黑名单可以让更多应用使用小窗，建议同时开启开发者模式下[强制将 activity 设为可调整大小]和[启用可自由调整的窗口]两个相关的小窗特性。
-				</n-alert>
-			</>
-		),
 	},
 	{
 		title: '强制竖屏上下分屏（LSPosed模块）',
