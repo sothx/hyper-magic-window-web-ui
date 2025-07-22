@@ -192,7 +192,7 @@ export function useAmktiao() {
 						title: '切换成功',
 						type: 'success',
 						preset: 'dialog',
-						content: () => <p>切换手写笔驱动成功，关闭屏幕再点亮屏幕即可更新固件~</p>,
+						content: () => <p>切换手写笔驱动成功，关闭屏幕再点亮屏幕即可更新固件~请注意，每次开机后还需要手动息屏一次才会生效。</p>,
 						positiveText: '确定',
 					});
 					currentPenUpdate.value = 1;

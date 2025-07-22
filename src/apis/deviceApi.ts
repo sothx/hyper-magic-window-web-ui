@@ -3665,3 +3665,18 @@ export const changeProjectTrebleCvwFullDefaultDesktopEnable = (mode: 1 | 0): Pro
 		shellCommon,
 	);
 };
+
+export const isInstalledXiaomiPadCvwFullModule = (): Promise<string> => {
+	const shellCommon = `[ -f "/data/adb/modules/xiaomi_pad_patch_cvw_full/system.prop" ] && echo "Installed" || echo "Not installed"`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`Installed`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = (await exec(shellCommon)) as ExecResults;
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};

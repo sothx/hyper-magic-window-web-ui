@@ -185,14 +185,16 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 	return style;
 };
 export interface EnhanceItemInfo {
-	title: string;
+	title: string | ((titleText:string) => JSX.Element);
+	titleText?: string; // 仅用于搜索
 	titleSlot?: () => JSX.Element;
 	content: () => JSX.Element;
 	isShow?: () => boolean;
 }
 const enhanceList: EnhanceItemInfo[] = [
 	{
-		title: '工作台无极小窗（移植包）',
+		title: (titleText:string) => <>{`${titleText}${deviceStore.isInstalledXiaomiPadCvwFullModule ? `（附加模块）` : `（移植包）`}`}</>,
+		titleText: '工作台无极小窗',
 		content: () => (
 			<>
 				{!projectTrebleCvwFullHook.isInit.value ? (
@@ -231,15 +233,13 @@ const enhanceList: EnhanceItemInfo[] = [
 		),
 		isShow: () =>
 			Boolean(
-				['tablet'].includes(deviceStore.deviceType) &&
-					deviceStore.androidTargetSdk &&
-					deviceStore.androidTargetSdk === 35 &&
 					projectTrebleCvwFullHook.isSupport.value &&
 					projectTrebleCvwFullHook.currentVerison.value >= 2,
 			),
 	},
 	{
-		title: '普通桌面无极小窗（移植包）',
+		title: (titleText:string) => <>{`${titleText}${deviceStore.isInstalledXiaomiPadCvwFullModule ? `（附加模块）` : `（移植包）`}`}</>,
+		titleText: '普通桌面无极小窗',
 		content: () => (
 			<>
 				{!projectTrebleCvwFullHook.isInit.value ? (
@@ -265,15 +265,13 @@ const enhanceList: EnhanceItemInfo[] = [
 		),
 		isShow: () =>
 			Boolean(
-				['tablet'].includes(deviceStore.deviceType) &&
-					deviceStore.androidTargetSdk &&
-					deviceStore.androidTargetSdk === 35 &&
 					projectTrebleCvwFullHook.isSupport.value &&
 					projectTrebleCvwFullHook.currentVerison.value >= 2,
 			),
 	},
 	{
-		title: '工作台小窗数量上限（移植包）',
+		title: (titleText:string) => <>{`${titleText}${deviceStore.isInstalledXiaomiPadCvwFullModule ? `（附加模块）` : `（移植包）`}`}</>,
+		titleText: '工作台小窗数量上限',
 		content: () => (
 			<>
 				{!projectTrebleMaxFreeformCountHook.isInit.value ? (
@@ -368,12 +366,11 @@ const enhanceList: EnhanceItemInfo[] = [
 				</n-alert>
 			</>
 		),
-		isShow: () =>
-			['tablet'].includes(deviceStore.deviceType) &&
-			projectTrebleMaxFreeformCountHook.isSupportMiuiDesktopModeMaxFreeformMaxCount.value,
+		isShow: () => projectTrebleMaxFreeformCountHook.isSupportMiuiDesktopModeMaxFreeformMaxCount.value,
 	},
 	{
-		title: '默认桌面小窗数量上限（移植包）',
+		title: (titleText:string) => <>{`${titleText}${deviceStore.isInstalledXiaomiPadCvwFullModule ? `（附加模块）` : `（移植包）`}`}</>,
+		titleText: '默认桌面小窗数量上限',
 		content: () => (
 			<>
 				{!projectTrebleMaxFreeformCountHook.isInit.value ? (
@@ -473,7 +470,8 @@ const enhanceList: EnhanceItemInfo[] = [
 			projectTrebleMaxFreeformCountHook.isSupportMiuiDesktopModeMaxFreeformMaxCount.value,
 	},
 	{
-		title: '禁用分屏黑名单（移植包）',
+		title: (titleText:string) => <>{`${titleText}${deviceStore.isInstalledXiaomiPadCvwFullModule ? `（附加模块）` : `（移植包）`}`}</>,
+		titleText: '禁用分屏黑名单',
 		content: () => (
 			<>
 				{!projectTrebleDisableResizeBlackListHook.isInit.value ? (
@@ -499,9 +497,6 @@ const enhanceList: EnhanceItemInfo[] = [
 		),
 		isShow: () =>
 			Boolean(
-				['tablet'].includes(deviceStore.deviceType) &&
-					deviceStore.androidTargetSdk &&
-					deviceStore.androidTargetSdk === 35 &&
 					projectTrebleDisableResizeBlackListHook.isSupportProp.value,
 			),
 	},
@@ -524,7 +519,7 @@ const enhanceList: EnhanceItemInfo[] = [
 					</n-switch>
 				)}
 				<n-alert class='mt-5' type='warning' show-icon={false} bordered={false}>
-					禁用小窗黑名单可以让更多应用使用小窗，该功能受系统支持影响，开启后是否生效请以实际情况为准。
+					禁用小窗黑名单可以让更多应用使用小窗，建议同时开启开发者模式下[强制将 activity 设为可调整大小]和[启用可自由调整的窗口]两个相关的小窗特性。
 				</n-alert>
 			</>
 		),
@@ -604,7 +599,8 @@ const enhanceList: EnhanceItemInfo[] = [
 			),
 	},
 	{
-		title: '强制竖屏上下分屏（移植包）',
+		title: (titleText:string) => <>{`${titleText}${deviceStore.isInstalledXiaomiPadCvwFullModule ? `（附加模块）` : `（移植包）`}`}</>,
+		titleText: '强制竖屏上下分屏',
 		content: () => (
 			<>
 				{!projectTrebleVerticalScreenSplitHook.isInit.value ? (
@@ -630,14 +626,12 @@ const enhanceList: EnhanceItemInfo[] = [
 		),
 		isShow: () =>
 			Boolean(
-				['tablet', 'fold'].includes(deviceStore.deviceType) &&
-					deviceStore.androidTargetSdk &&
-					deviceStore.androidTargetSdk === 35 &&
-					projectTrebleVerticalScreenSplitHook.isSupportProp.value,
+				['tablet', 'fold'].includes(deviceStore.deviceType) && projectTrebleVerticalScreenSplitHook.isSupportProp.value,
 			),
 	},
 	{
-		title: '工作台无极小窗（移植包）',
+		title: (titleText:string) => <>{`${titleText}${deviceStore.isInstalledXiaomiPadCvwFullModule ? `（附加模块）` : `（移植包）`}`}</>,
+		titleText: '工作台无极小窗',
 		content: () => (
 			<>
 				{!oldProjectTrebleCvwFullHook.isInit.value ? (
@@ -661,11 +655,7 @@ const enhanceList: EnhanceItemInfo[] = [
 		),
 		isShow: () =>
 			Boolean(
-				['tablet'].includes(deviceStore.deviceType) &&
-					deviceStore.androidTargetSdk &&
-					deviceStore.androidTargetSdk === 35 &&
-					oldProjectTrebleCvwFullHook.isSupportProp.value &&
-					oldProjectTrebleCvwFullHook.currentVerison.value === 1,
+				oldProjectTrebleCvwFullHook.isSupportProp.value && oldProjectTrebleCvwFullHook.currentVerison.value === 1,
 			),
 	},
 	{
@@ -1162,6 +1152,7 @@ const enhanceList: EnhanceItemInfo[] = [
 				)}
 				<n-alert class='mt-5' type='warning' show-icon={false} bordered={false}>
 					<p>仅兼容水龙(Amktiao)的内核，存在 /sys/touchpanel/pen_update 开关映射时生效</p>
+					<p>每次开机后还需要手动息屏一次才会生效</p>
 				</n-alert>
 			</>
 		),
@@ -1973,7 +1964,12 @@ const filteredEnhanceList = computed(() => {
 		const showFlag = item.isShow ? item.isShow() : true;
 		if (!showFlag) return false;
 		if (!keyword) return true;
-		return item.title.toLowerCase().includes(keyword);
+
+		// 优先使用 titleText，其次 title 字符串
+		const titleStr =
+			item.titleText?.toLowerCase() ?? (typeof item.title === 'string' ? item.title.toLowerCase() : '');
+
+		return titleStr.includes(keyword);
 	});
 });
 </script>
@@ -2075,7 +2071,10 @@ const filteredEnhanceList = computed(() => {
 						class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt
 							:class="`text-sm font-medium leading-6 ${deviceStore.isDarkMode ? 'text-white' : 'text-gray-900'}`">
-							{{ enhanceItem.title }}
+							<div v-if="typeof enhanceItem.title === 'string'">
+								{{ enhanceItem.title }}
+							</div>
+							<RenderJsx v-else :content="enhanceItem.title(enhanceItem.titleText || '')" />
 							<RenderJsx
 								v-if="enhanceItem.titleSlot"
 								:content="enhanceItem.titleSlot && enhanceItem.titleSlot()" />
