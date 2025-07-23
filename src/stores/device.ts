@@ -77,7 +77,7 @@ export const useDeviceStore = defineStore(
 			display0Panel: '',
 			memoryInfo: '',
 		});
-		const isInstalledXiaomiPadCvwFullModule = ref<boolean>(false);
+		const isInstalledXiaomiPadSystemPatchAdditionalModule = ref<boolean>(false);
 		const isInit = ref<boolean>(false);
 		const lastVersionCode = ref<number>();
 		const needReloadData = ref<boolean>(false);
@@ -489,13 +489,13 @@ export const useDeviceStore = defineStore(
 				} else {
 					deepSleepProp.module = true;
 				}
-				const [, isInstalledXiaomiPadCvwFullModuleRes] = await $to<string,string>(
-					deviceApi.isInstalledXiaomiPadCvwFullModule()
+				const [, isInstalledXiaomiPadSystemPatchAdditionalModuleRes] = await $to<string,string>(
+					deviceApi.isInstalledXiaomiPadSystemPatchAdditionalModule()
 				)
-				if (isInstalledXiaomiPadCvwFullModuleRes === 'Installed') {
-					isInstalledXiaomiPadCvwFullModule.value = true;
+				if (isInstalledXiaomiPadSystemPatchAdditionalModuleRes === 'Installed') {
+					isInstalledXiaomiPadSystemPatchAdditionalModule.value = true;
 				} else {
-					isInstalledXiaomiPadCvwFullModule.value = false;
+					isInstalledXiaomiPadSystemPatchAdditionalModule.value = false;
 				}
 			}
 
@@ -564,7 +564,7 @@ export const useDeviceStore = defineStore(
 			lastVisitedPath,
 			isInit,
 			remoteDownloadAppUrlMap,
-			isInstalledXiaomiPadCvwFullModule
+			isInstalledXiaomiPadSystemPatchAdditionalModule
 		};
 	},
 	{

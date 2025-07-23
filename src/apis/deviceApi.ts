@@ -3666,8 +3666,8 @@ export const changeProjectTrebleCvwFullDefaultDesktopEnable = (mode: 1 | 0): Pro
 	);
 };
 
-export const isInstalledXiaomiPadCvwFullModule = (): Promise<string> => {
-	const shellCommon = `[ -f "/data/adb/modules/xiaomi_pad_patch_cvw_full/system.prop" ] && echo "Installed" || echo "Not installed"`;
+export const isInstalledXiaomiPadSystemPatchAdditionalModule = (): Promise<string> => {
+	const shellCommon = `([ -f "/data/adb/modules/xiaomi_pad_patch_cvw_full/system.prop" ] || [ -f "/data/adb/modules/xiaomi_pad_system_patch_additional_module/system.prop" ]) && echo "Installed" || echo "Not installed"`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -3713,6 +3713,51 @@ export const getIsDisableFreeformBottomCaption = (): Promise<string> => {
 
 export const putIsDisableFreeformBottomCaption = (mode: 1 | 0): Promise<string> => {
 	const shellCommon = `settings put system sothx_project_treble_disable_freeform_bottom_caption_enable ${mode}`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`success`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = (await exec(shellCommon)) as ExecResults;
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const getIsSupportImmerseFreeformBottomCaption = (): Promise<string> => {
+	const shellCommon = `getprop ro.config.sothx_project_treble_support_immerse_freeform_bottom_caption`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve('true');
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const getIsImmerseFreeformBottomCaption = (): Promise<string> => {
+	const shellCommon = `settings get system sothx_project_treble_immerse_freeform_bottom_caption_enable`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve('1');
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const putIsImmerseFreeformBottomCaption = (mode: 1 | 0): Promise<string> => {
+	const shellCommon = `settings put system sothx_project_treble_immerse_freeform_bottom_caption_enable ${mode}`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {

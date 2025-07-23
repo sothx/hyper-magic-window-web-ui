@@ -46,6 +46,7 @@ import { useFreeformBlackList } from '@/hooks/useFreeformBlackList';
 import { useProjectTrebleDisableResizeBlackList } from '@/hooks/useProjectTrebleDisableResizeBlackList';
 import { useProjectTrebleMaxFreeformCount } from '@/hooks/useProjectTrebleMaxFreeformCount';
 import { useDisabledFreeformBottomCaption } from '@/hooks/useDisabledFreeformBottomCaption';
+import { useImmersedFreeformBottomCaption } from '@/hooks/useImmerseFreeformBottomCaption';
 const deviceStore = useDeviceStore();
 const searchKeyword = ref('');
 const hideGestureLineHook = useHideGestureLine();
@@ -69,6 +70,7 @@ const freeformBlackListHook = useFreeformBlackList();
 const projectTrebleDisableResizeBlackListHook = useProjectTrebleDisableResizeBlackList();
 const projectTrebleMaxFreeformCountHook = useProjectTrebleMaxFreeformCount();
 const disabledFreeformBottomCaptionHook = useDisabledFreeformBottomCaption();
+const immerseFreeformBottomCaptionHook = useImmersedFreeformBottomCaption();
 const fboHook = useFbo();
 const joyoseHook = useJoyose();
 // const initHooks = () => {
@@ -219,7 +221,7 @@ const enhanceList: EnhanceItemInfo[] = [
 		),
 	},
 	{
-		title: (titleText:string) => <>{`${titleText}${deviceStore.isInstalledXiaomiPadCvwFullModule ? `（附加模块）` : `（移植包）`}`}</>,
+		title: (titleText:string) => <>{`${titleText}${deviceStore.isInstalledXiaomiPadSystemPatchAdditionalModule ? `（附加模块）` : `（移植包）`}`}</>,
 		titleText: '禁用小窗手势提示线',
 		content: () => (
 			<>
@@ -248,7 +250,36 @@ const enhanceList: EnhanceItemInfo[] = [
 		),
 	},
 	{
-		title: (titleText:string) => <>{`${titleText}${deviceStore.isInstalledXiaomiPadCvwFullModule ? `（附加模块）` : `（移植包）`}`}</>,
+		title: (titleText:string) => <>{`${titleText}${deviceStore.isInstalledXiaomiPadSystemPatchAdditionalModule ? `（附加模块）` : `（移植包）`}`}</>,
+		titleText: '沉浸小窗手势提示线',
+		content: () => (
+			<>
+				{!immerseFreeformBottomCaptionHook.isInit.value ? (
+					<n-skeleton width={80} sharp={false} round size='small' />
+				) : (
+					<n-switch
+						railStyle={railStyle}
+						value={immerseFreeformBottomCaptionHook.isEnable.value ? true : false}
+						loading={deviceStore.loading || immerseFreeformBottomCaptionHook.loading.value}
+						onUpdate:value={(value: boolean) => immerseFreeformBottomCaptionHook.changeEnableMode(value)}>
+						{{
+							checked: () => <>已启用</>,
+							unchecked: () => <>未启用</>,
+						}}
+					</n-switch>
+				)}
+				<n-alert class='mt-5' type='warning' show-icon={false} bordered={false}>
+					启用后所有小窗手势提示线（小白条）将强制沉浸~
+				</n-alert>
+			</>
+		),
+		isShow: () =>
+			Boolean(
+					immerseFreeformBottomCaptionHook.isSupport.value
+		),
+	},
+	{
+		title: (titleText:string) => <>{`${titleText}${deviceStore.isInstalledXiaomiPadSystemPatchAdditionalModule ? `（附加模块）` : `（移植包）`}`}</>,
 		titleText: '工作台无极小窗',
 		content: () => (
 			<>
@@ -293,7 +324,7 @@ const enhanceList: EnhanceItemInfo[] = [
 			),
 	},
 	{
-		title: (titleText:string) => <>{`${titleText}${deviceStore.isInstalledXiaomiPadCvwFullModule ? `（附加模块）` : `（移植包）`}`}</>,
+		title: (titleText:string) => <>{`${titleText}${deviceStore.isInstalledXiaomiPadSystemPatchAdditionalModule ? `（附加模块）` : `（移植包）`}`}</>,
 		titleText: '普通桌面无极小窗',
 		content: () => (
 			<>
@@ -325,7 +356,7 @@ const enhanceList: EnhanceItemInfo[] = [
 			),
 	},
 	{
-		title: (titleText:string) => <>{`${titleText}${deviceStore.isInstalledXiaomiPadCvwFullModule ? `（附加模块）` : `（移植包）`}`}</>,
+		title: (titleText:string) => <>{`${titleText}${deviceStore.isInstalledXiaomiPadSystemPatchAdditionalModule ? `（附加模块）` : `（移植包）`}`}</>,
 		titleText: '工作台小窗数量上限',
 		content: () => (
 			<>
@@ -424,7 +455,7 @@ const enhanceList: EnhanceItemInfo[] = [
 		isShow: () => projectTrebleMaxFreeformCountHook.isSupportMiuiDesktopModeMaxFreeformMaxCount.value,
 	},
 	{
-		title: (titleText:string) => <>{`${titleText}${deviceStore.isInstalledXiaomiPadCvwFullModule ? `（附加模块）` : `（移植包）`}`}</>,
+		title: (titleText:string) => <>{`${titleText}${deviceStore.isInstalledXiaomiPadSystemPatchAdditionalModule ? `（附加模块）` : `（移植包）`}`}</>,
 		titleText: '默认桌面小窗数量上限',
 		content: () => (
 			<>
@@ -525,7 +556,7 @@ const enhanceList: EnhanceItemInfo[] = [
 			projectTrebleMaxFreeformCountHook.isSupportMiuiDesktopModeMaxFreeformMaxCount.value,
 	},
 	{
-		title: (titleText:string) => <>{`${titleText}${deviceStore.isInstalledXiaomiPadCvwFullModule ? `（附加模块）` : `（移植包）`}`}</>,
+		title: (titleText:string) => <>{`${titleText}${deviceStore.isInstalledXiaomiPadSystemPatchAdditionalModule ? `（附加模块）` : `（移植包）`}`}</>,
 		titleText: '禁用分屏黑名单',
 		content: () => (
 			<>
@@ -630,7 +661,7 @@ const enhanceList: EnhanceItemInfo[] = [
 			),
 	},
 	{
-		title: (titleText:string) => <>{`${titleText}${deviceStore.isInstalledXiaomiPadCvwFullModule ? `（附加模块）` : `（移植包）`}`}</>,
+		title: (titleText:string) => <>{`${titleText}${deviceStore.isInstalledXiaomiPadSystemPatchAdditionalModule ? `（附加模块）` : `（移植包）`}`}</>,
 		titleText: '强制竖屏上下分屏',
 		content: () => (
 			<>
@@ -661,7 +692,7 @@ const enhanceList: EnhanceItemInfo[] = [
 			),
 	},
 	{
-		title: (titleText:string) => <>{`${titleText}${deviceStore.isInstalledXiaomiPadCvwFullModule ? `（附加模块）` : `（移植包）`}`}</>,
+		title: (titleText:string) => <>{`${titleText}${deviceStore.isInstalledXiaomiPadSystemPatchAdditionalModule ? `（附加模块）` : `（移植包）`}`}</>,
 		titleText: '工作台无极小窗',
 		content: () => (
 			<>
