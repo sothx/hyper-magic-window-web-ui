@@ -45,7 +45,7 @@ export function useAmktiao() {
 
 	const loading = ref<boolean>(true);
 
-    const isInit = ref<boolean>(false);
+	const isInit = ref<boolean>(false);
 
 	const keyboardModeOptions = ref<KeyboardModeOptions[]>([
 		{
@@ -192,8 +192,58 @@ export function useAmktiao() {
 						title: '切换成功',
 						type: 'success',
 						preset: 'dialog',
-						content: () => <p>切换手写笔驱动成功，关闭屏幕再点亮屏幕即可更新固件~请注意，每次开机后还需要手动息屏一次才会生效。</p>,
-						positiveText: '确定',
+						content: () => <p>切换手写笔驱动成功，关闭屏幕再点亮屏幕即可更新固件~</p>,
+						positiveText: '立即关闭并重新点亮屏幕',
+						negativeText: '稍后再说',
+						async onPositiveClick() {
+							const [getScreenStateErr, getScreenStateRes] = await $to(deviceApi.getScreenState());
+							if (getScreenStateErr) {
+								modal.create({
+									title: '获取屏幕信息失败',
+									type: 'error',
+									preset: 'dialog',
+									content: () => (
+										<p>获取屏幕信息失败，请手动关闭屏幕再点亮屏幕即可更新固件，详细请查看日志~</p>
+									),
+									negativeText: '确定',
+								});
+								return;
+							}
+							if (getScreenStateRes === 'Awake') {
+								const [rebootScreenErr] = await $to(deviceApi.rebootScreen());
+								if (rebootScreenErr) {
+									modal.create({
+										title: '操作失败',
+										type: 'error',
+										preset: 'dialog',
+										content: () => (
+											<p>操作失败，请手动关闭屏幕再点亮屏幕即可更新固件，详细请查看日志~</p>
+										),
+										negativeText: '确定',
+									});
+									return;
+								}
+								modal.create({
+									title: '切换成功',
+									type: 'success',
+									preset: 'dialog',
+									content: () => (
+										<p>已经为您关闭屏幕并重新点亮屏幕，请查看手写笔固件是否已成功切换~</p>
+									),
+									positiveText: '确定',
+								});
+							} else {
+								modal.create({
+									title: '操作失败',
+									type: 'error',
+									preset: 'dialog',
+									content: () => (
+										<p>检测到您目前的屏幕状态并非亮屏状态，请手动关闭屏幕再点亮屏幕即可更新固件，详细请查看日志~</p>
+									),
+									negativeText: '确定',
+								});
+							}
+						},
 					});
 					currentPenUpdate.value = 1;
 				}
@@ -215,7 +265,57 @@ export function useAmktiao() {
 						type: 'success',
 						preset: 'dialog',
 						content: () => <p>切换手写笔驱动成功，关闭屏幕再点亮屏幕即可更新固件~</p>,
-						positiveText: '确定',
+						positiveText: '立即关闭并重新点亮屏幕',
+						negativeText: '稍后再说',
+						async onPositiveClick() {
+							const [getScreenStateErr, getScreenStateRes] = await $to(deviceApi.getScreenState());
+							if (getScreenStateErr) {
+								modal.create({
+									title: '获取屏幕信息失败',
+									type: 'error',
+									preset: 'dialog',
+									content: () => (
+										<p>获取屏幕信息失败，请手动关闭屏幕再点亮屏幕即可更新固件，详细请查看日志~</p>
+									),
+									negativeText: '确定',
+								});
+								return;
+							}
+							if (getScreenStateRes === 'Awake') {
+								const [rebootScreenErr] = await $to(deviceApi.rebootScreen());
+								if (rebootScreenErr) {
+									modal.create({
+										title: '操作失败',
+										type: 'error',
+										preset: 'dialog',
+										content: () => (
+											<p>操作失败，请手动关闭屏幕再点亮屏幕即可更新固件，详细请查看日志~</p>
+										),
+										negativeText: '确定',
+									});
+									return;
+								}
+								modal.create({
+									title: '切换成功',
+									type: 'success',
+									preset: 'dialog',
+									content: () => (
+										<p>已经为您关闭屏幕并重新点亮屏幕，请查看手写笔固件是否已成功切换~</p>
+									),
+									positiveText: '确定',
+								});
+							} else {
+								modal.create({
+									title: '操作失败',
+									type: 'error',
+									preset: 'dialog',
+									content: () => (
+										<p>检测到您目前的屏幕状态并非亮屏状态，请手动关闭屏幕再点亮屏幕即可更新固件，详细请查看日志~</p>
+									),
+									negativeText: '确定',
+								});
+							}
+						},
 					});
 					currentPenUpdate.value = 0;
 				}
@@ -309,12 +409,12 @@ export function useAmktiao() {
 		}
 		isInit.value = true;
 		loading.value = false;
-	}
+	};
 
 	onMounted(() => {
 		setTimeout(() => {
 			fetchData(); // 确保 UI 先渲染，再执行耗时操作
-		},0);
+		}, 0);
 	});
 
 	return {
@@ -331,6 +431,6 @@ export function useAmktiao() {
 		changePenEnableMode,
 		enableSetting,
 		isInit,
-		loading
+		loading,
 	};
 }

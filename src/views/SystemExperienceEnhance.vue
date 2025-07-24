@@ -1214,7 +1214,7 @@ const enhanceList: EnhanceItemInfo[] = [
 				)}
 				<n-alert class='mt-5' type='warning' show-icon={false} bordered={false}>
 					<p>仅兼容水龙(Amktiao)的内核，存在 /sys/touchpanel/pen_update 开关映射时生效</p>
-					<p>每次开机后还需要手动息屏一次才会生效</p>
+					<p>为使手写笔驱动生效，启用「二代笔驱动」后，每次开机后模块会尝试重新关闭屏幕再点亮一次~</p>
 				</n-alert>
 			</>
 		),

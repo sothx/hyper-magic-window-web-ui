@@ -3770,3 +3770,33 @@ export const putIsImmerseFreeformBottomCaption = (mode: 1 | 0): Promise<string> 
 		shellCommon,
 	);
 };
+
+export const getScreenState = (): Promise<string> => {
+	const shellCommon = `dumpsys power | grep -oP "mWakefulness=\K\w+"`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve('Awake');
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const rebootScreen = (): Promise<string> => {
+	const shellCommon = `input keyevent KEYCODE_POWER && sleep 1 && input keyevent KEYCODE_POWER`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve('success');
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
