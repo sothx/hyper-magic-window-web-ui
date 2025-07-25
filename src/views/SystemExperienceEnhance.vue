@@ -47,6 +47,7 @@ import { useProjectTrebleDisableResizeBlackList } from '@/hooks/useProjectTreble
 import { useProjectTrebleMaxFreeformCount } from '@/hooks/useProjectTrebleMaxFreeformCount';
 import { useDisabledFreeformBottomCaption } from '@/hooks/useDisabledFreeformBottomCaption';
 import { useImmersedFreeformBottomCaption } from '@/hooks/useImmerseFreeformBottomCaption';
+import { usePadSystemPatchAdditionalModule } from '@/hooks/usePadSystemPatchAdditionalModule';
 const deviceStore = useDeviceStore();
 const searchKeyword = ref('');
 const hideGestureLineHook = useHideGestureLine();
@@ -71,6 +72,7 @@ const projectTrebleDisableResizeBlackListHook = useProjectTrebleDisableResizeBla
 const projectTrebleMaxFreeformCountHook = useProjectTrebleMaxFreeformCount();
 const disabledFreeformBottomCaptionHook = useDisabledFreeformBottomCaption();
 const immerseFreeformBottomCaptionHook = useImmersedFreeformBottomCaption();
+const padSystemPatchAdditionalModuleHook = usePadSystemPatchAdditionalModule();
 const fboHook = useFbo();
 const joyoseHook = useJoyose();
 // const initHooks = () => {
@@ -2087,13 +2089,13 @@ const filteredEnhanceList = computed(() => {
 
 			<n-card size="small" class="mt-5">
 				<div class="flex flex-wrap">
-					<n-button v-if="deviceStore.androidTargetSdk >= 34 && deviceStore.deviceType === 'tablet'" class="mb-3 mr-3" color="#69b2b6">
+					<n-button @click="() => padSystemPatchAdditionalModuleHook.openDownloadModuleModal()" v-if="deviceStore.androidTargetSdk === 35 && deviceStore.deviceType === 'tablet'" class="mb-3 mr-3" color="#69b2b6">
 						<template #icon>
 							<n-icon>
 								<CircleStackIcon />
 							</n-icon>
 						</template>
-						获取附加模块（未上线）
+						获取附加模块
 					</n-button>
 				</div>
 				<div class="flex">
