@@ -3800,3 +3800,49 @@ export const rebootScreen = (): Promise<string> => {
 		shellCommon,
 	);
 };
+
+export const getIsAmktiaoPenUpdateAutoTask = (): Promise<string> => {
+	const shellCommon = `grep 'is_amktiao_pen_update_auto_task=' /data/adb/MIUI_MagicWindow+/config.prop | awk -F'=' '{print $2}'`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`false`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+
+export const addIsAmktiaoPenUpdateAutoTask = (): Promise<string> => {
+	const shellCommon = `grep -q '^is_amktiao_pen_update_auto_task=' /data/adb/MIUI_MagicWindow+/config.prop || (source ${toolsFunc} && add_lines "is_amktiao_pen_update_auto_task=true" /data/adb/MIUI_MagicWindow+/config.prop && echo "Command executed successfully." || echo "Command failed.");`
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`Command executed successfully.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : stdout === 'Command executed successfully.' ? resolve(stdout) : reject(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const removeIsAmktiaoPenUpdateAutoTask = (): Promise<string> => {
+	const shellCommon = `sed -i '/^is_amktiao_pen_update_auto_task=/d' //data/adb/MIUI_MagicWindow+/config.prop && echo "Remove is_amktiao_pen_update_auto_task successfully." || echo "Remove is_amktiao_pen_update_auto_task failed."`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`Remove is_amktiao_pen_update successfully.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};

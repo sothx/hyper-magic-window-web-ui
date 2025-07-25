@@ -189,7 +189,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 	return style;
 };
 export interface EnhanceItemInfo {
-	title: string | ((titleText:string) => JSX.Element);
+	title: string | ((titleText: string) => JSX.Element);
 	titleText?: string; // 仅用于搜索
 	titleSlot?: () => JSX.Element;
 	content: () => JSX.Element;
@@ -215,13 +215,16 @@ const enhanceList: EnhanceItemInfo[] = [
 					</n-switch>
 				)}
 				<n-alert class='mt-5' type='warning' show-icon={false} bordered={false}>
-					禁用小窗黑名单可以让更多应用使用小窗，建议同时开启开发者模式下[强制将 activity 设为可调整大小]和[启用可自由调整的窗口]两个相关的小窗特性。
+					禁用小窗黑名单可以让更多应用使用小窗，建议同时开启开发者模式下[强制将 activity
+					设为可调整大小]和[启用可自由调整的窗口]两个相关的小窗特性。
 				</n-alert>
 			</>
 		),
 	},
 	{
-		title: (titleText:string) => <>{`${titleText}${deviceStore.isInstalledXiaomiPadSystemPatchAdditionalModule ? `（附加模块）` : `（移植包）`}`}</>,
+		title: (titleText: string) => (
+			<>{`${titleText}${deviceStore.isInstalledXiaomiPadSystemPatchAdditionalModule ? `（附加模块）` : `（移植包）`}`}</>
+		),
 		titleText: '禁用小窗手势提示线',
 		content: () => (
 			<>
@@ -244,13 +247,12 @@ const enhanceList: EnhanceItemInfo[] = [
 				</n-alert>
 			</>
 		),
-		isShow: () =>
-			Boolean(
-					disabledFreeformBottomCaptionHook.isSupport.value
-		),
+		isShow: () => Boolean(disabledFreeformBottomCaptionHook.isSupport.value),
 	},
 	{
-		title: (titleText:string) => <>{`${titleText}${deviceStore.isInstalledXiaomiPadSystemPatchAdditionalModule ? `（附加模块）` : `（移植包）`}`}</>,
+		title: (titleText: string) => (
+			<>{`${titleText}${deviceStore.isInstalledXiaomiPadSystemPatchAdditionalModule ? `（附加模块）` : `（移植包）`}`}</>
+		),
 		titleText: '沉浸小窗手势提示线',
 		content: () => (
 			<>
@@ -273,13 +275,12 @@ const enhanceList: EnhanceItemInfo[] = [
 				</n-alert>
 			</>
 		),
-		isShow: () =>
-			Boolean(
-					immerseFreeformBottomCaptionHook.isSupport.value
-		),
+		isShow: () => Boolean(immerseFreeformBottomCaptionHook.isSupport.value),
 	},
 	{
-		title: (titleText:string) => <>{`${titleText}${deviceStore.isInstalledXiaomiPadSystemPatchAdditionalModule ? `（附加模块）` : `（移植包）`}`}</>,
+		title: (titleText: string) => (
+			<>{`${titleText}${deviceStore.isInstalledXiaomiPadSystemPatchAdditionalModule ? `（附加模块）` : `（移植包）`}`}</>
+		),
 		titleText: '工作台无极小窗',
 		content: () => (
 			<>
@@ -318,13 +319,12 @@ const enhanceList: EnhanceItemInfo[] = [
 			</>
 		),
 		isShow: () =>
-			Boolean(
-					projectTrebleCvwFullHook.isSupport.value &&
-					projectTrebleCvwFullHook.currentVerison.value >= 2,
-			),
+			Boolean(projectTrebleCvwFullHook.isSupport.value && projectTrebleCvwFullHook.currentVerison.value >= 2),
 	},
 	{
-		title: (titleText:string) => <>{`${titleText}${deviceStore.isInstalledXiaomiPadSystemPatchAdditionalModule ? `（附加模块）` : `（移植包）`}`}</>,
+		title: (titleText: string) => (
+			<>{`${titleText}${deviceStore.isInstalledXiaomiPadSystemPatchAdditionalModule ? `（附加模块）` : `（移植包）`}`}</>
+		),
 		titleText: '普通桌面无极小窗',
 		content: () => (
 			<>
@@ -350,13 +350,12 @@ const enhanceList: EnhanceItemInfo[] = [
 			</>
 		),
 		isShow: () =>
-			Boolean(
-					projectTrebleCvwFullHook.isSupport.value &&
-					projectTrebleCvwFullHook.currentVerison.value >= 2,
-			),
+			Boolean(projectTrebleCvwFullHook.isSupport.value && projectTrebleCvwFullHook.currentVerison.value >= 2),
 	},
 	{
-		title: (titleText:string) => <>{`${titleText}${deviceStore.isInstalledXiaomiPadSystemPatchAdditionalModule ? `（附加模块）` : `（移植包）`}`}</>,
+		title: (titleText: string) => (
+			<>{`${titleText}${deviceStore.isInstalledXiaomiPadSystemPatchAdditionalModule ? `（附加模块）` : `（移植包）`}`}</>
+		),
 		titleText: '工作台小窗数量上限',
 		content: () => (
 			<>
@@ -455,7 +454,9 @@ const enhanceList: EnhanceItemInfo[] = [
 		isShow: () => projectTrebleMaxFreeformCountHook.isSupportMiuiDesktopModeMaxFreeformMaxCount.value,
 	},
 	{
-		title: (titleText:string) => <>{`${titleText}${deviceStore.isInstalledXiaomiPadSystemPatchAdditionalModule ? `（附加模块）` : `（移植包）`}`}</>,
+		title: (titleText: string) => (
+			<>{`${titleText}${deviceStore.isInstalledXiaomiPadSystemPatchAdditionalModule ? `（附加模块）` : `（移植包）`}`}</>
+		),
 		titleText: '默认桌面小窗数量上限',
 		content: () => (
 			<>
@@ -556,7 +557,9 @@ const enhanceList: EnhanceItemInfo[] = [
 			projectTrebleMaxFreeformCountHook.isSupportMiuiDesktopModeMaxFreeformMaxCount.value,
 	},
 	{
-		title: (titleText:string) => <>{`${titleText}${deviceStore.isInstalledXiaomiPadSystemPatchAdditionalModule ? `（附加模块）` : `（移植包）`}`}</>,
+		title: (titleText: string) => (
+			<>{`${titleText}${deviceStore.isInstalledXiaomiPadSystemPatchAdditionalModule ? `（附加模块）` : `（移植包）`}`}</>
+		),
 		titleText: '禁用分屏黑名单',
 		content: () => (
 			<>
@@ -581,10 +584,7 @@ const enhanceList: EnhanceItemInfo[] = [
 				</n-alert>
 			</>
 		),
-		isShow: () =>
-			Boolean(
-					projectTrebleDisableResizeBlackListHook.isSupportProp.value,
-			),
+		isShow: () => Boolean(projectTrebleDisableResizeBlackListHook.isSupportProp.value),
 	},
 	{
 		title: '强制竖屏上下分屏（LSPosed模块）',
@@ -661,7 +661,9 @@ const enhanceList: EnhanceItemInfo[] = [
 			),
 	},
 	{
-		title: (titleText:string) => <>{`${titleText}${deviceStore.isInstalledXiaomiPadSystemPatchAdditionalModule ? `（附加模块）` : `（移植包）`}`}</>,
+		title: (titleText: string) => (
+			<>{`${titleText}${deviceStore.isInstalledXiaomiPadSystemPatchAdditionalModule ? `（附加模块）` : `（移植包）`}`}</>
+		),
 		titleText: '强制竖屏上下分屏',
 		content: () => (
 			<>
@@ -688,11 +690,14 @@ const enhanceList: EnhanceItemInfo[] = [
 		),
 		isShow: () =>
 			Boolean(
-				['tablet', 'fold'].includes(deviceStore.deviceType) && projectTrebleVerticalScreenSplitHook.isSupportProp.value,
+				['tablet', 'fold'].includes(deviceStore.deviceType) &&
+					projectTrebleVerticalScreenSplitHook.isSupportProp.value,
 			),
 	},
 	{
-		title: (titleText:string) => <>{`${titleText}${deviceStore.isInstalledXiaomiPadSystemPatchAdditionalModule ? `（附加模块）` : `（移植包）`}`}</>,
+		title: (titleText: string) => (
+			<>{`${titleText}${deviceStore.isInstalledXiaomiPadSystemPatchAdditionalModule ? `（附加模块）` : `（移植包）`}`}</>
+		),
 		titleText: '工作台无极小窗',
 		content: () => (
 			<>
@@ -717,7 +722,8 @@ const enhanceList: EnhanceItemInfo[] = [
 		),
 		isShow: () =>
 			Boolean(
-				oldProjectTrebleCvwFullHook.isSupportProp.value && oldProjectTrebleCvwFullHook.currentVerison.value === 1,
+				oldProjectTrebleCvwFullHook.isSupportProp.value &&
+					oldProjectTrebleCvwFullHook.currentVerison.value === 1,
 			),
 	},
 	{
@@ -1214,7 +1220,24 @@ const enhanceList: EnhanceItemInfo[] = [
 				)}
 				<n-alert class='mt-5' type='warning' show-icon={false} bordered={false}>
 					<p>仅兼容水龙(Amktiao)的内核，存在 /sys/touchpanel/pen_update 开关映射时生效</p>
-					<p>为使手写笔驱动生效，启用「二代笔驱动」后，每次开机后模块会尝试重新关闭屏幕再点亮一次~</p>
+					{amktiaoHook.currentPenUpdate.value === 1 && (
+						<div class='mt-5'>
+							<p>
+								为使手写笔驱动生效，启用「二代笔驱动」后，每次开机后，您还需要手动关闭并重新点亮屏幕才能使「二代笔驱动」生效，模块提供「手写笔驱动开机自优化」来解决这个问题，开启后每次开机首次解锁屏幕后，模块会尝试重新关闭屏幕再点亮一次~
+							</p>
+							<n-switch
+								onUpdateValue={(value: boolean) => amktiaoHook.changePenUpdateAutoTaskMode(value)}
+								railStyle={railStyle}
+								class='mt-5'
+								value={amktiaoHook.currentPenUpdateAutoTask.value ? true : false}
+								loading={deviceStore.loading}>
+								{{
+									checked: () => '已启用开机自优化',
+									unchecked: () => '未启用开机自优化',
+								}}
+							</n-switch>
+						</div>
+					)}
 				</n-alert>
 			</>
 		),
@@ -2063,24 +2086,16 @@ const filteredEnhanceList = computed(() => {
 			</div>
 
 			<n-card size="small" class="mt-5">
-				<!-- <div class="flex flex-wrap">
-					<n-button class="mb-3 mr-3" color="#8a2be2">
+				<div class="flex flex-wrap">
+					<n-button v-if="deviceStore.androidTargetSdk >= 34 && deviceStore.deviceType === 'tablet'" class="mb-3 mr-3" color="#69b2b6">
 						<template #icon>
-							<n-icon>
-								<SquaresPlusIcon />
-							</n-icon>
-						</template>
-热重载应用数据
-</n-button>
-<n-button class="mb-3 mr-3" color="#69b2b6">
-	<template #icon>
 							<n-icon>
 								<CircleStackIcon />
 							</n-icon>
 						</template>
-	获取已安装应用名称
-</n-button>
-</div> -->
+						获取附加模块（未上线）
+					</n-button>
+				</div>
 				<div class="flex">
 					<n-input-group>
 						<n-input

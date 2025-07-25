@@ -23,6 +23,9 @@ export type PenUpdate = 0 | 1;
 export type PenEnable = 0 | 1;
 
 export type KeyboardMode = 0 | 1 | 2;
+
+export type PenUpdateAutoTask = 0 | 1;
+
 export function useAmktiao() {
 	const deviceStore = useDeviceStore();
 	const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
@@ -42,6 +45,8 @@ export function useAmktiao() {
 	const currentPenEnable = ref<PenEnable>(0);
 
 	const currentKeyboardMode = ref<KeyboardMode>(0);
+
+	const currentPenUpdateAutoTask = ref<boolean>(false);
 
 	const loading = ref<boolean>(true);
 
@@ -323,6 +328,54 @@ export function useAmktiao() {
 		}
 	};
 
+	const changePenUpdateAutoTaskMode = async (value: boolean) => {
+			if (value) {
+				const [addIsAmktiaoPenUpdateAutoTaskErr, addIsAmktiaoPenUpdateAutoTaskRes] = await $to(
+					deviceApi.addIsAmktiaoPenUpdateAutoTask(),
+				);
+				if (addIsAmktiaoPenUpdateAutoTaskErr) {
+					modal.create({
+						title: '操作失败',
+						type: 'error',
+						preset: 'dialog',
+						content: () => <p>修改失败，详情请查看日志记录~</p>,
+						negativeText: '确定',
+					});
+				} else {
+					modal.create({
+						title: '操作成功',
+						type: 'success',
+						preset: 'dialog',
+						content: () => <p>您已启用「手写笔驱动开机自优化」，开启后每次开机首次解锁屏幕后，模块会尝试重新关闭屏幕再点亮一次，以便「二代笔驱动」立即生效~</p>,
+						positiveText: '确定',
+					});
+					currentPenUpdateAutoTask.value = value;
+				}
+			} else {
+				const [removeIsAmktiaoPenUpdateAutoTaskErr, removeIsAmktiaoPenUpdateAutoTaskRes] = await $to(
+					deviceApi.removeIsAmktiaoPenUpdateAutoTask(),
+				);
+				if (removeIsAmktiaoPenUpdateAutoTaskErr) {
+					modal.create({
+						title: '操作失败',
+						type: 'error',
+						preset: 'dialog',
+						content: () => <p>修改失败，详情请查看日志记录~</p>,
+						negativeText: '确定',
+					});
+				} else {
+					modal.create({
+						title: '操作成功',
+						type: 'success',
+						preset: 'dialog',
+						content: () => <p>您已关闭「手写笔驱动开机自优化」，每次开机后，您需要手动关闭并重新点亮屏幕，才能使「二代笔驱动」立即生效~</p>,
+						positiveText: '确定',
+					});
+					currentPenUpdateAutoTask.value = value;
+				}
+			}
+	}
+
 	const changePenEnableMode = async (value: boolean) => {
 		const [putCurrentPenEnableErr, putCurrentPenEnableRes] = await $to(
 			deviceApi.putCurrentPenEnable(value ? 1 : 0),
@@ -397,6 +450,13 @@ export function useAmktiao() {
 			if (Number(getCurrentPenEnableResolve)) {
 				currentPenEnable.value = 1;
 			}
+
+			const [, getIsAmktiaoPenUpdateAutoTaskRes] = await $to<string, string>(deviceApi.getIsAmktiaoPenUpdateAutoTask());
+			if (getIsAmktiaoPenUpdateAutoTaskRes && String(getIsAmktiaoPenUpdateAutoTaskRes) === 'true') {
+				currentPenUpdateAutoTask.value = true;
+			} else {
+				currentPenUpdateAutoTask.value = false;
+			}
 		}
 		if (hasKeyboardControl.value) {
 			const [, getCurrentKeyboardModeResolve] = await $to<string, string>(deviceApi.getCurrentKeyboardMode());
@@ -423,11 +483,13 @@ export function useAmktiao() {
 		hasKeyboardControl,
 		currentPenUpdate,
 		currentPenEnable,
+		currentPenUpdateAutoTask,
 		currentKeyboardMode,
 		keyboardModeOptions,
 		currentKeyboardModeSelect,
 		changeKeyboardMode,
 		changePenUpdateMode,
+		changePenUpdateAutoTaskMode,
 		changePenEnableMode,
 		enableSetting,
 		isInit,
