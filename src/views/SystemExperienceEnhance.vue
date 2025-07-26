@@ -2089,7 +2089,7 @@ const filteredEnhanceList = computed(() => {
 
 			<n-card size="small" class="mt-5">
 				<div class="flex flex-wrap">
-					<n-button @click="() => padSystemPatchAdditionalModuleHook.openDownloadModuleModal()" v-if="deviceStore.androidTargetSdk === 35 && deviceStore.deviceType === 'tablet'" class="mb-3 mr-3" color="#69b2b6">
+					<n-button @click="() => padSystemPatchAdditionalModuleHook.openDownloadModuleModal()" v-if="deviceStore.androidTargetSdk >= 34 && deviceStore.deviceType === 'tablet'" class="mb-3 mr-3" color="#69b2b6">
 						<template #icon>
 							<n-icon>
 								<CircleStackIcon />

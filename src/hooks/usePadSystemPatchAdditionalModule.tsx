@@ -48,7 +48,7 @@ export function usePadSystemPatchAdditionalModule() {
 					    小米平板附加模块支持以下系统增强功能：
 					</p>
                     {
-                        NAlertTemplate && NAlertTemplate('任意应用无极小窗 · 强制上下分屏 · 禁用分屏黑名单 · 自定义小窗数量 · 隐藏小窗小白条',false,'info')
+                        NAlertTemplate && NAlertTemplate('任意应用无极小窗 · 强制上下分屏(仅Android 15) · 禁用分屏黑名单 · 自定义小窗数量 · 隐藏小窗小白条',false,'info')
                     }
                     <p>每次更新 ROM 后，需要重新获取适合当前 ROM 版本的附加模块~模块修改了系统组件，所以请自备救砖模块，避免卡开机~</p>
 					<p>请访问下面的 GitHub 仓库，阅读 README，自行构建最新模块：</p>
