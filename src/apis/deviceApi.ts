@@ -3671,7 +3671,7 @@ export const isInstalledXiaomiPadSystemPatchAdditionalModule = (): Promise<strin
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
-				resolve(`Installed`);
+				resolve(`Not installed`);
 			} else {
 				const { errno, stdout, stderr }: ExecResults = (await exec(shellCommon)) as ExecResults;
 				errno ? reject(stderr) : resolve(stdout);

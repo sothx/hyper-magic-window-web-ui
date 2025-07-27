@@ -158,6 +158,11 @@ const reloadPage = async () => {
 	await embeddedStore.initDefault();
 };
 
+onMounted(() => {
+	const embeddedStore = useEmbeddedStore();
+	console.log(embeddedStore.filterMergeRuleList,'embeddedStore.filterMergeRuleList')
+})
+
 const importShareRule = async () => {
 	shareRuleTextarea.value = '';
 	const [, showShareRuleTextareaModalRes] = await $to(

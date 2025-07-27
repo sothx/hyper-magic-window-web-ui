@@ -11,6 +11,109 @@ export interface AndroidAppPackageJobsResult extends Omit<ExecResults, 'stdout'>
 	stdout: number;
 }
 
+export const getProjectTrebleSystemDotBlackList = (): Promise<string[]> => {
+	const shellCommon = `cat /product/etc/dot_black_list.json`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				const response = await axios.get('/data/system/project_treble_dot_black_list.json');
+				const jsonText = response.data; // 这是 XML 内容
+				resolve(jsonText as unknown as string[]);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				if (errno) {
+					reject(stderr);
+				} else {
+					if (stdout) {
+						try {
+							resolve(JSON.parse(stdout));
+						} catch (err) {
+							reject('dot_black_list config is empty');
+						}
+					} else {
+						reject(null);
+					}
+				}
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const getProjectTrebleCustomDotBlackList = (): Promise<string[]> => {
+	const shellCommon = `cat /data/system/dot_black_list.json`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				const response = await axios.get('/data/custom/dot_black_list.json');
+				const jsonText = response.data; // 这是 XML 内容
+				resolve(jsonText as unknown as string[]);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				if (errno) {
+					reject(stderr);
+				} else {
+					if (stdout) {
+						try {
+							resolve(JSON.parse(stdout));
+						} catch (err) {
+							reject('dot_black_list config is empty');
+						}
+					} else {
+						reject(null);
+					}
+				}
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const getIsSupportProjectTrebleCustomDotBlackList = (): Promise<string> => {
+	const shellCommon = `getprop ro.config.sothx_project_treble_support_custom_dot_black_list`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve('true');
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const getIsEnableProjectTrebleCustomDotBlackList = (): Promise<string> => {
+	const shellCommon = `settings get system sothx_project_treble_custom_dot_black_list_enable`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve('1');
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const putIsEnableProjectTrebleCustomDotBlackList = (mode: 1 | 0): Promise<string> => {
+	const shellCommon = `settings put system sothx_project_treble_custom_dot_black_list_enable ${mode}`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`success`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = (await exec(shellCommon)) as ExecResults;
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
 export const getMiuiFreeformCloudDataIdList = (): Promise<string[]> => {
 	const sqlite3 = '/data/adb/modules/MIUI_MagicWindow+/common/utils/sqlite3';
 	const HTMLViewerCloudDataDataBase = `/data/user_de/0/com.android.htmlviewer/databases/cloud_all_data.db`;
@@ -72,9 +175,11 @@ export const getDotBlackList = (): Promise<DotBlackListItem[]> => {
 			const response = await axios.get('/data/system/dot_black_list.json');
 			resolve(response.data as unknown as DotBlackListItem[]);
 		} else {
-			const [getMiuiFreeformCloudDataIdListErr, getMiuiFreeformCloudDataIdListRes] = await $to<string[], string>(getMiuiFreeformCloudDataIdList());
+			const [getMiuiFreeformCloudDataIdListErr, getMiuiFreeformCloudDataIdListRes] = await $to<string[], string>(
+				getMiuiFreeformCloudDataIdList(),
+			);
 			if (getMiuiFreeformCloudDataIdListErr) {
-				reject(getMiuiFreeformCloudDataIdListErr)
+				reject(getMiuiFreeformCloudDataIdListErr);
 			}
 			if (getMiuiFreeformCloudDataIdListRes) {
 				const fetchDataById = async (dataId: string): Promise<DotBlackListItem> => {
@@ -143,6 +248,12 @@ export interface updateDotBlackListAppParams {
 	customDotBlackList: string[];
 }
 
+export interface updateProjectTrebleDotBlackListAppParams {
+	dotBlackList: string[];
+	systemDotBlackList: string[];
+	customDotBlackList: string[];
+}
+
 export const getHasHTMLViewerCloudDataBase = (): Promise<string> => {
 	const shellCommon = `ls /data/user_de/0/com.android.htmlviewer/databases/cloud_all_data.db &>/dev/null && echo "exists" || echo "not exists"`;
 	return handlePromiseWithLogging(
@@ -155,6 +266,104 @@ export const getHasHTMLViewerCloudDataBase = (): Promise<string> => {
 			}
 		}),
 		'getHasHTMLViewerCloudDataBase',
+	);
+};
+
+export const updateProjectTrebleDotBlackList = (
+	params: updateProjectTrebleDotBlackListAppParams,
+): Promise<{
+	type: 'success' | 'error';
+	message: string;
+	errorLogging?: updateDotBlackListAppErrorLoggingItem[]; // 错误日志记录
+	successLogging?: updateDotBlackListAppSuccessLoggingItem[]; // 成功日志记录
+}> => {
+	const errorLogging: updateDotBlackListAppErrorLoggingItem[] = [];
+	const successLogging: updateDotBlackListAppSuccessLoggingItem[] = [];
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve({
+					type: 'success',
+					message: '更新成功',
+					errorLogging: [],
+					successLogging: [], // 返回一个空的成功日志
+				});
+			} else {
+				const uniqueCustomDotBlackList = Array.from(new Set(params.customDotBlackList));
+				const fetchCustomList = async (dotBlackList: string[]): Promise<string> => {
+					const shellCommon = `echo '${JSON.stringify(dotBlackList)}' > /data/adb/MIUI_MagicWindow+/config/dot_black_list.json`;
+					return handlePromiseWithLogging(
+						new Promise(async (fetchCustomListResolve, fetchCustomListReject) => {
+							const { errno, stdout, stderr }: ExecResults = (await exec(
+								shellCommon,
+							)) as unknown as ExecResults;
+							if (errno) {
+								errorLogging.push({
+									type: 'updateCustomDotBlackListJSON',
+									name: '[自定义规则]窗口控制器配置文件',
+									message: stderr,
+								});
+								fetchCustomListReject(stderr);
+							} else {
+								successLogging.push({
+									type: 'updateCustomDotBlackListJSON',
+									name: '[自定义规则]窗口控制器配置文件',
+									message: '更新成功',
+								});
+								fetchCustomListResolve(stdout);
+							}
+						}),
+						shellCommon,
+					);
+				};
+				const [updateCustomDotBlackListErr, updateCustomDotBlackListRes] = await $to(
+					fetchCustomList(uniqueCustomDotBlackList),
+				);
+				if (updateCustomDotBlackListErr) {
+					reject(updateCustomDotBlackListErr);
+				}
+				const uniqueDotBlackList = Array.from(new Set(params.dotBlackList));
+				const fetchList = async (dotBlackList: string[]): Promise<string> => {
+					const shellCommon = `echo '${JSON.stringify(dotBlackList)}' > /data/system/dot_black_list.json`;
+					return handlePromiseWithLogging(
+						new Promise(async (fetchListResolve, fetchListReject) => {
+							const { errno, stdout, stderr }: ExecResults = (await exec(
+								shellCommon,
+							)) as unknown as ExecResults;
+							if (errno) {
+								errorLogging.push({
+									type: 'updateDotBlackListJSON',
+									name: '[模块]窗口控制器配置文件',
+									message: stderr,
+								});
+								fetchListReject(stderr);
+							} else {
+								successLogging.push({
+									type: 'updateDotBlackListJSON',
+									name: '[模块]窗口控制器配置文件',
+									message: '更新成功',
+								});
+								fetchListResolve(stdout);
+							}
+						}),
+						shellCommon,
+					);
+				};
+				const [updateDotBlackListResErr, updateDotBlackListRes] = await $to(
+					fetchCustomList(uniqueDotBlackList),
+				);
+				if (updateDotBlackListResErr) {
+					reject(updateDotBlackListResErr);
+				}
+				resolve({
+					type: 'success',
+					message: '更新成功',
+					errorLogging,
+					successLogging, // 返回一个空的成功日志
+				});
+			}
+		}),
+		'updateProjectTrebleDotBlackList',
 	);
 };
 
