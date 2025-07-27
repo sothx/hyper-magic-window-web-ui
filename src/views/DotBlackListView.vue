@@ -108,6 +108,19 @@ const reloadPage = async () => {
 		});
 		return;
 	}
+	if (dotBlackListStore.isSupportProjectTrebleCustomDotBlackList && !dotBlackListStore.isEnableProjectTrebleCustomDotBlackList) {
+		modal.create({
+			title: '未激活 窗口控制器 3.0',
+			type: 'warning',
+			preset: 'dialog',
+			content: () => (
+				<div>
+					<p>未激活窗口控制器 3.0，先激活功能才能使用哦~</p>
+				</div>
+			),
+		});
+		return;
+	}
 	await deviceStore.getAndroidApplicationPackageNameList();
 	await dotBlackListStore.initDefault();
 };
@@ -153,6 +166,19 @@ const hotReloadApplicationData = async () => {
 							UI存在异常，如仍然无法正常获取云控数据库，请单独安装模块网盘内提供的KsuWebUI。
 						</p>
 					)}
+				</div>
+			),
+		});
+		return;
+	}
+	if (dotBlackListStore.isSupportProjectTrebleCustomDotBlackList && !dotBlackListStore.isEnableProjectTrebleCustomDotBlackList) {
+		modal.create({
+			title: '未激活 窗口控制器 3.0',
+			type: 'warning',
+			preset: 'dialog',
+			content: () => (
+				<div>
+					<p>未激活窗口控制器 3.0，先激活功能才能使用哦~</p>
 				</div>
 			),
 		});
@@ -231,6 +257,44 @@ const hotReloadApplicationData = async () => {
 	}
 };
 
+const killSystemUI = async () => {
+	const [negativeRes, positiveRes] = await $to(
+		new Promise((resolve, reject) => {
+			modal.create({
+				title: '想重载作用域吗？',
+				type: 'info',
+				preset: 'dialog',
+				content: () => (
+					<div>
+						<p>实际生效还需要重载系统界面作用域，是否立即重载系统界面作用域，以使规则生效？</p>
+					</div>
+				),
+				positiveText: '确认重载作用域',
+				negativeText: '取消',
+				onPositiveClick: () => {
+					resolve('positiveClick');
+				},
+				onNegativeClick: () => {
+					reject('negativeClick');
+				},
+			});
+		}),
+	);
+	if (positiveRes) {
+		const [rebootDeviceErr] = await $to(deviceApi.killAndroidSystemUI());
+		if (rebootDeviceErr) {
+			modal.create({
+				title: '操作失败',
+				type: 'error',
+				preset: 'dialog',
+				content: () => <p>无法重启系统界面作用域，详情请查看日志记录~</p>,
+				negativeText: '确定',
+			});
+			return;
+		}
+	}
+};
+
 const rebootDevice = async () => {
 	const [negativeRes, positiveRes] = await $to(
 		new Promise((resolve, reject) => {
@@ -284,6 +348,19 @@ const importShareRule = async () => {
 							UI存在异常，如仍然无法正常获取云控数据库，请单独安装模块网盘内提供的KsuWebUI。
 						</p>
 					)}
+				</div>
+			),
+		});
+		return;
+	}
+	if (dotBlackListStore.isSupportProjectTrebleCustomDotBlackList && !dotBlackListStore.isEnableProjectTrebleCustomDotBlackList) {
+		modal.create({
+			title: '未激活 窗口控制器 3.0',
+			type: 'warning',
+			preset: 'dialog',
+			content: () => (
+				<div>
+					<p>未激活窗口控制器 3.0，先激活功能才能使用哦~</p>
 				</div>
 			),
 		});
@@ -506,6 +583,19 @@ const handleCustomRuleDropdown = async (
 		});
 		return;
 	}
+	if (dotBlackListStore.isSupportProjectTrebleCustomDotBlackList && !dotBlackListStore.isEnableProjectTrebleCustomDotBlackList) {
+		modal.create({
+			title: '未激活 窗口控制器 3.0',
+			type: 'warning',
+			preset: 'dialog',
+			content: () => (
+				<div>
+					<p>未激活窗口控制器 3.0，先激活功能才能使用哦~</p>
+				</div>
+			),
+		});
+		return;
+	}
 	if (key === 'cleanCustomRule') {
 		const cleanCustomModal = modal.create({
 			title: '想清除自定义规则吗？',
@@ -721,6 +811,19 @@ const openAddDrawer = async () => {
 		});
 		return;
 	}
+	if (dotBlackListStore.isSupportProjectTrebleCustomDotBlackList && !dotBlackListStore.isEnableProjectTrebleCustomDotBlackList) {
+		modal.create({
+			title: '未激活 窗口控制器 3.0',
+			type: 'warning',
+			preset: 'dialog',
+			content: () => (
+				<div>
+					<p>未激活窗口控制器 3.0，先激活功能才能使用哦~</p>
+				</div>
+			),
+		});
+		return;
+	}
 	if (addDotBlackListApp.value) {
 		const [addDotBlackListAppCancel, addDotBlackListAppRes] = await $to(addDotBlackListApp.value.openDrawer());
 		if (addDotBlackListAppCancel) {
@@ -863,7 +966,7 @@ function createColumns(): DataTableColumns<DotBlackListMergeItem> {
 			width: 150,
 			key: 'isOptimizeWebView',
 			render(row, index) {
-				if (row.status) {
+				if (row.status || (dotBlackListStore.isSupportProjectTrebleCustomDotBlackList && dotBlackListStore.isEnableProjectTrebleCustomDotBlackList)) {
 					return (
 						<n-tag bordered={false} dashed type='success'>
 							已生效
@@ -996,7 +1099,9 @@ function createColumns(): DataTableColumns<DotBlackListMergeItem> {
 						3.0，您可以选择激活该功能，激活后将获得更自由的自定义窗口控制器适配体验~</p
 					>
 					<div class="mt-3">
+						<n-skeleton v-if="!dotBlackListStore.isInit" :width="160" :sharp="false" round size="small" />
 						<n-switch
+							v-else
 							:rail-style="railStyle"
 							:value="dotBlackListStore.isEnableProjectTrebleCustomDotBlackList"
 							:loading="deviceStore.loading || dotBlackListStore.loading"
@@ -1008,8 +1113,9 @@ function createColumns(): DataTableColumns<DotBlackListMergeItem> {
 										title: '更新激活状态成功',
 										type: 'success',
 										preset: 'dialog',
-										content: () => dotBlackListStore.isEnableProjectTrebleCustomDotBlackList ? '已成功激活窗口控制器 3.0，可以自定义更多应用的窗口控制器了~' : '已成功禁用窗口控制器 3.0，仅使用系统内置的黑名单规则~',
-										negativeText: '确定',
+										content: () => dotBlackListStore.isEnableProjectTrebleCustomDotBlackList ? '已成功激活窗口控制器 3.0，可以自定义更多应用的窗口控制器了~实际生效还需要重载系统界面作用域，是否继续？' : '已成功禁用窗口控制器 3.0，仅使用系统内置的黑名单规则~实际生效还需要重载系统界面作用域，是否继续？',
+										positiveText: '确定重载作用域',
+										negativeText: '稍后再说'
 									})
 								} else {
 									modal.create({

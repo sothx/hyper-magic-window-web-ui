@@ -350,7 +350,7 @@ export const updateProjectTrebleDotBlackList = (
 					);
 				};
 				const [updateDotBlackListResErr, updateDotBlackListRes] = await $to(
-					fetchCustomList(uniqueDotBlackList),
+					fetchList(uniqueDotBlackList),
 				);
 				if (updateDotBlackListResErr) {
 					reject(updateDotBlackListResErr);

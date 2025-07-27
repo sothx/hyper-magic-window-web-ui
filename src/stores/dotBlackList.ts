@@ -23,6 +23,7 @@ export const useDotBlackListStore = defineStore(
 		const isEnableProjectTrebleCustomDotBlackList = ref<boolean>(false);
 		const projectTrebleSystemDotBlackList = ref<string[]>([]);
 		const projectTrebleCustomDotBlackList = ref<string[]>([]);
+		const isInit = ref<boolean>(false);
 		// 窗口控制器
 		const isCanUse = computed(() => {
 			if (isSupportProjectTrebleCustomDotBlackList.value) {
@@ -201,13 +202,13 @@ export const useDotBlackListStore = defineStore(
 				if (getProjectTrebleSystemDotBlackListRes && Array.isArray(getProjectTrebleSystemDotBlackListRes)) {
 					projectTrebleSystemDotBlackList.value = getProjectTrebleSystemDotBlackListRes;
 				}
-				const [getProjectTrebleCustomDotBlackListErr, getProjectTrebleCustomDotBlackListRes] = await $to<
-					string[],
-					string
-				>(dotBlackListApi.getProjectTrebleCustomDotBlackList());
-				if (getProjectTrebleCustomDotBlackListRes && Array.isArray(getProjectTrebleCustomDotBlackListRes)) {
-					projectTrebleCustomDotBlackList.value = getProjectTrebleCustomDotBlackListRes;
-				}
+				// const [getProjectTrebleCustomDotBlackListErr, getProjectTrebleCustomDotBlackListRes] = await $to<
+				// 	string[],
+				// 	string
+				// >(dotBlackListApi.getProjectTrebleCustomDotBlackList());
+				// if (getProjectTrebleCustomDotBlackListRes && Array.isArray(getProjectTrebleCustomDotBlackListRes)) {
+				// 	projectTrebleCustomDotBlackList.value = getProjectTrebleCustomDotBlackListRes;
+				// }
 			} else {
 				const [getHasHTMLViewerCloudDataBaseErr, getHasHTMLViewerCloudDataBaseRes] = await $to<string>(
 					dotBlackListApi.getHasHTMLViewerCloudDataBase(),
@@ -236,10 +237,12 @@ export const useDotBlackListStore = defineStore(
 			}
 
 			loading.value = false;
+			isInit.value = true;
 		}
 
 		return {
 			mergeRuleList,
+			isInit,
 			allPackageName,
 			sourceDotBlackList,
 			hasHTMLViewerCloudData,

@@ -114,7 +114,19 @@ const handleDrawerSubmit = async () => {
 		type: 'warning',
 		preset: 'dialog',
 		content: () => {
-			return (
+			return dotBlackListStore.isSupportProjectTrebleCustomDotBlackList ? (
+				<p>
+					窗口控制器的隐藏后该应用不再显示窗口顶栏，可能会影响你应用的实际体验，如果隐藏窗口控制器失效，请重新操作{' '}
+					<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+						热重载应用数据
+					</span>{' '}
+					，如后续需要恢复{' '}
+					<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+						窗口控制器
+					</span>{' '}
+					的显示，则需要先清除自定义规则，确定要继续吗？
+				</p>
+			) : (
 				<p>
 					窗口控制器的隐藏受小米云控规则下发影响，如果隐藏窗口控制器失效，请重新操作{' '}
 					<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
@@ -175,8 +187,8 @@ defineExpose({
 					:readonly="props.type === 'update'"
 					placeholder="请输入应用包名" />
 			</n-input-group>
-      <n-alert :show-icon="false" :bordered="false" title="隐藏窗口控制器" type="info" class="mt-5">
-						添加后，应用上方的窗口控制器将被隐藏
+			<n-alert :show-icon="false" :bordered="false" title="隐藏窗口控制器" type="info" class="mt-5">
+				添加后，应用上方的窗口控制器将被隐藏
 			</n-alert>
 			<template #footer>
 				<n-button type="info" v-model:loading="drawerSubmitLoading" @click="() => handleDrawerSubmit()">
