@@ -108,7 +108,10 @@ const reloadPage = async () => {
 		});
 		return;
 	}
-	if (dotBlackListStore.isSupportProjectTrebleCustomDotBlackList && !dotBlackListStore.isEnableProjectTrebleCustomDotBlackList) {
+	if (
+		dotBlackListStore.isSupportProjectTrebleCustomDotBlackList &&
+		!dotBlackListStore.isEnableProjectTrebleCustomDotBlackList
+	) {
 		modal.create({
 			title: '未激活 窗口控制器 3.0',
 			type: 'warning',
@@ -171,7 +174,10 @@ const hotReloadApplicationData = async () => {
 		});
 		return;
 	}
-	if (dotBlackListStore.isSupportProjectTrebleCustomDotBlackList && !dotBlackListStore.isEnableProjectTrebleCustomDotBlackList) {
+	if (
+		dotBlackListStore.isSupportProjectTrebleCustomDotBlackList &&
+		!dotBlackListStore.isEnableProjectTrebleCustomDotBlackList
+	) {
 		modal.create({
 			title: '未激活 窗口控制器 3.0',
 			type: 'warning',
@@ -190,15 +196,17 @@ const hotReloadApplicationData = async () => {
 		return item.name;
 	});
 	const [updateRuleErr, updateRuleRes] = await $to(
-		dotBlackListStore.isSupportProjectTrebleCustomDotBlackList ? dotBlackListApi.updateProjectTrebleDotBlackList({
-			dotBlackList: currentDotBlackList,
-			systemDotBlackList: dotBlackListStore.projectTrebleSystemDotBlackList,
-			customDotBlackList: dotBlackListStore.customDotBlackList,
-		}) :dotBlackListApi.updateDotBlackList({
-			dotBlackList: currentDotBlackList,
-			sourceDotBlackList: dotBlackListStore.sourceDotBlackList,
-			customDotBlackList: dotBlackListStore.customDotBlackList,
-		}),
+		dotBlackListStore.isSupportProjectTrebleCustomDotBlackList
+			? dotBlackListApi.updateProjectTrebleDotBlackList({
+					dotBlackList: currentDotBlackList,
+					systemDotBlackList: dotBlackListStore.projectTrebleSystemDotBlackList,
+					customDotBlackList: dotBlackListStore.customDotBlackList,
+				})
+			: dotBlackListApi.updateDotBlackList({
+					dotBlackList: currentDotBlackList,
+					sourceDotBlackList: dotBlackListStore.sourceDotBlackList,
+					customDotBlackList: dotBlackListStore.customDotBlackList,
+				}),
 	);
 	if (updateRuleErr) {
 		modal.create({
@@ -254,44 +262,6 @@ const hotReloadApplicationData = async () => {
 			},
 		});
 		hotReloadLoading.value = false;
-	}
-};
-
-const killSystemUI = async () => {
-	const [negativeRes, positiveRes] = await $to(
-		new Promise((resolve, reject) => {
-			modal.create({
-				title: '想重载作用域吗？',
-				type: 'info',
-				preset: 'dialog',
-				content: () => (
-					<div>
-						<p>实际生效还需要重载系统界面作用域，是否立即重载系统界面作用域，以使规则生效？</p>
-					</div>
-				),
-				positiveText: '确认重载作用域',
-				negativeText: '取消',
-				onPositiveClick: () => {
-					resolve('positiveClick');
-				},
-				onNegativeClick: () => {
-					reject('negativeClick');
-				},
-			});
-		}),
-	);
-	if (positiveRes) {
-		const [rebootDeviceErr] = await $to(deviceApi.killAndroidSystemUI());
-		if (rebootDeviceErr) {
-			modal.create({
-				title: '操作失败',
-				type: 'error',
-				preset: 'dialog',
-				content: () => <p>无法重启系统界面作用域，详情请查看日志记录~</p>,
-				negativeText: '确定',
-			});
-			return;
-		}
 	}
 };
 
@@ -353,7 +323,10 @@ const importShareRule = async () => {
 		});
 		return;
 	}
-	if (dotBlackListStore.isSupportProjectTrebleCustomDotBlackList && !dotBlackListStore.isEnableProjectTrebleCustomDotBlackList) {
+	if (
+		dotBlackListStore.isSupportProjectTrebleCustomDotBlackList &&
+		!dotBlackListStore.isEnableProjectTrebleCustomDotBlackList
+	) {
 		modal.create({
 			title: '未激活 窗口控制器 3.0',
 			type: 'warning',
@@ -470,15 +443,17 @@ const importShareRule = async () => {
 				return item.name;
 			});
 			const [submitImportDotBlackListAppErr, submitImportDotBlackListAppRes] = await $to(
-				dotBlackListStore.isSupportProjectTrebleCustomDotBlackList ? dotBlackListApi.updateProjectTrebleDotBlackList({
-					dotBlackList: currentDotBlackList,
-					systemDotBlackList: dotBlackListStore.projectTrebleSystemDotBlackList,
-					customDotBlackList: dotBlackListStore.customDotBlackList,
-				}) :dotBlackListApi.updateDotBlackList({
-					dotBlackList: currentDotBlackList,
-					sourceDotBlackList: dotBlackListStore.sourceDotBlackList,
-					customDotBlackList: dotBlackListStore.customDotBlackList,
-				})
+				dotBlackListStore.isSupportProjectTrebleCustomDotBlackList
+					? dotBlackListApi.updateProjectTrebleDotBlackList({
+							dotBlackList: currentDotBlackList,
+							systemDotBlackList: dotBlackListStore.projectTrebleSystemDotBlackList,
+							customDotBlackList: dotBlackListStore.customDotBlackList,
+						})
+					: dotBlackListApi.updateDotBlackList({
+							dotBlackList: currentDotBlackList,
+							sourceDotBlackList: dotBlackListStore.sourceDotBlackList,
+							customDotBlackList: dotBlackListStore.customDotBlackList,
+						}),
 			);
 			if (submitImportDotBlackListAppErr) {
 				modal.create({
@@ -583,7 +558,10 @@ const handleCustomRuleDropdown = async (
 		});
 		return;
 	}
-	if (dotBlackListStore.isSupportProjectTrebleCustomDotBlackList && !dotBlackListStore.isEnableProjectTrebleCustomDotBlackList) {
+	if (
+		dotBlackListStore.isSupportProjectTrebleCustomDotBlackList &&
+		!dotBlackListStore.isEnableProjectTrebleCustomDotBlackList
+	) {
 		modal.create({
 			title: '未激活 窗口控制器 3.0',
 			type: 'warning',
@@ -625,15 +603,17 @@ const handleCustomRuleDropdown = async (
 					return item.name;
 				});
 				const [submitCleanCustomRuleErr, submitCleanCustomRuleRes] = await $to(
-					dotBlackListStore.isSupportProjectTrebleCustomDotBlackList ? dotBlackListApi.updateProjectTrebleDotBlackList({
-						dotBlackList: currentDotBlackList,
-						systemDotBlackList: dotBlackListStore.projectTrebleSystemDotBlackList,
-						customDotBlackList: dotBlackListStore.customDotBlackList,
-					}) :dotBlackListApi.updateDotBlackList({
-						dotBlackList: currentDotBlackList,
-						sourceDotBlackList: dotBlackListStore.sourceDotBlackList,
-						customDotBlackList: dotBlackListStore.customDotBlackList,
-					})
+					dotBlackListStore.isSupportProjectTrebleCustomDotBlackList
+						? dotBlackListApi.updateProjectTrebleDotBlackList({
+								dotBlackList: currentDotBlackList,
+								systemDotBlackList: dotBlackListStore.projectTrebleSystemDotBlackList,
+								customDotBlackList: dotBlackListStore.customDotBlackList,
+							})
+						: dotBlackListApi.updateDotBlackList({
+								dotBlackList: currentDotBlackList,
+								sourceDotBlackList: dotBlackListStore.sourceDotBlackList,
+								customDotBlackList: dotBlackListStore.customDotBlackList,
+							}),
 				);
 				if (submitCleanCustomRuleErr) {
 					modal.create({
@@ -811,7 +791,10 @@ const openAddDrawer = async () => {
 		});
 		return;
 	}
-	if (dotBlackListStore.isSupportProjectTrebleCustomDotBlackList && !dotBlackListStore.isEnableProjectTrebleCustomDotBlackList) {
+	if (
+		dotBlackListStore.isSupportProjectTrebleCustomDotBlackList &&
+		!dotBlackListStore.isEnableProjectTrebleCustomDotBlackList
+	) {
 		modal.create({
 			title: '未激活 窗口控制器 3.0',
 			type: 'warning',
@@ -834,15 +817,17 @@ const openAddDrawer = async () => {
 				return item.name;
 			});
 			const [submitAddDotBlackListAppErr, submitAddDotBlackListAppRes] = await $to(
-				dotBlackListStore.isSupportProjectTrebleCustomDotBlackList ? dotBlackListApi.updateProjectTrebleDotBlackList({
-					dotBlackList: currentDotBlackList,
-					systemDotBlackList: dotBlackListStore.projectTrebleSystemDotBlackList,
-					customDotBlackList: dotBlackListStore.customDotBlackList,
-				}) :dotBlackListApi.updateDotBlackList({
-					dotBlackList: currentDotBlackList,
-					sourceDotBlackList: dotBlackListStore.sourceDotBlackList,
-					customDotBlackList: dotBlackListStore.customDotBlackList,
-				})
+				dotBlackListStore.isSupportProjectTrebleCustomDotBlackList
+					? dotBlackListApi.updateProjectTrebleDotBlackList({
+							dotBlackList: currentDotBlackList,
+							systemDotBlackList: dotBlackListStore.projectTrebleSystemDotBlackList,
+							customDotBlackList: dotBlackListStore.customDotBlackList,
+						})
+					: dotBlackListApi.updateDotBlackList({
+							dotBlackList: currentDotBlackList,
+							sourceDotBlackList: dotBlackListStore.sourceDotBlackList,
+							customDotBlackList: dotBlackListStore.customDotBlackList,
+						}),
 			);
 			if (submitAddDotBlackListAppErr) {
 				modal.create({
@@ -966,7 +951,11 @@ function createColumns(): DataTableColumns<DotBlackListMergeItem> {
 			width: 150,
 			key: 'isOptimizeWebView',
 			render(row, index) {
-				if (row.status || (dotBlackListStore.isSupportProjectTrebleCustomDotBlackList && dotBlackListStore.isEnableProjectTrebleCustomDotBlackList)) {
+				if (
+					row.status ||
+					(dotBlackListStore.isSupportProjectTrebleCustomDotBlackList &&
+						dotBlackListStore.isEnableProjectTrebleCustomDotBlackList)
+				) {
 					return (
 						<n-tag bordered={false} dashed type='success'>
 							已生效
@@ -1092,11 +1081,8 @@ function createColumns(): DataTableColumns<DotBlackListMergeItem> {
 				<n-alert :show-icon="false" type="info">
 					<p
 						>您的
-						{{
-							deviceStore.isInstalledXiaomiPadSystemPatchAdditionalModule ? '附加模块' : '移植包'
-						}}
-						已适配窗口控制器
-						3.0，您可以选择激活该功能，激活后将获得更自由的自定义窗口控制器适配体验~</p
+						{{ deviceStore.isInstalledXiaomiPadSystemPatchAdditionalModule ? '附加模块' : '移植包' }}
+						已适配窗口控制器 3.0，您可以选择激活该功能，激活后将获得更自由的自定义窗口控制器适配体验~</p
 					>
 					<div class="mt-3">
 						<n-skeleton v-if="!dotBlackListStore.isInit" :width="160" :sharp="false" round size="small" />
@@ -1115,7 +1101,20 @@ function createColumns(): DataTableColumns<DotBlackListMergeItem> {
 										preset: 'dialog',
 										content: () => dotBlackListStore.isEnableProjectTrebleCustomDotBlackList ? '已成功激活窗口控制器 3.0，可以自定义更多应用的窗口控制器了~实际生效还需要重载系统界面作用域，是否继续？' : '已成功禁用窗口控制器 3.0，仅使用系统内置的黑名单规则~实际生效还需要重载系统界面作用域，是否继续？',
 										positiveText: '确定重载作用域',
-										negativeText: '稍后再说'
+										negativeText: '稍后再说',
+										async onPositiveClick() {
+											const [killAndroidSystemUIErr] = await $to(deviceApi.killAndroidSystemUI());
+											if (killAndroidSystemUIErr) {
+												modal.create({
+													title: '操作失败',
+													type: 'error',
+													preset: 'dialog',
+													content: () => '无法重启系统界面作用域，详情请查看日志记录~',
+													negativeText: '确定',
+												});
+												return;
+											}
+										}
 									})
 								} else {
 									modal.create({
