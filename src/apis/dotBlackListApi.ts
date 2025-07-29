@@ -324,7 +324,7 @@ export const updateProjectTrebleDotBlackList = (
 				}
 				const uniqueDotBlackList = Array.from(new Set(params.dotBlackList));
 				const fetchList = async (dotBlackList: string[]): Promise<string> => {
-					const shellCommon = `echo '${JSON.stringify(dotBlackList)}' > /data/system/dot_black_list.json`;
+					const shellCommon = `echo '${JSON.stringify(dotBlackList)}' > /data/system/dot_black_list.json && chmod 644 /data/system/dot_black_list.json`;
 					return handlePromiseWithLogging(
 						new Promise(async (fetchListResolve, fetchListReject) => {
 							const { errno, stdout, stderr }: ExecResults = (await exec(
