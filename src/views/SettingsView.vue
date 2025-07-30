@@ -313,9 +313,10 @@ const settingList: SettingItemInfo[] = [
 		isShow: () =>
 			Boolean(
 				deviceStore.MIOSVersion &&
-					deviceStore.MIOSVersion >= 2 &&
-					deviceStore.androidTargetSdk >= 35 &&
-					['tablet'].includes(deviceStore.deviceType),
+					deviceStore.MIOSVersion === 2 &&
+					deviceStore.androidTargetSdk === 35 &&
+					['tablet'].includes(deviceStore.deviceType) && 
+					!deviceStore.projectTrebleSupportMagicWindowFix,
 			),
 	},
 	{

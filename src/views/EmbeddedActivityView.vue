@@ -661,9 +661,10 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 	if (
 		embeddedStore.systemAppOptimizeConfig[row.name] &&
 		deviceStore.MIOSVersion &&
-		deviceStore.MIOSVersion >= 2 &&
-		deviceStore.androidTargetSdk >= 35 &&
-		!deviceStore.isDisabledOS2SystemAppOptimize
+		deviceStore.MIOSVersion === 2 &&
+		deviceStore.androidTargetSdk === 35 &&
+		!deviceStore.isDisabledOS2SystemAppOptimize &&
+		!deviceStore.projectTrebleSupportMagicWindowFix
 	) {
 		modal.create({
 			title: '该应用已受模块保护',
