@@ -245,7 +245,7 @@ const enhanceList: EnhanceItemInfo[] = [
 					</n-switch>
 				)}
 				<n-alert class='mt-5' type='warning' show-icon={false} bordered={false}>
-					禁用后所有小窗将不再显示手势提示线（小白条）~
+					禁用后所有小窗将不再显示手势提示线（小白条）
 				</n-alert>
 			</>
 		),
@@ -273,7 +273,7 @@ const enhanceList: EnhanceItemInfo[] = [
 					</n-switch>
 				)}
 				<n-alert class='mt-5' type='warning' show-icon={false} bordered={false}>
-					启用后所有小窗手势提示线（小白条）将强制沉浸~
+					启用后所有小窗手势提示线（小白条）将强制沉浸
 				</n-alert>
 			</>
 		),
@@ -316,7 +316,7 @@ const enhanceList: EnhanceItemInfo[] = [
 					</n-alert>
 				)}
 				<n-alert class='mt-5' type='warning' show-icon={false} bordered={false}>
-					开启后在工作台模式下任意应用小窗支持无级调节~
+					开启后在工作台模式下任意应用小窗支持无级调节
 				</n-alert>
 			</>
 		),
@@ -347,7 +347,7 @@ const enhanceList: EnhanceItemInfo[] = [
 					</n-switch>
 				)}
 				<n-alert class='mt-5' type='warning' show-icon={false} bordered={false}>
-					开启后在普通桌面模式下任意应用小窗支持无级调节~
+					开启后在普通桌面模式下任意应用小窗支持无级调节
 				</n-alert>
 			</>
 		),
@@ -449,7 +449,7 @@ const enhanceList: EnhanceItemInfo[] = [
 					</div>
 				)}
 				<n-alert class='mt-5' type='warning' show-icon={false} bordered={false}>
-					<p>配置后在工作台模式下支持更多数量的小窗显示~</p>
+					<p>配置后在工作台模式下支持更多数量的小窗显示</p>
 				</n-alert>
 			</>
 		),
@@ -550,7 +550,7 @@ const enhanceList: EnhanceItemInfo[] = [
 					</div>
 				)}
 				<n-alert class='mt-5' type='warning' show-icon={false} bordered={false}>
-					<p>配置后在默认桌面下支持更多数量的小窗显示~</p>
+					<p>配置后在默认桌面下支持更多数量的小窗显示</p>
 				</n-alert>
 			</>
 		),
@@ -582,7 +582,7 @@ const enhanceList: EnhanceItemInfo[] = [
 					</n-switch>
 				)}
 				<n-alert class='mt-5' type='warning' show-icon={false} bordered={false}>
-					开启后支持更多应用分屏~
+					开启后可以支持更多应用分屏
 				</n-alert>
 			</>
 		),
