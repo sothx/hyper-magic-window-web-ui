@@ -37,6 +37,7 @@ import {
 	FunnelIcon as FunnelSolidIcon,
 	EllipsisHorizontalCircleIcon,
 	QuestionMarkCircleIcon,
+	CpuChipIcon,
 	ChatBubbleLeftEllipsisIcon,
 } from '@heroicons/vue/24/solid';
 import { useLogsStore } from '@/stores/logs';
@@ -49,6 +50,7 @@ import pako from 'pako';
 import { useInstalledAppNames } from '@/hooks/useInstalledAppNames';
 import type DotBlackListMergeItem from '@/types/DotBlackListMergeItem';
 import { values } from '$/@types/lodash-es';
+import { usePadSystemPatchAdditionalModule } from '@/hooks/usePadSystemPatchAdditionalModule';
 type SearchKeyWordInputInstance = InstanceType<typeof NInput>;
 type DotBlackListAppDrawerInstance = InstanceType<typeof DotBlackListAppDrawer>;
 const searchKeyWordInput = ref<SearchKeyWordInputInstance | null>(null);
@@ -56,6 +58,7 @@ const columns = createColumns();
 const deviceStore = useDeviceStore();
 const autoUIStore = useAutoUIStore();
 const installedAppNamesHook = useInstalledAppNames();
+const padSystemPatchAdditionalModuleHook = usePadSystemPatchAdditionalModule();
 const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
 	theme: deviceStore.isDarkMode ? darkTheme : lightTheme,
 }));
@@ -1057,24 +1060,28 @@ function createColumns(): DataTableColumns<DotBlackListMergeItem> {
 			</div>
 		</div>
 		<n-card size="small">
-			<div
-				v-if="
-					deviceStore.androidTargetSdk < 35 &&
-					dotBlackListStore.isSupportProjectTrebleCustomDotBlackList === false
-				"
-				class="mb-3 flex flex-wrap">
-				<n-alert :show-icon="true" type="warning">
-					<p>经过测试效果在Hyper OS 1和基于Android 14的Hyper OS 2+体验不佳，极易被云控覆盖。</p>
-					<p
-						>功能可以继续使用，但是不再对Hyper OS 1和基于Android 14的Hyper OS
-						2+下窗口控制器的缺陷和需求进行响应。</p
-					>
+			<div v-if="dotBlackListStore.isSupportProjectTrebleCustomDotBlackList === false" class="mb-3 flex flex-wrap">
+				<n-alert :show-icon="false" type="warning">
+					<p>本功能通过覆盖小米云控规则实现，基于此方案实现的效果并不稳定，容易被小米云控覆盖。</p>
+					<p>通过 附加模块 激活窗口控制器 3.0，可以不再再受小米云控覆盖影响：</p>
+					<div class="flex flex-wrap mt-3">
+						<n-button
+							size="small"
+							@click="() => padSystemPatchAdditionalModuleHook.openDownloadModuleModal()"
+							color="#69b2b6">
+							<template #icon>
+								<n-icon>
+									<CpuChipIcon />
+								</n-icon>
+							</template>
+							获取附加模块
+						</n-button>
+					</div>
 				</n-alert>
 			</div>
 			<div
 				:show-icon="true"
 				v-if="
-					deviceStore.deviceType === 'tablet' &&
 					dotBlackListStore.isSupportProjectTrebleCustomDotBlackList === true
 				"
 				class="mb-3 flex flex-wrap">
@@ -1082,7 +1089,8 @@ function createColumns(): DataTableColumns<DotBlackListMergeItem> {
 					<p
 						>您的
 						{{ deviceStore.isInstalledXiaomiPadSystemPatchAdditionalModule ? '附加模块' : '移植包' }}
-						已适配窗口控制器 3.0，您可以选择激活该功能，激活后将获得更自由的自定义窗口控制器适配体验~</p
+						已适配窗口控制器
+						3.0，激活后将可以自由控制应用顶栏窗口控制器的显示或隐藏，且不受小米云控影响。</p
 					>
 					<div class="mt-3">
 						<n-skeleton v-if="!dotBlackListStore.isInit" :width="160" :sharp="false" round size="small" />

@@ -48,12 +48,12 @@ export function usePadSystemPatchAdditionalModule() {
 					    小米平板附加模块支持以下系统增强功能：
 					</p>
                     {
-                        NAlertTemplate && NAlertTemplate('任意应用无极小窗 · 强制上下分屏(仅Android 15) · 禁用分屏黑名单 · 自定义小窗数量 · 隐藏小窗小白条',false,'info')
+                        NAlertTemplate && NAlertTemplate('任意应用无极小窗 · 强制上下分屏(仅Android 15) · 禁用分屏黑名单 · 自定义小窗数量 · 隐藏小窗小白条 · 窗口控制器 3.0',false,'info')
                     }
                     <p>每次更新 ROM 后，需要重新获取适合当前 ROM 版本的附加模块~模块修改了系统组件，所以请自备救砖模块，避免卡开机~</p>
 					<p>请访问下面的 GitHub 仓库，阅读 README，自行构建最新模块：</p>
 					<p>
-                        <div class='my-8'>
+                        <div class='mt-2'>
                             {NButtonTemplate &&
                                 NButtonTemplate('通过 Github Action 构建模块', 'info', () => {
                                        navigator.clipboard.writeText(`https://github.com/sothx/xiaomi_pad_system_patch_additional_module`);
@@ -62,7 +62,7 @@ export function usePadSystemPatchAdditionalModule() {
                         </div>
 					</p>
 					<p>另外，也可以通过移动网盘下载成品模块，但版本可能不是最新：</p>
-                        <div class='my-8'>
+                        <div class='mt-2'>
                             {NButtonTemplate &&
                                 NButtonTemplate('通过 移动网盘 下载', 'info', () => {
                                     navigator.clipboard.writeText(`https://caiyun.139.com/w/i/2oRhj2xw7kbu7`);
@@ -71,7 +71,7 @@ export function usePadSystemPatchAdditionalModule() {
                         </div>
 				</div>
 			),
-			negativeText: '确定',
+			positiveText: '确定',
 		});
 	};
 
