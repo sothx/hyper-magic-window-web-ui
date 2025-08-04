@@ -540,7 +540,7 @@ const handleDrawerSubmit = async () => {
 			deviceStore.MIOSVersion >= 2 &&
 			deviceStore.androidTargetSdk >= 35 && {
 				thirdPartyAppOptimize:
-					currentThirdPartyAppOptimize.value && currentSettingMode.value === 'fullScreen' ? true : false,
+					currentThirdPartyAppOptimize.value && (currentSettingMode.value === 'fullScreen' || currentSettingMode.value === 'disabled') ? true : false,
 			}),
 		modePayload: {
 			...(currentSettingMode.value === 'fullScreen' && {
@@ -561,7 +561,7 @@ const handleDrawerSubmit = async () => {
 			...(currentSettingMode.value === 'fixedOrientation' && {
 				ratio: currentRatio.value,
 			}),
-			...(currentSettingMode.value === 'fixedOrientation' && {
+			...((currentSettingMode.value === 'fixedOrientation' || currentSettingMode.value === 'disabled') && {
 				foRelaunch: currentFixedOrientationRelaunch.value,
 			}),
 			...(currentSettingMode.value === 'fixedOrientation' &&
@@ -899,6 +899,32 @@ defineExpose({
 						<n-switch :rail-style="railStyle" v-model:value="currentSupportFullSize" size="large">
 							<template #checked>平行窗口可滑动至全屏</template>
 							<template #unchecked>平行窗口不可滑动至全屏</template>
+						</n-switch>
+					</n-card>
+					<n-card
+						class=""
+						:bordered="false"
+						v-if="
+							deviceStore.MIOSVersion &&
+							deviceStore.MIOSVersion >= 2 &&
+							deviceStore.androidTargetSdk >= 35
+						"
+						title="第三方应用横屏优化"
+						size="small">
+						<div class="mb-4">
+							<n-tag :bordered="false" type="success">
+								适用于即使设置了
+								<span class="font-bold">原始规则</span>
+								仍无法生效原始布局的应用
+							</n-tag>
+						</div>
+						<n-switch
+							:rail-style="railStyle"
+							@update:value="(value: boolean) => changeThirdPartyAppOptimize(value)"
+							:value="currentThirdPartyAppOptimize"
+							size="large">
+							<template #checked>已开启第三方应用横屏优化</template>
+							<template #unchecked>未开启第三方应用横屏优化</template>
 						</n-switch>
 					</n-card>
 				</n-tab-pane>
