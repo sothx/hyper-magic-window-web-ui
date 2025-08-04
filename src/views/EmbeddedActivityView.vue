@@ -709,6 +709,7 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 						delete embeddedStore.customThirdPartyAppOptimizeConfig[updateEmbeddedAppRes.name];
 					}
 				}
+				console.log(embeddedStore.customThirdPartyAppOptimizeConfig,'embeddedStore.customThirdPartyAppOptimizeConfig222')
 			}
 			if (updateEmbeddedAppRes.settingMode === 'fullScreen') {
 				const { moduleEmbeddedRules, currentEmbeddedRules, moduleFixedOrientation, currentFixedOrientation } =

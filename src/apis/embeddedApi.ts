@@ -348,7 +348,7 @@ export const updateEmbeddedApp = (
 						'setting',
 						'setting_rule',
 					),
-		}),
+				}),
 	};
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
@@ -372,6 +372,7 @@ export const updateEmbeddedApp = (
 						}: ExecResults = await exec(
 							`echo '${updateData.customThirdPartyAppOptimizeConfigProp}' > /data/adb/MIUI_MagicWindow+/config/third_party_app_optimize.prop`,
 						);
+
 						if (PatchEmErrno) {
 							errorLogging.push({
 								type: 'customThirdPartyAppOptimizeConfigProp',
@@ -385,6 +386,28 @@ export const updateEmbeddedApp = (
 								message: '更新成功',
 							});
 						}
+					} else {
+						const {
+							errno: PatchRmErrno,
+							stdout: PatchRmStdout,
+							stderr: PatchRmStderr,
+						}: ExecResults = await exec(
+							`rm -f /data/adb/MIUI_MagicWindow+/config/third_party_app_optimize.prop`,
+						);
+
+						if (PatchRmErrno) {
+							errorLogging.push({
+								type: 'customThirdPartyAppOptimizeConfigProp',
+								name: '[第三方应用横屏优化]第三方应用横屏优化配置文件',
+								message: PatchRmStderr,
+							});
+						} else {
+							successLogging.push({
+								type: 'customThirdPartyAppOptimizeConfigProp',
+								name: '[第三方应用横屏优化]第三方应用横屏优化配置文件',
+								message: '配置为空，文件已删除',
+							});
+						}
 					}
 
 					if (updateData.thirdPartyAppOptimizeConfigRunnerShell) {
@@ -395,6 +418,7 @@ export const updateEmbeddedApp = (
 						}: ExecResults = await exec(
 							`echo '${updateData.thirdPartyAppOptimizeConfigRunnerShell}' > /data/adb/MIUI_MagicWindow+/config/third_party_app_optimize_runner.sh`,
 						);
+
 						if (PatchEmErrno) {
 							errorLogging.push({
 								type: 'thirdPartyAppOptimizeConfigRunnerShell',
@@ -406,6 +430,28 @@ export const updateEmbeddedApp = (
 								type: 'thirdPartyAppOptimizeConfigRunnerShell',
 								name: '[第三方应用横屏优化]第三方应用横屏优化运行脚本',
 								message: '更新成功',
+							});
+						}
+					} else {
+						const {
+							errno: PatchRmErrno,
+							stdout: PatchRmStdout,
+							stderr: PatchRmStderr,
+						}: ExecResults = await exec(
+							`rm -f /data/adb/MIUI_MagicWindow+/config/third_party_app_optimize_runner.sh`,
+						);
+
+						if (PatchRmErrno) {
+							errorLogging.push({
+								type: 'thirdPartyAppOptimizeConfigRunnerShell',
+								name: '[第三方应用横屏优化]第三方应用横屏优化运行脚本',
+								message: PatchRmStderr,
+							});
+						} else {
+							successLogging.push({
+								type: 'thirdPartyAppOptimizeConfigRunnerShell',
+								name: '[第三方应用横屏优化]第三方应用横屏优化运行脚本',
+								message: '配置为空，文件已删除',
 							});
 						}
 					}

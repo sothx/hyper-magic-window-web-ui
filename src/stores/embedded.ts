@@ -50,7 +50,7 @@ export const useEmbeddedStore = defineStore(
 			for (const key in customThirdPartyAppOptimizeConfig.value) {
 				const customValue = customThirdPartyAppOptimizeConfig.value[key];
 
-				if (customValue === -1) {
+				if (customValue <= -1) {
 					// 如果值为 -1，则移除该键
 					delete mergedConfig[key];
 				} else {
