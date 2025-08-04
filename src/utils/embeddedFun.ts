@@ -121,11 +121,12 @@ export const getAppMode = (settingMode: 0 | 1 | 2 | 3) => {
 
 
 export const thirdPartyAppOptimizeConfigFormatToJSON = (data: string) => {
-	return data.trim().split('\n').reduce((acc, line) => {
+	const result = data.trim().split('\n').reduce((acc, line) => {
 		const [name, mode] = line.split(':');
 		acc[name] = Number(mode) as ThirdPartyAppOptimizeAppModeType; // 将数字映射为对应的 settingMode
 		return acc;
 	}, {} as Record<string, ThirdPartyAppOptimizeAppModeType>);
+	return result;
 }
 
 export const thirdPartyAppOptimizeJSONFormatToProp = (jsonData: Record<string,ThirdPartyAppOptimizeAppModeType>) => {

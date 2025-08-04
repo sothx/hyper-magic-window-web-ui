@@ -160,8 +160,7 @@ const reloadPage = async () => {
 
 onMounted(() => {
 	const embeddedStore = useEmbeddedStore();
-	console.log(embeddedStore.filterMergeRuleList,'embeddedStore.filterMergeRuleList')
-})
+});
 
 const importShareRule = async () => {
 	shareRuleTextarea.value = '';
@@ -303,7 +302,7 @@ const importShareRule = async () => {
 						importRuleContent.mode,
 					);
 				} else {
-					if (embeddedStore.sourceThirdPartyAppOptimizeConfig[importRuleContent.name]) {
+					if (importRuleContent.name in embeddedStore.sourceThirdPartyAppOptimizeConfig && embeddedStore.sourceThirdPartyAppOptimizeConfig[importRuleContent.name] > -1) {
 						embeddedStore.customThirdPartyAppOptimizeConfig[importRuleContent.name] = -1;
 					} else {
 						delete embeddedStore.customThirdPartyAppOptimizeConfig[importRuleContent.name];
@@ -475,7 +474,7 @@ const openAddEmbeddedApp = async () => {
 						addEmbeddedAppRes.settingMode,
 					);
 				} else {
-					if (embeddedStore.sourceThirdPartyAppOptimizeConfig[addEmbeddedAppRes.name]) {
+					if (addEmbeddedAppRes.name in embeddedStore.sourceThirdPartyAppOptimizeConfig && embeddedStore.sourceThirdPartyAppOptimizeConfig[addEmbeddedAppRes.name] > -1) {
 						embeddedStore.customThirdPartyAppOptimizeConfig[addEmbeddedAppRes.name] = -1;
 					} else {
 						delete embeddedStore.customThirdPartyAppOptimizeConfig[addEmbeddedAppRes.name];
@@ -704,7 +703,7 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 						updateEmbeddedAppRes.settingMode,
 					);
 				} else {
-					if (embeddedStore.sourceThirdPartyAppOptimizeConfig[updateEmbeddedAppRes.name]) {
+					if (updateEmbeddedAppRes.name in embeddedStore.sourceThirdPartyAppOptimizeConfig && embeddedStore.sourceThirdPartyAppOptimizeConfig[updateEmbeddedAppRes.name] > -1) {
 						embeddedStore.customThirdPartyAppOptimizeConfig[updateEmbeddedAppRes.name] = -1;
 					} else {
 						delete embeddedStore.customThirdPartyAppOptimizeConfig[updateEmbeddedAppRes.name];
@@ -822,7 +821,7 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 						if (hasFullRule) {
 							delete currentEmbeddedRules.value.fullRule;
 							if (embeddedStore.customConfigEmbeddedRulesList[row.name]) {
-								delete embeddedStore.customConfigEmbeddedRulesList[row.name].fullRule
+								delete embeddedStore.customConfigEmbeddedRulesList[row.name].fullRule;
 							}
 						}
 					}
@@ -920,10 +919,7 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 					};
 				}
 			}
-			if (
-				updateEmbeddedAppRes.settingMode === 'disabled' &&
-				row.settingMode !== updateEmbeddedAppRes.settingMode
-			) {
+			if (updateEmbeddedAppRes.settingMode === 'disabled') {
 				const { moduleEmbeddedRules, currentEmbeddedRules, moduleFixedOrientation, currentFixedOrientation } =
 					useEmbedded(row.name);
 				if (currentFixedOrientation.value) {
@@ -936,6 +932,11 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 					const hasIsScale = currentFixedOrientation.value.hasOwnProperty('isScale');
 					if (hasIsScale) {
 						delete currentFixedOrientation.value.isScale;
+					}
+					if (updateEmbeddedAppRes.modePayload.foRelaunch !== undefined) {
+						currentFixedOrientation.value.relaunch = updateEmbeddedAppRes.modePayload.foRelaunch;
+					} else {
+						delete currentFixedOrientation.value.relaunch;
 					}
 					if (updateEmbeddedAppRes.modePayload.hasOwnProperty('isShowDivider')) {
 						currentFixedOrientation.value.isShowDivider = updateEmbeddedAppRes.modePayload.isShowDivider;
@@ -959,6 +960,13 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 						deviceStore.androidTargetSdk >= 35
 							? { skipSelfAdaptive: true }
 							: {}),
+						...(updateEmbeddedAppRes.modePayload.foRelaunch !== undefined
+							? {
+									relaunch: updateEmbeddedAppRes.modePayload.foRelaunch,
+								}
+							: {}),
+						...(updateEmbeddedAppRes.modePayload.supportFullSize ? { supportFullSize: true } : {}),
+						...(updateEmbeddedAppRes.modePayload.isShowDivider ? { isShowDivider: true } : {}),
 					};
 				}
 			}
@@ -1203,16 +1211,16 @@ const handleCustomRuleDropdown = async (
 			negativeText: '我再想想',
 			onPositiveClick: async () => {
 				cleanCustomModal.loading = true;
-				if (embeddedStore.customConfigEmbeddedRulesList[row.name]) {
+				if (row.name in embeddedStore.customConfigEmbeddedRulesList) {
 					delete embeddedStore.customConfigEmbeddedRulesList[row.name];
 				}
-				if (embeddedStore.customConfigFixedOrientationList[row.name]) {
+				if (row.name in embeddedStore.customConfigFixedOrientationList) {
 					delete embeddedStore.customConfigFixedOrientationList[row.name];
 				}
-				if (embeddedStore.customConfigEmbeddedSettingConfig[row.name]) {
+				if (row.name in embeddedStore.customConfigEmbeddedSettingConfig) {
 					delete embeddedStore.customConfigEmbeddedSettingConfig[row.name];
 				}
-				if (embeddedStore.customThirdPartyAppOptimizeConfig[row.name]) {
+				if (row.name in embeddedStore.customThirdPartyAppOptimizeConfig) {
 					delete embeddedStore.customThirdPartyAppOptimizeConfig[row.name];
 				}
 
@@ -1291,7 +1299,7 @@ const handleCustomRuleDropdown = async (
 			...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35
 				? {
 						thirdPartyAppOptimize: row.thirdPartyAppOptimize,
-					}
+				}
 				: undefined),
 		};
 		const jsonString = JSON.stringify(shareContent);
@@ -1376,9 +1384,10 @@ const handleCanUseAutoUIRuleExplain = (row: EmbeddedMergeRuleItem, index: number
 					{renderApplicationName(row.name, row.applicationName)}
 				</span>{' '}
 				已存在应用布局优化的规则，规则仅在应用横屏冷启动全屏场景下才会生效，如果规则未生效，请检查应用布局优化规则是否{' '}
-				<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>启用</span>{' '}，并建议将应用的横屏配置修改为{' '}
-            <span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>全屏</span>
-            ，规则效果以应用个体差异而异，建议多多尝试。
+				<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>启用</span>{' '}
+				，并建议将应用的横屏配置修改为{' '}
+				<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>全屏</span>
+				，规则效果以应用个体差异而异，建议多多尝试。
 			</p>
 		),
 	});

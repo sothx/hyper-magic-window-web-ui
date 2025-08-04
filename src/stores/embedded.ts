@@ -190,7 +190,7 @@ export const useEmbeddedStore = defineStore(
 						item.applicationName = currentApplicationName[item.name];
 					}
 
-					if (currentMergeThirdPartyAppOptimizeConfig[item.name]) {
+					if (item.name in currentMergeThirdPartyAppOptimizeConfig && currentMergeThirdPartyAppOptimizeConfig[item.name] > -1) {
 						item.thirdPartyAppOptimize = true;
 					} else {
 						item.thirdPartyAppOptimize = false;
