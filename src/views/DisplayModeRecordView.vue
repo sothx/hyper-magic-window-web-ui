@@ -4,7 +4,7 @@ import * as deviceApi from '@/apis/deviceApi';
 import { computed, type CSSProperties } from 'vue';
 import { createDiscreteApi, darkTheme, lightTheme, type ConfigProviderProps } from 'naive-ui';
 import { useDisplayModeRecord } from '@/hooks/useDisplayModeRecord';
-import { BoltIcon } from '@heroicons/vue/24/solid';
+import { BoltIcon, CpuChipIcon } from '@heroicons/vue/24/solid';
 const deviceStore = useDeviceStore();
 const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
 	theme: deviceStore.isDarkMode ? darkTheme : lightTheme,
@@ -47,6 +47,28 @@ const displayModeRecordHook = useDisplayModeRecord();
 					<p>小米平板手写笔仅能在 60hz 和 120hz 的刷新率下正常工作</p>
 				</n-alert>
 				<div class="gap-4 mt-5 sm:px-0">
+					<n-dropdown
+						size="large"
+						trigger="click"
+						:options="[
+							{ label: '打开性能监视器', key: 'start' },
+							{ label: '关闭性能监视器', key: 'stop' },
+						]"
+						@select="(key: 'start' | 'stop') => { deviceApi.frameRateService(key) }">
+						<n-button
+							class="mb-3 mr-3"
+							color="#8a2be2"
+							type="info"
+							secondary
+							:loading="deviceStore.loading">
+							<template #icon>
+								<n-icon>
+									<CpuChipIcon />
+								</n-icon>
+							</template>
+							性能监视器
+						</n-button>
+					</n-dropdown>
 					<n-dropdown
 						size="large"
 						trigger="click"

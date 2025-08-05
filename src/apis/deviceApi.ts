@@ -1038,7 +1038,8 @@ export const killGameBoosterApp = (packageName: string): Promise<string> => {
 };
 
 export const frameRateService = (status: 'start' | 'stop'): Promise<string> => {
-	const shellCommon = `cmd activity ${status}service -n com.miui.powerkeeper/.ui.framerate.FrameRateService`;
+
+	const shellCommon =  `cmd activity ${status}service -n com.miui.powerkeeper/.ui.framerate.FrameRateService`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {

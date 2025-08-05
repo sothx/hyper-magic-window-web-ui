@@ -2007,11 +2007,7 @@ const enhanceList: EnhanceItemInfo[] = [
 					),
 				}}
 			</n-dropdown>
-		),
-		isShow: () =>
-			!deviceStore.MIOSVersion ||
-			(deviceStore.MIOSVersion && deviceStore.MIOSVersion < 2) ||
-			deviceStore.androidTargetSdk < 35,
+		)
 	},
 	{
 		title: '刷新率监视器',
