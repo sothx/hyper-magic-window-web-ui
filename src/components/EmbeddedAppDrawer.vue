@@ -40,6 +40,7 @@ export interface EmbeddedAppDrawerSubmitResult {
 		foRelaunch?: boolean;
 		emRelaunch?: boolean;
 		forceFixedOrientation?: boolean;
+		forceAnyOrientation?: boolean;
 		emIsDisabledPlaceholder?: boolean;
 	};
 	loadingCallback: () => void;
@@ -140,6 +141,8 @@ const currentSplitRatio = ref<number>(0.5);
 
 const currentForceFixedOrientation = ref<boolean>(false);
 
+const currentForceAnyOrientation = ref<boolean>(false);
+
 const currentIsSwitchEmbeddedCustom = ref<boolean>(false);
 
 const currentSupportModes = ref<EmbeddedMergeRuleItem['settingMode'][]>([]);
@@ -232,6 +235,7 @@ const embeddedAppDrawer = ref({
 				currentFixedOrientationRelaunch.value = false;
 				currentEmbeddedRelaunch.value = false;
 				currentForceFixedOrientation.value = false;
+				currentForceAnyOrientation.value = false;
 				currentIsSupportEmbeddedPlaceholder.value = false;
 				currentIsDisabledEmbeddedPlaceholder.value = false;
 			}
@@ -276,6 +280,10 @@ const embeddedAppDrawer = ref({
 					initialParams.fixedOrientationRule?.compatChange
 						?.split(',')
 						.includes('OVERRIDE_UNDEFINED_ORIENTATION_TO_PORTRAIT') ?? false;
+				currentForceAnyOrientation.value =
+					((initialParams.fixedOrientationRule?.compatChange
+						?.split(',')
+						.includes('OVERRIDE_ANY_ORIENTATION')) && currentForceFixedOrientation.value) ?? false;
 				if (currentFullRule.value === 'nra:cr:rcr:nr') {
 					currentFullScreenRuleOptions.value =
 						deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35
@@ -570,6 +578,13 @@ const handleDrawerSubmit = async () => {
 				deviceStore.androidTargetSdk >= 35 && {
 					forceFixedOrientation: currentForceFixedOrientation.value,
 				}),
+			...(currentSettingMode.value === 'fixedOrientation' &&
+				deviceStore.MIOSVersion &&
+				deviceStore.MIOSVersion >= 2 &&
+				deviceStore.androidTargetSdk >= 35 && 
+				currentForceFixedOrientation.value && {
+					forceAnyOrientation: currentForceAnyOrientation.value,
+				}),
 			...(currentSettingMode.value === 'embedded' &&
 				(currentRuleMode.value === 'custom' ||
 					(currentRuleMode.value === 'module' && currentIsSwitchEmbeddedCustom.value)) && {
@@ -859,10 +874,37 @@ defineExpose({
 								仍无法居中显示的应用
 							</n-tag>
 						</div>
-						<n-switch :rail-style="railStyle" v-model:value="currentForceFixedOrientation" size="large">
-							<template #checked>强制应用居中显示</template>
-							<template #unchecked>不强制应用居中显示</template>
-						</n-switch>
+						<div>
+							<n-switch :rail-style="railStyle" v-model:value="currentForceFixedOrientation" size="large">
+								<template #checked>强制应用居中显示</template>
+								<template #unchecked>不强制应用居中显示</template>
+							</n-switch>
+						</div>
+					</n-card>
+					<n-card
+						class=""
+						v-if="
+							deviceStore.MIOSVersion &&
+							deviceStore.MIOSVersion >= 2 &&
+							deviceStore.androidTargetSdk >= 35 && 
+							currentForceFixedOrientation === true
+						"
+						:bordered="false"
+						title="强制横屏界面居中显示"
+						size="small">
+						<div class="mb-4">
+							<n-tag :bordered="false" type="success">
+								开启后
+								<span class="font-bold">应用横屏界面</span>
+								将强制要求居中显示
+							</n-tag>
+						</div>
+						<div>
+							<n-switch :rail-style="railStyle" v-model:value="currentForceAnyOrientation" size="large">
+								<template #checked>强制横屏界面居中显示</template>
+								<template #unchecked>不强制横屏界面居中显示</template>
+							</n-switch>
+						</div>
 					</n-card>
 				</n-tab-pane>
 				<n-tab-pane name="disabled" tab="原始布局">

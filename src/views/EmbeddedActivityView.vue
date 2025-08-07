@@ -302,7 +302,10 @@ const importShareRule = async () => {
 						importRuleContent.mode,
 					);
 				} else {
-					if (importRuleContent.name in embeddedStore.sourceThirdPartyAppOptimizeConfig && embeddedStore.sourceThirdPartyAppOptimizeConfig[importRuleContent.name] > -1) {
+					if (
+						importRuleContent.name in embeddedStore.sourceThirdPartyAppOptimizeConfig &&
+						embeddedStore.sourceThirdPartyAppOptimizeConfig[importRuleContent.name] > -1
+					) {
 						embeddedStore.customThirdPartyAppOptimizeConfig[importRuleContent.name] = -1;
 					} else {
 						delete embeddedStore.customThirdPartyAppOptimizeConfig[importRuleContent.name];
@@ -474,7 +477,10 @@ const openAddEmbeddedApp = async () => {
 						addEmbeddedAppRes.settingMode,
 					);
 				} else {
-					if (addEmbeddedAppRes.name in embeddedStore.sourceThirdPartyAppOptimizeConfig && embeddedStore.sourceThirdPartyAppOptimizeConfig[addEmbeddedAppRes.name] > -1) {
+					if (
+						addEmbeddedAppRes.name in embeddedStore.sourceThirdPartyAppOptimizeConfig &&
+						embeddedStore.sourceThirdPartyAppOptimizeConfig[addEmbeddedAppRes.name] > -1
+					) {
 						embeddedStore.customThirdPartyAppOptimizeConfig[addEmbeddedAppRes.name] = -1;
 					} else {
 						delete embeddedStore.customThirdPartyAppOptimizeConfig[addEmbeddedAppRes.name];
@@ -703,13 +709,15 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 						updateEmbeddedAppRes.settingMode,
 					);
 				} else {
-					if (updateEmbeddedAppRes.name in embeddedStore.sourceThirdPartyAppOptimizeConfig && embeddedStore.sourceThirdPartyAppOptimizeConfig[updateEmbeddedAppRes.name] > -1) {
+					if (
+						updateEmbeddedAppRes.name in embeddedStore.sourceThirdPartyAppOptimizeConfig &&
+						embeddedStore.sourceThirdPartyAppOptimizeConfig[updateEmbeddedAppRes.name] > -1
+					) {
 						embeddedStore.customThirdPartyAppOptimizeConfig[updateEmbeddedAppRes.name] = -1;
 					} else {
 						delete embeddedStore.customThirdPartyAppOptimizeConfig[updateEmbeddedAppRes.name];
 					}
 				}
-				console.log(embeddedStore.customThirdPartyAppOptimizeConfig,'embeddedStore.customThirdPartyAppOptimizeConfig222')
 			}
 			if (updateEmbeddedAppRes.settingMode === 'fullScreen') {
 				const { moduleEmbeddedRules, currentEmbeddedRules, moduleFixedOrientation, currentFixedOrientation } =
@@ -856,23 +864,31 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 						currentFixedOrientation.value.supportModes = 'full,fo';
 						currentFixedOrientation.value.defaultSettings = 'fo';
 						currentFixedOrientation.value.skipSelfAdaptive = true;
-						if (
-							updateEmbeddedAppRes.modePayload.hasOwnProperty('forceFixedOrientation') &&
-							updateEmbeddedAppRes.modePayload.forceFixedOrientation
-						) {
-							if (currentFixedOrientation.value.compatChange) {
-								const compatSet = new Set(currentFixedOrientation.value.compatChange?.split(','));
-								compatSet.add('OVERRIDE_UNDEFINED_ORIENTATION_TO_PORTRAIT');
-								currentFixedOrientation.value.compatChange = [...compatSet].join(',');
+
+						const compatChangeSet = new Set(
+							currentFixedOrientation.value.compatChange?.split(',').filter(Boolean) || [],
+						);
+
+						if (updateEmbeddedAppRes.modePayload.hasOwnProperty('forceFixedOrientation')) {
+							if (updateEmbeddedAppRes.modePayload.forceFixedOrientation) {
+								compatChangeSet.add('OVERRIDE_UNDEFINED_ORIENTATION_TO_PORTRAIT');
 							} else {
-								currentFixedOrientation.value.compatChange =
-									'OVERRIDE_UNDEFINED_ORIENTATION_TO_PORTRAIT';
+								compatChangeSet.delete('OVERRIDE_UNDEFINED_ORIENTATION_TO_PORTRAIT');
 							}
+						}
+
+						if (updateEmbeddedAppRes.modePayload.hasOwnProperty('forceAnyOrientation')) {
+							if (updateEmbeddedAppRes.modePayload.forceAnyOrientation) {
+								compatChangeSet.add('OVERRIDE_ANY_ORIENTATION');
+							} else {
+								compatChangeSet.delete('OVERRIDE_ANY_ORIENTATION');
+							}
+						}
+
+						if (compatChangeSet.size > 0) {
+							currentFixedOrientation.value.compatChange = [...compatChangeSet].join(',');
 						} else {
-							const hasCompatChange = currentFixedOrientation.value.hasOwnProperty('compatChange');
-							if (hasCompatChange) {
-								delete currentFixedOrientation.value.compatChange;
-							}
+							delete currentFixedOrientation.value.compatChange;
 						}
 					}
 					if (!isEqual(moduleFixedOrientation.value, currentFixedOrientation.value)) {
@@ -901,12 +917,21 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 							: {}),
 						...(deviceStore.MIOSVersion &&
 						deviceStore.MIOSVersion >= 2 &&
-						deviceStore.androidTargetSdk >= 35 &&
-						updateEmbeddedAppRes.modePayload.forceFixedOrientation
-							? {
-									compatChange: 'OVERRIDE_UNDEFINED_ORIENTATION_TO_PORTRAIT',
-								}
+						deviceStore.androidTargetSdk >= 35
+							? (() => {
+									const changes = [
+										updateEmbeddedAppRes.modePayload.forceFixedOrientation &&
+											'OVERRIDE_UNDEFINED_ORIENTATION_TO_PORTRAIT',
+										updateEmbeddedAppRes.modePayload.forceAnyOrientation &&
+											'OVERRIDE_ANY_ORIENTATION',
+									]
+										.filter(Boolean)
+										.join(',');
+
+									return changes ? { compatChange: changes } : {};
+								})()
 							: {}),
+
 						...(updateEmbeddedAppRes.modePayload.ratio !== undefined
 							? {
 									ratio: updateEmbeddedAppRes.modePayload.ratio,
@@ -1300,7 +1325,7 @@ const handleCustomRuleDropdown = async (
 			...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35
 				? {
 						thirdPartyAppOptimize: row.thirdPartyAppOptimize,
-				}
+					}
 				: undefined),
 		};
 		const jsonString = JSON.stringify(shareContent);
