@@ -342,139 +342,139 @@ export const embeddedPerceptionApplications: Record<string, EmbeddedPerceptionAp
 			});
 		},
 	},
-	'tv.danmaku.bili': {
-		isShow() {
-			const deviceStore = useDeviceStore();
-			if (
-				deviceStore.deviceType === 'tablet' &&
-				deviceStore.MIOSVersion &&
-				deviceStore.MIOSVersion === 2 &&
-				deviceStore.androidTargetSdk >= 35
-			) {
-				return true;
-			}
-			return false;
-		},
-		onClick(row: EmbeddedMergeRuleItem) {
-			const deviceStore = useDeviceStore();
-			const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
-				theme: deviceStore.isDarkMode ? darkTheme : lightTheme,
-			}));
-			const { message, modal, notification } = createDiscreteApi(['message', 'modal', 'notification'], {
-				configProviderProps: configProviderPropsRef,
-			});
-			const shareContent = {
-				name: 'tv.danmaku.bili',
-				cmpt:
-					deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35
-						? 2
-						: 1,
-				em: {
-					name: 'tv.danmaku.bili',
-					disableSensor: true,
-					splitLineColor: '#FFFFFF:#17181A',
-					...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35
-						? {
-								skipSelfAdaptive: true,
-							}
-						: undefined),
-					splitRatio: deviceStore.deviceType === 'tablet' ? 0.4 : 0.5,
-					isShowDivider: true,
-					supportFullSize: true,
-					splitPairRule:
-						'tv.danmaku.bili.MainActivityV2:*,com.bilibili.search.main.BiliMainSearchActivity:*,com.bilibili.bplus.followinglist.quick.consume.QuickConsumeActivity:*,tv.danmaku.bili.ui.videodownload.VideoDownloadListActivity:*,com.bilibili.lib.ui.GeneralActivity:*,tv.danmaku.bili.ui.favorite.FavoriteBoxActivity:*,tv.danmaku.bili.ui.main2.WatchLaterActivity:*,com.bilibili.lib.ui.GeneralActivity:*,com.bilibili.app.preferences.BiliPreferencesActivity:*,com.bilibili.app.authorspace.ui.AuthorSpaceActivity:*,com.bilibili.search2.main.BiliMainSearchActivity:*',
-					activityRule:
-						'tv.danmaku.bili.MainActivityV2,com.bilibili.column.ui.detail.image.ColumnImageViewerActivity,com.bilibili.studio.centerplus.ui.CenterPlusMainActivity,com.bilibili.lib.imageviewer.MediaViewerActivity,com.bilibili.socialize.share.core.ui.BiliShareDelegateActivity,com.bilibili.socialize.share.core.ui.QQAssistActivity,com.tencent.connect.common.AssistActivity,com.bilibili.upper.module.archive.activity.ArchiveTempActivity',
-					transitionRules:
-						'tv.danmaku.bili.MainActivityV2,tv.danmaku.bili.sms.SmsLoginDialogActivityV2,com.bilibili.teenagersmode.ui.TeenagersModeDialogActivity,tv.danmaku.bili.ui.answer.AnswerDialogTransferActivity,com.bilibili.bilibililive.ui.room.modresource.BlinkModResourceLoadingActivity,com.bilibili.bilibililive.ui.room.BlinkRoomActivityV2,com.bilibili.lib.fasthybrid.blrouter.SADispatcherActivity,com.bilibili.lib.fasthybrid.container.GameContainerActivity0',
-					flags: 'reusePreContainer:com.bilibili.bplus.followinglist.page.browser.ui.LightBrowserActivityV2',
-					forcePortraitActivity:
-						'tv.danmaku.bili/com.bilibili.app.preferences.storage.BiliStorageManagerActivity',
-				},
-				...(deviceStore.deviceType === 'tablet'
-					? {
-							fo: {
-								name: 'tv.danmaku.bili',
-								...(deviceStore.MIOSVersion &&
-								deviceStore.MIOSVersion >= 2 &&
-								deviceStore.androidTargetSdk >= 35
-									? {
-											skipSelfAdaptive: true,
-											supportModes: 'full,fo',
-										}
-									: undefined),
-							},
-						}
-					: undefined),
-				type: 'embedded',
-				device: deviceStore.deviceType === 'tablet' ? 'pad' : 'fold',
-				mode: 'embedded',
-				...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35
-					? {
-							thirdPartyAppOptimize: false,
-						}
-					: undefined),
-			};
-			const jsonString = JSON.stringify(shareContent);
-			const deflate = pako.deflate(jsonString, {
-				level: 9,
-				memLevel: 9,
-				windowBits: 15,
-			});
-			const compressedData = new Uint8Array(deflate);
-			const base64String: string = arrayBufferToBase64(compressedData);
-			const code = base64String;
-			modal.create({
-				title: '应用规则感知',
-				type: 'info',
-				preset: 'dialog',
-				content() {
-					const NCodeTemplate = (code: string) => {
-						return h(NCode, {
-							code: code,
-							class: 'my-5 overflow-y-auto line-clamp-6',
-							language: 'Base64',
-							wordWrap: true,
-						});
-					};
-					return (
-						<div>
-							<p>
-								小米已为{' '}
-								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-									{renderApplicationName(row.name, row.applicationName)}
-								</span>{' '}
-								适配了应用布局优化，您可以将此自定义规则通过{' '}
-								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-									[应用横屏布局-从分享口令导入]
-								</span>{' '}
-								进行导入并开启{' '}
-								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-									{renderApplicationName(row.name, row.applicationName)}
-								</span>{' '}
-								在{' '}
-								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-									应用布局优化
-								</span>{' '}
-								的开关，即可体验~
-							</p>
-							<p>
-								Tips: 此规则需要搭配最新版的Hyper OS 2.0，老版本的 OS 2
-								可能由于小米BUG存在较为严重的内存泄露问题，会导致系统越来越卡顿。
-							</p>
-							{NCodeTemplate && NCodeTemplate(code)}
-						</div>
-					);
-				},
-				positiveText: '复制自定义规则到剪贴板',
-				negativeText: '取消',
-				onPositiveClick: () => {
-					navigator.clipboard.writeText(code);
-				},
-				onNegativeClick: () => {},
-			});
-		},
-	},
+	// 'tv.danmaku.bili': {
+	// 	isShow() {
+	// 		const deviceStore = useDeviceStore();
+	// 		if (
+	// 			deviceStore.deviceType === 'tablet' &&
+	// 			deviceStore.MIOSVersion &&
+	// 			deviceStore.MIOSVersion === 2 &&
+	// 			deviceStore.androidTargetSdk >= 35
+	// 		) {
+	// 			return true;
+	// 		}
+	// 		return false;
+	// 	},
+	// 	onClick(row: EmbeddedMergeRuleItem) {
+	// 		const deviceStore = useDeviceStore();
+	// 		const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
+	// 			theme: deviceStore.isDarkMode ? darkTheme : lightTheme,
+	// 		}));
+	// 		const { message, modal, notification } = createDiscreteApi(['message', 'modal', 'notification'], {
+	// 			configProviderProps: configProviderPropsRef,
+	// 		});
+	// 		const shareContent = {
+	// 			name: 'tv.danmaku.bili',
+	// 			cmpt:
+	// 				deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35
+	// 					? 2
+	// 					: 1,
+	// 			em: {
+	// 				name: 'tv.danmaku.bili',
+	// 				disableSensor: true,
+	// 				splitLineColor: '#FFFFFF:#17181A',
+	// 				...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35
+	// 					? {
+	// 							skipSelfAdaptive: true,
+	// 						}
+	// 					: undefined),
+	// 				splitRatio: deviceStore.deviceType === 'tablet' ? 0.4 : 0.5,
+	// 				isShowDivider: true,
+	// 				supportFullSize: true,
+	// 				splitPairRule:
+	// 					'tv.danmaku.bili.MainActivityV2:*,com.bilibili.search.main.BiliMainSearchActivity:*,com.bilibili.bplus.followinglist.quick.consume.QuickConsumeActivity:*,tv.danmaku.bili.ui.videodownload.VideoDownloadListActivity:*,com.bilibili.lib.ui.GeneralActivity:*,tv.danmaku.bili.ui.favorite.FavoriteBoxActivity:*,tv.danmaku.bili.ui.main2.WatchLaterActivity:*,com.bilibili.lib.ui.GeneralActivity:*,com.bilibili.app.preferences.BiliPreferencesActivity:*,com.bilibili.app.authorspace.ui.AuthorSpaceActivity:*,com.bilibili.search2.main.BiliMainSearchActivity:*',
+	// 				activityRule:
+	// 					'tv.danmaku.bili.MainActivityV2,com.bilibili.column.ui.detail.image.ColumnImageViewerActivity,com.bilibili.studio.centerplus.ui.CenterPlusMainActivity,com.bilibili.lib.imageviewer.MediaViewerActivity,com.bilibili.socialize.share.core.ui.BiliShareDelegateActivity,com.bilibili.socialize.share.core.ui.QQAssistActivity,com.tencent.connect.common.AssistActivity,com.bilibili.upper.module.archive.activity.ArchiveTempActivity',
+	// 				transitionRules:
+	// 					'tv.danmaku.bili.MainActivityV2,tv.danmaku.bili.sms.SmsLoginDialogActivityV2,com.bilibili.teenagersmode.ui.TeenagersModeDialogActivity,tv.danmaku.bili.ui.answer.AnswerDialogTransferActivity,com.bilibili.bilibililive.ui.room.modresource.BlinkModResourceLoadingActivity,com.bilibili.bilibililive.ui.room.BlinkRoomActivityV2,com.bilibili.lib.fasthybrid.blrouter.SADispatcherActivity,com.bilibili.lib.fasthybrid.container.GameContainerActivity0',
+	// 				flags: 'reusePreContainer:com.bilibili.bplus.followinglist.page.browser.ui.LightBrowserActivityV2',
+	// 				forcePortraitActivity:
+	// 					'tv.danmaku.bili/com.bilibili.app.preferences.storage.BiliStorageManagerActivity',
+	// 			},
+	// 			...(deviceStore.deviceType === 'tablet'
+	// 				? {
+	// 						fo: {
+	// 							name: 'tv.danmaku.bili',
+	// 							...(deviceStore.MIOSVersion &&
+	// 							deviceStore.MIOSVersion >= 2 &&
+	// 							deviceStore.androidTargetSdk >= 35
+	// 								? {
+	// 										skipSelfAdaptive: true,
+	// 										supportModes: 'full,fo',
+	// 									}
+	// 								: undefined),
+	// 						},
+	// 					}
+	// 				: undefined),
+	// 			type: 'embedded',
+	// 			device: deviceStore.deviceType === 'tablet' ? 'pad' : 'fold',
+	// 			mode: 'embedded',
+	// 			...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35
+	// 				? {
+	// 						thirdPartyAppOptimize: false,
+	// 					}
+	// 				: undefined),
+	// 		};
+	// 		const jsonString = JSON.stringify(shareContent);
+	// 		const deflate = pako.deflate(jsonString, {
+	// 			level: 9,
+	// 			memLevel: 9,
+	// 			windowBits: 15,
+	// 		});
+	// 		const compressedData = new Uint8Array(deflate);
+	// 		const base64String: string = arrayBufferToBase64(compressedData);
+	// 		const code = base64String;
+	// 		modal.create({
+	// 			title: '应用规则感知',
+	// 			type: 'info',
+	// 			preset: 'dialog',
+	// 			content() {
+	// 				const NCodeTemplate = (code: string) => {
+	// 					return h(NCode, {
+	// 						code: code,
+	// 						class: 'my-5 overflow-y-auto line-clamp-6',
+	// 						language: 'Base64',
+	// 						wordWrap: true,
+	// 					});
+	// 				};
+	// 				return (
+	// 					<div>
+	// 						<p>
+	// 							小米已为{' '}
+	// 							<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+	// 								{renderApplicationName(row.name, row.applicationName)}
+	// 							</span>{' '}
+	// 							适配了应用布局优化，您可以将此自定义规则通过{' '}
+	// 							<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+	// 								[应用横屏布局-从分享口令导入]
+	// 							</span>{' '}
+	// 							进行导入并开启{' '}
+	// 							<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+	// 								{renderApplicationName(row.name, row.applicationName)}
+	// 							</span>{' '}
+	// 							在{' '}
+	// 							<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+	// 								应用布局优化
+	// 							</span>{' '}
+	// 							的开关，即可体验~
+	// 						</p>
+	// 						<p>
+	// 							Tips: 此规则需要搭配最新版的Hyper OS 2.0，老版本的 OS 2
+	// 							可能由于小米BUG存在较为严重的内存泄露问题，会导致系统越来越卡顿。
+	// 						</p>
+	// 						{NCodeTemplate && NCodeTemplate(code)}
+	// 					</div>
+	// 				);
+	// 			},
+	// 			positiveText: '复制自定义规则到剪贴板',
+	// 			negativeText: '取消',
+	// 			onPositiveClick: () => {
+	// 				navigator.clipboard.writeText(code);
+	// 			},
+	// 			onNegativeClick: () => {},
+	// 		});
+	// 	},
+	// },
 	'com.bilibili.app.in': {
 		isShow() {
 			const deviceStore = useDeviceStore();
