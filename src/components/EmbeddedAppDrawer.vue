@@ -42,6 +42,7 @@ export interface EmbeddedAppDrawerSubmitResult {
 		forceFixedOrientation?: boolean;
 		forceAnyOrientation?: boolean;
 		emIsDisabledPlaceholder?: boolean;
+		forceEmbeddedScaleToFixedOrientation?: boolean;
 	};
 	loadingCallback: () => void;
 	closeCallback: () => void;
@@ -141,6 +142,8 @@ const currentSplitRatio = ref<number>(0.5);
 
 const currentForceFixedOrientation = ref<boolean>(false);
 
+const currentForceEmbeddedScaleToFixedOrientation = ref<boolean>(false);
+
 const currentForceAnyOrientation = ref<boolean>(false);
 
 const currentIsSwitchEmbeddedCustom = ref<boolean>(false);
@@ -173,6 +176,74 @@ const handleTextAreaBlur = (ref: string) => {
 			block: 'start',
 		});
 	}
+};
+
+const changeForceEmbeddedScaleToFixedOrientation = async (value: boolean) => {
+	if (value) {
+		const [changeForceEmbeddedScaleToFixedOrientationCancel] = await $to(
+			new Promise<string>((resolve, reject) => {
+				modal.create({
+					title: '确认启用强制平行窗口居中显示吗？',
+					type: 'warning',
+					preset: 'dialog',
+					content: () => {
+						return (
+							<p>
+								开启后，平行窗口将强制要求居中显示，但同时会导致应用丢失平行窗口滑动条或应用元素缩放效果，如需恢复，则需要先清除自定义规则，确定要继续吗？
+							</p>
+						);
+					},
+					positiveText: '确定继续',
+					negativeText: '我再想想',
+					onPositiveClick: () => {
+						resolve('positiveClick');
+					},
+					onNegativeClick: () => {
+						reject('negativeClick');
+					},
+				});
+			}),
+		);
+		if (changeForceEmbeddedScaleToFixedOrientationCancel) {
+			return;
+		}
+	}
+
+	currentForceEmbeddedScaleToFixedOrientation.value = value;
+};
+
+const changeForceAnyOrientation = async (value: boolean) => {
+	if (value) {
+		const [changeForceAnyOrientationCancel] = await $to(
+			new Promise<string>((resolve, reject) => {
+				modal.create({
+					title: '确认启用强制横屏界面居中显示吗？',
+					type: 'warning',
+					preset: 'dialog',
+					content: () => {
+						return (
+							<p>
+								开启后，应用横屏界面将强制要求居中显示，但同时会导致应用部分适用于全屏场景的界面无法正常进入全屏，也会强制进入居中显示，确定要继续吗？
+							</p>
+						);
+					},
+					positiveText: '确定继续',
+					negativeText: '我再想想',
+					onPositiveClick: () => {
+						resolve('positiveClick');
+					},
+					onNegativeClick: () => {
+						reject('negativeClick');
+					},
+				});
+			}),
+		);
+		if (changeForceAnyOrientationCancel) {
+			return;
+		}
+	}
+
+	currentForceAnyOrientation.value = value;
 };
 
 const changeThirdPartyAppOptimize = async (value: boolean) => {
@@ -238,6 +309,7 @@ const embeddedAppDrawer = ref({
 				currentForceAnyOrientation.value = false;
 				currentIsSupportEmbeddedPlaceholder.value = false;
 				currentIsDisabledEmbeddedPlaceholder.value = false;
+				currentForceEmbeddedScaleToFixedOrientation.value = false;
 			}
 
 			// 如果是update模式，初始化参数
@@ -262,6 +334,11 @@ const embeddedAppDrawer = ref({
 				} else {
 					currentIsSupportEmbeddedPlaceholder.value = false;
 				}
+				if (initialParams.embeddedRules && initialParams.embeddedRules.hasOwnProperty('scaleMode')) {
+					currentForceEmbeddedScaleToFixedOrientation.value = initialParams.embeddedRules.scaleMode === 2 ? true : false;
+				} else {
+					currentForceEmbeddedScaleToFixedOrientation.value = false;
+				}
 				currentSettingMode.value = initialParams.settingMode;
 				if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35) {
 					currentThirdPartyAppOptimize.value = initialParams.thirdPartyAppOptimize ?? false;
@@ -281,9 +358,11 @@ const embeddedAppDrawer = ref({
 						?.split(',')
 						.includes('OVERRIDE_UNDEFINED_ORIENTATION_TO_PORTRAIT') ?? false;
 				currentForceAnyOrientation.value =
-					((initialParams.fixedOrientationRule?.compatChange
+					(initialParams.fixedOrientationRule?.compatChange
 						?.split(',')
-						.includes('OVERRIDE_ANY_ORIENTATION')) && currentForceFixedOrientation.value) ?? false;
+						.includes('OVERRIDE_ANY_ORIENTATION') &&
+						currentForceFixedOrientation.value) ??
+					false;
 				if (currentFullRule.value === 'nra:cr:rcr:nr') {
 					currentFullScreenRuleOptions.value =
 						deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35
@@ -548,7 +627,10 @@ const handleDrawerSubmit = async () => {
 			deviceStore.MIOSVersion >= 2 &&
 			deviceStore.androidTargetSdk >= 35 && {
 				thirdPartyAppOptimize:
-					currentThirdPartyAppOptimize.value && (currentSettingMode.value === 'fullScreen' || currentSettingMode.value === 'disabled') ? true : false,
+					currentThirdPartyAppOptimize.value &&
+					(currentSettingMode.value === 'fullScreen' || currentSettingMode.value === 'disabled')
+						? true
+						: false,
 			}),
 		modePayload: {
 			...(currentSettingMode.value === 'fullScreen' && {
@@ -581,7 +663,7 @@ const handleDrawerSubmit = async () => {
 			...(currentSettingMode.value === 'fixedOrientation' &&
 				deviceStore.MIOSVersion &&
 				deviceStore.MIOSVersion >= 2 &&
-				deviceStore.androidTargetSdk >= 35 && 
+				deviceStore.androidTargetSdk >= 35 &&
 				currentForceFixedOrientation.value && {
 					forceAnyOrientation: currentForceAnyOrientation.value,
 				}),
@@ -600,6 +682,11 @@ const handleDrawerSubmit = async () => {
 					(currentRuleMode.value === 'module' && currentIsSwitchEmbeddedCustom.value)) &&
 				currentIsSupportEmbeddedPlaceholder.value && {
 					emIsDisabledPlaceholder: currentIsDisabledEmbeddedPlaceholder.value,
+				}),
+			...(currentSettingMode.value === 'embedded' &&
+				(currentRuleMode.value === 'custom' ||
+					(currentRuleMode.value === 'module' && currentIsSwitchEmbeddedCustom.value)) && {
+					forceEmbeddedScaleToFixedOrientation: currentForceEmbeddedScaleToFixedOrientation.value,
 				}),
 		},
 		loadingCallback,
@@ -712,6 +799,25 @@ defineExpose({
 							<template #checked>平行窗口显示比例变化时重载</template>
 							<template #unchecked>平行窗口显示比例变化时不重载</template>
 						</n-switch>
+					</n-card>
+					<n-card
+						v-if="currentRuleMode === 'custom' || currentIsSwitchEmbeddedCustom"
+						:bordered="false"
+						title="强制平行窗口居中显示"
+						size="small">
+						<div class="mb-4">
+							<n-tag :bordered="false" type="success">
+								开启后
+								<span class="font-bold">平行窗口</span>
+								将强制要求居中显示
+							</n-tag>
+						</div>
+						<div>
+							<n-switch :rail-style="railStyle" @update:value="(value: boolean) => changeForceEmbeddedScaleToFixedOrientation(value)" :value="currentForceEmbeddedScaleToFixedOrientation" size="large">
+								<template #checked>强制平行窗口居中显示</template>
+								<template #unchecked>不强制平行窗口居中显示</template>
+							</n-switch>
+						</div>
 					</n-card>
 				</n-tab-pane>
 				<n-tab-pane name="fullScreen" tab="全屏">
@@ -886,7 +992,7 @@ defineExpose({
 						v-if="
 							deviceStore.MIOSVersion &&
 							deviceStore.MIOSVersion >= 2 &&
-							deviceStore.androidTargetSdk >= 35 && 
+							deviceStore.androidTargetSdk >= 35 &&
 							currentForceFixedOrientation === true
 						"
 						:bordered="false"
@@ -900,7 +1006,11 @@ defineExpose({
 							</n-tag>
 						</div>
 						<div>
-							<n-switch :rail-style="railStyle" v-model:value="currentForceAnyOrientation" size="large">
+							<n-switch
+								:rail-style="railStyle"
+								:value="currentForceAnyOrientation"
+								@update:value="(value: boolean) => changeForceAnyOrientation(value)"
+								size="large">
 								<template #checked>强制横屏界面居中显示</template>
 								<template #unchecked>不强制横屏界面居中显示</template>
 							</n-switch>

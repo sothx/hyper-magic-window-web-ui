@@ -1019,6 +1019,15 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 					) {
 						delete embeddedStore.customConfigEmbeddedRulesList[row.name].placeholder;
 					}
+					if (updateEmbeddedAppRes.modePayload.hasOwnProperty('forceEmbeddedScaleToFixedOrientation')) {
+						if (updateEmbeddedAppRes.modePayload.forceEmbeddedScaleToFixedOrientation) {
+							embeddedStore.customConfigEmbeddedRulesList[row.name].scaleMode = 2;
+						} else {
+							if (embeddedStore.customConfigEmbeddedRulesList[row.name].scaleMode !== 1) {
+								delete embeddedStore.customConfigEmbeddedRulesList[row.name].scaleMode;
+							}
+						}
+					}
 					if (embeddedStore.customConfigEmbeddedRulesList[row.name].hasOwnProperty('fullRule')) {
 						delete embeddedStore.customConfigEmbeddedRulesList[row.name].fullRule;
 					}
@@ -1052,7 +1061,15 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 						) {
 							delete embeddedStore.customConfigEmbeddedRulesList[row.name].placeholder;
 						}
-
+						if (updateEmbeddedAppRes.modePayload.hasOwnProperty('forceEmbeddedScaleToFixedOrientation')) {
+							if (updateEmbeddedAppRes.modePayload.forceEmbeddedScaleToFixedOrientation) {
+								embeddedStore.customConfigEmbeddedRulesList[row.name].scaleMode = 2;
+							} else {
+								if (embeddedStore.customConfigEmbeddedRulesList[row.name].scaleMode !== 1) {
+									delete embeddedStore.customConfigEmbeddedRulesList[row.name].scaleMode;
+								}
+							}
+						}
 						if (embeddedStore.customConfigEmbeddedRulesList[row.name].hasOwnProperty('fullRule')) {
 							delete embeddedStore.customConfigEmbeddedRulesList[row.name].fullRule;
 						}
