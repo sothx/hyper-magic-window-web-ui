@@ -821,6 +821,7 @@ export const clearJoyose = (): Promise<string> => {
 		'am kill com.xiaomi.joyose',
 		'pm clear com.xiaomi.joyose >/dev/null',
 		'pm enable com.xiaomi.joyose/com.xiaomi.joyose.cloud.CloudServerReceiver >/dev/null',
+		'pm enable com.xiaomi.joyose/com.xiaomi.joyose.smartop.SmartOpService >/dev/null',
 		'am startservice com.xiaomi.joyose/com.xiaomi.joyose.smartop.SmartOpService',
 	];
 

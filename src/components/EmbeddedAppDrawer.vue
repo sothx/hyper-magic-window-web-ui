@@ -43,6 +43,8 @@ export interface EmbeddedAppDrawerSubmitResult {
 		forceAnyOrientation?: boolean;
 		emIsDisabledPlaceholder?: boolean;
 		forceEmbeddedScaleToFixedOrientation?: boolean;
+		emIsSplitMinWidthZeroMode?: boolean;
+		fullDisablecompatChange?: boolean;
 	};
 	loadingCallback: () => void;
 	closeCallback: () => void;
@@ -148,6 +150,8 @@ const currentForceAnyOrientation = ref<boolean>(false);
 
 const currentIsSwitchEmbeddedCustom = ref<boolean>(false);
 
+const currentIsSplitMinWidthZeroMode = ref<boolean>(false);
+
 const currentSupportModes = ref<EmbeddedMergeRuleItem['settingMode'][]>([]);
 
 const resizeDrawerContentFun = (isResize: boolean) => {
@@ -176,6 +180,40 @@ const handleTextAreaBlur = (ref: string) => {
 			block: 'start',
 		});
 	}
+};
+
+const changeIsSplitMinWidthZeroMode = async (value: boolean) => {
+	if (value) {
+		const [changeIsSplitMinWidthZeroModeCancel] = await $to(
+			new Promise<string>((resolve, reject) => {
+				modal.create({
+					title: '确认启用强制竖屏平行窗口吗？',
+					type: 'warning',
+					preset: 'dialog',
+					content: () => {
+						return (
+							<p>
+								开启后，应用将支持竖屏进入平行窗口，具体是否生效因应用而异，开启后可能导致部分应用显示异常或者崩溃，如需恢复，则需要先清除自定义规则，确定要继续吗？
+							</p>
+						);
+					},
+					positiveText: '确定继续',
+					negativeText: '我再想想',
+					onPositiveClick: () => {
+						resolve('positiveClick');
+					},
+					onNegativeClick: () => {
+						reject('negativeClick');
+					},
+				});
+			}),
+		);
+		if (changeIsSplitMinWidthZeroModeCancel) {
+			return;
+		}
+	}
+
+	currentIsSplitMinWidthZeroMode.value = value;
 };
 
 const changeForceEmbeddedScaleToFixedOrientation = async (value: boolean) => {
@@ -309,7 +347,10 @@ const embeddedAppDrawer = ref({
 				currentForceAnyOrientation.value = false;
 				currentIsSupportEmbeddedPlaceholder.value = false;
 				currentIsDisabledEmbeddedPlaceholder.value = false;
+				currentIsSupportSplitMinWidthZeroMode.value = false;
+				currentIsSplitMinWidthZeroMode.value = false;
 				currentForceEmbeddedScaleToFixedOrientation.value = false;
+				currentDisablecompatChange.value = false;
 			}
 
 			// 如果是update模式，初始化参数
@@ -318,6 +359,7 @@ const embeddedAppDrawer = ref({
 				currentIsSwitchEmbeddedCustom.value = false;
 				currentSplitRatio.value = 0.5;
 				currentIsDisabledEmbeddedPlaceholder.value = false;
+				currentIsSplitMinWidthZeroMode.value = false;
 				currentRuleMode.value = initialParams.ruleMode;
 				currentAppName.value = initialParams.name;
 				isSupportEmbedded.value = initialParams.isSupportEmbedded;
@@ -334,8 +376,14 @@ const embeddedAppDrawer = ref({
 				} else {
 					currentIsSupportEmbeddedPlaceholder.value = false;
 				}
+				if (initialParams.embeddedRules && initialParams.embeddedRules.hasOwnProperty('splitMinWidth')) {
+					currentIsSupportSplitMinWidthZeroMode.value = false;
+				} else {
+					currentIsSupportSplitMinWidthZeroMode.value = true;
+				}
 				if (initialParams.embeddedRules && initialParams.embeddedRules.hasOwnProperty('scaleMode')) {
-					currentForceEmbeddedScaleToFixedOrientation.value = initialParams.embeddedRules.scaleMode === 2 ? true : false;
+					currentForceEmbeddedScaleToFixedOrientation.value =
+						initialParams.embeddedRules.scaleMode === 2 ? true : false;
 				} else {
 					currentForceEmbeddedScaleToFixedOrientation.value = false;
 				}
@@ -350,6 +398,14 @@ const embeddedAppDrawer = ref({
 				) {
 					currentSkipSelfAdaptive.value = initialParams.fixedOrientationRule?.disable ?? false;
 				}
+
+				if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35) {
+					currentDisablecompatChange.value =
+						initialParams.fixedOrientationRule?.compatChange
+							?.split(',')
+							.includes('DISABLED:OVERRIDE_UNDEFINED_ORIENTATION_TO_PORTRAIT') ?? false;
+				}
+
 				currentIsShowDivider.value = initialParams.fixedOrientationRule?.isShowDivider ?? false;
 				currentSupportFullSize.value = initialParams.fixedOrientationRule?.supportFullSize ?? false;
 				currentFullRule.value = initialParams.embeddedRules?.fullRule ?? undefined;
@@ -457,6 +513,8 @@ const currentSettingMode = ref<EmbeddedMergeRuleItem['settingMode']>('fullScreen
 
 const currentSkipSelfAdaptive = ref<boolean>(false);
 
+const currentDisablecompatChange = ref<boolean>(false);
+
 const currentThirdPartyAppOptimize = ref<boolean>(false);
 
 const currentIsShowDivider = ref<boolean>(true);
@@ -466,6 +524,8 @@ const currentFixedOrientationRelaunch = ref<boolean>(true);
 const currentEmbeddedRelaunch = ref<boolean>(false);
 
 const currentIsSupportEmbeddedPlaceholder = ref<boolean>(false);
+
+const currentIsSupportSplitMinWidthZeroMode = ref<boolean>(false);
 
 const currentIsDisabledEmbeddedPlaceholder = ref<boolean>(false);
 
@@ -642,6 +702,12 @@ const handleDrawerSubmit = async () => {
 					deviceStore.androidTargetSdk < 35) && {
 					skipSelfAdaptive: currentSkipSelfAdaptive.value,
 				}),
+			...(currentSettingMode.value === 'fullScreen' &&
+				deviceStore.MIOSVersion &&
+				deviceStore.MIOSVersion >= 2 &&
+				deviceStore.androidTargetSdk >= 35 && {
+					fullDisablecompatChange: currentDisablecompatChange.value,
+				}),
 			...((currentSettingMode.value === 'fullScreen' || currentSettingMode.value === 'disabled') && {
 				isShowDivider: currentIsShowDivider.value,
 			}),
@@ -682,6 +748,12 @@ const handleDrawerSubmit = async () => {
 					(currentRuleMode.value === 'module' && currentIsSwitchEmbeddedCustom.value)) &&
 				currentIsSupportEmbeddedPlaceholder.value && {
 					emIsDisabledPlaceholder: currentIsDisabledEmbeddedPlaceholder.value,
+				}),
+			...(currentSettingMode.value === 'embedded' &&
+				(currentRuleMode.value === 'custom' ||
+					(currentRuleMode.value === 'module' && currentIsSwitchEmbeddedCustom.value)) &&
+				currentIsSplitMinWidthZeroMode.value && {
+					emIsSplitMinWidthZeroMode: currentIsSplitMinWidthZeroMode.value,
 				}),
 			...(currentSettingMode.value === 'embedded' &&
 				(currentRuleMode.value === 'custom' ||
@@ -813,11 +885,33 @@ defineExpose({
 							</n-tag>
 						</div>
 						<div>
-							<n-switch :rail-style="railStyle" @update:value="(value: boolean) => changeForceEmbeddedScaleToFixedOrientation(value)" :value="currentForceEmbeddedScaleToFixedOrientation" size="large">
+							<n-switch
+								:rail-style="railStyle"
+								@update:value="(value: boolean) => changeForceEmbeddedScaleToFixedOrientation(value)"
+								:value="currentForceEmbeddedScaleToFixedOrientation"
+								size="large">
 								<template #checked>强制平行窗口居中显示</template>
 								<template #unchecked>不强制平行窗口居中显示</template>
 							</n-switch>
 						</div>
+					</n-card>
+					<n-card
+						v-if="
+							(currentRuleMode === 'custom' || currentIsSwitchEmbeddedCustom) &&
+							currentIsSupportSplitMinWidthZeroMode &&
+							deviceStore.androidTargetSdk <= 34
+						"
+						:bordered="false"
+						title="强制竖屏进入平行窗口"
+						size="small">
+						<n-switch
+							:rail-style="railStyle"
+							@update:value="(value: boolean) => changeIsSplitMinWidthZeroMode(value)"
+							:value="currentIsSplitMinWidthZeroMode"
+							size="large">
+							<template #checked>强制竖屏进入平行窗口</template>
+							<template #unchecked>不强制竖屏进入平行窗口</template>
+						</n-switch>
 					</n-card>
 				</n-tab-pane>
 				<n-tab-pane name="fullScreen" tab="全屏">
@@ -896,6 +990,28 @@ defineExpose({
 						<n-switch :rail-style="railStyle" v-model:value="currentSkipSelfAdaptive" size="large">
 							<template #checked>跳过自适配声明</template>
 							<template #unchecked>不跳过自适配声明</template>
+						</n-switch>
+					</n-card>
+					<n-card
+						class=""
+						:bordered="false"
+						v-if="
+							deviceStore.MIOSVersion &&
+							deviceStore.MIOSVersion >= 2 &&
+							deviceStore.androidTargetSdk >= 35
+						"
+						title="禁用应用兼容性声明"
+						size="small">
+						<div class="mb-4">
+							<n-tag :bordered="false" type="success">
+								适用于即使设置了
+								<span class="font-bold">横屏规则</span>
+								仍无法横屏的应用
+							</n-tag>
+						</div>
+						<n-switch :rail-style="railStyle" v-model:value="currentDisablecompatChange" size="large">
+							<template #checked>禁用应用兼容性声明</template>
+							<template #unchecked>不禁用应用兼容性声明</template>
 						</n-switch>
 					</n-card>
 					<n-card

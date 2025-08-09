@@ -495,7 +495,9 @@ const openAddEmbeddedApp = async () => {
 						...(deviceStore.MIOSVersion &&
 						deviceStore.MIOSVersion >= 2 &&
 						deviceStore.androidTargetSdk >= 35
-							? { skipSelfAdaptive: true }
+							? {
+									skipSelfAdaptive: true,
+								}
 							: {}),
 					};
 				}
@@ -513,12 +515,26 @@ const openAddEmbeddedApp = async () => {
 					...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35
 						? { defaultSettings: 'full' }
 						: {}),
+					...(deviceStore.MIOSVersion &&
+					deviceStore.MIOSVersion >= 2 &&
+					deviceStore.androidTargetSdk >= 35 &&
+					addEmbeddedAppRes.modePayload.fullDisablecompatChange
+						? { compatChange: 'DISABLED:OVERRIDE_UNDEFINED_ORIENTATION_TO_PORTRAIT' }
+						: {}),
 					...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35
 						? { skipSelfAdaptive: true }
 						: {}),
 				};
 			}
 			if (addEmbeddedAppRes.settingMode === 'fixedOrientation') {
+				const compatChangeSet: Set<string> = new Set([]);
+				if (addEmbeddedAppRes.modePayload.forceFixedOrientation) {
+					compatChangeSet.add('OVERRIDE_UNDEFINED_ORIENTATION_TO_PORTRAIT');
+				}
+				if (addEmbeddedAppRes.modePayload.forceAnyOrientation) {
+					compatChangeSet.add('OVERRIDE_ANY_ORIENTATION');
+				}
+				const currentCompatChange = Array.from(compatChangeSet).join(',');
 				embeddedStore.customConfigFixedOrientationList[addEmbeddedAppRes.name] = {
 					name: addEmbeddedAppRes.name,
 					...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35
@@ -533,6 +549,11 @@ const openAddEmbeddedApp = async () => {
 					...(addEmbeddedAppRes.modePayload.ratio !== undefined
 						? {
 								ratio: addEmbeddedAppRes.modePayload.ratio,
+							}
+						: {}),
+					...(currentCompatChange
+						? {
+								compatChange: currentCompatChange,
 							}
 						: {}),
 					...(addEmbeddedAppRes.modePayload.foRelaunch !== undefined
@@ -779,6 +800,11 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 						if (hasCompatChange) {
 							delete currentFixedOrientation.value.compatChange;
 						}
+						const isFullDisablecompatChange = updateEmbeddedAppRes.modePayload.fullDisablecompatChange;
+						if (isFullDisablecompatChange) {
+							currentFixedOrientation.value.compatChange =
+								'DISABLED:OVERRIDE_UNDEFINED_ORIENTATION_TO_PORTRAIT';
+						}
 						currentFixedOrientation.value.supportModes = 'full,fo';
 						currentFixedOrientation.value.defaultSettings = 'full';
 					} else {
@@ -803,6 +829,12 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 							? { disable: true }
 							: {}),
 						...(updateEmbeddedAppRes.modePayload.supportFullSize ? { supportFullSize: true } : {}),
+						...(deviceStore.MIOSVersion &&
+						deviceStore.MIOSVersion >= 2 &&
+						deviceStore.androidTargetSdk >= 35 &&
+						updateEmbeddedAppRes.modePayload.fullDisablecompatChange
+							? { compatChange: 'DISABLED:OVERRIDE_UNDEFINED_ORIENTATION_TO_PORTRAIT' }
+							: {}),
 						...(deviceStore.MIOSVersion &&
 						deviceStore.MIOSVersion >= 2 &&
 						deviceStore.androidTargetSdk >= 35
@@ -866,7 +898,9 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 						currentFixedOrientation.value.skipSelfAdaptive = true;
 
 						const compatChangeSet = new Set(
-							currentFixedOrientation.value.compatChange?.split(',').filter(Boolean) || [],
+							currentFixedOrientation.value.compatChange
+								?.split(',')
+								.filter(item => item && !item.startsWith('DISABLED:')) || [],
 						);
 
 						if (updateEmbeddedAppRes.modePayload.hasOwnProperty('forceFixedOrientation')) {
@@ -1028,6 +1062,12 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 							}
 						}
 					}
+					if (
+						updateEmbeddedAppRes.modePayload.hasOwnProperty('emIsSplitMinWidthZeroMode') &&
+						updateEmbeddedAppRes.modePayload.emIsSplitMinWidthZeroMode
+					) {
+						embeddedStore.customConfigEmbeddedRulesList[row.name].splitMinWidth = 0;
+					}
 					if (embeddedStore.customConfigEmbeddedRulesList[row.name].hasOwnProperty('fullRule')) {
 						delete embeddedStore.customConfigEmbeddedRulesList[row.name].fullRule;
 					}
@@ -1060,6 +1100,12 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 							updateEmbeddedAppRes.modePayload.emIsDisabledPlaceholder
 						) {
 							delete embeddedStore.customConfigEmbeddedRulesList[row.name].placeholder;
+						}
+						if (
+							updateEmbeddedAppRes.modePayload.hasOwnProperty('emIsSplitMinWidthZeroMode') &&
+							updateEmbeddedAppRes.modePayload.emIsSplitMinWidthZeroMode
+						) {
+							embeddedStore.customConfigEmbeddedRulesList[row.name].splitMinWidth = 0;
 						}
 						if (updateEmbeddedAppRes.modePayload.hasOwnProperty('forceEmbeddedScaleToFixedOrientation')) {
 							if (updateEmbeddedAppRes.modePayload.forceEmbeddedScaleToFixedOrientation) {
@@ -1664,6 +1710,35 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 										embeddedPerceptionApplications[row.name].onClick(row)
 									}>
 									应用规则感知
+								</n-button>
+							)}
+						{row.embeddedRules?.splitMinWidth === 0 &&
+							row.settingMode === 'embedded' &&
+							row.ruleMode === 'custom' && (
+								<n-button
+									class='mr-1 mt-1'
+									size='tiny'
+									ghost
+									type='error'
+									onClick={() => {
+										modal.create({
+											title: '竖屏平行窗口',
+											type: 'info',
+											preset: 'dialog',
+											content: () => (
+												<p>
+													您已配置{' '}
+													<span
+														class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+														{renderApplicationName(row.name, row.applicationName)}
+													</span>{' '}
+													强制竖屏平行窗口模式，具体是否生效因应用而异，开启后可能导致部分应用显示异常或者崩溃，如需恢复，则需要先清除自定义规则。
+												</p>
+											),
+											positiveText: '确定',
+										});
+									}}>
+									竖屏平行窗口
 								</n-button>
 							)}
 					</div>
