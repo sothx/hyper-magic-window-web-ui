@@ -199,6 +199,49 @@ export interface EnhanceItemInfo {
 }
 const enhanceList: EnhanceItemInfo[] = [
 	{
+		title: '截图后自动添加至剪贴板',
+		content: () => (
+			<>
+				{!miuiCursorStyleHook.isInit.value ? (
+					<n-skeleton width={65} sharp={false} size='small' />
+				) : (
+					<n-switch
+						railStyle={railStyle}
+						value={freeformBlackListHook.isEnable.value ? true : false}
+						loading={deviceStore.loading || freeformBlackListHook.loading.value}
+						onUpdate:value={(value: boolean) => freeformBlackListHook.changeEnableMode(value)}>
+						{{
+							checked: () => <>已启用</>,
+							unchecked: () => <>未启用</>,
+						}}
+					</n-switch>
+				)}
+
+				<n-alert class='mt-5' type='info' show-icon={false} bordered={false}>
+					<div>
+						<p>
+							由于小米BUG，部分系统存在开机后「鼠标光标样式」被异常重置的问题，模块提供「鼠标光标样式开机自配置」来解决这个问题，开启后每次开机会被配置为指定的「鼠标光标样式」，系统设置内的修改会在重启后失效。
+						</p>
+						<n-switch
+							onUpdateValue={(value: boolean) =>
+								miuiCursorStyleHook.changeAutoStartMiuiCursorStyleType(value)
+							}
+							railStyle={railStyle}
+							class='mt-5'
+							value={!!miuiCursorStyleHook.currentAutoStartMiuiCursorStyleType.value}
+							loading={deviceStore.loading}>
+							{{
+								checked: () => '已启用开机自配置',
+								unchecked: () => '未启用开机自配置',
+							}}
+						</n-switch>
+					</div>
+				</n-alert>
+			</>
+		),
+		isShow: () => Boolean(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2)
+	},
+	{
 		title: '禁用小窗黑名单',
 		content: () => (
 			<>

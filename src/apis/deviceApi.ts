@@ -3848,3 +3848,80 @@ export const removeIsAmktiaoPenUpdateAutoTask = (): Promise<string> => {
 		shellCommon,
 	);
 };
+
+export const getMiScreenShotsWriteClipboardEnable = (): Promise<string> => {
+	const shellCommon = `settings get secure mi_screen_shots_write_clipboard_enable`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve('1');
+			} else {
+				const { errno, stdout, stderr }: ExecResults = (await exec(shellCommon)) as ExecResults;
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+
+export const changeMiScreenShotsWriteClipboardEnable = (mode: 1 | 0): Promise<string> => {
+	const shellCommon = `settings put secure mi_screen_shots_write_clipboard_enable ${mode}`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`success`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = (await exec(shellCommon)) as ExecResults;
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const getIsAutoEnableMiScreenShotsWriteClipboard = (): Promise<string> => {
+	const shellCommon = `grep 'is_auto_enable_mi_screen_shots_write_clipboard=' /data/adb/MIUI_MagicWindow+/config.prop | awk -F'=' '{print $2}'`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`false`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+
+export const addIsAutoEnableMiScreenShotsWriteClipboard = (): Promise<string> => {
+	const shellCommon = `grep -q '^is_auto_enable_mi_screen_shots_write_clipboard=' /data/adb/MIUI_MagicWindow+/config.prop || (source ${toolsFunc} && add_lines "is_auto_enable_mi_screen_shots_write_clipboard=true" /data/adb/MIUI_MagicWindow+/config.prop && echo "Command executed successfully." || echo "Command failed.");`
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`Command executed successfully.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : stdout === 'Command executed successfully.' ? resolve(stdout) : reject(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const removeIsAutoEnableMiScreenShotsWriteClipboard = (): Promise<string> => {
+	const shellCommon = `sed -i '/^is_auto_enable_mi_screen_shots_write_clipboard=/d' //data/adb/MIUI_MagicWindow+/config.prop && echo "Remove is_auto_enable_mi_screen_shots_write_clipboard successfully." || echo "Remove is_auto_enable_mi_screen_shots_write_clipboard failed."`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`Remove is_auto_enable_mi_screen_shots_write_clipboard successfully.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
