@@ -17,6 +17,7 @@ import { useDisplaySettings } from '@/hooks/useDisplaySettings';
 import { useJoyose } from '@/hooks/useJoyose';
 import { useFbo } from '@/hooks/useFbo';
 import { useProjectTrebleVerticalScreenSplit } from '@/hooks/useProjectTrebleVerticalScreenSplit';
+import { useMiScreenShotsWriteClipboard } from '@/hooks/useMiScreenShotsWriteClipboard';
 import {
 	BoltIcon,
 	CpuChipIcon,
@@ -73,6 +74,7 @@ const projectTrebleMaxFreeformCountHook = useProjectTrebleMaxFreeformCount();
 const disabledFreeformBottomCaptionHook = useDisabledFreeformBottomCaption();
 const immerseFreeformBottomCaptionHook = useImmersedFreeformBottomCaption();
 const padSystemPatchAdditionalModuleHook = usePadSystemPatchAdditionalModule();
+const miScreenShotsWriteClipboard = useMiScreenShotsWriteClipboard();
 const fboHook = useFbo();
 const joyoseHook = useJoyose();
 // const initHooks = () => {
@@ -199,47 +201,48 @@ export interface EnhanceItemInfo {
 }
 const enhanceList: EnhanceItemInfo[] = [
 	{
-		title: '截图后自动添加至剪贴板',
+		title: '截图自动添加至剪贴板',
 		content: () => (
 			<>
-				{!miuiCursorStyleHook.isInit.value ? (
-					<n-skeleton width={65} sharp={false} size='small' />
+				{!miScreenShotsWriteClipboard.isInit.value ? (
+					<n-skeleton width={65} sharp={false} round size='small' />
 				) : (
 					<n-switch
 						railStyle={railStyle}
-						value={freeformBlackListHook.isEnable.value ? true : false}
-						loading={deviceStore.loading || freeformBlackListHook.loading.value}
-						onUpdate:value={(value: boolean) => freeformBlackListHook.changeEnableMode(value)}>
+						value={miScreenShotsWriteClipboard.isEnable.value ? true : false}
+						loading={deviceStore.loading || miScreenShotsWriteClipboard.loading.value}
+						onUpdate:value={(value: boolean) => miScreenShotsWriteClipboard.changeEnableMode(value)}>
 						{{
 							checked: () => <>已启用</>,
 							unchecked: () => <>未启用</>,
 						}}
 					</n-switch>
 				)}
-
-				<n-alert class='mt-5' type='info' show-icon={false} bordered={false}>
-					<div>
-						<p>
-							由于小米BUG，部分系统存在开机后「鼠标光标样式」被异常重置的问题，模块提供「鼠标光标样式开机自配置」来解决这个问题，开启后每次开机会被配置为指定的「鼠标光标样式」，系统设置内的修改会在重启后失效。
-						</p>
-						<n-switch
-							onUpdateValue={(value: boolean) =>
-								miuiCursorStyleHook.changeAutoStartMiuiCursorStyleType(value)
-							}
-							railStyle={railStyle}
-							class='mt-5'
-							value={!!miuiCursorStyleHook.currentAutoStartMiuiCursorStyleType.value}
-							loading={deviceStore.loading}>
-							{{
-								checked: () => '已启用开机自配置',
-								unchecked: () => '未启用开机自配置',
-							}}
-						</n-switch>
-					</div>
-				</n-alert>
+				{miScreenShotsWriteClipboard.isEnable.value && (
+					<n-alert class='mt-5' type='info' show-icon={false} bordered={false}>
+						<div>
+							<p>
+								由于小米已经废弃了该功能，模块提供「开机自配置」来解决这个问题，开启后每次开机会自动启用「截图自动添加至剪贴板」，系统设置内的修改会在重启后失效。
+							</p>
+							<n-switch
+								onUpdateValue={(value: boolean) =>
+									miScreenShotsWriteClipboard.changeIsAutoEnableMode(value)
+								}
+								railStyle={railStyle}
+								class='mt-5'
+								value={!!miScreenShotsWriteClipboard.isAutoEnable.value}
+								loading={deviceStore.loading}>
+								{{
+									checked: () => '已启用开机自配置',
+									unchecked: () => '未启用开机自配置',
+								}}
+							</n-switch>
+						</div>
+					</n-alert>
+				)}
 			</>
 		),
-		isShow: () => Boolean(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2)
+		isShow: () => Boolean(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 1),
 	},
 	{
 		title: '禁用小窗黑名单',
@@ -2050,7 +2053,7 @@ const enhanceList: EnhanceItemInfo[] = [
 					),
 				}}
 			</n-dropdown>
-		)
+		),
 	},
 	{
 		title: '刷新率监视器',
@@ -2128,7 +2131,11 @@ const filteredEnhanceList = computed(() => {
 
 			<n-card size="small" class="mt-5">
 				<div class="flex flex-wrap">
-					<n-button @click="() => padSystemPatchAdditionalModuleHook.openDownloadModuleModal()" v-if="deviceStore.androidTargetSdk >= 34 && deviceStore.deviceType === 'tablet'" class="mb-3 mr-3" color="#69b2b6">
+					<n-button
+						@click="() => padSystemPatchAdditionalModuleHook.openDownloadModuleModal()"
+						v-if="deviceStore.androidTargetSdk >= 34 && deviceStore.deviceType === 'tablet'"
+						class="mb-3 mr-3"
+						color="#69b2b6">
 						<template #icon>
 							<n-icon>
 								<CpuChipIcon />

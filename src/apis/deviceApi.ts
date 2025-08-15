@@ -3885,7 +3885,7 @@ export const getIsAutoEnableMiScreenShotsWriteClipboard = (): Promise<string> =>
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
-				resolve(`false`);
+				resolve(`true`);
 			} else {
 				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
 				errno ? reject(stderr) : resolve(stdout);
