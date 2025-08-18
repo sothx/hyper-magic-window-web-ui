@@ -1,6 +1,7 @@
 <script setup lang="tsx">
 import { useDeviceStore } from '@/stores/device';
 import * as deviceApi from '@/apis/deviceApi';
+import PinyinMatch from 'pinyin-match';
 import { computed, ref, type CSSProperties } from 'vue';
 import { RenderJsx } from '@/components/RenderJSX';
 import { createDiscreteApi, darkTheme, lightTheme, NInput, type ConfigProviderProps } from 'naive-ui';
@@ -837,7 +838,14 @@ const filteredAppList = computed(() => {
 		const showFlag = item.isShow ? item.isShow() : true;
 		if (!showFlag) return false;
 		if (!keyword) return true;
-		return item.title.toLowerCase().includes(keyword);
+
+		const titleStr = item.title?.toLowerCase?.() ?? '';
+
+		// 支持普通 includes 和拼音匹配
+		return (
+			titleStr.includes(keyword) ||
+			(PinyinMatch.match(titleStr, keyword) !== false)
+		);
 	});
 });
 </script>
