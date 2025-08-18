@@ -201,6 +201,217 @@ export interface EnhanceItemInfo {
 	isShow?: () => boolean;
 }
 const enhanceList: EnhanceItemInfo[] = [
+		{
+		title: '使用老版触控驱动（水龙）',
+		titleSlot: () => (
+			<>
+				{!deviceStore.showThirdPartySetting.amktiaoROMInterface && (
+					<div class='mt-2'>
+						<n-button
+							strong
+							secondary
+							size='small'
+							type='warning'
+							onClick={() => amktiaoHook.enableSetting()}>
+							启用功能
+						</n-button>
+					</div>
+				)}
+			</>
+		),
+		content: () => (
+			<>
+				{!amktiaoHook.isInit.value ? (
+					<n-skeleton width={110} sharp={false} round size='small' />
+				) : (
+					<n-switch
+						onUpdateValue={(value: boolean) => amktiaoHook.changeTpFirewareMode(value)}
+						railStyle={railStyle}
+						disabled={!deviceStore.showThirdPartySetting.amktiaoROMInterface}
+						value={amktiaoHook.currentTpFirmware.value ? true : false}
+						loading={deviceStore.loading}>
+						{{
+							checked: () => '启用老版触控驱动',
+							unchecked: () => '未启用老版触控驱动',
+						}}
+					</n-switch>
+				)}
+				<n-alert class='mt-5' type='warning' show-icon={false} bordered={false}>
+					<p>仅兼容水龙(Amktiao)的内核，存在 /sys/touchpanel/tpfirmware 开关映射时生效</p>
+					<p>启用后可以解决游戏触控断触的问题，但是会导致手写笔工作异常，请在使用手写笔的情况下关闭此功能</p>
+					{amktiaoHook.currentTpFirmware.value === 1 && (
+						<div class='mt-5'>
+							<p>
+								为使老版触控驱动生效，启用「老版触控驱动」后，每次开机后，您还需要手动关闭并重新点亮屏幕才能使「老版触控驱动」生效，模块提供「老版触控驱动开机自优化」来解决这个问题，开启后每次开机首次解锁屏幕后，模块会尝试重新关闭屏幕再点亮一次~
+							</p>
+							<n-switch
+								onUpdateValue={(value: boolean) => amktiaoHook.changeTpFirewareModeAutoTask(value)}
+								railStyle={railStyle}
+								class='mt-5'
+								value={amktiaoHook.currentTpFirmwareAutoTask.value ? true : false}
+								loading={deviceStore.loading}>
+								{{
+									checked: () => '已启用开机自优化',
+									unchecked: () => '未启用开机自优化',
+								}}
+							</n-switch>
+						</div>
+					)}
+				</n-alert>
+			</>
+		),
+		isShow: () => amktiaoHook.hasTpFirmwareControl.value && ['tablet'].includes(deviceStore.deviceType),
+	},
+	{
+		title: '第三方触控笔管理（水龙）',
+		titleSlot: () => (
+			<>
+				{!deviceStore.showThirdPartySetting.amktiaoROMInterface && (
+					<div class='mt-2'>
+						<n-button
+							strong
+							secondary
+							size='small'
+							type='warning'
+							onClick={() => amktiaoHook.enableSetting()}>
+							启用功能
+						</n-button>
+					</div>
+				)}
+			</>
+		),
+		content: () => (
+			<>
+				{!amktiaoHook.isInit.value ? (
+					<n-skeleton width={80} sharp={false} round size='small' />
+				) : (
+					<n-switch
+						railStyle={railStyle}
+						disabled={!deviceStore.showThirdPartySetting.amktiaoROMInterface}
+						value={amktiaoHook.currentPenEnable.value ? true : false}
+						loading={deviceStore.loading}
+						onUpdate:value={(value: boolean) => amktiaoHook.changePenEnableMode(value)}>
+						{{
+							checked: () => <>已启用</>,
+							unchecked: () => <>未启用</>,
+						}}
+					</n-switch>
+				)}
+				<n-alert class='mt-5' type='warning' show-icon={false} bordered={false}>
+					仅兼容水龙(Amktiao)的内核，存在 /sys/touchpanel/pen_enable 开关映射时生效
+				</n-alert>
+			</>
+		),
+		isShow: () => amktiaoHook.hasPenEnableControl.value && ['tablet'].includes(deviceStore.deviceType),
+	},
+	{
+		title: '手写笔驱动管理（水龙）',
+		titleSlot: () => (
+			<>
+				{!deviceStore.showThirdPartySetting.amktiaoROMInterface && (
+					<div class='mt-2'>
+						<n-button
+							strong
+							secondary
+							size='small'
+							type='warning'
+							onClick={() => amktiaoHook.enableSetting()}>
+							启用功能
+						</n-button>
+					</div>
+				)}
+			</>
+		),
+		content: () => (
+			<>
+				{!amktiaoHook.isInit.value ? (
+					<n-skeleton width={110} sharp={false} round size='small' />
+				) : (
+					<n-switch
+						onUpdateValue={(value: boolean) => amktiaoHook.changePenUpdateMode(value)}
+						railStyle={railStyle}
+						disabled={!deviceStore.showThirdPartySetting.amktiaoROMInterface}
+						value={amktiaoHook.currentPenUpdate.value ? true : false}
+						loading={deviceStore.loading}>
+						{{
+							checked: () => '二代笔驱动',
+							unchecked: () => '一代笔驱动',
+						}}
+					</n-switch>
+				)}
+				<n-alert class='mt-5' type='warning' show-icon={false} bordered={false}>
+					<p>仅兼容水龙(Amktiao)的内核，存在 /sys/touchpanel/pen_update 开关映射时生效</p>
+					{amktiaoHook.currentPenUpdate.value === 1 && (
+						<div class='mt-5'>
+							<p>
+								为使手写笔驱动生效，启用「二代笔驱动」后，每次开机后，您还需要手动关闭并重新点亮屏幕才能使「二代笔驱动」生效，模块提供「手写笔驱动开机自优化」来解决这个问题，开启后每次开机首次解锁屏幕后，模块会尝试重新关闭屏幕再点亮一次~
+							</p>
+							<n-switch
+								onUpdateValue={(value: boolean) => amktiaoHook.changePenUpdateAutoTaskMode(value)}
+								railStyle={railStyle}
+								class='mt-5'
+								value={amktiaoHook.currentPenUpdateAutoTask.value ? true : false}
+								loading={deviceStore.loading}>
+								{{
+									checked: () => '已启用开机自优化',
+									unchecked: () => '未启用开机自优化',
+								}}
+							</n-switch>
+						</div>
+					)}
+				</n-alert>
+			</>
+		),
+		isShow: () => amktiaoHook.hasPenUpdateControl.value && ['tablet'].includes(deviceStore.deviceType),
+	},
+	{
+		title: '键盘连接器管理（水龙）',
+		titleSlot: () => (
+			<>
+				{!deviceStore.showThirdPartySetting.amktiaoROMInterface && (
+					<div class='mt-2'>
+						<n-button
+							strong
+							secondary
+							size='small'
+							type='warning'
+							onClick={() => amktiaoHook.enableSetting()}>
+							启用功能
+						</n-button>
+					</div>
+				)}
+			</>
+		),
+		content: () => (
+			<>
+				{!amktiaoHook.isInit.value ? (
+					<n-skeleton width={75} sharp={false} size='small' />
+				) : (
+					<n-dropdown
+						value={amktiaoHook.currentKeyboardModeSelect}
+						size='large'
+						trigger='click'
+						options={amktiaoHook.keyboardModeOptions.value}
+						onSelect={amktiaoHook.changeKeyboardMode}>
+						<n-button
+							strong
+							secondary
+							disabled={!deviceStore.showThirdPartySetting.amktiaoROMInterface}
+							size='small'
+							type={amktiaoHook.currentKeyboardModeSelect.value.type}>
+							{amktiaoHook.currentKeyboardModeSelect.value.label}
+						</n-button>
+					</n-dropdown>
+				)}
+
+				<n-alert class='mt-5' type='warning' show-icon={false} bordered={false}>
+					<p>仅兼容水龙(Amktiao)的内核，存在 /sys/touchpanel/keyboard 开关映射时生效</p>
+					<p>「复位键盘」仅在键盘异常时使用，一般情况下不需要</p>
+				</n-alert>
+			</>
+		),
+		isShow: () => amktiaoHook.hasKeyboardControl.value && ['tablet'].includes(deviceStore.deviceType),
+	},
 	{
 		title: '截图自动添加至剪贴板',
 		content: () => (
@@ -1192,156 +1403,6 @@ const enhanceList: EnhanceItemInfo[] = [
 			</>
 		),
 		isShow: () => deviceStore.deviceType === 'tablet',
-	},
-	{
-		title: '第三方触控笔管理（水龙）',
-		titleSlot: () => (
-			<>
-				{!deviceStore.showThirdPartySetting.amktiaoROMInterface && (
-					<div class='mt-2'>
-						<n-button
-							strong
-							secondary
-							size='small'
-							type='warning'
-							onClick={() => amktiaoHook.enableSetting()}>
-							启用功能
-						</n-button>
-					</div>
-				)}
-			</>
-		),
-		content: () => (
-			<>
-				{!amktiaoHook.isInit.value ? (
-					<n-skeleton width={80} sharp={false} round size='small' />
-				) : (
-					<n-switch
-						railStyle={railStyle}
-						disabled={!deviceStore.showThirdPartySetting.amktiaoROMInterface}
-						value={amktiaoHook.currentPenEnable.value ? true : false}
-						loading={deviceStore.loading}
-						onUpdate:value={(value: boolean) => amktiaoHook.changePenEnableMode(value)}>
-						{{
-							checked: () => <>已启用</>,
-							unchecked: () => <>未启用</>,
-						}}
-					</n-switch>
-				)}
-				<n-alert class='mt-5' type='warning' show-icon={false} bordered={false}>
-					仅兼容水龙(Amktiao)的内核，存在 /sys/touchpanel/pen_enable 开关映射时生效
-				</n-alert>
-			</>
-		),
-		isShow: () => amktiaoHook.hasPenEnableControl.value && ['tablet'].includes(deviceStore.deviceType),
-	},
-	{
-		title: '手写笔驱动管理（水龙）',
-		titleSlot: () => (
-			<>
-				{!deviceStore.showThirdPartySetting.amktiaoROMInterface && (
-					<div class='mt-2'>
-						<n-button
-							strong
-							secondary
-							size='small'
-							type='warning'
-							onClick={() => amktiaoHook.enableSetting()}>
-							启用功能
-						</n-button>
-					</div>
-				)}
-			</>
-		),
-		content: () => (
-			<>
-				{!amktiaoHook.isInit.value ? (
-					<n-skeleton width={110} sharp={false} round size='small' />
-				) : (
-					<n-switch
-						onUpdateValue={(value: boolean) => amktiaoHook.changePenUpdateMode(value)}
-						railStyle={railStyle}
-						disabled={!deviceStore.showThirdPartySetting.amktiaoROMInterface}
-						value={amktiaoHook.currentPenUpdate.value ? true : false}
-						loading={deviceStore.loading}>
-						{{
-							checked: () => '二代笔驱动',
-							unchecked: () => '一代笔驱动',
-						}}
-					</n-switch>
-				)}
-				<n-alert class='mt-5' type='warning' show-icon={false} bordered={false}>
-					<p>仅兼容水龙(Amktiao)的内核，存在 /sys/touchpanel/pen_update 开关映射时生效</p>
-					{amktiaoHook.currentPenUpdate.value === 1 && (
-						<div class='mt-5'>
-							<p>
-								为使手写笔驱动生效，启用「二代笔驱动」后，每次开机后，您还需要手动关闭并重新点亮屏幕才能使「二代笔驱动」生效，模块提供「手写笔驱动开机自优化」来解决这个问题，开启后每次开机首次解锁屏幕后，模块会尝试重新关闭屏幕再点亮一次~
-							</p>
-							<n-switch
-								onUpdateValue={(value: boolean) => amktiaoHook.changePenUpdateAutoTaskMode(value)}
-								railStyle={railStyle}
-								class='mt-5'
-								value={amktiaoHook.currentPenUpdateAutoTask.value ? true : false}
-								loading={deviceStore.loading}>
-								{{
-									checked: () => '已启用开机自优化',
-									unchecked: () => '未启用开机自优化',
-								}}
-							</n-switch>
-						</div>
-					)}
-				</n-alert>
-			</>
-		),
-		isShow: () => amktiaoHook.hasPenUpdateControl.value && ['tablet'].includes(deviceStore.deviceType),
-	},
-	{
-		title: '键盘连接器管理（水龙）',
-		titleSlot: () => (
-			<>
-				{!deviceStore.showThirdPartySetting.amktiaoROMInterface && (
-					<div class='mt-2'>
-						<n-button
-							strong
-							secondary
-							size='small'
-							type='warning'
-							onClick={() => amktiaoHook.enableSetting()}>
-							启用功能
-						</n-button>
-					</div>
-				)}
-			</>
-		),
-		content: () => (
-			<>
-				{!amktiaoHook.isInit.value ? (
-					<n-skeleton width={75} sharp={false} size='small' />
-				) : (
-					<n-dropdown
-						value={amktiaoHook.currentKeyboardModeSelect}
-						size='large'
-						trigger='click'
-						options={amktiaoHook.keyboardModeOptions.value}
-						onSelect={amktiaoHook.changeKeyboardMode}>
-						<n-button
-							strong
-							secondary
-							disabled={!deviceStore.showThirdPartySetting.amktiaoROMInterface}
-							size='small'
-							type={amktiaoHook.currentKeyboardModeSelect.value.type}>
-							{amktiaoHook.currentKeyboardModeSelect.value.label}
-						</n-button>
-					</n-dropdown>
-				)}
-
-				<n-alert class='mt-5' type='warning' show-icon={false} bordered={false}>
-					<p>仅兼容水龙(Amktiao)的内核，存在 /sys/touchpanel/keyboard 开关映射时生效</p>
-					<p>「复位键盘」仅在键盘异常时使用，一般情况下不需要</p>
-				</n-alert>
-			</>
-		),
-		isShow: () => amktiaoHook.hasKeyboardControl.value && ['tablet'].includes(deviceStore.deviceType),
 	},
 	{
 		title: '鼠标光标样式',

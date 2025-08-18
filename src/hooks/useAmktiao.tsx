@@ -26,6 +26,8 @@ export type KeyboardMode = 0 | 1 | 2;
 
 export type PenUpdateAutoTask = 0 | 1;
 
+export type TpFirmware = 0 | 1;
+
 export function useAmktiao() {
 	const deviceStore = useDeviceStore();
 	const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
@@ -39,6 +41,7 @@ export function useAmktiao() {
 	const hasPenUpdateControl = ref<boolean>(false);
 	const hasPenEnableControl = ref<boolean>(false);
 	const hasKeyboardControl = ref<boolean>(false);
+	const hasTpFirmwareControl = ref<boolean>(false);
 
 	const currentPenUpdate = ref<PenUpdate>(0);
 
@@ -47,6 +50,10 @@ export function useAmktiao() {
 	const currentKeyboardMode = ref<KeyboardMode>(0);
 
 	const currentPenUpdateAutoTask = ref<boolean>(false);
+
+	const currentTpFirmware = ref<TpFirmware>(0);
+
+	const currentTpFirmwareAutoTask = ref<boolean>(false);
 
 	const loading = ref<boolean>(true);
 
@@ -328,6 +335,167 @@ export function useAmktiao() {
 		}
 	};
 
+	const changeTpFirewareMode = async (value: boolean) => {
+		const [putCurrentTpFirmwareErr, putCurrentTpFirmwareRes] = await $to(
+			deviceApi.putCurrentTpFirmware(value ? 1 : 0),
+		);
+		if (putCurrentTpFirmwareErr) {
+			modal.create({
+				title: '操作失败',
+				type: 'error',
+				preset: 'dialog',
+				content: () => <p>修改失败，详情请查看日志记录~</p>,
+				negativeText: '确定',
+			});
+		} else {
+			if (value) {
+				const [addIsAmktiaoTpFirmwareErr, addIsAmktiaoTpFirmwareRes] = await $to(
+					deviceApi.addIsAmktiaoTpFirmware(),
+				);
+				if (addIsAmktiaoTpFirmwareErr) {
+					modal.create({
+						title: '操作失败',
+						type: 'error',
+						preset: 'dialog',
+						content: () => <p>修改失败，详情请查看日志记录~</p>,
+						negativeText: '确定',
+					});
+				} else {
+					modal.create({
+						title: '切换成功',
+						type: 'success',
+						preset: 'dialog',
+						content: () => <p>切换触控驱动成功，关闭屏幕再点亮屏幕即可更新触控驱动~</p>,
+						positiveText: '立即关闭并重新点亮屏幕',
+						negativeText: '稍后再说',
+						async onPositiveClick() {
+							const [getScreenStateErr, getScreenStateRes] = await $to(deviceApi.getScreenState());
+							if (getScreenStateErr) {
+								modal.create({
+									title: '获取屏幕信息失败',
+									type: 'error',
+									preset: 'dialog',
+									content: () => (
+										<p>获取屏幕信息失败，请手动关闭屏幕再点亮屏幕即可更新触控驱动，详细请查看日志~</p>
+									),
+									negativeText: '确定',
+								});
+								return;
+							}
+							if (getScreenStateRes === 'Awake') {
+								const [rebootScreenErr] = await $to(deviceApi.rebootScreen());
+								if (rebootScreenErr) {
+									modal.create({
+										title: '操作失败',
+										type: 'error',
+										preset: 'dialog',
+										content: () => (
+											<p>操作失败，请手动关闭屏幕再点亮屏幕即可更新触控驱动，详细请查看日志~</p>
+										),
+										negativeText: '确定',
+									});
+									return;
+								}
+								modal.create({
+									title: '切换成功',
+									type: 'success',
+									preset: 'dialog',
+									content: () => (
+										<p>已经为您关闭屏幕并重新点亮屏幕，请查看触控驱动是否已成功切换~</p>
+									),
+									positiveText: '确定',
+								});
+							} else {
+								modal.create({
+									title: '操作失败',
+									type: 'error',
+									preset: 'dialog',
+									content: () => (
+										<p>检测到您目前的屏幕状态并非亮屏状态，请手动关闭屏幕再点亮屏幕即可更新触控驱动，详细请查看日志~</p>
+									),
+									negativeText: '确定',
+								});
+							}
+						},
+					});
+					currentTpFirmware.value = 1;
+				}
+			} else {
+				const [removeIsAmktiaoTpFirmwareErr, removeIsAmktiaoTpFirmwareRes] = await $to(
+					deviceApi.removeIsAmktiaoTpFirmware(),
+				);
+				if (removeIsAmktiaoTpFirmwareErr) {
+					modal.create({
+						title: '操作失败',
+						type: 'error',
+						preset: 'dialog',
+						content: () => <p>修改失败，详情请查看日志记录~</p>,
+						negativeText: '确定',
+					});
+				} else {
+					modal.create({
+						title: '切换成功',
+						type: 'success',
+						preset: 'dialog',
+						content: () => <p>切换触控驱动成功，关闭屏幕再点亮屏幕即可更新触控驱动~</p>,
+						positiveText: '立即关闭并重新点亮屏幕',
+						negativeText: '稍后再说',
+						async onPositiveClick() {
+							const [getScreenStateErr, getScreenStateRes] = await $to(deviceApi.getScreenState());
+							if (getScreenStateErr) {
+								modal.create({
+									title: '获取屏幕信息失败',
+									type: 'error',
+									preset: 'dialog',
+									content: () => (
+										<p>获取屏幕信息失败，请手动关闭屏幕再点亮屏幕即可更新触控驱动，详细请查看日志~</p>
+									),
+									negativeText: '确定',
+								});
+								return;
+							}
+							if (getScreenStateRes === 'Awake') {
+								const [rebootScreenErr] = await $to(deviceApi.rebootScreen());
+								if (rebootScreenErr) {
+									modal.create({
+										title: '操作失败',
+										type: 'error',
+										preset: 'dialog',
+										content: () => (
+											<p>操作失败，请手动关闭屏幕再点亮屏幕即可更新触控驱动，详细请查看日志~</p>
+										),
+										negativeText: '确定',
+									});
+									return;
+								}
+								modal.create({
+									title: '切换成功',
+									type: 'success',
+									preset: 'dialog',
+									content: () => (
+										<p>已经为您关闭屏幕并重新点亮屏幕，请查看触控驱动是否已成功切换~</p>
+									),
+									positiveText: '确定',
+								});
+							} else {
+								modal.create({
+									title: '操作失败',
+									type: 'error',
+									preset: 'dialog',
+									content: () => (
+										<p>检测到您目前的屏幕状态并非亮屏状态，请手动关闭屏幕再点亮屏幕即可更新触控驱动，详细请查看日志~</p>
+									),
+									negativeText: '确定',
+								});
+							}
+						},
+					});
+					currentTpFirmware.value = 0;
+				}
+			}
+		}
+	};
+
 	const changePenUpdateAutoTaskMode = async (value: boolean) => {
 			if (value) {
 				const [addIsAmktiaoPenUpdateAutoTaskErr, addIsAmktiaoPenUpdateAutoTaskRes] = await $to(
@@ -372,6 +540,54 @@ export function useAmktiao() {
 						positiveText: '确定',
 					});
 					currentPenUpdateAutoTask.value = value;
+				}
+			}
+	}
+
+	const changeTpFirewareModeAutoTask = async (value: boolean) => {
+			if (value) {
+				const [addIsAmktiaoTpFirmwareAutoTaskErr, addIsAmktiaoTpFirmwareAutoTaskRes] = await $to(
+					deviceApi.addIsAmktiaoTpFirmwareAutoTask(),
+				);
+				if (addIsAmktiaoTpFirmwareAutoTaskErr) {
+					modal.create({
+						title: '操作失败',
+						type: 'error',
+						preset: 'dialog',
+						content: () => <p>修改失败，详情请查看日志记录~</p>,
+						negativeText: '确定',
+					});
+				} else {
+					modal.create({
+						title: '操作成功',
+						type: 'success',
+						preset: 'dialog',
+						content: () => <p>您已启用「老版触控驱动开机自优化」，开启后每次开机首次解锁屏幕后，模块会尝试重新关闭屏幕再点亮一次，以便「老版触控驱动驱动」立即生效~</p>,
+						positiveText: '确定',
+					});
+					currentTpFirmwareAutoTask.value = value;
+				}
+			} else {
+				const [removeIsAmktiaoTpFirmwareAutoTaskErr, removeIsAmktiaoTpFirmwareAutoTaskRes] = await $to(
+					deviceApi.removeIsAmktiaoTpFirmwareAutoTask(),
+				);
+				if (removeIsAmktiaoTpFirmwareAutoTaskErr) {
+					modal.create({
+						title: '操作失败',
+						type: 'error',
+						preset: 'dialog',
+						content: () => <p>修改失败，详情请查看日志记录~</p>,
+						negativeText: '确定',
+					});
+				} else {
+					modal.create({
+						title: '操作成功',
+						type: 'success',
+						preset: 'dialog',
+						content: () => <p>您已关闭「老版触控驱动开机自优化」，每次开机后，您需要手动关闭并重新点亮屏幕，才能使「二代笔驱动」立即生效~</p>,
+						positiveText: '确定',
+					});
+					currentTpFirmwareAutoTask.value = value;
 				}
 			}
 	}
@@ -436,19 +652,31 @@ export function useAmktiao() {
 		if (getHasKeyboardControlRes) {
 			hasKeyboardControl.value = true;
 		}
-		// 移植包键盘和手写笔控制
+		const [, getHasTpFirmwareControlRes] = await $to<string, string>(deviceApi.getHasTpFirmwareControl());
+		if (getHasTpFirmwareControlRes) {
+			hasTpFirmwareControl.value = true;
+		}
+		// 移植包触控板固件控制
+		if (hasTpFirmwareControl.value) {
+			const [, getCurrentTpFirmwareResolve] = await $to<string, string>(deviceApi.getCurrentTpFirmware());
+
+			if (Number(getCurrentTpFirmwareResolve)) {
+				currentTpFirmware.value = 1;
+			}
+
+			const [, getIsAmktiaoTpFirmwareAutoTaskRes] = await $to<string, string>(deviceApi.getIsAmktiaoTpFirmwareAutoTask());
+			if (getIsAmktiaoTpFirmwareAutoTaskRes && String(getIsAmktiaoTpFirmwareAutoTaskRes) === 'true') {
+				currentTpFirmwareAutoTask.value = true;
+			} else {
+				currentTpFirmwareAutoTask.value = false;
+			}
+		}
+		// 移植包手写笔控制
 		if (hasPenUpdateControl.value) {
 			const [, getCurrentPenUpdateResolve] = await $to<string, string>(deviceApi.getCurrentPenUpdate());
 
 			if (Number(getCurrentPenUpdateResolve)) {
 				currentPenUpdate.value = 1;
-			}
-		}
-		if (hasPenEnableControl.value) {
-			const [, getCurrentPenEnableResolve] = await $to<string, string>(deviceApi.getCurrentPenEnable());
-
-			if (Number(getCurrentPenEnableResolve)) {
-				currentPenEnable.value = 1;
 			}
 
 			const [, getIsAmktiaoPenUpdateAutoTaskRes] = await $to<string, string>(deviceApi.getIsAmktiaoPenUpdateAutoTask());
@@ -458,6 +686,14 @@ export function useAmktiao() {
 				currentPenUpdateAutoTask.value = false;
 			}
 		}
+		if (hasPenEnableControl.value) {
+			const [, getCurrentPenEnableResolve] = await $to<string, string>(deviceApi.getCurrentPenEnable());
+
+			if (Number(getCurrentPenEnableResolve)) {
+				currentPenEnable.value = 1;
+			}
+		}
+		// 移植包键盘控制
 		if (hasKeyboardControl.value) {
 			const [, getCurrentKeyboardModeResolve] = await $to<string, string>(deviceApi.getCurrentKeyboardMode());
 
@@ -481,6 +717,7 @@ export function useAmktiao() {
 		hasPenUpdateControl,
 		hasPenEnableControl,
 		hasKeyboardControl,
+		hasTpFirmwareControl,
 		currentPenUpdate,
 		currentPenEnable,
 		currentPenUpdateAutoTask,
@@ -491,6 +728,10 @@ export function useAmktiao() {
 		changePenUpdateMode,
 		changePenUpdateAutoTaskMode,
 		changePenEnableMode,
+		changeTpFirewareMode,
+		changeTpFirewareModeAutoTask,
+		currentTpFirmware,
+		currentTpFirmwareAutoTask,
 		enableSetting,
 		isInit,
 		loading,

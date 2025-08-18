@@ -3,7 +3,7 @@ import axios from 'axios';
 import handlePromiseWithLogging from '@/utils/handlePromiseWithLogging';
 import $to from 'await-to-js';
 import { useDeviceStore } from '@/stores/device';
-import type { KeyboardMode, PenEnable, PenUpdate } from '@/hooks/useAmktiao';
+import type { KeyboardMode, PenEnable, PenUpdate, TpFirmware } from '@/hooks/useAmktiao';
 import type { DisplayModeItem } from '@/hooks/useDisplayModeRecord';
 import type { miuiCursorStyleType } from '@/hooks/useMiuiCursorStyle';
 const toolsFunc = `/data/adb/modules/MIUI_MagicWindow+/common/utils/tools_functions.sh`;
@@ -3920,6 +3920,128 @@ export const removeIsAutoEnableMiScreenShotsWriteClipboard = (): Promise<string>
 			} else {
 				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
 				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+
+export const getCurrentTpFirmware = (): Promise<string> => {
+	const shellCommon = `cat /sys/touchpanel/tpfirmware`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`1`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const putCurrentTpFirmware = (mode: TpFirmware): Promise<string> => {
+	const shellCommon = `echo ${mode} > /sys/touchpanel/tpfirmware`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`success`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const addIsAmktiaoTpFirmware = (): Promise<string> => {
+	const shellCommon = `grep -q '^is_amktiao_tp_firmware=' /data/adb/MIUI_MagicWindow+/config.prop || (source ${toolsFunc} && add_lines "is_amktiao_tp_firmware=true" /data/adb/MIUI_MagicWindow+/config.prop && echo "Command executed successfully." || echo "Command failed.");`
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`Command executed successfully.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : stdout === 'Command executed successfully.' ? resolve(stdout) : reject(stdout);
+			}
+		}),
+		shellCommon,
+	);
+}
+
+export const removeIsAmktiaoTpFirmware = (): Promise<string> => {
+	const shellCommon = `sed -i '/^is_amktiao_tp_firmware=/d' //data/adb/MIUI_MagicWindow+/config.prop && echo "Remove is_amktiao_tp_firmware successfully." || echo "Remove is_amktiao_tp_firmware failed."`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`Remove is_amktiao_tp_firmware successfully.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+}
+
+export const getIsAmktiaoTpFirmwareAutoTask = (): Promise<string> => {
+	const shellCommon = `grep 'is_amktiao_tp_firmware_auto_task=' /data/adb/MIUI_MagicWindow+/config.prop | awk -F'=' '{print $2}'`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`true`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const addIsAmktiaoTpFirmwareAutoTask = (): Promise<string> => {
+	const shellCommon = `grep -q '^is_amktiao_tp_firmware_auto_task=' /data/adb/MIUI_MagicWindow+/config.prop || (source ${toolsFunc} && add_lines "is_amktiao_tp_firmware_auto_task=true" /data/adb/MIUI_MagicWindow+/config.prop && echo "Command executed successfully." || echo "Command failed.");`
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`Command executed successfully.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : stdout === 'Command executed successfully.' ? resolve(stdout) : reject(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+
+export const removeIsAmktiaoTpFirmwareAutoTask = (): Promise<string> => {
+	const shellCommon = `sed -i '/^is_amktiao_tp_firmware_auto_task=/d' //data/adb/MIUI_MagicWindow+/config.prop && echo "Remove is_amktiao_tp_firmware_auto_task successfully." || echo "Remove is_amktiao_tp_firmware_auto_task failed."`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`Remove is_amktiao_tp_firmware_auto_task successfully.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+}
+
+export const getHasTpFirmwareControl = (): Promise<string> => {
+	const shellCommon = `ls /sys/touchpanel/tpfirmware &>/dev/null && echo "exists" || echo "not exists"`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`exists`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : stdout === 'exists' ? resolve(stdout) : reject(stdout);
 			}
 		}),
 		shellCommon,
