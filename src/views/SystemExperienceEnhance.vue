@@ -202,7 +202,7 @@ export interface EnhanceItemInfo {
 }
 const enhanceList: EnhanceItemInfo[] = [
 		{
-		title: '使用老版触控驱动（水龙）',
+		title: '老版触控驱动管理（水龙）',
 		titleSlot: () => (
 			<>
 				{!deviceStore.showThirdPartySetting.amktiaoROMInterface && (
