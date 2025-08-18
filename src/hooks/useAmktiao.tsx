@@ -562,7 +562,7 @@ export function useAmktiao() {
 						title: '操作成功',
 						type: 'success',
 						preset: 'dialog',
-						content: () => <p>您已启用「老版触控驱动开机自优化」，开启后每次开机首次解锁屏幕后，模块会尝试重新关闭屏幕再点亮一次，以便「老版触控驱动驱动」立即生效~</p>,
+						content: () => <p>您已启用「老版触控驱动开机自优化」，开启后每次开机首次解锁屏幕后，模块会尝试重新关闭屏幕再点亮一次，以便「老版触控驱动」立即生效~</p>,
 						positiveText: '确定',
 					});
 					currentTpFirmwareAutoTask.value = value;
@@ -584,7 +584,7 @@ export function useAmktiao() {
 						title: '操作成功',
 						type: 'success',
 						preset: 'dialog',
-						content: () => <p>您已关闭「老版触控驱动开机自优化」，每次开机后，您需要手动关闭并重新点亮屏幕，才能使「二代笔驱动」立即生效~</p>,
+						content: () => <p>您已关闭「老版触控驱动开机自优化」，每次开机后，您需要手动关闭并重新点亮屏幕，才能使「老版触控驱动」立即生效~</p>,
 						positiveText: '确定',
 					});
 					currentTpFirmwareAutoTask.value = value;
