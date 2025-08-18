@@ -2,6 +2,7 @@ import { ref, computed, reactive } from 'vue';
 import { defineStore } from 'pinia';
 import type AutoUIItem from '@/types/AutoUIItem';
 import type AutoUISettingRuleItem from '@/types/AutoUISettingRuleItem';
+import PinyinMatch from 'pinyin-match';
 import type AutoUIMergeRuleItem from '@/types/AutoUIMergeRuleItem';
 import $to from 'await-to-js';
 import * as deviceApi from '@/apis/deviceApi';
@@ -43,8 +44,14 @@ export const useAutoUIStore = defineStore(
 
 					// 过滤条件，检查 name 和 applicationName
 					const applicationNameLower = item.applicationName ? item.applicationName.toLowerCase() : '';
-					if (!itemName.includes(searchValue) && !applicationNameLower.includes(searchValue)) {
-						return result;
+					
+					const isMatched =
+					itemName.includes(searchValue) ||
+					applicationNameLower.includes(searchValue) ||
+					PinyinMatch.match(applicationNameLower, searchValue);
+
+					if (!isMatched) {
+					return result;
 					}
 
 					const isInstalled = new Set(deviceStore.installedAndroidApplicationPackageNameList);

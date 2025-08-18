@@ -3,6 +3,7 @@ import { defineStore } from 'pinia';
 import $to from 'await-to-js';
 import * as gameBoosterApi from '@/apis/gameBoosterApi';
 import * as deviceApi from '@/apis/deviceApi';
+import PinyinMatch from 'pinyin-match';
 import type { ErrorLogging } from '@/types/ErrorLogging';
 import type GameBoosterTableItem from '@/types/GameBoosterTableItem';
 
@@ -10,24 +11,29 @@ export const useGameBoosterStore = defineStore(
 	'gameBooster',
 	() => {
 		// 游戏显示布局
-		const gameBoosterList = ref<GameBoosterTableItem[]>([])
+		const gameBoosterList = ref<GameBoosterTableItem[]>([]);
 		// 搜索后的配置列表
-		const filterGameBoosterList:ComputedRef<GameBoosterTableItem[]> = computed(() => {
+		const filterGameBoosterList: ComputedRef<GameBoosterTableItem[]> = computed(() => {
 			const searchValue = searchKeyWord.value.trim().toLowerCase();
 			const cachedGameBoosterList = gameBoosterList.value;
-			return cachedGameBoosterList.reduce((result:GameBoosterTableItem[], item) => {
+			return cachedGameBoosterList.reduce((result: GameBoosterTableItem[], item) => {
 				const itemName = item.package_name.trim().toLowerCase();
 
 				// 过滤条件，检查 name 和 applicationName 是否包含 searchValue
 				const applicationNameLower = item.app_name ? item.app_name.toLowerCase() : '';
-				if (!itemName.includes(searchValue) && !applicationNameLower.includes(searchValue)) {
+				const isMatched =
+					itemName.includes(searchValue) ||
+					applicationNameLower.includes(searchValue) ||
+					PinyinMatch.match(applicationNameLower, searchValue);
+
+				if (!isMatched) {
 					return result;
 				}
-	
+
 				result.push(item);
 				return result;
-			},[]);
-		})
+			}, []);
+		});
 		// 搜索后的配置列表
 		// 是否弹出错误信息弹窗
 		const isNeedShowErrorModal = computed(() => Boolean(errorLogging.length > 0));
@@ -43,16 +49,16 @@ export const useGameBoosterStore = defineStore(
 		const errorLogging = reactive<ErrorLogging[]>([]);
 		//
 		const allPackageName = computed(() => {
-			const allPackages = new Set([
-				...gameBoosterList.value
-			]);
+			const allPackages = new Set([...gameBoosterList.value]);
 			return allPackages;
 		});
 
 		async function initDefault() {
 			loading.value = true;
 
-			const [getHasGameBoosterDataBaseErr, getHasGameBoosterDataBaseRes] = await $to<string>(deviceApi.getHasGameBoosterDataBase())
+			const [getHasGameBoosterDataBaseErr, getHasGameBoosterDataBaseRes] = await $to<string>(
+				deviceApi.getHasGameBoosterDataBase(),
+			);
 
 			if (getHasGameBoosterDataBaseErr) {
 				loading.value = false;
@@ -68,7 +74,7 @@ export const useGameBoosterStore = defineStore(
 					loading.value = false;
 					gameBoosterList.value = [];
 				}
-	
+
 				if (getGameBoosterListRes) {
 					loading.value = false;
 					gameBoosterList.value = getGameBoosterListRes;

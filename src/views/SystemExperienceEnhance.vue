@@ -6,6 +6,7 @@ import * as deviceApi from '@/apis/deviceApi';
 import { useAmktiao, type KeyboardModeOptions } from '@/hooks/useAmktiao';
 import { useMiuiDesktopMode } from '@/hooks/useMiuiDesktopMode';
 import { RenderJsx } from '@/components/RenderJSX';
+import PinyinMatch from 'pinyin-match';
 import { useIOScheduler } from '@/hooks/useIOScheduler';
 import { useMIUIContentExtension } from '@/hooks/useMIUIContentExtension';
 import $to from 'await-to-js';
@@ -2101,7 +2102,11 @@ const filteredEnhanceList = computed(() => {
 		const titleStr =
 			item.titleText?.toLowerCase() ?? (typeof item.title === 'string' ? item.title.toLowerCase() : '');
 
-		return titleStr.includes(keyword);
+		// 支持普通 includes 和 拼音匹配
+		return (
+			titleStr.includes(keyword) ||
+			(PinyinMatch.match(titleStr, keyword) !== false)
+		);
 	});
 });
 </script>

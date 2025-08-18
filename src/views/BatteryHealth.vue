@@ -4,6 +4,7 @@ import { computed, h, ref, type CSSProperties } from 'vue';
 import { createDiscreteApi, darkTheme, lightTheme, NInput, type ConfigProviderProps } from 'naive-ui';
 import { useRealQuantity } from '@/hooks/useRealQuantity';
 import { RenderJsx } from '@/components/RenderJSX';
+import PinyinMatch from 'pinyin-match';
 import { MagnifyingGlassIcon, CircleStackIcon, XCircleIcon, SquaresPlusIcon } from '@heroicons/vue/24/outline';
 import type { JSX } from 'vue/jsx-runtime';
 const deviceStore = useDeviceStore();
@@ -227,7 +228,14 @@ const filteredHealthList = computed(() => {
 		const showFlag = item.isShow ? item.isShow() : true;
 		if (!showFlag) return false;
 		if (!keyword) return true;
-		return item.title.toLowerCase().includes(keyword);
+
+		const titleStr = item.title?.toLowerCase?.() ?? '';
+
+		// 支持普通 includes 和拼音匹配
+		return (
+			titleStr.includes(keyword) ||
+			(PinyinMatch.match(titleStr, keyword) !== false)
+		);
 	});
 });
 </script>

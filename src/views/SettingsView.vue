@@ -5,6 +5,7 @@ import * as xmlFormat from '@/utils/xmlFormat';
 import { createDiscreteApi, darkTheme, lightTheme, NInput, type ConfigProviderProps } from 'naive-ui';
 import { useGameMode } from '@/hooks/useGameMode';
 import { useABTestActivation } from '@/hooks/useABTestActivation';
+import PinyinMatch from 'pinyin-match';
 import * as deviceApi from '@/apis/deviceApi';
 import $to from 'await-to-js';
 import { useEmbeddedStore } from '@/stores/embedded';
@@ -894,7 +895,14 @@ const filteredSettingList = computed(() => {
 		const showFlag = item.isShow ? item.isShow() : true;
 		if (!showFlag) return false;
 		if (!keyword) return true;
-		return item.title.toLowerCase().includes(keyword);
+
+		const titleStr = item.title?.toLowerCase?.() ?? '';
+
+		// 支持普通 includes 和拼音匹配
+		return (
+			titleStr.includes(keyword) ||
+			(PinyinMatch.match(titleStr, keyword) !== false)
+		);
 	});
 });
 </script>

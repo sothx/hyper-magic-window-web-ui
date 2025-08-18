@@ -14,6 +14,7 @@ import { useDeviceStore } from './device';
 import eventBus from '@/utils/eventBus';
 import { useLogsStore } from './logs';
 import { debounce } from 'lodash-es';
+import PinyinMatch from 'pinyin-match';
 import { thirdPartyAppOptimizeConfigFormatToJSON } from '@/utils/embeddedFun';
 type ApplicationName = Record<string, string>;
 export type ThirdPartyAppOptimizeAppModeType = -1 | 0 | 1 | 2 | 3;
@@ -190,14 +191,22 @@ export const useEmbeddedStore = defineStore(
 						item.applicationName = currentApplicationName[item.name];
 					}
 
-					if (item.name in currentMergeThirdPartyAppOptimizeConfig && currentMergeThirdPartyAppOptimizeConfig[item.name] > -1) {
+					if (
+						item.name in currentMergeThirdPartyAppOptimizeConfig &&
+						currentMergeThirdPartyAppOptimizeConfig[item.name] > -1
+					) {
 						item.thirdPartyAppOptimize = true;
 					} else {
 						item.thirdPartyAppOptimize = false;
 					}
 
 					const itemApplicationName = item.applicationName ? item.applicationName.toLowerCase() : '';
-					if (!itemName.includes(currentSearchValue) && !itemApplicationName.includes(currentSearchValue)) {
+					const isMatched =
+						itemName.includes(currentSearchValue) ||
+						itemApplicationName.includes(currentSearchValue) ||
+						PinyinMatch.match(itemApplicationName, currentSearchValue);
+
+					if (!isMatched) {
 						return result;
 					}
 
@@ -261,10 +270,9 @@ export const useEmbeddedStore = defineStore(
 			);
 		}
 
-		async function reloadPatchModeConfigList () {
-				const deviceStore = useDeviceStore();
-				await deviceStore.getAndroidApplicationPackageNameList();
-				
+		async function reloadPatchModeConfigList() {
+			const deviceStore = useDeviceStore();
+			await deviceStore.getAndroidApplicationPackageNameList();
 		}
 
 		async function initDefault() {

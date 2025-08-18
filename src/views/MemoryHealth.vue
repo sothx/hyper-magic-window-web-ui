@@ -5,6 +5,7 @@ import * as deviceApi from '@/apis/deviceApi';
 import { useZRAMWriteback } from '@/hooks/useZRAMWriteback';
 import { useUFSHealth } from '@/hooks/useUFSHealth';
 import { useFbo } from '@/hooks/useFbo';
+import PinyinMatch from 'pinyin-match';
 import { RenderJsx } from '@/components/RenderJSX';
 import { MagnifyingGlassIcon, CircleStackIcon, XCircleIcon, SquaresPlusIcon } from '@heroicons/vue/24/outline';
 import type { JSX } from 'vue/jsx-runtime';
@@ -323,7 +324,14 @@ const filteredHealthList = computed(() => {
 		const showFlag = item.isShow ? item.isShow() : true;
 		if (!showFlag) return false;
 		if (!keyword) return true;
-		return item.title.toLowerCase().includes(keyword);
+
+		const titleStr = item.title?.toLowerCase?.() ?? '';
+
+		// 支持普通 includes 和拼音匹配
+		return (
+			titleStr.includes(keyword) ||
+			(PinyinMatch.match(titleStr, keyword) !== false)
+		);
 	});
 });
 </script>
