@@ -3774,7 +3774,7 @@ export const putIsImmerseFreeformBottomCaption = (mode: 1 | 0): Promise<string> 
 };
 
 export const getScreenState = (): Promise<string> => {
-	const shellCommon = `dumpsys power | grep -oP "mWakefulness=\K\w+"`;
+	const shellCommon = `dumpsys power | grep -o "mWakefulness=[A-Za-z]*" | cut -d= -f2`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -3789,7 +3789,7 @@ export const getScreenState = (): Promise<string> => {
 };
 
 export const rebootScreen = (): Promise<string> => {
-	const shellCommon = `input keyevent KEYCODE_POWER && sleep 1 && input keyevent KEYCODE_POWER`;
+	const shellCommon = `input keyevent 26 && sleep 1 && input keyevent 224`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
