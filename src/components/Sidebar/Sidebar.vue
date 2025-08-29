@@ -165,7 +165,7 @@ onBeforeUnmount(() => {
 							<div
 								:class="[
 									'flex grow flex-col gap-y-5 overflow-y-auto px-6 pb-4',
-									deviceStore.isDarkMode ? 'bg-[#151515]' : 'bg-[#f6f6f6]',
+									deviceStore.isDarkMode ? 'bg-[#151515]' : 'bg-[#f7f7f7]',
 								]">
 								<div class="flex h-[calc(var(--window-inset-top,1.5rem)-1rem)] shrink-0 items-center"></div>
 								<nav class="flex flex-1 flex-col">
@@ -294,7 +294,7 @@ onBeforeUnmount(() => {
 			<div
 				:class="[
 					'flex grow flex-col gap-y-5 overflow-y-auto border-r',
-					deviceStore.isDarkMode ? 'border-gray-700 bg-[#151515]' : 'border-gray-200 bg-[#f6f6f6]',
+					deviceStore.isDarkMode ? 'border-gray-700 bg-[#151515]' : 'border-gray-200 bg-[#f7f7f7]',
 					'px-6 pb-4',
 				]">
 				<div class="flex h-2 shrink-0 items-center"></div>

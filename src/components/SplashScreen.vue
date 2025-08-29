@@ -18,15 +18,16 @@ const deviceStore = useDeviceStore();
         left: 0;
         right: 0;
         bottom: 0;
-        background-color: rgba(255,255,255,0.5);
+        background-color: rgba(255,255,255,0.8);
         display: flex;
         justify-content: center;
         align-items: center;
         z-index: 9999;
-        background-image: url('/images/ai_cover_pc.png');
+        background-image: url('/images/ai_cover_hyper_os.webp');
         background-repeat: no-repeat;
         background-size: cover;
         background-position: center;
+        opacity: 0.8;
     }
     .theme-dark-mode{
       .splash-screen {
