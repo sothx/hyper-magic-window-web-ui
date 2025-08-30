@@ -66,13 +66,7 @@ export function useGameMode() {
 						resolve('success');
 					}
 				} else {
-					modal.create({
-						title: '未适配系统版本',
-						type: 'error',
-						preset: 'dialog',
-						content: () => <p>该系统版本尚未适配游戏显示布局，请等待模块后续更新~</p>,
-					});
-					reject('error');
+					resolve('success');
 				}
 			} else {
 				resolve('success');
