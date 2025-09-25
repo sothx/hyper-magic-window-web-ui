@@ -3,7 +3,7 @@ import axios from 'axios';
 import handlePromiseWithLogging from '@/utils/handlePromiseWithLogging';
 import $to from 'await-to-js';
 import { useDeviceStore } from '@/stores/device';
-import type { KeyboardMode, PenEnable, PenUpdate, TpFirmware } from '@/hooks/useAmktiao';
+import type { GameMode, KeyboardMode, PenEnable, PenUpdate, TpFirmware } from '@/hooks/useAmktiao';
 import type { DisplayModeItem } from '@/hooks/useDisplayModeRecord';
 import type { miuiCursorStyleType } from '@/hooks/useMiuiCursorStyle';
 const toolsFunc = `/data/adb/modules/MIUI_MagicWindow+/common/utils/tools_functions.sh`;
@@ -4035,6 +4035,127 @@ export const removeIsAmktiaoTpFirmwareAutoTask = (): Promise<string> => {
 
 export const getHasTpFirmwareControl = (): Promise<string> => {
 	const shellCommon = `ls /sys/touchpanel/tpfirmware &>/dev/null && echo "exists" || echo "not exists"`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`exists`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : stdout === 'exists' ? resolve(stdout) : reject(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const getCurrentGameMode = (): Promise<string> => {
+	const shellCommon = `cat /sys/touchpanel/game_mode`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`1`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const putCurrentGameMode = (mode: GameMode): Promise<string> => {
+	const shellCommon = `echo ${mode} > /sys/touchpanel/game_mode`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`success`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const addIsAmktiaoGameMode = (): Promise<string> => {
+	const shellCommon = `grep -q '^is_amktiao_game_mode=' /data/adb/MIUI_MagicWindow+/config.prop || (source ${toolsFunc} && add_lines "is_amktiao_game_mode=true" /data/adb/MIUI_MagicWindow+/config.prop && echo "Command executed successfully." || echo "Command failed.");`
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`Command executed successfully.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : stdout === 'Command executed successfully.' ? resolve(stdout) : reject(stdout);
+			}
+		}),
+		shellCommon,
+	);
+}
+
+export const removeIsAmktiaoGameMode = (): Promise<string> => {
+	const shellCommon = `sed -i '/^is_amktiao_game_mode=/d' //data/adb/MIUI_MagicWindow+/config.prop && echo "Remove is_amktiao_game_mode successfully." || echo "Remove is_amktiao_game_mode failed."`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`Remove is_amktiao_game_mode successfully.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+}
+
+export const getIsAmktiaoGameModeAutoTask = (): Promise<string> => {
+	const shellCommon = `grep 'is_amktiao_game_mode_auto_task=' /data/adb/MIUI_MagicWindow+/config.prop | awk -F'=' '{print $2}'`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`true`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const addIsAmktiaoGameModeAutoTask = (): Promise<string> => {
+	const shellCommon = `grep -q '^is_amktiao_game_mode_auto_task=' /data/adb/MIUI_MagicWindow+/config.prop || (source ${toolsFunc} && add_lines "is_amktiao_game_mode_auto_task=true" /data/adb/MIUI_MagicWindow+/config.prop && echo "Command executed successfully." || echo "Command failed.");`
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`Command executed successfully.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : stdout === 'Command executed successfully.' ? resolve(stdout) : reject(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+
+export const removeIsAmktiaoGameModeAutoTask = (): Promise<string> => {
+	const shellCommon = `sed -i '/^is_amktiao_game_mode_auto_task=/d' //data/adb/MIUI_MagicWindow+/config.prop && echo "Remove is_amktiao_game_mode_auto_task successfully." || echo "Remove is_amktiao_game_mode_auto_task failed."`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`Remove is_amktiao_game_mode_auto_task successfully.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+}
+
+export const getHasGameModeControl = (): Promise<string> => {
+	const shellCommon = `ls /sys/touchpanel/game_mode &>/dev/null && echo "exists" || echo "not exists"`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {

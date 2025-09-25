@@ -202,6 +202,67 @@ export interface EnhanceItemInfo {
 }
 const enhanceList: EnhanceItemInfo[] = [
 		{
+		title: '游戏模式（水龙）',
+		titleSlot: () => (
+			<>
+				{!deviceStore.showThirdPartySetting.amktiaoROMInterface && (
+					<div class='mt-2'>
+						<n-button
+							strong
+							secondary
+							size='small'
+							type='warning'
+							onClick={() => amktiaoHook.enableSetting()}>
+							启用功能
+						</n-button>
+					</div>
+				)}
+			</>
+		),
+		content: () => (
+			<>
+				{!amktiaoHook.isInit.value ? (
+					<n-skeleton width={110} sharp={false} round size='small' />
+				) : (
+					<n-switch
+						onUpdateValue={(value: boolean) => amktiaoHook.changeGameMode(value)}
+						railStyle={railStyle}
+						disabled={!deviceStore.showThirdPartySetting.amktiaoROMInterface}
+						value={amktiaoHook.currentGameMode.value ? true : false}
+						loading={deviceStore.loading}>
+						{{
+							checked: () => '启用游戏模式',
+							unchecked: () => '未启用游戏模式',
+						}}
+					</n-switch>
+				)}
+				<n-alert class='mt-5' type='warning' show-icon={false} bordered={false}>
+					<p>仅兼容水龙(Amktiao)的内核，存在 /sys/touchpanel/game_mode 开关映射时生效</p>
+					<p>启用后可以解决游戏触控断触的问题，但是会导致手写笔工作异常，请在使用手写笔的情况下关闭此功能</p>
+					{amktiaoHook.currentGameMode.value === 1 && (
+						<div class='mt-5'>
+							<p>
+								为使游戏模式生效，启用「游戏模式」后，每次开机后，您还需要手动关闭并重新点亮屏幕才能使「游戏模式」生效，模块提供「游戏模式开机自优化」来解决这个问题，开启后每次开机首次解锁屏幕后，模块会尝试重新关闭屏幕再点亮一次~
+							</p>
+							<n-switch
+								onUpdateValue={(value: boolean) => amktiaoHook.changeGameModeAutoTask(value)}
+								railStyle={railStyle}
+								class='mt-5'
+								value={amktiaoHook.currentGameModeAutoTask.value ? true : false}
+								loading={deviceStore.loading}>
+								{{
+									checked: () => '已启用开机自优化',
+									unchecked: () => '未启用开机自优化',
+								}}
+							</n-switch>
+						</div>
+					)}
+				</n-alert>
+			</>
+		),
+		isShow: () => amktiaoHook.hasGameModeControl.value && ['tablet'].includes(deviceStore.deviceType),
+	},
+		{
 		title: '触控驱动管理（水龙）',
 		titleSlot: () => (
 			<>

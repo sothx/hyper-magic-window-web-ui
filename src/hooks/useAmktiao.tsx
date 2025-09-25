@@ -28,6 +28,8 @@ export type PenUpdateAutoTask = 0 | 1;
 
 export type TpFirmware = 0 | 1;
 
+export type GameMode = 0 | 1;
+
 export function useAmktiao() {
 	const deviceStore = useDeviceStore();
 	const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
@@ -42,6 +44,7 @@ export function useAmktiao() {
 	const hasPenEnableControl = ref<boolean>(false);
 	const hasKeyboardControl = ref<boolean>(false);
 	const hasTpFirmwareControl = ref<boolean>(false);
+	const hasGameModeControl = ref<boolean>(false);
 
 	const currentPenUpdate = ref<PenUpdate>(0);
 
@@ -54,6 +57,10 @@ export function useAmktiao() {
 	const currentTpFirmware = ref<TpFirmware>(0);
 
 	const currentTpFirmwareAutoTask = ref<boolean>(false);
+
+	const currentGameMode = ref<TpFirmware>(0);
+
+	const currentGameModeAutoTask = ref<boolean>(false);
 
 	const loading = ref<boolean>(true);
 
@@ -496,6 +503,167 @@ export function useAmktiao() {
 		}
 	};
 
+	const changeGameMode = async (value: boolean) => {
+		const [putCurrentGameModeErr, putCurrentGameModeRes] = await $to(
+			deviceApi.putCurrentGameMode(value ? 1 : 0),
+		);
+		if (putCurrentGameModeErr) {
+			modal.create({
+				title: '操作失败',
+				type: 'error',
+				preset: 'dialog',
+				content: () => <p>修改失败，详情请查看日志记录~</p>,
+				negativeText: '确定',
+			});
+		} else {
+			if (value) {
+				const [addIsAmktiaoGameModeErr, addIsAmktiaoGameModeRes] = await $to(
+					deviceApi.addIsAmktiaoGameMode(),
+				);
+				if (addIsAmktiaoGameModeErr) {
+					modal.create({
+						title: '操作失败',
+						type: 'error',
+						preset: 'dialog',
+						content: () => <p>修改失败，详情请查看日志记录~</p>,
+						negativeText: '确定',
+					});
+				} else {
+					modal.create({
+						title: '切换成功',
+						type: 'success',
+						preset: 'dialog',
+						content: () => <p>切换游戏模式成功，关闭屏幕再点亮屏幕即可切换游戏模式~</p>,
+						positiveText: '立即关闭并重新点亮屏幕',
+						negativeText: '稍后再说',
+						async onPositiveClick() {
+							const [getScreenStateErr, getScreenStateRes] = await $to(deviceApi.getScreenState());
+							if (getScreenStateErr) {
+								modal.create({
+									title: '获取屏幕信息失败',
+									type: 'error',
+									preset: 'dialog',
+									content: () => (
+										<p>获取屏幕信息失败，请手动关闭屏幕再点亮屏幕即可切换游戏模式，详细请查看日志~</p>
+									),
+									negativeText: '确定',
+								});
+								return;
+							}
+							if (getScreenStateRes === 'Awake') {
+								const [rebootScreenErr] = await $to(deviceApi.rebootScreen());
+								if (rebootScreenErr) {
+									modal.create({
+										title: '操作失败',
+										type: 'error',
+										preset: 'dialog',
+										content: () => (
+											<p>操作失败，请手动关闭屏幕再点亮屏幕即可切换游戏模式，详细请查看日志~</p>
+										),
+										negativeText: '确定',
+									});
+									return;
+								}
+								modal.create({
+									title: '切换成功',
+									type: 'success',
+									preset: 'dialog',
+									content: () => (
+										<p>已经为您关闭屏幕并重新点亮屏幕，请查看游戏模式是否已成功切换~</p>
+									),
+									positiveText: '确定',
+								});
+							} else {
+								modal.create({
+									title: '操作失败',
+									type: 'error',
+									preset: 'dialog',
+									content: () => (
+										<p>检测到您目前的屏幕状态并非亮屏状态，请手动关闭屏幕再点亮屏幕即可更新游戏模式，详细请查看日志~</p>
+									),
+									negativeText: '确定',
+								});
+							}
+						},
+					});
+					currentGameMode.value = 1;
+				}
+			} else {
+				const [removeIsAmktiaoGameModeErr, removeIsAmktiaoGameModeRes] = await $to(
+					deviceApi.removeIsAmktiaoGameMode(),
+				);
+				if (removeIsAmktiaoGameModeErr) {
+					modal.create({
+						title: '操作失败',
+						type: 'error',
+						preset: 'dialog',
+						content: () => <p>修改失败，详情请查看日志记录~</p>,
+						negativeText: '确定',
+					});
+				} else {
+					modal.create({
+						title: '切换成功',
+						type: 'success',
+						preset: 'dialog',
+						content: () => <p>切换游戏模式成功，关闭屏幕再点亮屏幕即可更新游戏模式~</p>,
+						positiveText: '立即关闭并重新点亮屏幕',
+						negativeText: '稍后再说',
+						async onPositiveClick() {
+							const [getScreenStateErr, getScreenStateRes] = await $to(deviceApi.getScreenState());
+							if (getScreenStateErr) {
+								modal.create({
+									title: '获取屏幕信息失败',
+									type: 'error',
+									preset: 'dialog',
+									content: () => (
+										<p>获取屏幕信息失败，请手动关闭屏幕再点亮屏幕即可更新游戏模式，详细请查看日志~</p>
+									),
+									negativeText: '确定',
+								});
+								return;
+							}
+							if (getScreenStateRes === 'Awake') {
+								const [rebootScreenErr] = await $to(deviceApi.rebootScreen());
+								if (rebootScreenErr) {
+									modal.create({
+										title: '操作失败',
+										type: 'error',
+										preset: 'dialog',
+										content: () => (
+											<p>操作失败，请手动关闭屏幕再点亮屏幕即可更新游戏模式，详细请查看日志~</p>
+										),
+										negativeText: '确定',
+									});
+									return;
+								}
+								modal.create({
+									title: '切换成功',
+									type: 'success',
+									preset: 'dialog',
+									content: () => (
+										<p>已经为您关闭屏幕并重新点亮屏幕，请查看游戏模式是否已成功切换~</p>
+									),
+									positiveText: '确定',
+								});
+							} else {
+								modal.create({
+									title: '操作失败',
+									type: 'error',
+									preset: 'dialog',
+									content: () => (
+										<p>检测到您目前的屏幕状态并非亮屏状态，请手动关闭屏幕再点亮屏幕即可更新游戏模式，详细请查看日志~</p>
+									),
+									negativeText: '确定',
+								});
+							}
+						},
+					});
+					currentTpFirmware.value = 0;
+				}
+			}
+		}
+	};
+
 	const changePenUpdateAutoTaskMode = async (value: boolean) => {
 			if (value) {
 				const [addIsAmktiaoPenUpdateAutoTaskErr, addIsAmktiaoPenUpdateAutoTaskRes] = await $to(
@@ -592,6 +760,54 @@ export function useAmktiao() {
 			}
 	}
 
+	const changeGameModeAutoTask = async (value: boolean) => {
+			if (value) {
+				const [addIsAmktiaoGameModeAutoTaskErr, addIsAmktiaoGameModeAutoTaskRes] = await $to(
+					deviceApi.addIsAmktiaoGameModeAutoTask(),
+				);
+				if (addIsAmktiaoGameModeAutoTaskErr) {
+					modal.create({
+						title: '操作失败',
+						type: 'error',
+						preset: 'dialog',
+						content: () => <p>修改失败，详情请查看日志记录~</p>,
+						negativeText: '确定',
+					});
+				} else {
+					modal.create({
+						title: '操作成功',
+						type: 'success',
+						preset: 'dialog',
+						content: () => <p>您已启用「游戏模式开机自优化」，开启后每次开机首次解锁屏幕后，模块会尝试重新关闭屏幕再点亮一次，以便「游戏模式」立即生效~</p>,
+						positiveText: '确定',
+					});
+					currentGameModeAutoTask.value = value;
+				}
+			} else {
+				const [removeIsAmktiaoGameModeAutoTaskErr, removeIsAmktiaoGameModeAutoTaskRes] = await $to(
+					deviceApi.removeIsAmktiaoGameModeAutoTask(),
+				);
+				if (removeIsAmktiaoGameModeAutoTaskErr) {
+					modal.create({
+						title: '操作失败',
+						type: 'error',
+						preset: 'dialog',
+						content: () => <p>修改失败，详情请查看日志记录~</p>,
+						negativeText: '确定',
+					});
+				} else {
+					modal.create({
+						title: '操作成功',
+						type: 'success',
+						preset: 'dialog',
+						content: () => <p>您已关闭「游戏模式开机自优化」，每次开机后，您需要手动关闭并重新点亮屏幕，才能使「游戏模式」立即生效~</p>,
+						positiveText: '确定',
+					});
+					currentGameModeAutoTask.value = value;
+				}
+			}
+	}
+
 	const changePenEnableMode = async (value: boolean) => {
 		const [putCurrentPenEnableErr, putCurrentPenEnableRes] = await $to(
 			deviceApi.putCurrentPenEnable(value ? 1 : 0),
@@ -656,6 +872,10 @@ export function useAmktiao() {
 		if (getHasTpFirmwareControlRes) {
 			hasTpFirmwareControl.value = true;
 		}
+		const [,getHasGameModeControlRes] = await $to<string, string>(deviceApi.getHasGameModeControl());
+		if (getHasGameModeControlRes) {
+			hasGameModeControl.value = true;
+		}
 		// 移植包触控板固件控制
 		if (hasTpFirmwareControl.value) {
 			const [, getCurrentTpFirmwareResolve] = await $to<string, string>(deviceApi.getCurrentTpFirmware());
@@ -718,6 +938,11 @@ export function useAmktiao() {
 		hasPenEnableControl,
 		hasKeyboardControl,
 		hasTpFirmwareControl,
+		hasGameModeControl,
+		currentGameMode,
+		currentGameModeAutoTask,
+		changeGameMode,
+		changeGameModeAutoTask,
 		currentPenUpdate,
 		currentPenEnable,
 		currentPenUpdateAutoTask,
