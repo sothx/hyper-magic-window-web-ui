@@ -115,7 +115,7 @@ export const putIsEnableProjectTrebleCustomDotBlackList = (mode: 1 | 0): Promise
 };
 
 export const getMiuiFreeformCloudDataIdList = (): Promise<string[]> => {
-	const sqlite3 = '/data/adb/modules/MIUI_MagicWindow+/common/utils/sqlite3';
+	const sqlite3 = '/data/adb/modules/Hyper_MagicWindow/common/utils/sqlite3';
 	const HTMLViewerCloudDataDataBase = `/data/user_de/0/com.android.htmlviewer/databases/cloud_all_data.db`;
 	const shellCommon = `echo "$(${sqlite3} ${HTMLViewerCloudDataDataBase} "SELECT dataId FROM cloud_all_data WHERE moduleName='MiuiFreeform';")"`;
 	return new Promise(async (resolve, reject) => {
@@ -139,7 +139,7 @@ export const getMiuiFreeformCloudDataIdList = (): Promise<string[]> => {
 };
 
 export const getCustomDotBlackList = (): Promise<string[]> => {
-	const shellCommon = `cat /data/adb/MIUI_MagicWindow+/config/dot_black_list.json`;
+	const shellCommon = `cat /data/adb/Hyper_MagicWindow/config/dot_black_list.json`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -168,7 +168,7 @@ export const getCustomDotBlackList = (): Promise<string[]> => {
 };
 
 export const getDotBlackList = (): Promise<DotBlackListItem[]> => {
-	const sqlite3 = '/data/adb/modules/MIUI_MagicWindow+/common/utils/sqlite3';
+	const sqlite3 = '/data/adb/modules/Hyper_MagicWindow/common/utils/sqlite3';
 	const HTMLViewerCloudDataBase = `/data/user_de/0/com.android.htmlviewer/databases/cloud_all_data.db`;
 	return new Promise(async (resolve, reject) => {
 		if (import.meta.env.MODE === 'development') {
@@ -291,7 +291,7 @@ export const updateProjectTrebleDotBlackList = (
 			} else {
 				const uniqueCustomDotBlackList = Array.from(new Set(params.customDotBlackList));
 				const fetchCustomList = async (dotBlackList: string[]): Promise<string> => {
-					const shellCommon = `echo '${JSON.stringify(dotBlackList)}' > /data/adb/MIUI_MagicWindow+/config/dot_black_list.json`;
+					const shellCommon = `echo '${JSON.stringify(dotBlackList)}' > /data/adb/Hyper_MagicWindow/config/dot_black_list.json`;
 					return handlePromiseWithLogging(
 						new Promise(async (fetchCustomListResolve, fetchCustomListReject) => {
 							const { errno, stdout, stderr }: ExecResults = (await exec(
@@ -375,7 +375,7 @@ export const updateDotBlackList = (
 	errorLogging?: updateDotBlackListAppErrorLoggingItem[]; // 错误日志记录
 	successLogging?: updateDotBlackListAppSuccessLoggingItem[]; // 成功日志记录
 }> => {
-	const sqlite3 = '/data/adb/modules/MIUI_MagicWindow+/common/utils/sqlite3';
+	const sqlite3 = '/data/adb/modules/Hyper_MagicWindow/common/utils/sqlite3';
 	const HTMLViewerCloudDataBase = `/data/user_de/0/com.android.htmlviewer/databases/cloud_all_data.db`;
 	const errorLogging: updateDotBlackListAppErrorLoggingItem[] = [];
 	const successLogging: updateDotBlackListAppSuccessLoggingItem[] = [];
@@ -391,7 +391,7 @@ export const updateDotBlackList = (
 			} else {
 				const uniqueCustomDotBlackList = Array.from(new Set(params.customDotBlackList));
 				const fetchCustomList = async (dotBlackList: string[]): Promise<string> => {
-					const shellCommon = `echo '${JSON.stringify(dotBlackList)}' > /data/adb/MIUI_MagicWindow+/config/dot_black_list.json`;
+					const shellCommon = `echo '${JSON.stringify(dotBlackList)}' > /data/adb/Hyper_MagicWindow/config/dot_black_list.json`;
 					return handlePromiseWithLogging(
 						new Promise(async (fetchCustomListResolve, fetchCustomListReject) => {
 							const { errno, stdout, stderr }: ExecResults = (await exec(

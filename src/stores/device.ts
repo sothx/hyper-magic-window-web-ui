@@ -271,7 +271,7 @@ export const useDeviceStore = defineStore(
 			if (getModuleInfoRes?.length) {
 				const moduleInfoParse = transformValues({
 					...parsePropContent(getModuleInfoRes),
-					dir: '/data/adb/modules/MIUI_MagicWindow+',
+					dir: '/data/adb/modules/Hyper_MagicWindow',
 				}) as unknown as ModuleProp;
 				if (moduleInfoParse.versionCode) {
 					if (!lastVersionCode.value) {

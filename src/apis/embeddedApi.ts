@@ -16,7 +16,7 @@ export interface AndroidAppPackageJobsResult extends Omit<ExecResults, 'stdout'>
 }
 
 export const getSourceEmbeddedRulesList = (): Promise<string> => {
-	const shellCommon = `cat /data/adb/modules/MIUI_MagicWindow+/common/source/embedded_rules_list.xml`;
+	const shellCommon = `cat /data/adb/modules/Hyper_MagicWindow/common/source/embedded_rules_list.xml`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -80,7 +80,7 @@ export const switchAction = (name: string, action: 'enable' | 'disable'): Promis
 };
 
 export const getSourceFixedOrientationList = (): Promise<string> => {
-	const shellCommon = `cat /data/adb/modules/MIUI_MagicWindow+/common/source/fixed_orientation_list.xml`;
+	const shellCommon = `cat /data/adb/modules/Hyper_MagicWindow/common/source/fixed_orientation_list.xml`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -114,7 +114,7 @@ export const getSystemFixedOrientationList = (): Promise<string> => {
 };
 
 export const getCustomConfigEmbeddedRulesList = (): Promise<string> => {
-	const shellCommon = `cat /data/adb/MIUI_MagicWindow+/config/embedded_rules_list.xml`;
+	const shellCommon = `cat /data/adb/Hyper_MagicWindow/config/embedded_rules_list.xml`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -131,7 +131,7 @@ export const getCustomConfigEmbeddedRulesList = (): Promise<string> => {
 };
 
 export const getCustomConfigFixedOrientationList = (): Promise<string> => {
-	const shellCommon = `cat /data/adb/MIUI_MagicWindow+/config/fixed_orientation_list.xml`;
+	const shellCommon = `cat /data/adb/Hyper_MagicWindow/config/fixed_orientation_list.xml`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -165,7 +165,7 @@ export const getSystemEmbeddedSettingConfig = (): Promise<string> => {
 };
 
 export const getSourceEmbeddedSettingConfig = (): Promise<string> => {
-	const shellCommon = `cat /data/adb/modules/MIUI_MagicWindow+/common/source/embedded_setting_config.xml`;
+	const shellCommon = `cat /data/adb/modules/Hyper_MagicWindow/common/source/embedded_setting_config.xml`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -182,7 +182,7 @@ export const getSourceEmbeddedSettingConfig = (): Promise<string> => {
 };
 
 export const getCustomConfigEmbeddedSettingConfig = (): Promise<string> => {
-	const shellCommon = `cat /data/adb/MIUI_MagicWindow+/config/embedded_setting_config.xml`;
+	const shellCommon = `cat /data/adb/Hyper_MagicWindow/config/embedded_setting_config.xml`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -199,7 +199,7 @@ export const getCustomConfigEmbeddedSettingConfig = (): Promise<string> => {
 };
 
 export const getSourceThirdPartyAppOptimizeConfig = (): Promise<string> => {
-	const shellCommon = `cat /data/adb/modules/MIUI_MagicWindow+/common/source/os2_third_party_app_optimize/third_party_app_optimize.prop`;
+	const shellCommon = `cat /data/adb/modules/Hyper_MagicWindow/common/source/os2_third_party_app_optimize/third_party_app_optimize.prop`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -216,7 +216,7 @@ export const getSourceThirdPartyAppOptimizeConfig = (): Promise<string> => {
 };
 
 export const getSystemAppOptimizeConfig = (): Promise<string> => {
-	const shellCommon = `cat /data/adb/modules/MIUI_MagicWindow+/common/source/os2_system_app_optimize/system_app_optimize.prop`;
+	const shellCommon = `cat /data/adb/modules/Hyper_MagicWindow/common/source/os2_system_app_optimize/system_app_optimize.prop`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -233,7 +233,7 @@ export const getSystemAppOptimizeConfig = (): Promise<string> => {
 };
 
 export const getCustomThirdPartyAppOptimizeConfig = (): Promise<string> => {
-	const shellCommon = `cat /data/adb/MIUI_MagicWindow+/config/third_party_app_optimize.prop`;
+	const shellCommon = `cat /data/adb/Hyper_MagicWindow/config/third_party_app_optimize.prop`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -370,7 +370,7 @@ export const updateEmbeddedApp = (
 							stdout: PatchEmStdout,
 							stderr: PatchEmStderr,
 						}: ExecResults = await exec(
-							`echo '${updateData.customThirdPartyAppOptimizeConfigProp}' > /data/adb/MIUI_MagicWindow+/config/third_party_app_optimize.prop`,
+							`echo '${updateData.customThirdPartyAppOptimizeConfigProp}' > /data/adb/Hyper_MagicWindow/config/third_party_app_optimize.prop`,
 						);
 
 						if (PatchEmErrno) {
@@ -392,7 +392,7 @@ export const updateEmbeddedApp = (
 							stdout: PatchRmStdout,
 							stderr: PatchRmStderr,
 						}: ExecResults = await exec(
-							`rm -f /data/adb/MIUI_MagicWindow+/config/third_party_app_optimize.prop`,
+							`rm -f /data/adb/Hyper_MagicWindow/config/third_party_app_optimize.prop`,
 						);
 
 						if (PatchRmErrno) {
@@ -416,7 +416,7 @@ export const updateEmbeddedApp = (
 							stdout: PatchEmStdout,
 							stderr: PatchEmStderr,
 						}: ExecResults = await exec(
-							`echo '${updateData.thirdPartyAppOptimizeConfigRunnerShell}' > /data/adb/MIUI_MagicWindow+/config/third_party_app_optimize_runner.sh`,
+							`echo '${updateData.thirdPartyAppOptimizeConfigRunnerShell}' > /data/adb/Hyper_MagicWindow/config/third_party_app_optimize_runner.sh`,
 						);
 
 						if (PatchEmErrno) {
@@ -438,7 +438,7 @@ export const updateEmbeddedApp = (
 							stdout: PatchRmStdout,
 							stderr: PatchRmStderr,
 						}: ExecResults = await exec(
-							`rm -f /data/adb/MIUI_MagicWindow+/config/third_party_app_optimize_runner.sh`,
+							`rm -f /data/adb/Hyper_MagicWindow/config/third_party_app_optimize_runner.sh`,
 						);
 
 						if (PatchRmErrno) {
@@ -462,7 +462,7 @@ export const updateEmbeddedApp = (
 						stdout: PatchEmStdout,
 						stderr: PatchEmStderr,
 					}: ExecResults = await exec(
-						`echo '${updateData.patchEmbeddedRulesListXML}' > /data/adb/MIUI_MagicWindow+/patch_rule/embedded_rules_list.xml`,
+						`echo '${updateData.patchEmbeddedRulesListXML}' > /data/adb/Hyper_MagicWindow/patch_rule/embedded_rules_list.xml`,
 					);
 					if (PatchEmErrno) {
 						errorLogging.push({
@@ -483,7 +483,7 @@ export const updateEmbeddedApp = (
 						stdout: PatchFixStdout,
 						stderr: PatchFixStderr,
 					}: ExecResults = await exec(
-						`echo '${updateData.patchFixedOrientationListXML}' > /data/adb/MIUI_MagicWindow+/patch_rule/fixed_orientation_list.xml`,
+						`echo '${updateData.patchFixedOrientationListXML}' > /data/adb/Hyper_MagicWindow/patch_rule/fixed_orientation_list.xml`,
 					);
 					if (PatchFixErrno) {
 						errorLogging.push({
@@ -505,7 +505,7 @@ export const updateEmbeddedApp = (
 							stdout: PatchSettingsStdout,
 							stderr: PatchSettingsStderr,
 						}: ExecResults = await exec(
-							`echo '${updateData.patchEmbeddedSettingConfigXML}' > /data/adb/MIUI_MagicWindow+/patch_rule/embedded_setting_config.xml`,
+							`echo '${updateData.patchEmbeddedSettingConfigXML}' > /data/adb/Hyper_MagicWindow/patch_rule/embedded_setting_config.xml`,
 						);
 						if (PatchSettingsErrno) {
 							errorLogging.push({
@@ -528,7 +528,7 @@ export const updateEmbeddedApp = (
 					stdout: EmStdout,
 					stderr: EmStderr,
 				}: ExecResults = await exec(
-					`echo '${updateData.customEmbeddedRulesListXML}' > /data/adb/MIUI_MagicWindow+/config/embedded_rules_list.xml`,
+					`echo '${updateData.customEmbeddedRulesListXML}' > /data/adb/Hyper_MagicWindow/config/embedded_rules_list.xml`,
 				);
 				if (EmErrno) {
 					errorLogging.push({
@@ -549,7 +549,7 @@ export const updateEmbeddedApp = (
 					stdout: FixStdout,
 					stderr: FixStderr,
 				}: ExecResults = await exec(
-					`echo '${updateData.customFixedOrientationListXML}' > /data/adb/MIUI_MagicWindow+/config/fixed_orientation_list.xml`,
+					`echo '${updateData.customFixedOrientationListXML}' > /data/adb/Hyper_MagicWindow/config/fixed_orientation_list.xml`,
 				);
 				if (FixErrno) {
 					errorLogging.push({
@@ -571,7 +571,7 @@ export const updateEmbeddedApp = (
 						stdout: SettingsStdout,
 						stderr: SettingsStderr,
 					}: ExecResults = await exec(
-						`echo '${updateData.settingConfigXML}' > /data/adb/MIUI_MagicWindow+/config/embedded_setting_config.xml`,
+						`echo '${updateData.settingConfigXML}' > /data/adb/Hyper_MagicWindow/config/embedded_setting_config.xml`,
 					);
 
 					if (SettingsErrno) {

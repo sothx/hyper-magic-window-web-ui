@@ -22,7 +22,7 @@ export default async function sqioInstance(cmd: string) {
       }
     } else {
       const { errno, stdout, stderr }: ExecResults = await exec(
-        `/data/adb/modules/MIUI_MagicWindow+/common/utils/sq ${cmd}`
+        `/data/adb/modules/Hyper_MagicWindow/common/utils/sq ${cmd}`
       );
       errno ? reject(stderr) : resolve(stdout);
     }

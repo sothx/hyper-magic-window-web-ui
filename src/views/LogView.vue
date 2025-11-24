@@ -67,7 +67,7 @@ const saveLogs = () => {
 				title: '保存成功',
 				type: 'success',
 				preset: 'dialog',
-				content: () => <p>日志保存成功，日志保存在/data/adb/MIUI_MagicWindow+/logs-{currentTimestamp}.txt</p>,
+				content: () => <p>日志保存成功，日志保存在/data/adb/Hyper_MagicWindow/logs-{currentTimestamp}.txt</p>,
 				negativeText: '确定',
 			});
 		})

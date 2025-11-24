@@ -8,7 +8,7 @@ export interface AndroidAppPackageJobsResult extends Omit<ExecResults, 'stdout'>
 }
 
 export const getGameBoosterList = (): Promise<GameBoosterTableItem[]> => {
-	const sqlite3 = '/data/adb/modules/MIUI_MagicWindow+/common/utils/sqlite3';
+	const sqlite3 = '/data/adb/modules/Hyper_MagicWindow/common/utils/sqlite3';
 	const GameBoosterDataBase = `/data/data/com.miui.securitycenter/databases/gamebooster.db`;
 	const shellCommon = `echo "$(${sqlite3} ${GameBoosterDataBase} "SELECT * FROM gamebooster_table WHERE package_name!='none';" -json)"`;
 	return handlePromiseWithLogging(
@@ -56,7 +56,7 @@ export const openAddGame = ():Promise<string> => {
 }
 
 export const updateGameRatioSetting = (packageName:GameBoosterTableItem['package_name'],gameRatio: GameBoosterTableItem['game_ratio'], gameGravity:GameBoosterTableItem['game_gravity']): Promise<string> => {
-	const sqlite3 = '/data/adb/modules/MIUI_MagicWindow+/common/utils/sqlite3';
+	const sqlite3 = '/data/adb/modules/Hyper_MagicWindow/common/utils/sqlite3';
 	const GameBoosterDataBase = `/data/data/com.miui.securitycenter/databases/gamebooster.db`;
 	const shellCommon = `echo "$(${sqlite3} ${GameBoosterDataBase} "UPDATE gamebooster_table SET game_ratio='${gameRatio}', game_gravity='${gameGravity}' WHERE package_name='${packageName}'; SELECT changes();")"`;
 	return handlePromiseWithLogging(

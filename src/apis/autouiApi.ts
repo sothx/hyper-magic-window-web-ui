@@ -13,7 +13,7 @@ export interface AndroidAppPackageJobsResult extends Omit<ExecResults, 'stdout'>
 
 
 export const getSourceAutoUIList = (): Promise<string> => {
-	const shellCommon = `cat /data/adb/modules/MIUI_MagicWindow+/common/source/autoui_list.xml`;
+	const shellCommon = `cat /data/adb/modules/Hyper_MagicWindow/common/source/autoui_list.xml`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -30,7 +30,7 @@ export const getSourceAutoUIList = (): Promise<string> => {
 };
 
 export const getCustomConfigAutoUIList = (): Promise<string> => {
-	const shellCommon = `cat /data/adb/MIUI_MagicWindow+/config/autoui_list.xml`;
+	const shellCommon = `cat /data/adb/Hyper_MagicWindow/config/autoui_list.xml`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -110,7 +110,7 @@ export const updateAutoUIApp = (
 					stdout: EmStdout,
 					stderr: EmStderr,
 				}: ExecResults = await exec(
-					`echo '${params.customAutoUIListXML}' > /data/adb/MIUI_MagicWindow+/config/autoui_list.xml`,
+					`echo '${params.customAutoUIListXML}' > /data/adb/Hyper_MagicWindow/config/autoui_list.xml`,
 				);
 				if (EmErrno) {
 					errorLogging.push({
