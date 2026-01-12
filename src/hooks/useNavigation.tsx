@@ -32,7 +32,7 @@ export function useNavigation() {
 			name: '应用布局优化',
 			routeName: 'autoui',
 			isShow() {
-				return Boolean(deviceStore.androidTargetSdk && deviceStore.androidTargetSdk >= 33 && (deviceStore.MIOSVersion && deviceStore.MIOSVersion <= 2));
+				return Boolean(deviceStore.androidTargetSdk && deviceStore.androidTargetSdk >= 33);
 			},
 			href: '/autoui',
 			icon: () => (
