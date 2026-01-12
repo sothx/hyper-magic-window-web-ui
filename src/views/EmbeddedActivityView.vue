@@ -1674,7 +1674,7 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 								<span class={{ hidden: !row.applicationName }}>)</span>
 							</p>
 						)}
-						{autoUIStore.allPackageName.has(row.name) && (
+						{autoUIStore.allPackageName.has(row.name) && (deviceStore.MIOSVersion && deviceStore.MIOSVersion <= 2) && (
 							<n-button
 								class='mr-1 mt-1'
 								size='tiny'
