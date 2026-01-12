@@ -2860,7 +2860,7 @@ export const getModuleUpdateMsg = async (url: string): Promise<ModuleUpdateInfo>
 				versionCode: 999999,
 				zipUrl: 'https://github.com/sothx/mipad-magic-window/releases/download/2.12.23/pad-ext-2.12.23.zip',
 				changelog: 'https://hyper-magic-window-module-update.sothx.com/release/V10/changelog.md',
-				chinaMobileMCloudUrl: 'https://caiyun.139.com/m/i?135CdgGlXeVEC',
+				chinaMobileMCloudUrl: 'https://yun.139.com/shareweb/#/w/i/2qieog1Xypz11',
 			});
 		} else {
 			const [getUpdateMsgErr, getUpdateMsgRes] = await $to(axios.get(url));
@@ -2880,7 +2880,7 @@ export const getModuleChangelog = async (url: string): Promise<string> => {
 
 为了确保模块的稳定性，Github推送的版本通常会晚几个版本，如需获取最新版本可以前往网盘获取：
 
-链接: [https://caiyun.139.com/m/i?135CdgGlXeVEC](https://caiyun.139.com/m/i?135CdgGlXeVEC)
+链接: [https://yun.139.com/shareweb/#/w/i/2qieog1Xypz11](https://yun.139.com/shareweb/#/w/i/2qieog1Xypz11)
 
 
 本次更新内容:
@@ -4168,3 +4168,79 @@ export const getHasGameModeControl = (): Promise<string> => {
 		shellCommon,
 	);
 };
+
+export const getMiIslandProp = (): Promise<string> => {
+	const shellCommon = `getprop feature.island.debug`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve('true');
+			} else {
+				const { errno, stdout, stderr }: ExecResults = (await exec(shellCommon)) as unknown as ExecResults;
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const changeMiIslandProp = (mode:boolean): Promise<string> => {
+	const shellCommon = `setprop feature.island.debug ${mode}`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`success`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = (await exec(shellCommon)) as ExecResults;
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const getIsMiIsLandAutoTask = (): Promise<string> => {
+	const shellCommon = `grep 'is_mi_island_auto_task=' /data/adb/Hyper_MagicWindow/config.prop | awk -F'=' '{print $2}'`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`true`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const addIsMiIsLandAutoTask = (): Promise<string> => {
+	const shellCommon = `grep -q '^is_mi_island_auto_task=' /data/adb/Hyper_MagicWindow/config.prop || (source ${toolsFunc} && add_lines "is_mi_island_auto_task=true" /data/adb/Hyper_MagicWindow/config.prop && echo "Command executed successfully." || echo "Command failed.");`
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`Command executed successfully.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : stdout === 'Command executed successfully.' ? resolve(stdout) : reject(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+
+export const removeIsMiIsLandAutoTask = (): Promise<string> => {
+	const shellCommon = `sed -i '/^is_mi_island_auto_task=/d' //data/adb/Hyper_MagicWindow/config.prop && echo "Remove is_mi_island_auto_task successfully." || echo "Remove is_mi_island_auto_task failed."`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`Remove is_mi_island_auto_task successfully.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+}

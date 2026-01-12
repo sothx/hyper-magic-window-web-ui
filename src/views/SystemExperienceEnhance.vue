@@ -19,6 +19,7 @@ import { useJoyose } from '@/hooks/useJoyose';
 import { useFbo } from '@/hooks/useFbo';
 import { useProjectTrebleVerticalScreenSplit } from '@/hooks/useProjectTrebleVerticalScreenSplit';
 import { useMiScreenShotsWriteClipboard } from '@/hooks/useMiScreenShotsWriteClipboard';
+import { useMiIsLand } from '@/hooks/useMiIsLand';
 import {
 	BoltIcon,
 	CpuChipIcon,
@@ -70,6 +71,7 @@ const projectTrebleVerticalScreenSplitHook = useProjectTrebleVerticalScreenSplit
 const oldProjectTrebleCvwFullHook = useOldProjectTrebleCvwFull();
 const projectTrebleCvwFullHook = useProjectTrebleCvwFull();
 const freeformBlackListHook = useFreeformBlackList();
+const miIsLandHook = useMiIsLand();
 const projectTrebleDisableResizeBlackListHook = useProjectTrebleDisableResizeBlackList();
 const projectTrebleMaxFreeformCountHook = useProjectTrebleMaxFreeformCount();
 const disabledFreeformBottomCaptionHook = useDisabledFreeformBottomCaption();
@@ -472,6 +474,31 @@ const enhanceList: EnhanceItemInfo[] = [
 			</>
 		),
 		isShow: () => amktiaoHook.hasKeyboardControl.value && ['tablet'].includes(deviceStore.deviceType),
+	},
+	{
+		title: '小米超级岛',
+		content: () => (
+			<>
+				{!miIsLandHook.isInit.value ? (
+					<n-skeleton width={80} sharp={false} round size='small' />
+				) : (
+					<n-switch
+						railStyle={railStyle}
+						value={miIsLandHook.isEnable.value ? true : false}
+						loading={deviceStore.loading || miIsLandHook.loading.value}
+						onUpdate:value={(value: boolean) => miIsLandHook.changeEnableMode(value)}>
+						{{
+							checked: () => <>已启用</>,
+							unchecked: () => <>未启用</>,
+						}}
+					</n-switch>
+				)}
+				<n-alert class='mt-5' type='warning' show-icon={false} bordered={false}>
+					启用后可以在小米平板使用「小米超级岛」，由于小米并未对平板进行任何「小米超级岛」适配，可能存在影响体验的问题，您可以随时启用或关闭。
+				</n-alert>
+			</>
+		),
+		isShow: () => Boolean(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 3) && ['tablet'].includes(deviceStore.deviceType),
 	},
 	{
 		title: '截图自动添加至剪贴板',
