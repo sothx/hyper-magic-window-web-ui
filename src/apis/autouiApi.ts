@@ -92,6 +92,7 @@ export const updateAutoUIApp = (
 	errorLogging?: updateAutoUIAppErrorLoggingItem[]; // 错误日志记录
 	successLogging?: updateAutoUIAppSuccessLoggingItem[]; // 成功日志记录
 }> => {
+	const deviceStore = useDeviceStore();
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -171,7 +172,7 @@ export const updateAutoUIApp = (
 						stdout: SwitchActionStdout,
 						stderr: ReloadActionStderr,
 					}: ExecResults = await exec(
-						`cmd miui_auto_ui ${params.reloadRuleAction.action} ${params.reloadRuleAction.name}`,
+						`cmd ${deviceStore.androidTargetSdk >= 36 ? `miui.appadaptation autoui` : `miui_auto_ui`} ${params.reloadRuleAction.action} ${params.reloadRuleAction.name}`,
 					);
 
 					if (ReloadActionErrno) {
