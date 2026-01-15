@@ -73,11 +73,17 @@ const shareRuleTextarea = ref('');
 
 function renderIcon(icon: Component, size?: number) {
 	return () => {
-		return h(NIcon, size? {
+		return h(
+			NIcon,
 			size
-		} : null, {
-			default: () => h(icon),
-		});
+				? {
+						size,
+					}
+				: null,
+			{
+				default: () => h(icon),
+			},
+		);
 	};
 }
 
@@ -797,6 +803,11 @@ function createColumns(): DataTableColumns<AutoUIMergeRuleItem> {
 								<span class={{ hidden: !row.applicationName }}>)</span>
 							</p>
 						)}
+						{deviceStore.androidTargetSdk >= 36 && (
+							<n-tag class='mr-1 mt-1' size='small' type='info'>
+								1.0 规则
+							</n-tag>
+						)}
 					</div>
 				);
 			},
@@ -817,7 +828,7 @@ function createColumns(): DataTableColumns<AutoUIMergeRuleItem> {
 								<svg class='icon' aria-hidden='true'>
 									<use xlinkHref='#icon-fenxiang'></use>
 								</svg>,
-								20
+								20,
 							),
 						},
 						{
@@ -827,7 +838,7 @@ function createColumns(): DataTableColumns<AutoUIMergeRuleItem> {
 								<svg class='icon' aria-hidden='true'>
 									<use xlinkHref='#icon-qingchu'></use>
 								</svg>,
-								20
+								20,
 							),
 						},
 					];
@@ -956,6 +967,18 @@ function createColumns(): DataTableColumns<AutoUIMergeRuleItem> {
 			</div>
 		</div>
 		<n-card size="small">
+			<n-alert
+				type="info"
+				class="mb-3"
+				v-if="deviceStore.androidTargetSdk && deviceStore.androidTargetSdk >= 36 && !deviceStore.skipConfirm.autoui2Alert"
+				closable
+				@close="
+					() => {
+						deviceStore.skipConfirm.autoui2Alert = true;
+					}
+				">
+				应用布局优化2.0规则将直接内置进模块内，目前暂不支持展示或进行任何修改，应用布局优化1.0规则不受此影响。
+			</n-alert>
 			<div class="flex flex-wrap">
 				<n-button
 					class="mb-3 mr-3"
@@ -1067,8 +1090,8 @@ function createColumns(): DataTableColumns<AutoUIMergeRuleItem> {
 					:loading="deviceStore.loading || autoUIStore.loading"
 					@click="QQDocHook.getModal()">
 					<template #icon>
-							<n-icon size="16">
-								<img src="/images/icons/qq_doc.png" />
+						<n-icon size="16">
+							<img src="/images/icons/qq_doc.png" />
 						</n-icon>
 					</template>
 					应用适配收集表

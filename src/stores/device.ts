@@ -145,6 +145,7 @@ export const useDeviceStore = defineStore(
 			needInstalledKsuWebUiApk: false,
 			needReloadSystemModuleVer: false,
 			needUpdateModuleVer: 0,
+			autoui2Alert: false
 		});
 		const showThirdPartySetting = reactive({
 			amktiaoROMInterface: false,

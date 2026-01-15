@@ -59,7 +59,7 @@ export const getAndroidTargetSdk = (): Promise<number> => {
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
-				resolve(35);
+				resolve(36);
 			} else {
 				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
 				errno ? reject(stderr) : resolve(Number(stdout));
