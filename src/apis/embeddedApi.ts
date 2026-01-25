@@ -499,26 +499,34 @@ export const updateEmbeddedApp = (
 						});
 					}
 
-					if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35) {
-						const {
-							errno: PatchSettingsErrno,
-							stdout: PatchSettingsStdout,
-							stderr: PatchSettingsStderr,
-						}: ExecResults = await exec(
-							`echo '${updateData.patchEmbeddedSettingConfigXML}' > /data/adb/Hyper_MagicWindow/patch_rule/embedded_setting_config.xml`,
-						);
-						if (PatchSettingsErrno) {
-							errorLogging.push({
-								type: 'patchEmbeddedSettingConfigXML',
-								name: '[定制模式]应用横屏布局配置文件',
-								message: PatchSettingsStderr,
-							});
-						} else {
-							successLogging.push({
-								type: 'patchEmbeddedSettingConfigXML',
-								name: '[定制模式]应用横屏布局配置文件',
-								message: '更新成功',
-							});
+					// 仅针对平板设备更新配置文件
+
+					if (deviceStore.deviceType === 'tablet') {
+						if (
+							deviceStore.MIOSVersion &&
+							deviceStore.MIOSVersion >= 2 &&
+							deviceStore.androidTargetSdk >= 35
+						) {
+							const {
+								errno: PatchSettingsErrno,
+								stdout: PatchSettingsStdout,
+								stderr: PatchSettingsStderr,
+							}: ExecResults = await exec(
+								`echo '${updateData.patchEmbeddedSettingConfigXML}' > /data/adb/Hyper_MagicWindow/patch_rule/embedded_setting_config.xml`,
+							);
+							if (PatchSettingsErrno) {
+								errorLogging.push({
+									type: 'patchEmbeddedSettingConfigXML',
+									name: '[定制模式]应用横屏布局配置文件',
+									message: PatchSettingsStderr,
+								});
+							} else {
+								successLogging.push({
+									type: 'patchEmbeddedSettingConfigXML',
+									name: '[定制模式]应用横屏布局配置文件',
+									message: '更新成功',
+								});
+							}
 						}
 					}
 				}
@@ -565,48 +573,52 @@ export const updateEmbeddedApp = (
 					});
 				}
 
-				if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35) {
-					const {
-						errno: SettingsErrno,
-						stdout: SettingsStdout,
-						stderr: SettingsStderr,
-					}: ExecResults = await exec(
-						`echo '${updateData.settingConfigXML}' > /data/adb/Hyper_MagicWindow/config/embedded_setting_config.xml`,
-					);
+				// 仅针对平板设备更新配置文件
 
-					if (SettingsErrno) {
-						errorLogging.push({
-							type: 'settingConfigXML',
-							name: '[自定义规则]应用横屏布局配置文件',
-							message: SettingsStderr,
-						});
+				if (deviceStore.deviceType === 'tablet') {
+					if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35) {
+						const {
+							errno: SettingsErrno,
+							stdout: SettingsStdout,
+							stderr: SettingsStderr,
+						}: ExecResults = await exec(
+							`echo '${updateData.settingConfigXML}' > /data/adb/Hyper_MagicWindow/config/embedded_setting_config.xml`,
+						);
+
+						if (SettingsErrno) {
+							errorLogging.push({
+								type: 'settingConfigXML',
+								name: '[自定义规则]应用横屏布局配置文件',
+								message: SettingsStderr,
+							});
+						} else {
+							successLogging.push({
+								type: 'settingConfigXML',
+								name: '[自定义规则]应用横屏布局配置文件',
+								message: '更新成功',
+							});
+						}
 					} else {
-						successLogging.push({
-							type: 'settingConfigXML',
-							name: '[自定义规则]应用横屏布局配置文件',
-							message: '更新成功',
-						});
-					}
-				} else {
-					const {
-						errno: SettingsErrno,
-						stdout: SettingsStdout,
-						stderr: SettingsStderr,
-					}: ExecResults = await exec(
-						`echo '${updateData.settingConfigXML}' > /data/system/users/0/embedded_setting_config.xml`,
-					);
-					if (SettingsErrno) {
-						errorLogging.push({
-							type: 'settingConfigXML',
-							name: '[系统]应用横屏布局配置文件',
-							message: SettingsStderr,
-						});
-					} else {
-						successLogging.push({
-							type: 'settingConfigXML',
-							name: '[系统]应用横屏布局配置文件',
-							message: '更新成功',
-						});
+						const {
+							errno: SettingsErrno,
+							stdout: SettingsStdout,
+							stderr: SettingsStderr,
+						}: ExecResults = await exec(
+							`echo '${updateData.settingConfigXML}' > /data/system/users/0/embedded_setting_config.xml`,
+						);
+						if (SettingsErrno) {
+							errorLogging.push({
+								type: 'settingConfigXML',
+								name: '[系统]应用横屏布局配置文件',
+								message: SettingsStderr,
+							});
+						} else {
+							successLogging.push({
+								type: 'settingConfigXML',
+								name: '[系统]应用横屏布局配置文件',
+								message: '更新成功',
+							});
+						}
 					}
 				}
 
