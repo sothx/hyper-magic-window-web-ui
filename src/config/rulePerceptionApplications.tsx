@@ -305,7 +305,7 @@ export const embeddedPerceptionApplications: Record<string, EmbeddedPerceptionAp
 									NButtonTemplate('获取全局横屏自定义规则', 'info', () => handleClickFullRule())}
 								{deviceStore.deviceType === 'tablet' &&
 									deviceStore.MIOSVersion &&
-									deviceStore.MIOSVersion === 2 &&
+									deviceStore.MIOSVersion >= 2 &&
 									deviceStore.androidTargetSdk >= 35 && (
 										<div>
 											<p>

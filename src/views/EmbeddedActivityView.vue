@@ -373,7 +373,7 @@ const importShareRule = async () => {
 											embeddedStore.applicationName[importRuleContent.name],
 									)}
 								</span>{' '}
-								的应用导入成功了OwO~如果应用更新后的规则不生效，可以尝试重启平板再做尝试~
+								的应用导入成功了OwO~如果应用更新后的规则不生效，可以尝试重启{ deviceStore.deviceType === 'tablet' ? '平板' : '手机' }再做尝试~
 							</p>
 						) : (
 							<p>
@@ -385,9 +385,9 @@ const importShareRule = async () => {
 											embeddedStore.applicationName[importRuleContent.name],
 									)}
 								</span>{' '}
-								的应用导入成功了OwO~如果应用更新后的规则不生效，可以尝试重启平板并且在{' '}
+								的应用导入成功了OwO~如果应用更新后的规则不生效，可以尝试重启{ deviceStore.deviceType === 'tablet' ? '平板' : '手机' }并且在{' '}
 								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-									平板专区-平行窗口
+									{ deviceStore.deviceType === 'tablet' ? '平板专区-平行窗口' : '折叠屏专区-应用横屏显示' }
 								</span>{' '}
 								内{' '}
 								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
@@ -1229,7 +1229,7 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
 									{renderApplicationName(row.name, row.applicationName)}
 								</span>{' '}
-								的应用配置更新成功了OwO~如果应用更新后的规则不生效，可以尝试重启平板再做尝试~
+								的应用配置更新成功了OwO~如果应用更新后的规则不生效，可以尝试重启{ deviceStore.deviceType === 'tablet' ? '平板' : '手机' }再做尝试~
 							</p>
 						) : (
 							<p>
@@ -1237,9 +1237,9 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
 									{renderApplicationName(row.name, row.applicationName)}
 								</span>{' '}
-								的应用配置更新成功了OwO~如果应用更新后的规则不生效，可以尝试重启平板并且在{' '}
+								的应用配置更新成功了OwO~如果应用更新后的规则不生效，可以尝试重启{ deviceStore.deviceType === 'tablet' ? '平板' : '手机' }并且在{' '}
 								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-									平板专区-平行窗口
+									{ deviceStore.deviceType === 'tablet' ? '平板专区-平行窗口' : '折叠屏专区-应用横屏显示' }
 								</span>{' '}
 								内{' '}
 								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
@@ -1265,16 +1265,6 @@ const handleCustomRuleDropdown = async (
 	row: EmbeddedMergeRuleItem,
 	index: number,
 ) => {
-	if (deviceStore.deviceType !== 'tablet') {
-		modal.create({
-			title: '不兼容说明',
-			type: 'warning',
-			preset: 'dialog',
-			content: () => <p>该功能仅兼容平板设备，不兼容折叠屏设备！</p>,
-		});
-		logsStore.info('应用横屏布局-自定义规则', '该功能仅兼容平板设备，不兼容折叠屏设备！');
-		return;
-	}
 	if (key === 'switchToSystemEmbedded') {
 		handleModuleRuleSwitchToSystemEmbedded(row, index);
 	}
@@ -1361,7 +1351,7 @@ const handleCustomRuleDropdown = async (
 						type: 'success',
 						preset: 'dialog',
 						content: () => (
-							<p>好耶w，清除自定义规则成功了OwO~如果应用更新后的规则不生效，可以尝试重启平板再试试~</p>
+							<p>好耶w，清除自定义规则成功了OwO~如果应用更新后的规则不生效，可以尝试重启{ deviceStore.deviceType === 'tablet' ? '平板' : '手机' }再试试~</p>
 						),
 					});
 					cleanCustomModal.loading = false;
@@ -1483,15 +1473,6 @@ const handleCanUseAutoUIRuleExplain = (row: EmbeddedMergeRuleItem, index: number
 };
 
 const handleModuleRuleModeExplain = (row: EmbeddedMergeRuleItem, index: number, canUseSystemEmbedded?: boolean) => {
-	if (deviceStore.deviceType !== 'tablet') {
-		modal.create({
-			title: '不兼容说明',
-			type: 'warning',
-			preset: 'dialog',
-			content: () => <p>该功能仅兼容平板设备，不兼容折叠屏设备！</p>,
-		});
-		return;
-	}
 	modal.create({
 		title: '模块规则说明',
 		type: 'warning',
@@ -1536,16 +1517,6 @@ const handleModuleRuleDropdown = async (
 	row: EmbeddedMergeRuleItem,
 	index: number,
 ) => {
-	if (deviceStore.deviceType !== 'tablet') {
-		modal.create({
-			title: '不兼容说明',
-			type: 'warning',
-			preset: 'dialog',
-			content: () => <p>该功能仅兼容平板设备，不兼容折叠屏设备！</p>,
-		});
-		logsStore.info('应用横屏布局-模块规则', '该功能仅兼容平板设备，不兼容折叠屏设备！');
-		return;
-	}
 	if (key === 'moduleRuleModeExplain') {
 		handleModuleRuleModeExplain(row, index, true);
 	}
@@ -1608,7 +1579,7 @@ const handleModuleRuleSwitchToSystemEmbedded = async (row: EmbeddedMergeRuleItem
 										class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
 										{renderApplicationName(row.name, row.applicationName)}
 									</span>{' '}
-									的应用配置更新成功了OwO~如果应用更新后的规则不生效，可以尝试重启平板再做尝试~
+									的应用配置更新成功了OwO~如果应用更新后的规则不生效，可以尝试重启{ deviceStore.deviceType === 'tablet' ? '平板' : '手机' }再做尝试~
 								</p>
 							) : (
 								<p>
@@ -1617,10 +1588,10 @@ const handleModuleRuleSwitchToSystemEmbedded = async (row: EmbeddedMergeRuleItem
 										class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
 										{renderApplicationName(row.name, row.applicationName)}
 									</span>{' '}
-									的应用配置更新成功了OwO~如果应用更新后的规则不生效，可以尝试重启平板并且在{' '}
+									的应用配置更新成功了OwO~如果应用更新后的规则不生效，可以尝试重启{ deviceStore.deviceType === 'tablet' ? '平板' : '手机' }并且在{' '}
 									<span
 										class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-										平板专区-平行窗口
+										{ deviceStore.deviceType === 'tablet' ? '平板专区-平行窗口' : '折叠屏专区-应用横屏显示' }
 									</span>{' '}
 									内{' '}
 									<span
@@ -1982,10 +1953,10 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 						onClick(row: EmbeddedMergeRuleItem, index: number) {
 							if (deviceStore.deviceType !== 'tablet') {
 								modal.create({
-									title: '不兼容说明',
+									title: '折叠屏设备使用说明',
 									type: 'warning',
 									preset: 'dialog',
-									content: () => <p>该功能仅兼容平板设备，不兼容折叠屏设备！</p>,
+									content: () => <p>折叠屏设备请前往[系统设置-折叠屏专区-应用显示布局]进行应用布局修改~</p>,
 								});
 								return;
 							}
@@ -1998,10 +1969,10 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 						onClick(row: EmbeddedMergeRuleItem, index: number) {
 							if (deviceStore.deviceType !== 'tablet') {
 								modal.create({
-									title: '不兼容说明',
+									title: '折叠屏设备使用说明',
 									type: 'warning',
 									preset: 'dialog',
-									content: () => <p>该功能仅兼容平板设备不兼容折叠屏设备！</p>,
+									content: () => <p>折叠屏设备请前往[系统设置-折叠屏专区-应用显示布局]进行应用布局修改~</p>,
 								});
 								return;
 							}
@@ -2014,10 +1985,10 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 						onClick(row: EmbeddedMergeRuleItem, index: number) {
 							if (deviceStore.deviceType !== 'tablet') {
 								modal.create({
-									title: '不兼容说明',
+									title: '折叠屏设备使用说明',
 									type: 'warning',
 									preset: 'dialog',
-									content: () => <p>该功能仅兼容平板设备，不兼容折叠屏设备！</p>,
+									content: () => <p>折叠屏设备请前往[系统设置-折叠屏专区-应用显示布局]进行应用布局修改~</p>,
 								});
 								return;
 							}
@@ -2030,10 +2001,10 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 						onClick(row: EmbeddedMergeRuleItem, index: number) {
 							if (deviceStore.deviceType !== 'tablet') {
 								modal.create({
-									title: '不兼容说明',
+									title: '折叠屏设备使用说明',
 									type: 'warning',
 									preset: 'dialog',
-									content: () => <p>该功能仅兼容平板设备，不兼容折叠屏设备！</p>,
+									content: () => <p>折叠屏设备请前往[系统设置-折叠屏专区-应用显示布局]进行应用布局修改~</p>,
 								});
 								return;
 							}
@@ -2155,6 +2126,7 @@ onMounted(() => {
 					class="mb-3 mr-3"
 					type="info"
 					:loading="deviceStore.loading || embeddedStore.loading"
+					v-if="deviceStore.deviceType === 'tablet'"
 					@click="openAddEmbeddedApp">
 					<template #icon>
 						<n-icon>

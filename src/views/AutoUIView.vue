@@ -284,7 +284,7 @@ const importShareRule = async () => {
 										autoUIStore.applicationName[importRuleContent.name],
 								)}
 							</span>{' '}
-							的应用配置成功了OwO~如果应用更新后的规则不生效，可以尝试重启平板再做尝试~
+							的应用配置成功了OwO~如果应用更新后的规则不生效，可以尝试重启{ deviceStore.deviceType === 'tablet' ? '平板' : '手机' }再做尝试~
 						</p>
 					),
 					positiveText: '确定',
@@ -365,7 +365,7 @@ const handleCustomRuleDropdown = async (
 						type: 'success',
 						preset: 'dialog',
 						content: () => (
-							<p>好耶w，清除自定义规则成功了OwO~如果应用更新后的规则不生效，可以尝试重启平板再试试~</p>
+							<p>好耶w，清除自定义规则成功了OwO~如果应用更新后的规则不生效，可以尝试重启{ deviceStore.deviceType === 'tablet' ? '平板' : '手机' }再试试~</p>
 						),
 					});
 					cleanCustomModal.loading = false;
@@ -533,7 +533,7 @@ const handleSwitchAction = async (row: AutoUIMergeRuleItem, index: number, value
 					title: '操作成功',
 					type: 'success',
 					preset: 'dialog',
-					content: () => <p>好耶w，操作成功了OwO~如果应用更新后的规则不生效，可以尝试重启平板再试试~</p>,
+					content: () => <p>好耶w，操作成功了OwO~如果应用更新后的规则不生效，可以尝试重启{ deviceStore.deviceType === 'tablet' ? '平板' : '手机' }再试试~</p>,
 				});
 				switchCustomModal.loading = false;
 				autoUIStore.updateMergeRuleList();
@@ -706,7 +706,7 @@ const openUpdateDrawer = async (row: AutoUIMergeRuleItem, index: number) => {
 							<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
 								{renderApplicationName(row.name, row.applicationName)}
 							</span>{' '}
-							的应用配置更新成功了OwO~，如果应用更新后的规则不生效，可以尝试重启平再做尝试~
+							的应用配置更新成功了OwO~，如果应用更新后的规则不生效，可以尝试重启{ deviceStore.deviceType === 'tablet' ? '平板' : '手机' }再做尝试~
 						</p>
 					),
 				});
@@ -803,7 +803,7 @@ function createColumns(): DataTableColumns<AutoUIMergeRuleItem> {
 								<span class={{ hidden: !row.applicationName }}>)</span>
 							</p>
 						)}
-						{deviceStore.androidTargetSdk >= 36 && (
+						{deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 3 && (
 							<n-tag class='mr-1 mt-1' size='small' type='info'>
 								1.0 规则
 							</n-tag>
@@ -970,7 +970,7 @@ function createColumns(): DataTableColumns<AutoUIMergeRuleItem> {
 			<n-alert
 				type="info"
 				class="mb-3"
-				v-if="deviceStore.androidTargetSdk && deviceStore.androidTargetSdk >= 36 && !deviceStore.skipConfirm.autoui2Alert"
+				v-if="deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 3 && !deviceStore.skipConfirm.autoui2Alert"
 				closable
 				@close="
 					() => {

@@ -162,6 +162,8 @@ export const useDeviceStore = defineStore(
 		const isNeedShowErrorModal = computed(() => Boolean(errorLogging.length > 0));
 
 		const deviceType = computed(() => {
+			// test
+			return 'fold'
 			if (isInit.value) {
 				if (deviceCharacteristics.value === 'tablet') {
 					return 'tablet';
