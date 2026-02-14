@@ -60,6 +60,21 @@ export interface AppInfo {
 
 const appList: AppInfo[] = [
 	{
+		title: '小米平板 DPI 修复模块',
+		isShow: () => ['tablet'].includes(deviceStore.deviceType) && Boolean(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 3) && Boolean(deviceStore.androidTargetSdk && deviceStore.androidTargetSdk === 35),
+		versionNum: 20260214,
+		description: () => (
+			<div>
+				<p>安装后可以修复小米平板 Android 15 Hyper OS 3设备上的DPI异常问题，您可以随时启用或关闭。</p>
+				<p>修复方案仅适配Xiaomi Pad 6 Pro/Xiaomi Pad 6 Max，请选择自己当前设备对应的选项，其他设备请勿启用以免出现未知问题。</p>
+			</div>
+		),
+		url: 'https://yun.139.com/shareweb/#/w/i/2sUfFiF93T5bg',
+		type: 'success',
+		image: '/images/apps/magisk.webp',
+		tag: 'original',
+	},
+	{
 		title: '小米互联互通服务',
 		packageName: 'com.xiaomi.mi_connect_service',
 		description: () => (
