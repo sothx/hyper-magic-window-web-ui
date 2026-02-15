@@ -47,6 +47,7 @@ const getAppDownload = async (title: string, url: string, type: 'system' | 'revi
 };
 
 export interface AppInfo {
+	id: string;
 	title: string;
 	packageName?: string;
 	description: () => JSX.Element;
@@ -60,6 +61,7 @@ export interface AppInfo {
 
 const appList: AppInfo[] = [
 	{
+		id: 'mipad-dpi-fix',
 		title: '小米平板 DPI 修复模块',
 		isShow: () => ['tablet'].includes(deviceStore.deviceType) && Boolean(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 3) && Boolean(deviceStore.androidTargetSdk && deviceStore.androidTargetSdk === 35),
 		versionNum: 20260214,
@@ -75,6 +77,7 @@ const appList: AppInfo[] = [
 		tag: 'original',
 	},
 	{
+		id: 'mi-connect-service',
 		title: '小米互联互通服务',
 		packageName: 'com.xiaomi.mi_connect_service',
 		description: () => (
@@ -91,6 +94,7 @@ const appList: AppInfo[] = [
 		tag: 'system',
 	},
 	{
+		id: 'super-xiao-ai',
 		title: '超级小爱',
 		packageName: 'com.miui.voiceassist',
 		versionNum: 20250617,
@@ -110,6 +114,7 @@ const appList: AppInfo[] = [
 		tag: 'system',
 	},
 	{
+		id: 'mi_theme_pets_2025',
 		title: '小米主题壁纸 - 萌宠系列动态壁纸',
 		packageName: 'mi_theme_pets_2025',
 		versionNum: 20250617,
@@ -126,6 +131,7 @@ const appList: AppInfo[] = [
 		tag: 'original',
 	},
 	{
+		id: 'wps_office_for_pc',
 		title: 'WPS Office For PC',
 		packageName: 'com.xiaomi.wpslauncher',
 		isShow: () => deviceStore.deviceType === 'tablet',
@@ -146,6 +152,7 @@ const appList: AppInfo[] = [
 		tag: 'system',
 	},
 	{
+		id: 'cajviewer_for_pc',
 		title: 'CAJViewer For PC',
 		packageName: 'com.xiaomi.cajlauncher',
 		isShow: () => deviceStore.deviceType === 'tablet',
@@ -164,7 +171,8 @@ const appList: AppInfo[] = [
 		image: '/images/apps/cajviewer.png',
 		tag: 'system',
 	},
-		{
+	{
+		id: 'zhongwangcad_for_pc',
 		title: '中望CAD For PC',
 		packageName: 'com.xiaomi.cadlauncher',
 		isShow: () => deviceStore.deviceType === 'tablet',
@@ -184,6 +192,7 @@ const appList: AppInfo[] = [
 		tag: 'system',
 	},
 	{
+		id: 'xiaomi-pad-application-mixin',
 		title: '系统应用补全模块 - 传送门/悬浮球',
 		packageName: 'xiaomi-pad-application-mixin',
 		isShow: () => deviceStore.deviceType === 'tablet',
@@ -207,6 +216,7 @@ const appList: AppInfo[] = [
 		tag: 'magisk',
 	},
 	{
+		id: 'mipad-programmable-completion',
 		title: '系统功能补全模块',
 		packageName: 'mipad-programmable-completion',
 		isShow: () => ['tablet', 'fold'].includes(deviceStore.deviceType),
@@ -250,6 +260,7 @@ const appList: AppInfo[] = [
 		tag: 'magisk',
 	},
 	{
+		id: 'xiaomi-phone-programmable-completion',
 		title: '小米手机系统功能补全模块',
 		isShow: () => deviceStore.deviceType === 'phone',
 		versionNum: 20250617,
@@ -286,6 +297,7 @@ const appList: AppInfo[] = [
 		tag: 'magisk',
 	},
 	{
+		id: 'mi_home_hyper_os_1',
 		title: '小米平板系统桌面 - Hyper OS 1',
 		isShow: () => deviceStore.MIOSVersion === 1 && deviceStore.deviceType === 'tablet',
 		versionNum: 20250617,
@@ -302,6 +314,7 @@ const appList: AppInfo[] = [
 		tag: 'system',
 	},
 	{
+		id: 'mi_home_hyper_os_2',
 		title: '小米平板系统桌面',
 		isShow: () => deviceStore.MIOSVersion === 2 && deviceStore.deviceType === 'tablet',
 		versionNum: 20250617,
@@ -321,6 +334,7 @@ const appList: AppInfo[] = [
 		tag: 'system',
 	},
 	{
+		id: 'mi_home_hyper_os_2_no_blur',
 		title: '小米平板系统桌面',
 		isShow: () =>
 			deviceStore.MIOSVersion === 2 && deviceStore.androidTargetSdk === 34 && deviceStore.deviceType === 'tablet',
@@ -338,6 +352,7 @@ const appList: AppInfo[] = [
 		tag: 'system',
 	},
 	{
+		id: 'win_play_mobile',
 		title: 'WinPlay Mobile',
 		isShow: () =>
 			Boolean(
@@ -364,6 +379,7 @@ const appList: AppInfo[] = [
 		tag: 'system',
 	},
 	{
+		id: 'mi_note_hyper_ai',
 		title: '小米笔记 - Hyper AI',
 		isShow: () => true,
 		versionNum: 20250617,
@@ -381,6 +397,7 @@ const appList: AppInfo[] = [
 		tag: 'revision',
 	},
 	{
+		id: 'uu_remote',
 		title: 'UU远程',
 		isShow: () => true,
 		versionNum: 20250617,
@@ -397,6 +414,7 @@ const appList: AppInfo[] = [
 		tag: 'original',
 	},
 	{
+		id: 'mi_soundrecorder_hyper_ai',
 		title: '小米录音机 - Hyper AI',
 		isShow: () => true,
 		versionNum: 20250617,
@@ -413,6 +431,7 @@ const appList: AppInfo[] = [
 		tag: 'revision',
 	},
 	{
+		id: 'mi_remote_control',
 		title: '小米远程控制',
 		isShow: () => true,
 		versionNum: 20250617,
@@ -428,6 +447,7 @@ const appList: AppInfo[] = [
 		tag: 'original',
 	},
 	{
+		id: 'qq_music_hd',
 		title: 'QQ音乐 HD',
 		isShow: () => ['tablet', 'fold'].includes(deviceStore.deviceType),
 		versionNum: 20250617,
@@ -442,6 +462,7 @@ const appList: AppInfo[] = [
 		tag: 'original',
 	},
 	{
+		id: 'liuzhou_file',
 		title: '流舟文件',
 		isShow: () => ['tablet', 'fold'].includes(deviceStore.deviceType),
 		versionNum: 20250617,
@@ -457,6 +478,7 @@ const appList: AppInfo[] = [
 		tag: 'original',
 	},
 	{
+		id: 'egggame',
 		title: '盖世游戏',
 		isShow: () => true,
 		versionNum: 20250617,
@@ -483,6 +505,7 @@ const appList: AppInfo[] = [
 		tag: 'original',
 	},
 	{
+		id: 'star_note',
 		title: 'StarNote',
 		isShow: () => ['tablet'].includes(deviceStore.deviceType),
 		versionNum: 20250617,
@@ -499,6 +522,7 @@ const appList: AppInfo[] = [
 		tag: 'original',
 	},
 	{
+		id: 'free_note',
 		title: '自由笔记',
 		isShow: () => ['tablet'].includes(deviceStore.deviceType),
 		versionNum: 20250617,
@@ -514,6 +538,7 @@ const appList: AppInfo[] = [
 		tag: 'original',
 	},
 	{
+		id: 'bluetooth_remote_control',
 		title: '蓝牙遥控',
 		isShow: () => true,
 		versionNum: 20250617,
@@ -529,6 +554,7 @@ const appList: AppInfo[] = [
 		tag: 'original',
 	},
 	{
+		id: 'flix',
 		title: 'Flix',
 		isShow: () => true,
 		versionNum: 20250617,
@@ -545,6 +571,7 @@ const appList: AppInfo[] = [
 		tag: 'original',
 	},
 	{
+		id: 'mi_whitenoise',
 		title: '小米白噪音',
 		isShow: () => ['tablet', 'fold'].includes(deviceStore.deviceType),
 		versionNum: 20250617,
@@ -562,6 +589,7 @@ const appList: AppInfo[] = [
 		tag: 'system',
 	},
 	{
+		id: 'express100',
 		title: '快递100',
 		isShow: () => ['tablet', 'fold'].includes(deviceStore.deviceType),
 		versionNum: 20250617,
@@ -580,6 +608,7 @@ const appList: AppInfo[] = [
 		tag: 'original',
 	},
 	{
+		id: 'mi_music_tablet',
 		title: '小米音乐(平板端)',
 		isShow: () => ['tablet'].includes(deviceStore.deviceType),
 		versionNum: 20250617,
@@ -595,6 +624,7 @@ const appList: AppInfo[] = [
 		tag: 'system',
 	},
 	{
+		id: 'qinalt',
 		title: '青盐云听',
 		isShow: () => ['tablet', 'fold'].includes(deviceStore.deviceType),
 		versionNum: 20250617,
@@ -609,6 +639,7 @@ const appList: AppInfo[] = [
 		tag: 'original',
 	},
 	{
+		id: 'iunistoolsdisplay',
 		title: '屏幕一览',
 		isShow: () => true,
 		versionNum: 20250617,
@@ -623,6 +654,7 @@ const appList: AppInfo[] = [
 		tag: 'original',
 	},
 	{
+		id: 'filmlytv',
 		title: '网易爆米花',
 		isShow: () => true,
 		versionNum: 20250617,
@@ -638,6 +670,7 @@ const appList: AppInfo[] = [
 		tag: 'original',
 	},
 	{
+		id: 'samsung_browser',
 		title: '三星浏览器',
 		isShow: () => ['tablet', 'fold'].includes(deviceStore.deviceType),
 		versionNum: 20250617,
@@ -653,6 +686,7 @@ const appList: AppInfo[] = [
 		tag: 'original',
 	},
 	{
+		id: 'bodian_music',
 		title: '波点音乐',
 		isShow: () => ['tablet', 'fold'].includes(deviceStore.deviceType),
 		versionNum: 20250617,
@@ -665,6 +699,7 @@ const appList: AppInfo[] = [
 		tag: 'original',
 	},
 	{
+		id: 'honor_music',
 		title: '荣耀音乐',
 		isShow: () => ['tablet', 'fold'].includes(deviceStore.deviceType),
 		versionNum: 20250617,
@@ -682,6 +717,7 @@ const appList: AppInfo[] = [
 		tag: 'original',
 	},
 	{
+		id: 'pianoperfect',
 		title: '随身乐队',
 		isShow: () => true,
 		versionNum: 20250617,
@@ -698,6 +734,7 @@ const appList: AppInfo[] = [
 		tag: 'original',
 	},
 	{
+		id: 'flipaclip',
 		title: 'FlipaClip',
 		isShow: () => ['tablet', 'fold'].includes(deviceStore.deviceType),
 		versionNum: 20250617,
@@ -716,6 +753,7 @@ const appList: AppInfo[] = [
 		tag: 'original',
 	},
 	{
+		id: 'habicat',
 		title: '像素习惯',
 		isShow: () => ['tablet', 'fold'].includes(deviceStore.deviceType),
 		versionNum: 20250617,
@@ -736,6 +774,7 @@ const appList: AppInfo[] = [
 		tag: 'original',
 	},
 	{
+		id: 'gamecores',
 		title: '机核',
 		isShow: () => ['tablet', 'fold'].includes(deviceStore.deviceType),
 		versionNum: 20250617,
@@ -751,6 +790,7 @@ const appList: AppInfo[] = [
 		tag: 'original',
 	},
 	{
+		id: 'mi_theme_harry_potter',
 		title: 'Redmi Pad Pro X 哈利·波特 联动主题',
 		isShow: () => deviceStore.deviceType === 'tablet',
 		versionNum: 20250617,
@@ -771,6 +811,7 @@ const appList: AppInfo[] = [
 		tag: 'original',
 	},
 	{
+		id: 'youshi',
 		title: '有诗',
 		isShow: () => ['tablet', 'fold'].includes(deviceStore.deviceType),
 		versionNum: 20250617,
@@ -789,6 +830,7 @@ const appList: AppInfo[] = [
 		tag: 'original',
 	},
 	{
+		id: 'sspai',
 		title: '少数派',
 		isShow: () => ['tablet', 'fold'].includes(deviceStore.deviceType),
 		versionNum: 20250617,
@@ -807,6 +849,7 @@ const appList: AppInfo[] = [
 		tag: 'original',
 	},
 	{
+		id: 'brain_music',
 		title: '小睡眠',
 		isShow: () => ['tablet', 'fold'].includes(deviceStore.deviceType),
 		versionNum: 20250617,
