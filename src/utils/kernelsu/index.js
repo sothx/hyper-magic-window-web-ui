@@ -31,87 +31,87 @@ export function exec(command, options) {
   });
 }
 
-class Stdio {
-  constructor() {
+function Stdio() {
     this.listeners = {};
   }
-  on(event, listener) {
+  
+  Stdio.prototype.on = function (event, listener) {
     if (!this.listeners[event]) {
       this.listeners[event] = [];
     }
     this.listeners[event].push(listener);
-  }
-  emit(event, ...args) {
+  };
+  
+  Stdio.prototype.emit = function (event, ...args) {
     if (this.listeners[event]) {
       this.listeners[event].forEach((listener) => listener(...args));
     }
-  }
-}
-
-
-
-class ChildProcess {
-  constructor() {
+  };
+  
+  function ChildProcess() {
     this.listeners = {};
     this.stdin = new Stdio();
     this.stdout = new Stdio();
     this.stderr = new Stdio();
   }
-  on(event, listener) {
+  
+  ChildProcess.prototype.on = function (event, listener) {
     if (!this.listeners[event]) {
       this.listeners[event] = [];
     }
     this.listeners[event].push(listener);
-  }
-  emit(event, ...args) {
+  };
+  
+  ChildProcess.prototype.emit = function (event, ...args) {
     if (this.listeners[event]) {
       this.listeners[event].forEach((listener) => listener(...args));
     }
+  };
+  
+  export function spawn(command, args, options) {
+    if (typeof args === "undefined") {
+      args = [];
+    } else if (!(args instanceof Array)) {
+        // allow for (command, options) signature
+        options = args;
+    }
+    
+    if (typeof options === "undefined") {
+      options = {};
+    }
+  
+    const child = new ChildProcess();
+    const childCallbackName = getUniqueCallbackName("spawn");
+    window[childCallbackName] = child;
+  
+    function cleanup(name) {
+      delete window[name];
+    }
+
+    child.on("exit", code => {
+        cleanup(childCallbackName);
+    });
+
+    try {
+      ksu.spawn(
+        command,
+        JSON.stringify(args),
+        JSON.stringify(options),
+        childCallbackName
+      );
+    } catch (error) {
+      child.emit("error", error);
+      cleanup(childCallbackName);
+    }
+    return child;
   }
-}
-
-
-
-export function spawn(command, args, options) {
-  if (typeof args === "undefined") {
-    args = [];
-  } else if (!(args instanceof Array)) {
-    // allow for (command, options) signature
-    options = args;
-  }
-
-  if (typeof options === "undefined") {
-    options = {};
-  }
-
-  const child = new ChildProcess();
-  const childCallbackName = getUniqueCallbackName("spawn");
-  window[childCallbackName] = child;
-
-  function cleanup(name) {
-    delete window[name];
-  }
-
-  child.on("exit", code => {
-    cleanup(childCallbackName);
-  });
-
-  try {
-    ksu.spawn(
-      command,
-      JSON.stringify(args),
-      JSON.stringify(options),
-      childCallbackName
-    );
-  } catch (error) {
-    child.emit("error", error);
-    cleanup(childCallbackName);
-  }
-  return child;
-}
 
 export function fullScreen(isFullScreen) {
   ksu.fullScreen(isFullScreen);
+}
+
+export function enableEdgeToEdge(enable) {
+  ksu.enableEdgeToEdge(enable);
 }
 
 export function toast(message) {
@@ -120,4 +120,27 @@ export function toast(message) {
 
 export function moduleInfo() {
   return ksu.moduleInfo();
+}
+
+export function listPackages(type) {
+  try {
+    return JSON.parse(ksu.listPackages(type));
+  } catch (error) {
+    return [];
+  }
+}
+
+export function getPackagesInfo(packages) {
+  try {
+    if (typeof packages !== "string") {
+      packages = JSON.stringify(packages);
+    }
+    return JSON.parse(ksu.getPackagesInfo(packages));
+  } catch (error) {
+    return [];
+  }
+}
+
+export function exit() {
+  ksu.exit();
 }

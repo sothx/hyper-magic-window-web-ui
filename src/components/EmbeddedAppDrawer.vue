@@ -45,6 +45,7 @@ export interface EmbeddedAppDrawerSubmitResult {
 		forceEmbeddedScaleToFixedOrientation?: boolean;
 		emIsSplitMinWidthZeroMode?: boolean;
 		fullDisablecompatChange?: boolean;
+		minAspectRatioCompatChange?: string;
 	};
 	loadingCallback: () => void;
 	closeCallback: () => void;
@@ -64,6 +65,8 @@ interface fixedOrientationRatioOptions {
 	label: string;
 	key: string;
 	ratio?: number;
+	minAspectRatioCompatChange?: string;
+	isShow: () => boolean;
 }
 
 const FULL_SCREEN_OPTIONS: fullScreenRuleOptions[] = [
@@ -104,26 +107,51 @@ const fixedOrientationRatioOptions: fixedOrientationRatioOptions[] = [
 		label: '大尺寸[11:10]',
 		key: 'ratio_11_10',
 		ratio: 1.1,
+		isShow: () => Boolean(deviceStore.androidTargetSdk <= 35),
 	},
 	{
-		label: '中尺寸',
+		label: '默认尺寸',
 		key: 'ratio_default',
+		isShow: () => true,
 	},
 	{
 		label: '小尺寸[15:10]',
 		key: 'ratio_15_10',
 		ratio: 1.5,
+		isShow: () => Boolean(deviceStore.androidTargetSdk <= 35),
 	},
 	{
 		label: '小尺寸[18:10]',
 		key: 'ratio_18:10',
 		ratio: 1.8,
+		isShow: () => Boolean(deviceStore.androidTargetSdk <= 35),
 	},
 	{
 		label: '自定义',
 		key: 'ratio_custom',
+		isShow: () => Boolean(deviceStore.androidTargetSdk <= 35),
+	},
+	{
+		label: '小尺寸[3:2]',
+		key: 'ratio_3:2',
+		isShow: () => Boolean(deviceStore.androidTargetSdk >= 36),
+		minAspectRatioCompatChange: 'OVERRIDE_MIN_ASPECT_RATIO_MEDIUM',
+	},
+	{
+		label: '小尺寸[16:9]',
+		key: 'ratio_16:9',
+		isShow: () => Boolean(deviceStore.androidTargetSdk >= 36),
+		minAspectRatioCompatChange: 'OVERRIDE_MIN_ASPECT_RATIO_LARGE',
 	},
 ];
+
+const computedFixedOrientationRatioOptions = computed(() => {
+	return fixedOrientationRatioOptions.filter(option => {
+		// 没有 isShow 默认显示
+		if (!option.isShow) return true;
+		return option.isShow();
+	});
+});
 
 // 选项的状态
 const currentFullScreenRuleOptions = ref<fullScreenRuleOptions>(fullScreenRuleOptions.value[0]);
@@ -139,6 +167,8 @@ const currentType = ref<'add' | 'update'>();
 const currentFixedOrientationRatio = ref<fixedOrientationRatioOptions>(fixedOrientationRatioOptions[1]);
 
 const currentRatio = ref<number>();
+
+const currentMinAspectRatioCompatChange = ref<string>();
 
 const currentSplitRatio = ref<number>(0.5);
 
@@ -452,19 +482,24 @@ const embeddedAppDrawer = ref({
 				} else {
 					currentFixedOrientationRelaunch.value = false;
 				}
-				currentRatio.value = initialParams.fixedOrientationRule?.ratio ?? undefined;
-				if (currentRatio.value) {
-					if (currentRatio.value === 1.1) {
-						currentFixedOrientationRatio.value = fixedOrientationRatioOptions[0];
-					} else if (currentRatio.value === 1.5) {
-						currentFixedOrientationRatio.value = fixedOrientationRatioOptions[2];
-					} else if (currentRatio.value === 1.8) {
-						currentFixedOrientationRatio.value = fixedOrientationRatioOptions[3];
-					} else {
-						currentFixedOrientationRatio.value = fixedOrientationRatioOptions[4];
-					}
+
+				if (deviceStore.androidTargetSdk >= 36) {
+					const compatChanges = initialParams.fixedOrientationRule?.compatChange?.split(',') ?? [];
+
+					const match =
+						computedFixedOrientationRatioOptions.value.find(
+							o => o.minAspectRatioCompatChange && compatChanges.includes(o.minAspectRatioCompatChange),
+						) ?? computedFixedOrientationRatioOptions.value.find(o => o.key === 'ratio_default')!;
+
+					currentFixedOrientationRatio.value = match;
+
+					currentMinAspectRatioCompatChange.value = match.minAspectRatioCompatChange ?? '';
 				} else {
-					currentFixedOrientationRatio.value = fixedOrientationRatioOptions[1];
+					currentRatio.value = initialParams.fixedOrientationRule?.ratio ?? undefined;
+
+					currentFixedOrientationRatio.value =
+						computedFixedOrientationRatioOptions.value.find(o => o.ratio === currentRatio.value) ??
+						computedFixedOrientationRatioOptions.value.find(o => o.key === 'ratio_default')!;
 				}
 			}
 
@@ -486,11 +521,15 @@ const handleFullScreenRuleSelect = (key: string, option: fullScreenRuleOptions) 
 // 选择显示比例时更新
 const handleFixedOrientationRatioSelect = (key: string, option: fixedOrientationRatioOptions) => {
 	currentFixedOrientationRatio.value = option;
-	currentRatio.value = ['ratio_11_10', 'ratio_15_10', 'ratio_18:10'].includes(key)
-		? option.ratio
-		: key === 'ratio_custom'
-			? 1.5
-			: undefined;
+	if (deviceStore.androidTargetSdk >= 36) {
+		currentMinAspectRatioCompatChange.value = option.minAspectRatioCompatChange ?? '';
+	} else {
+		currentRatio.value = ['ratio_11_10', 'ratio_15_10', 'ratio_18:10'].includes(key)
+			? option.ratio
+			: key === 'ratio_custom'
+				? 1.5
+				: undefined;
+	}
 };
 
 const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean }) => {
@@ -714,8 +753,11 @@ const handleDrawerSubmit = async () => {
 			...((currentSettingMode.value === 'fullScreen' || currentSettingMode.value === 'disabled') && {
 				supportFullSize: currentSupportFullSize.value,
 			}),
-			...(currentSettingMode.value === 'fixedOrientation' && {
+			...(currentSettingMode.value === 'fixedOrientation' && deviceStore.androidTargetSdk <= 35 && {
 				ratio: currentRatio.value,
+			}),
+			...(currentSettingMode.value === 'fixedOrientation' && deviceStore.androidTargetSdk >= 36 && {
+				minAspectRatioCompatChange: currentMinAspectRatioCompatChange.value,
 			}),
 			...((currentSettingMode.value === 'fixedOrientation' || currentSettingMode.value === 'disabled') && {
 				foRelaunch: currentFixedOrientationRelaunch.value,
@@ -1050,7 +1092,7 @@ defineExpose({
 							v-model:value="currentFixedOrientationRatio"
 							size="large"
 							trigger="click"
-							:options="fixedOrientationRatioOptions"
+							:options="computedFixedOrientationRatioOptions"
 							@select="handleFixedOrientationRatioSelect">
 							<n-button block type="error" dashed>
 								{{ currentFixedOrientationRatio.label }}
