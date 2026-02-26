@@ -284,7 +284,8 @@ const importShareRule = async () => {
 										autoUIStore.applicationName[importRuleContent.name],
 								)}
 							</span>{' '}
-							的应用配置成功了OwO~如果应用更新后的规则不生效，可以尝试重启{ deviceStore.deviceType === 'tablet' ? '平板' : '手机' }再做尝试~
+							的应用配置成功了OwO~如果应用更新后的规则不生效，可以尝试重启
+							{deviceStore.deviceType === 'tablet' ? '平板' : '手机'}再做尝试~
 						</p>
 					),
 					positiveText: '确定',
@@ -365,7 +366,10 @@ const handleCustomRuleDropdown = async (
 						type: 'success',
 						preset: 'dialog',
 						content: () => (
-							<p>好耶w，清除自定义规则成功了OwO~如果应用更新后的规则不生效，可以尝试重启{ deviceStore.deviceType === 'tablet' ? '平板' : '手机' }再试试~</p>
+							<p>
+								好耶w，清除自定义规则成功了OwO~如果应用更新后的规则不生效，可以尝试重启
+								{deviceStore.deviceType === 'tablet' ? '平板' : '手机'}再试试~
+							</p>
 						),
 					});
 					cleanCustomModal.loading = false;
@@ -533,7 +537,12 @@ const handleSwitchAction = async (row: AutoUIMergeRuleItem, index: number, value
 					title: '操作成功',
 					type: 'success',
 					preset: 'dialog',
-					content: () => <p>好耶w，操作成功了OwO~如果应用更新后的规则不生效，可以尝试重启{ deviceStore.deviceType === 'tablet' ? '平板' : '手机' }再试试~</p>,
+					content: () => (
+						<p>
+							好耶w，操作成功了OwO~如果应用更新后的规则不生效，可以尝试重启
+							{deviceStore.deviceType === 'tablet' ? '平板' : '手机'}再试试~
+						</p>
+					),
 				});
 				switchCustomModal.loading = false;
 				autoUIStore.updateMergeRuleList();
@@ -706,7 +715,8 @@ const openUpdateDrawer = async (row: AutoUIMergeRuleItem, index: number) => {
 							<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
 								{renderApplicationName(row.name, row.applicationName)}
 							</span>{' '}
-							的应用配置更新成功了OwO~，如果应用更新后的规则不生效，可以尝试重启{ deviceStore.deviceType === 'tablet' ? '平板' : '手机' }再做尝试~
+							的应用配置更新成功了OwO~，如果应用更新后的规则不生效，可以尝试重启
+							{deviceStore.deviceType === 'tablet' ? '平板' : '手机'}再做尝试~
 						</p>
 					),
 				});
@@ -793,9 +803,22 @@ function createColumns(): DataTableColumns<AutoUIMergeRuleItem> {
 			width: 250,
 			key: 'name',
 			render(row, index) {
+				const isInstalled = new Set(deviceStore.installedAndroidApplicationPackageNameList);
+				const imgSrc =
+					deviceStore.canShowApplicationIcon && isInstalled.has(row.name) ? `ksu://icon/${row.name}` : '';
 				return (
 					<div>
-						{row.applicationName && <p>{row.applicationName}</p>}
+						<div class='flex'>
+							{deviceStore.canShowApplicationIcon && (
+								<n-avatar object-fit='cover' round bordered class='mr-2' size='small' src={imgSrc}>
+									{row.applicationName?.charAt(0)}
+								</n-avatar>
+							)}
+							{row.applicationName && <p class='mt-1'>{row.applicationName}</p>}
+							{deviceStore.canShowApplicationIcon && !row.applicationName && (
+								<p class='mt-1'>{row.name}</p>
+							)}
+						</div>
 						{row.name && (
 							<p>
 								<span class={{ hidden: !row.applicationName }}>(</span>

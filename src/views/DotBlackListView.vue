@@ -935,9 +935,22 @@ function createColumns(): DataTableColumns<DotBlackListMergeItem> {
 			minWidth: 250,
 			key: 'name',
 			render(row, index) {
+				const isInstalled = new Set(deviceStore.installedAndroidApplicationPackageNameList);
+				const imgSrc =
+					deviceStore.canShowApplicationIcon && isInstalled.has(row.name) ? `ksu://icon/${row.name}` : '';
 				return (
 					<div>
-						{row.applicationName && <p>{row.applicationName}</p>}
+						<div class='flex'>
+							{deviceStore.canShowApplicationIcon && (
+								<n-avatar object-fit='cover' round bordered class='mr-2' size='small' src={imgSrc}>
+									{row.applicationName?.charAt(0)}
+								</n-avatar>
+							)}
+							{row.applicationName && <p class='mt-1'>{row.applicationName}</p>}
+							{deviceStore.canShowApplicationIcon && !row.applicationName && (
+								<p class='mt-1'>{row.name}</p>
+							)}
+						</div>
 						{row.name && (
 							<p>
 								<span class={{ hidden: !row.applicationName }}>(</span>
