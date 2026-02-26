@@ -1098,7 +1098,7 @@ function createColumns(): DataTableColumns<DotBlackListMergeItem> {
 					dotBlackListStore.isSupportProjectTrebleCustomDotBlackList === true
 				"
 				class="mb-3 flex flex-wrap">
-				<n-alert :show-icon="false" type="info">
+				<n-alert :show-icon="false" type="success">
 					<p
 						>您的
 						{{ deviceStore.isInstalledXiaomiPadSystemPatchAdditionalModule ? '附加模块' : '移植包' }}

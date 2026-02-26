@@ -10,6 +10,7 @@ import {
 	type VNodeProps,
 } from 'vue';
 import { RouterLink } from 'vue-router';
+import { RenderJsx } from '@/components/RenderJSX';
 import { useGameBoosterStore } from '@/stores/gameBooster';
 import { Dialog, DialogPanel, TransitionChild, TransitionRoot } from '@headlessui/vue';
 import {
@@ -59,12 +60,12 @@ const { message, modal } = createDiscreteApi(['message', 'modal'], {
 	configProviderProps: configProviderPropsRef,
 });
 export interface NavigationItem {
-	name: string | (() => JSX.Element); // 导航项的名称
+	name: (() => JSX.Element); // 导航项的名称
 	routeName?: string; // Vue Router 中的路由名称
 	href?: string; // 导航的链接地址
 	icon?: FunctionalComponent | string | (() => JSX.Element); // 图标：Vue 组件、字符串路径或 JSX 函数
 	isShow?: () => boolean | Promise<boolean> | Function; // 是否显示，支持同步、异步、或普通函数
-	click?: () => Promise<void> | Function; // 点击事件，支持同步、异步、或普通函数
+	click?: (item: NavigationItem, index: number) => void | Promise<void>; // 点击事件，支持同步、异步、或普通函数
 }
 const teams = [
 	{
@@ -172,7 +173,7 @@ onBeforeUnmount(() => {
 									<ul role="list" class="flex flex-1 flex-col gap-y-7">
 										<li>
 											<ul role="list" class="-mx-2 space-y-1">
-												<li v-for="item in navigationHook.sidebarList.value" :key="item.name">
+												<li v-for="(item,index) in navigationHook.sidebarList.value" :key="item.routeName">
 													<component
 														v-show="item.isShow ? item.isShow() : true"
 														:is="item.href && item.routeName ? 'RouterLink' : 'a'"
@@ -184,7 +185,7 @@ onBeforeUnmount(() => {
 														@click="
 															() => {
 																sidebarOpen = false;
-																item.click && item.click();
+																item.click && item.click(item,index);
 																deviceStore.lastVisitedPath = item.routeName;
 															}
 														"
@@ -211,7 +212,7 @@ onBeforeUnmount(() => {
 																'h-6 w-6 shrink-0',
 															]"
 															aria-hidden="true" />
-														{{ item.name }}
+														<RenderJsx v-if="item.name" :content="item.name && item.name()" />
 													</component>
 												</li>
 											</ul>
@@ -302,7 +303,7 @@ onBeforeUnmount(() => {
 					<ul role="list" class="flex flex-1 flex-col gap-y-7">
 						<li>
 							<ul role="list" class="-mx-2 space-y-1">
-								<li v-for="item in navigationHook.sidebarList.value" :key="item.name">
+								<li v-for="(item,index) in navigationHook.sidebarList.value" :key="item.routeName">
 									<component
 										:is="item.href && item.routeName ? 'RouterLink' : 'a'"
 										v-if="item.isShow ? item.isShow() : true"
@@ -314,7 +315,7 @@ onBeforeUnmount(() => {
 										@click="
 											() => {
 												sidebarOpen = false;
-												item.click && item.click();
+												item.click && item.click(item,index);
 												deviceStore.lastVisitedPath = item.routeName;
 												console.log(deviceStore.lastVisitedPath,'deviceStore.lastVisitedPath')
 											}
@@ -342,7 +343,7 @@ onBeforeUnmount(() => {
 												'h-6 w-6 shrink-0',
 											]"
 											aria-hidden="true" />
-										{{ item.name }}
+										<RenderJsx v-if="item.name" :content="item.name && item.name()" />
 									</component>
 								</li>
 							</ul>
@@ -447,7 +448,7 @@ onBeforeUnmount(() => {
 								"
 								>完美横屏应用计划</h1
 							>
-							<n-badge v-if="false" value="发现新版本" type="info" :offset="[40, -8]"> </n-badge>
+							<n-badge v-if="deviceStore.moduleInfo?.versionType === 'beta'" value="Beta" type="info" :offset="[25, -6]"> </n-badge>
 						</div>
 						<div class="flex items-center gap-x-4 lg:gap-x-6">
 							<n-dropdown

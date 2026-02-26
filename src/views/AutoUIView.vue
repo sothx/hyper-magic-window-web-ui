@@ -826,11 +826,6 @@ function createColumns(): DataTableColumns<AutoUIMergeRuleItem> {
 								<span>)</span>
 							</p>
 						)}
-						{deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 3 && (
-							<n-tag class='mr-1 mt-1' size='small' type='info'>
-								1.0 规则
-							</n-tag>
-						)}
 					</div>
 				);
 			},
@@ -990,7 +985,7 @@ function createColumns(): DataTableColumns<AutoUIMergeRuleItem> {
 			</div>
 		</div>
 		<n-tabs class="sm:px-0" type="line" animated>
-			<n-tab-pane name="autoui1" tab="应用布局优化 1.0" display-directive="show">
+			<n-tab-pane  name="autoui1" tab="应用布局优化 1.0" display-directive="show">
 				<n-card size="small">
 					<div class="flex flex-wrap">
 						<n-button

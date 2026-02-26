@@ -7,7 +7,7 @@ import { useDisplayModeRecord } from './useDisplayModeRecord';
 
 export function useNavigation() {
 	const deviceStore = useDeviceStore();
-    const gameBoosterStore = useGameBoosterStore();
+	const gameBoosterStore = useGameBoosterStore();
 	const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
 		theme: deviceStore.isDarkMode ? darkTheme : lightTheme,
 	}));
@@ -19,7 +19,7 @@ export function useNavigation() {
 
 	const padSidebarList = reactive<NavigationItem[]>([
 		{
-			name: '应用横屏布局',
+			name: () => <>应用横屏布局</>,
 			routeName: 'home',
 			href: '/',
 			icon: () => (
@@ -29,7 +29,7 @@ export function useNavigation() {
 			),
 		},
 		{
-			name: '应用布局优化',
+			name: () => <>应用布局优化</>,
 			routeName: 'autoui',
 			isShow() {
 				return Boolean(deviceStore.androidTargetSdk && deviceStore.androidTargetSdk >= 33);
@@ -42,7 +42,7 @@ export function useNavigation() {
 			),
 		},
 		{
-			name: '游戏体验增强',
+			name: () => <>游戏体验增强</>,
 			routeName: 'game-booster',
 			href: '/game-booster',
 			isShow() {
@@ -59,7 +59,7 @@ export function useNavigation() {
 			),
 		},
 		{
-			name: '分辨率与刷新率',
+			name: () => <>分辨率与刷新率</>,
 			routeName: 'display-mode-record',
 			href: '/display-mode-record',
 			icon: () => (
@@ -68,11 +68,11 @@ export function useNavigation() {
 				</svg>
 			),
 			isShow() {
-				return displayModeRecordHook.formatDisplayModeList.value.length > 0
+				return displayModeRecordHook.formatDisplayModeList.value.length > 0;
 			},
 		},
 		{
-			name: '系统体验增强',
+			name: () => <>系统体验增强</>,
 			routeName: 'system-experience-enhance',
 			href: '/system-experience-enhance',
 			icon: () => (
@@ -82,7 +82,7 @@ export function useNavigation() {
 			),
 		},
 		{
-			name: '窗口控制器',
+			name: () => <>窗口控制器</>,
 			routeName: 'dot-black-list',
 			href: '/dot-black-list',
 			isShow() {
@@ -95,7 +95,7 @@ export function useNavigation() {
 			),
 		},
 		{
-			name: '精选应用',
+			name: () => <>精选应用</>,
 			routeName: 'appStore',
 			href: '/appStore',
 			icon: () => (
@@ -105,7 +105,7 @@ export function useNavigation() {
 			),
 		},
 		{
-			name: '日志记录',
+			name: () => <>日志记录</>,
 			routeName: 'logs',
 			href: '/logs',
 			icon: () => (
@@ -115,7 +115,20 @@ export function useNavigation() {
 			),
 		},
 		{
-			name: '更新日志',
+			name: () => (
+				<>
+					更新日志
+					<n-badge
+						show={
+							deviceStore.moduleInfo &&
+							deviceStore.moduleUpdateInfo?.versionCode &&
+							deviceStore.moduleUpdateInfo.versionCode > deviceStore.moduleInfo?.versionCode &&
+							deviceStore.moduleUpdateInfo.versionCode > deviceStore.skipConfirm.needUpdateModuleVer
+						}
+						offset={[30, 2]}
+						value='发现新版本'></n-badge>
+				</>
+			),
 			routeName: 'update-msg',
 			href: '/update-msg',
 			isShow() {
@@ -126,12 +139,17 @@ export function useNavigation() {
 					<use xlinkHref='#icon-gengxin'></use>
 				</svg>
 			),
+			click: (item,index) => {
+				if (deviceStore.moduleUpdateInfo) {
+					deviceStore.skipConfirm.needUpdateModuleVer = deviceStore.moduleUpdateInfo.versionCode;
+				}
+			},
 		},
 	]);
 
-    const foldSidebarList = reactive<NavigationItem[]>([
+	const foldSidebarList = reactive<NavigationItem[]>([
 		{
-			name: '应用横屏布局',
+			name: () => <>应用横屏布局</>,
 			routeName: 'home',
 			href: '/',
 			icon: () => (
@@ -141,7 +159,7 @@ export function useNavigation() {
 			),
 		},
 		{
-			name: '应用布局优化',
+			name: () => <>应用布局优化</>,
 			routeName: 'autoui',
 			isShow() {
 				return Boolean(deviceStore.androidTargetSdk && deviceStore.androidTargetSdk >= 33);
@@ -154,7 +172,7 @@ export function useNavigation() {
 			),
 		},
 		{
-			name: '游戏体验增强',
+			name: () => <>游戏体验增强</>,
 			routeName: 'game-booster',
 			href: '/game-booster',
 			isShow() {
@@ -171,7 +189,7 @@ export function useNavigation() {
 			),
 		},
 		{
-			name: '分辨率与刷新率',
+			name: () => <>分辨率与刷新率</>,
 			routeName: 'display-mode-record',
 			href: '/display-mode-record',
 			icon: () => (
@@ -180,11 +198,11 @@ export function useNavigation() {
 				</svg>
 			),
 			isShow() {
-				return displayModeRecordHook.formatDisplayModeList.value.length > 0
+				return displayModeRecordHook.formatDisplayModeList.value.length > 0;
 			},
 		},
 		{
-			name: '系统体验增强',
+			name: () => <>系统体验增强</>,
 			routeName: 'system-experience-enhance',
 			href: '/system-experience-enhance',
 			icon: () => (
@@ -194,7 +212,7 @@ export function useNavigation() {
 			),
 		},
 		{
-			name: '窗口控制器',
+			name: () => <>窗口控制器</>,
 			routeName: 'dot-black-list',
 			href: '/dot-black-list',
 			isShow() {
@@ -207,7 +225,7 @@ export function useNavigation() {
 			),
 		},
 		{
-			name: '精选应用',
+			name: () => <>精选应用</>,
 			routeName: 'appStore',
 			href: '/appStore',
 			icon: () => (
@@ -217,7 +235,7 @@ export function useNavigation() {
 			),
 		},
 		{
-			name: '日志记录',
+			name: () => <>日志记录</>,
 			routeName: 'logs',
 			href: '/logs',
 			icon: () => (
@@ -227,7 +245,20 @@ export function useNavigation() {
 			),
 		},
 		{
-			name: '更新日志',
+			name: () => (
+				<>
+					更新日志
+					<n-badge
+						show={
+							deviceStore.moduleInfo &&
+							deviceStore.moduleUpdateInfo?.versionCode &&
+							deviceStore.moduleUpdateInfo.versionCode > deviceStore.moduleInfo?.versionCode &&
+							deviceStore.moduleUpdateInfo.versionCode > deviceStore.skipConfirm.needUpdateModuleVer
+						}
+						offset={[30, 2]}
+						value='发现新版本'></n-badge>
+				</>
+			),
 			routeName: 'update-msg',
 			href: '/update-msg',
 			isShow() {
@@ -238,12 +269,17 @@ export function useNavigation() {
 					<use xlinkHref='#icon-gengxin'></use>
 				</svg>
 			),
+			click: () => {
+				if (deviceStore.moduleUpdateInfo) {
+					deviceStore.skipConfirm.needUpdateModuleVer = deviceStore.moduleUpdateInfo.versionCode;
+				}
+			},
 		},
 	]);
 
-    const phoneSidebarList = reactive<NavigationItem[]>([
+	const phoneSidebarList = reactive<NavigationItem[]>([
 		{
-			name: '系统体验增强',
+			name: () => <>系统体验增强</>,
 			routeName: 'home',
 			href: '/home',
 			icon: () => (
@@ -253,7 +289,7 @@ export function useNavigation() {
 			),
 		},
 		{
-			name: '分辨率与刷新率',
+			name: () => <>分辨率与刷新率</>,
 			routeName: 'display-mode-record',
 			href: '/display-mode-record',
 			icon: () => (
@@ -262,11 +298,11 @@ export function useNavigation() {
 				</svg>
 			),
 			isShow() {
-				return displayModeRecordHook.formatDisplayModeList.value.length > 0
+				return displayModeRecordHook.formatDisplayModeList.value.length > 0;
 			},
 		},
 		{
-			name: '存储健康',
+			name: () => <>存储健康</>,
 			routeName: 'memory-health',
 			href: '/memory-health',
 			icon: () => (
@@ -276,7 +312,7 @@ export function useNavigation() {
 			),
 		},
 		{
-			name: '电池健康',
+			name: () => <>电池健康</>,
 			routeName: 'battery-health',
 			href: '/battery-health',
 			icon: () => (
@@ -286,7 +322,7 @@ export function useNavigation() {
 			),
 		},
 		{
-			name: '精选应用',
+			name: () => <>精选应用</>,
 			routeName: 'appStore',
 			href: '/appStore',
 			icon: () => (
@@ -296,7 +332,7 @@ export function useNavigation() {
 			),
 		},
 		{
-			name: '日志记录',
+			name: () => <>日志记录</>,
 			routeName: 'logs',
 			href: '/logs',
 			icon: () => (
@@ -306,7 +342,20 @@ export function useNavigation() {
 			),
 		},
 		{
-			name: '更新日志',
+			name: () => (
+				<>
+					更新日志
+					<n-badge
+						show={
+							deviceStore.moduleInfo &&
+							deviceStore.moduleUpdateInfo?.versionCode &&
+							deviceStore.moduleUpdateInfo.versionCode > deviceStore.moduleInfo?.versionCode &&
+							deviceStore.moduleUpdateInfo.versionCode > deviceStore.skipConfirm.needUpdateModuleVer
+						}
+						offset={[30, 2]}
+						value='发现新版本'></n-badge>
+				</>
+			),
 			routeName: 'update-msg',
 			href: '/update-msg',
 			isShow() {
@@ -317,10 +366,15 @@ export function useNavigation() {
 					<use xlinkHref='#icon-gengxin'></use>
 				</svg>
 			),
+			click: () => {
+				if (deviceStore.moduleUpdateInfo) {
+					deviceStore.skipConfirm.needUpdateModuleVer = deviceStore.moduleUpdateInfo.versionCode;
+				}
+			},
 		},
 	]);
 
-    const sidebarList = computed(() => {
+	const sidebarList = computed(() => {
 		switch (deviceStore.deviceType) {
 			case 'tablet': {
 				return padSidebarList;
@@ -335,8 +389,7 @@ export function useNavigation() {
 				return [];
 			}
 		}
-    })
-
+	});
 
 	return { sidebarList };
 }

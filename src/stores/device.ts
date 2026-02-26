@@ -21,6 +21,7 @@ export interface ModuleProp {
 	description: string;
 	updateJson: string;
 	dir: string;
+	versionType?: string;
 }
 
 export interface UpdateInfo {
