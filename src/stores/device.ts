@@ -183,6 +183,7 @@ export const useDeviceStore = defineStore(
 				const allListPackages = listPackages("all");
 				if (Array.isArray(allListPackages) && allListPackages.length > 0) {
 					canShowApplicationIcon.value = true;
+					installedAndroidApplicationPackageNameList.value = allListPackages;
 					resolve(allListPackages)
 				} else {
 					const [getAndroidApplicationPackageNameListErr, getAndroidApplicationPackageNameListRes] =

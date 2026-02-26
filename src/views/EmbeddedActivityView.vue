@@ -1679,13 +1679,15 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 			minWidth: 250,
 			key: 'name',
 			render(row, index) {
-				const imgSrc = deviceStore.canShowApplicationIcon ? `ksu://icon/${row.name}` : '';
+				const isInstalled = new Set(deviceStore.installedAndroidApplicationPackageNameList);
+				const imgSrc = deviceStore.canShowApplicationIcon && isInstalled.has(row.name) ? `ksu://icon/${row.name}` : '';
 				return (
 					<div>
 						<div class='flex'>
 							{deviceStore.canShowApplicationIcon && (
 								<n-avatar
 									object-fit='cover'
+									round
 									bordered
 									class='mr-2'
 									size='small'
