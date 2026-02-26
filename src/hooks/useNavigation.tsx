@@ -42,7 +42,7 @@ export function useNavigation() {
 			),
 		},
 		{
-			name: '游戏显示布局',
+			name: '游戏体验增强',
 			routeName: 'game-booster',
 			href: '/game-booster',
 			isShow() {
@@ -154,7 +154,7 @@ export function useNavigation() {
 			),
 		},
 		{
-			name: '游戏显示布局',
+			name: '游戏体验增强',
 			routeName: 'game-booster',
 			href: '/game-booster',
 			isShow() {

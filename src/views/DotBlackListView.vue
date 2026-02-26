@@ -953,9 +953,9 @@ function createColumns(): DataTableColumns<DotBlackListMergeItem> {
 						</div>
 						{row.name && (
 							<p>
-								<span class={{ hidden: !row.applicationName }}>(</span>
+								<span>(</span>
 								{row.name}
-								<span class={{ hidden: !row.applicationName }}>)</span>
+								<span>)</span>
 							</p>
 						)}
 					</div>

@@ -1701,9 +1701,9 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 						</div>
 						{row.name && (
 							<p>
-								<span class={{ hidden: !row.applicationName }}>(</span>
+								<span>(</span>
 								{row.name}
-								<span class={{ hidden: !row.applicationName }}>)</span>
+								<span>)</span>
 							</p>
 						)}
 						{autoUIStore.allPackageName.has(row.name) && (

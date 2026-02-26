@@ -821,9 +821,9 @@ function createColumns(): DataTableColumns<AutoUIMergeRuleItem> {
 						</div>
 						{row.name && (
 							<p>
-								<span class={{ hidden: !row.applicationName }}>(</span>
+								<span>(</span>
 								{row.name}
-								<span class={{ hidden: !row.applicationName }}>)</span>
+								<span>)</span>
 							</p>
 						)}
 						{deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 3 && (
@@ -989,111 +989,101 @@ function createColumns(): DataTableColumns<AutoUIMergeRuleItem> {
 				</p>
 			</div>
 		</div>
-		<n-card size="small">
-			<n-alert
-				type="info"
-				class="mb-3"
-				v-if="deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 3 && !deviceStore.skipConfirm.autoui2Alert"
-				closable
-				@close="
-					() => {
-						deviceStore.skipConfirm.autoui2Alert = true;
-					}
-				">
-				应用布局优化2.0规则将直接内置进模块内，目前暂不支持展示或进行任何修改，应用布局优化1.0规则不受此影响。
-			</n-alert>
-			<div class="flex flex-wrap">
-				<n-button
-					class="mb-3 mr-3"
-					type="info"
-					:loading="deviceStore.loading || autoUIStore.loading"
-					@click="openAddDrawer">
-					<template #icon>
-						<n-icon>
-							<PlusIcon />
-						</n-icon>
-					</template>
-					添加应用
-				</n-button>
-				<n-button
-					class="mb-3 mr-3"
-					type="success"
-					:loading="deviceStore.loading || autoUIStore.loading"
-					@click="() => reloadPage()">
-					<template #icon>
-						<n-icon>
-							<ArrowPathIcon />
-						</n-icon>
-					</template>
-					刷新应用列表
-				</n-button>
-				<n-button
-					class="mb-3 mr-3"
-					color="#8a2be2"
-					:loading="deviceStore.loading || autoUIStore.loading"
-					@click="() => hotReloadApplicationData()">
-					<template #icon>
-						<n-icon>
-							<SquaresPlusIcon />
-						</n-icon>
-					</template>
-					热重载应用数据
-				</n-button>
-				<n-button
-					class="mb-3 mr-3"
-					color="#69b2b6"
-					:loading="deviceStore.loading || autoUIStore.loading || installedAppNamesHook.loading.value"
-					@click="getInstalledAppNameList()">
-					<template #icon>
-						<n-icon>
-							<CircleStackIcon />
-						</n-icon>
-					</template>
-					获取已安装应用名称
-				</n-button>
-				<n-button
-					class="mb-3 mr-3"
-					type="warning"
-					:loading="deviceStore.loading || autoUIStore.loading || importShareRuleLoading"
-					@click="importShareRule()">
-					<template #icon>
-						<n-icon>
-							<ShareIcon />
-						</n-icon>
-					</template>
-					从分享口令导入
-				</n-button>
-			</div>
-			<div class="flex flex-wrap">
-				<n-button
-					class="mb-3 mr-3"
-					:type="autoUIStore.filterInstalledApps ? 'success' : 'info'"
-					strong
-					:loading="deviceStore.loading || autoUIStore.loading"
-					secondary
-					@click="filterHasBeenInstalledApp">
-					<template #icon>
-						<n-icon>
-							<FunnelSolidIcon v-if="autoUIStore.filterInstalledApps" />
-							<FunnelIcon v-else />
-						</n-icon>
-					</template>
-					{{ autoUIStore.filterInstalledApps ? '已安装应用' : '全部应用' }}
-				</n-button>
-				<n-button
-					class="mb-3 mr-3"
-					type="warning"
-					secondary
-					:loading="deviceStore.loading || autoUIStore.loading"
-					@click="() => deviceApi.openAllAppList()">
-					<template #icon>
-						<n-icon>
-							<img src="/images/icons/all_app.png" />
-						</n-icon>
-					</template>
-					应用抽屉
-				</n-button>
-				<!-- <n-button
+		<n-tabs class="sm:px-0" type="card" animated>
+			<n-tab-pane class="!py-0 !by-0" name="autoui1" tab="应用布局优化 1.0" display-directive="show">
+				<n-card size="small">
+					<div class="flex flex-wrap">
+						<n-button
+							class="mb-3 mr-3"
+							type="info"
+							:loading="deviceStore.loading || autoUIStore.loading"
+							@click="openAddDrawer">
+							<template #icon>
+								<n-icon>
+									<PlusIcon />
+								</n-icon>
+							</template>
+							添加应用
+						</n-button>
+						<n-button
+							class="mb-3 mr-3"
+							type="success"
+							:loading="deviceStore.loading || autoUIStore.loading"
+							@click="() => reloadPage()">
+							<template #icon>
+								<n-icon>
+									<ArrowPathIcon />
+								</n-icon>
+							</template>
+							刷新应用列表
+						</n-button>
+						<n-button
+							class="mb-3 mr-3"
+							color="#8a2be2"
+							:loading="deviceStore.loading || autoUIStore.loading"
+							@click="() => hotReloadApplicationData()">
+							<template #icon>
+								<n-icon>
+									<SquaresPlusIcon />
+								</n-icon>
+							</template>
+							热重载应用数据
+						</n-button>
+						<n-button
+							class="mb-3 mr-3"
+							color="#69b2b6"
+							:loading="deviceStore.loading || autoUIStore.loading || installedAppNamesHook.loading.value"
+							@click="getInstalledAppNameList()">
+							<template #icon>
+								<n-icon>
+									<CircleStackIcon />
+								</n-icon>
+							</template>
+							获取已安装应用名称
+						</n-button>
+						<n-button
+							class="mb-3 mr-3"
+							type="warning"
+							:loading="deviceStore.loading || autoUIStore.loading || importShareRuleLoading"
+							@click="importShareRule()">
+							<template #icon>
+								<n-icon>
+									<ShareIcon />
+								</n-icon>
+							</template>
+							从分享口令导入
+						</n-button>
+					</div>
+					<div class="flex flex-wrap">
+						<n-button
+							class="mb-3 mr-3"
+							:type="autoUIStore.filterInstalledApps ? 'success' : 'info'"
+							strong
+							:loading="deviceStore.loading || autoUIStore.loading"
+							secondary
+							@click="filterHasBeenInstalledApp">
+							<template #icon>
+								<n-icon>
+									<FunnelSolidIcon v-if="autoUIStore.filterInstalledApps" />
+									<FunnelIcon v-else />
+								</n-icon>
+							</template>
+							{{ autoUIStore.filterInstalledApps ? '已安装应用' : '全部应用' }}
+						</n-button>
+						<n-button
+							class="mb-3 mr-3"
+							type="warning"
+							secondary
+							:loading="deviceStore.loading || autoUIStore.loading"
+							@click="() => deviceApi.openAllAppList()">
+							<template #icon>
+								<n-icon>
+									<img src="/images/icons/all_app.png" />
+								</n-icon>
+							</template>
+							应用抽屉
+						</n-button>
+						<!-- <n-button
 					class="mb-3 mr-3"
 					type="error"
 					secondary
@@ -1106,68 +1096,178 @@ function createColumns(): DataTableColumns<AutoUIMergeRuleItem> {
 					</template>
 					超级小爱
 				</n-button> -->
-				<n-button
+						<n-button
+							class="mb-3 mr-3"
+							type="info"
+							secondary
+							:loading="deviceStore.loading || autoUIStore.loading"
+							@click="QQDocHook.getModal()">
+							<template #icon>
+								<n-icon size="16">
+									<img src="/images/icons/qq_doc.png" />
+								</n-icon>
+							</template>
+							应用适配收集表
+						</n-button>
+					</div>
+					<n-input-group>
+						<n-input
+							size="large"
+							clearable
+							v-model:value="autoUIStore.searchKeyWord"
+							ref="searchKeyWordInput"
+							placeholder="搜索应用名称/应用包名"
+							:style="{ width: '80%' }" />
+						<n-button
+							size="large"
+							type="primary"
+							@click="
+								() => {
+									searchKeyWordInput?.blur();
+								}
+							">
+							<template #icon>
+								<n-icon>
+									<MagnifyingGlassIcon />
+								</n-icon>
+							</template>
+							<span class="hidden sm:inline-block">搜索</span>
+						</n-button>
+						<n-button
+							size="large"
+							bordered
+							@click="
+								() => {
+									autoUIStore.searchKeyWord = '';
+								}
+							">
+							<template #icon>
+								<n-icon>
+									<XCircleIcon />
+								</n-icon>
+							</template>
+							<span class="hidden sm:inline-block">清空</span>
+						</n-button>
+					</n-input-group>
+				</n-card>
+				<n-data-table
+					size="small"
+					:loading="deviceStore.loading || autoUIStore.loading"
+					:columns="columns"
+					class="mt-3"
+					:data="autoUIStore.filterMergeRuleList"
+					:pagination="pagination" />
+				<AutoUIAppDrawer ref="addAutoUIApp" type="add" title="添加应用" />
+				<AutoUIAppDrawer ref="updateAutoUIApp" type="update" title="更新应用" />
+			</n-tab-pane>
+			<n-tab-pane class="!py-0 !by-0" name="autoui2" :disabled="deviceStore.androidTargetSdk < 35" :tab="`应用布局优化 2.0 ${(deviceStore.androidTargetSdk < 35)  ? `(不支持)` : ''}`" display-directive="show">
+				<n-card size="small">
+					<n-alert
+						type="info"
+						title="功能开发中，未上线"
+						class="mb-3">
+						应用布局优化2.0规则将直接内置进模块内，目前暂不支持展示或进行任何修改，应用布局优化1.0规则不受此影响。
+					</n-alert>
+					<div class="flex flex-wrap">
+						<!--按钮区预留-->
+					</div>
+					<div class="flex flex-wrap">
+						<n-button
+							class="mb-3 mr-3"
+							:type="autoUIStore.filterInstalledApps ? 'success' : 'info'"
+							strong
+							:loading="deviceStore.loading || autoUIStore.loading"
+							secondary
+							@click="filterHasBeenInstalledApp">
+							<template #icon>
+								<n-icon>
+									<FunnelSolidIcon v-if="autoUIStore.filterInstalledApps" />
+									<FunnelIcon v-else />
+								</n-icon>
+							</template>
+							{{ autoUIStore.filterInstalledApps ? '已安装应用' : '全部应用' }}
+						</n-button>
+						<n-button
+							class="mb-3 mr-3"
+							type="warning"
+							secondary
+							:loading="deviceStore.loading || autoUIStore.loading"
+							@click="() => deviceApi.openAllAppList()">
+							<template #icon>
+								<n-icon>
+									<img src="/images/icons/all_app.png" />
+								</n-icon>
+							</template>
+							应用抽屉
+						</n-button>
+						<!-- <n-button
 					class="mb-3 mr-3"
-					type="info"
+					type="error"
 					secondary
 					:loading="deviceStore.loading || autoUIStore.loading"
-					@click="QQDocHook.getModal()">
-					<template #icon>
-						<n-icon size="16">
-							<img src="/images/icons/qq_doc.png" />
-						</n-icon>
-					</template>
-					应用适配收集表
-				</n-button>
-			</div>
-			<n-input-group>
-				<n-input
-					size="large"
-					clearable
-					v-model:value="autoUIStore.searchKeyWord"
-					ref="searchKeyWordInput"
-					placeholder="搜索应用名称/应用包名"
-					:style="{ width: '80%' }" />
-				<n-button
-					size="large"
-					type="primary"
-					@click="
-						() => {
-							searchKeyWordInput?.blur();
-						}
-					">
+					@click="() => deviceApi.openVoiceAssistant()">
 					<template #icon>
 						<n-icon>
-							<MagnifyingGlassIcon />
+							<img src="/images/icons/ai_icon.png" />
 						</n-icon>
 					</template>
-					<span class="hidden sm:inline-block">搜索</span>
-				</n-button>
-				<n-button
-					size="large"
-					bordered
-					@click="
-						() => {
-							autoUIStore.searchKeyWord = '';
-						}
-					">
-					<template #icon>
-						<n-icon>
-							<XCircleIcon />
-						</n-icon>
-					</template>
-					<span class="hidden sm:inline-block">清空</span>
-				</n-button>
-			</n-input-group>
-		</n-card>
-		<n-data-table
-			size="small"
-			:loading="deviceStore.loading || autoUIStore.loading"
-			:columns="columns"
-			class="mt-3"
-			:data="autoUIStore.filterMergeRuleList"
-			:pagination="pagination" />
-		<AutoUIAppDrawer ref="addAutoUIApp" type="add" title="添加应用" />
-		<AutoUIAppDrawer ref="updateAutoUIApp" type="update" title="更新应用" />
+					超级小爱
+				</n-button> -->
+						<n-button
+							class="mb-3 mr-3"
+							type="info"
+							secondary
+							:loading="deviceStore.loading || autoUIStore.loading"
+							@click="QQDocHook.getModal()">
+							<template #icon>
+								<n-icon size="16">
+									<img src="/images/icons/qq_doc.png" />
+								</n-icon>
+							</template>
+							应用适配收集表
+						</n-button>
+					</div>
+					<n-input-group>
+						<n-input
+							size="large"
+							clearable
+							v-model:value="autoUIStore.searchKeyWord"
+							ref="searchKeyWordInput"
+							placeholder="搜索应用名称/应用包名"
+							:style="{ width: '80%' }" />
+						<n-button
+							size="large"
+							type="primary"
+							@click="
+								() => {
+									searchKeyWordInput?.blur();
+								}
+							">
+							<template #icon>
+								<n-icon>
+									<MagnifyingGlassIcon />
+								</n-icon>
+							</template>
+							<span class="hidden sm:inline-block">搜索</span>
+						</n-button>
+						<n-button
+							size="large"
+							bordered
+							@click="
+								() => {
+									autoUIStore.searchKeyWord = '';
+								}
+							">
+							<template #icon>
+								<n-icon>
+									<XCircleIcon />
+								</n-icon>
+							</template>
+							<span class="hidden sm:inline-block">清空</span>
+						</n-button>
+					</n-input-group>
+				</n-card>
+			</n-tab-pane>
+		</n-tabs>
 	</main>
 </template>

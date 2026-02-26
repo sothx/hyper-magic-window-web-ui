@@ -29,6 +29,23 @@ export const getSourceAutoUIList = (): Promise<string> => {
 	);
 };
 
+export const getSourceAutoUI2List = (): Promise<string> => {
+	const shellCommon = `cat /data/adb/modules/Hyper_MagicWindow/common/source/autoui2_list.xml`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				const response = await axios.get('/data/origin/autoui2_list.xml');
+				const xmlText = response.data; // 这是 XML 内容
+				resolve(xmlText);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
 export const getCustomConfigAutoUIList = (): Promise<string> => {
 	const shellCommon = `cat /data/adb/Hyper_MagicWindow/config/autoui_list.xml`;
 	return handlePromiseWithLogging(

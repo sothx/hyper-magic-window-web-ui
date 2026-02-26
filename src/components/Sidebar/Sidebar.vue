@@ -59,7 +59,7 @@ const { message, modal } = createDiscreteApi(['message', 'modal'], {
 	configProviderProps: configProviderPropsRef,
 });
 export interface NavigationItem {
-	name: string; // 导航项的名称
+	name: string | (() => JSX.Element); // 导航项的名称
 	routeName?: string; // Vue Router 中的路由名称
 	href?: string; // 导航的链接地址
 	icon?: FunctionalComponent | string | (() => JSX.Element); // 图标：Vue 组件、字符串路径或 JSX 函数

@@ -272,7 +272,9 @@ function createColumns(): DataTableColumns<GameBoosterTableItem> {
 			render(row, index) {
 				const isInstalled = new Set(deviceStore.installedAndroidApplicationPackageNameList);
 				const imgSrc =
-					deviceStore.canShowApplicationIcon && isInstalled.has(row.app_name) ? `ksu://icon/${row.app_name}` : '';
+					deviceStore.canShowApplicationIcon && isInstalled.has(row.app_name)
+						? `ksu://icon/${row.app_name}`
+						: '';
 				return (
 					<div>
 						<div class='flex'>
@@ -285,9 +287,9 @@ function createColumns(): DataTableColumns<GameBoosterTableItem> {
 						</div>
 						{row.app_name && (
 							<p>
-								<span class={{ hidden: !row.app_name }}>(</span>
+								<span>(</span>
 								{row.package_name}
-								<span class={{ hidden: !row.app_name }}>)</span>
+								<span>)</span>
 							</p>
 						)}
 					</div>
@@ -373,124 +375,129 @@ function createColumns(): DataTableColumns<GameBoosterTableItem> {
 								rgb(60, 112, 255) 110.17%
 							);
 						"
-						>游戏显示布局</span
+						>游戏体验增强</span
 					>
 				</h3>
 				<p
 					:class="`mt-1 max-w-2xl text-sm leading-6 ${deviceStore.isDarkMode ? 'text-gray-300' : 'text-gray-500'}`">
-					游戏显示布局，改变游戏比例，获得更大的游戏视野。
+					支持调整游戏显示布局及优化相关配置文件，提升画面比例适配、显示范围与运行表现，全面增强游戏体验。
 				</p>
 			</div>
 		</div>
-		<n-card size="small">
-			<div class="mb-3 flex flex-wrap">
-				<n-alert v-if="deviceStore.deviceType === 'tablet'" :show-icon="true" type="info">
-					<p>请添加需要管理的游戏应用到游戏工具箱，Hyper OS 2.0+还需要安装修改版的手机/平板管家才会生效。</p>
-					<p>修改版的手机/平板管家支持Hyper OS 2.0/1.0和MIUI 14:</p>
-					<p>[Tips:修改版手机管家支持在小米平板使用全局侧边栏]</p>
-					<n-button strong secondary type="info" @click="() => getAppDownload()"
-						>获取修改版手机/平板管家</n-button
-					>
-				</n-alert>
-			</div>
-			<div class="flex flex-wrap">
-				<n-button
-					class="mb-3 mr-3"
-					type="info"
-					:loading="deviceStore.loading || gameBoosterStore.loading"
-					@click="() => openAddGame()">
-					<template #icon>
-						<n-icon>
-							<PlusIcon />
-						</n-icon>
-					</template>
-					添加游戏
-				</n-button>
-				<n-button
-					class="mb-3 mr-3"
-					type="success"
-					:loading="deviceStore.loading || gameBoosterStore.loading"
-					@click="() => reloadPage()">
-					<template #icon>
-						<n-icon>
-							<ArrowPathIcon />
-						</n-icon>
-					</template>
-					刷新游戏列表
-				</n-button>
-			</div>
-			<div class="flex flex-wrap">
-				<n-dropdown
-					size="large"
-					trigger="click"
-					:options="[
-						{ label: '打开性能监视器', key: 'start' },
-						{ label: '关闭性能监视器', key: 'stop' },
-					]"
-					@select="(key: 'start' | 'stop') => { deviceApi.frameRateService(key) }">
-					<n-button
-						class="mb-3 mr-3"
-						color="#8a2be2"
-						type="info"
-						secondary
-						:loading="deviceStore.loading || gameBoosterStore.loading">
-						<template #icon>
-							<n-icon>
-								<CpuChipIcon />
-							</n-icon>
-						</template>
-						性能监视器
-					</n-button>
-				</n-dropdown>
-				<n-dropdown
-					size="large"
-					trigger="click"
-					:options="[
-						{ label: '打开刷新率监视器', key: 'open' },
-						{ label: '关闭刷新率监视器', key: 'close' },
-					]"
-					@select="(key: string) => { key === 'open' ? deviceApi.setFpsFrameService(true) : deviceApi.setFpsFrameService(false) }">
-					<n-button
-						class="mb-3 mr-3"
-						type="info"
-						secondary
-						:loading="deviceStore.loading || gameBoosterStore.loading">
-						<template #icon>
-							<n-icon>
-								<BoltIcon />
-							</n-icon>
-						</template>
-						刷新率监视器
-					</n-button>
-				</n-dropdown>
-				<n-button
-					class="mb-3 mr-3"
-					type="success"
-					secondary
-					:loading="deviceStore.loading || gameBoosterStore.loading"
-					v-if="displayModeRecordHook.formatDisplayModeList.value.length"
-					@click="goToDisplayModeSettings">
-					<template #icon>
-						<n-icon>
-							<RocketLaunchIcon />
-						</n-icon>
-					</template>
-					分辨率及刷新率
-				</n-button>
-				<n-button
-					class="mb-3 mr-3"
-					type="warning"
-					secondary
-					:loading="deviceStore.loading || gameBoosterStore.loading"
-					@click="() => deviceApi.openAllAppList()">
-					<template #icon>
-						<n-icon>
-							<img src="/images/icons/all_app.png" />
-						</n-icon>
-					</template>
-					应用抽屉
-				</n-button>
-				<!-- <n-button
+		<n-tabs class="sm:px-0" type="card" animated>
+			<n-tab-pane class="!py-0 !by-0" name="gameCompatMode" tab="游戏显示布局" display-directive="show">
+				<n-card size="small">
+					<div class="mb-3 flex flex-wrap">
+						<n-alert v-if="deviceStore.deviceType === 'tablet'" :show-icon="true" type="info">
+							<p
+								>请添加需要管理的游戏应用到游戏工具箱，Hyper OS
+								2.0+还需要安装修改版的手机/平板管家才会生效。</p
+							>
+							<p>修改版的手机/平板管家支持Hyper OS 2.0/1.0和MIUI 14:</p>
+							<p>[Tips:修改版手机管家支持在小米平板使用全局侧边栏]</p>
+							<n-button strong secondary type="info" @click="() => getAppDownload()"
+								>获取修改版手机/平板管家</n-button
+							>
+						</n-alert>
+					</div>
+					<div class="flex flex-wrap">
+						<n-button
+							class="mb-3 mr-3"
+							type="info"
+							:loading="deviceStore.loading || gameBoosterStore.loading"
+							@click="() => openAddGame()">
+							<template #icon>
+								<n-icon>
+									<PlusIcon />
+								</n-icon>
+							</template>
+							添加游戏
+						</n-button>
+						<n-button
+							class="mb-3 mr-3"
+							type="success"
+							:loading="deviceStore.loading || gameBoosterStore.loading"
+							@click="() => reloadPage()">
+							<template #icon>
+								<n-icon>
+									<ArrowPathIcon />
+								</n-icon>
+							</template>
+							刷新游戏列表
+						</n-button>
+					</div>
+					<div class="flex flex-wrap">
+						<n-dropdown
+							size="large"
+							trigger="click"
+							:options="[
+								{ label: '打开性能监视器', key: 'start' },
+								{ label: '关闭性能监视器', key: 'stop' },
+							]"
+							@select="(key: 'start' | 'stop') => { deviceApi.frameRateService(key) }">
+							<n-button
+								class="mb-3 mr-3"
+								color="#8a2be2"
+								type="info"
+								secondary
+								:loading="deviceStore.loading || gameBoosterStore.loading">
+								<template #icon>
+									<n-icon>
+										<CpuChipIcon />
+									</n-icon>
+								</template>
+								性能监视器
+							</n-button>
+						</n-dropdown>
+						<n-dropdown
+							size="large"
+							trigger="click"
+							:options="[
+								{ label: '打开刷新率监视器', key: 'open' },
+								{ label: '关闭刷新率监视器', key: 'close' },
+							]"
+							@select="(key: string) => { key === 'open' ? deviceApi.setFpsFrameService(true) : deviceApi.setFpsFrameService(false) }">
+							<n-button
+								class="mb-3 mr-3"
+								type="info"
+								secondary
+								:loading="deviceStore.loading || gameBoosterStore.loading">
+								<template #icon>
+									<n-icon>
+										<BoltIcon />
+									</n-icon>
+								</template>
+								刷新率监视器
+							</n-button>
+						</n-dropdown>
+						<n-button
+							class="mb-3 mr-3"
+							type="success"
+							secondary
+							:loading="deviceStore.loading || gameBoosterStore.loading"
+							v-if="displayModeRecordHook.formatDisplayModeList.value.length"
+							@click="goToDisplayModeSettings">
+							<template #icon>
+								<n-icon>
+									<RocketLaunchIcon />
+								</n-icon>
+							</template>
+							分辨率及刷新率
+						</n-button>
+						<n-button
+							class="mb-3 mr-3"
+							type="warning"
+							secondary
+							:loading="deviceStore.loading || gameBoosterStore.loading"
+							@click="() => deviceApi.openAllAppList()">
+							<template #icon>
+								<n-icon>
+									<img src="/images/icons/all_app.png" />
+								</n-icon>
+							</template>
+							应用抽屉
+						</n-button>
+						<!-- <n-button
 					class="mb-3 mr-3"
 					type="error"
 					secondary
@@ -503,7 +510,7 @@ function createColumns(): DataTableColumns<GameBoosterTableItem> {
 					</template>
 					超级小爱
 				</n-button> -->
-				<!-- <n-button
+						<!-- <n-button
 					class="mb-3 mr-3"
 					type="info"
 					secondary
@@ -526,54 +533,181 @@ function createColumns(): DataTableColumns<GameBoosterTableItem> {
 					</template>
 					DeepSeek
 				</n-button> -->
-			</div>
-			<n-input-group>
-				<n-input
-					size="large"
-					clearable
-					v-model:value="gameBoosterStore.searchKeyWord"
-					ref="searchKeyWordInput"
-					placeholder="搜索游戏名称/游戏包名"
-					:style="{ width: '80%' }" />
-				<n-button
-					size="large"
-					type="primary"
-					@click="
-						() => {
-							searchKeyWordInput?.blur();
-						}
-					">
-					<template #icon>
-						<n-icon>
-							<MagnifyingGlassIcon />
-						</n-icon>
-					</template>
-					<span class="hidden sm:inline-block">搜索</span>
-				</n-button>
-				<n-button
-					size="large"
-					bordered
-					@click="
-						() => {
-							gameBoosterStore.searchKeyWord = '';
-						}
-					">
-					<template #icon>
-						<n-icon>
-							<XCircleIcon />
-						</n-icon>
-					</template>
-					<span class="hidden sm:inline-block">清空</span>
-				</n-button>
-			</n-input-group>
-		</n-card>
-		<n-data-table
-			size="small"
-			:loading="deviceStore.loading || gameBoosterStore.loading"
-			:columns="columns"
-			class="mt-3"
-			:data="gameBoosterStore.filterGameBoosterList"
-			:pagination="pagination" />
+					</div>
+					<n-input-group>
+						<n-input
+							size="large"
+							clearable
+							v-model:value="gameBoosterStore.searchKeyWord"
+							ref="searchKeyWordInput"
+							placeholder="搜索游戏名称/游戏包名"
+							:style="{ width: '80%' }" />
+						<n-button
+							size="large"
+							type="primary"
+							@click="
+								() => {
+									searchKeyWordInput?.blur();
+								}
+							">
+							<template #icon>
+								<n-icon>
+									<MagnifyingGlassIcon />
+								</n-icon>
+							</template>
+							<span class="hidden sm:inline-block">搜索</span>
+						</n-button>
+						<n-button
+							size="large"
+							bordered
+							@click="
+								() => {
+									gameBoosterStore.searchKeyWord = '';
+								}
+							">
+							<template #icon>
+								<n-icon>
+									<XCircleIcon />
+								</n-icon>
+							</template>
+							<span class="hidden sm:inline-block">清空</span>
+						</n-button>
+					</n-input-group>
+				</n-card>
+				<n-data-table
+					size="small"
+					:loading="deviceStore.loading || gameBoosterStore.loading"
+					:columns="columns"
+					class="mt-3"
+					:data="gameBoosterStore.filterGameBoosterList"
+					:pagination="pagination" />
+			</n-tab-pane>
+			<n-tab-pane class="!py-0 !by-0" name="gameConfigOptimize" tab="游戏参数配置" display-directive="show">
+								<n-card size="small">
+					<div class="mb-3 flex flex-wrap">
+					<div class="mb-3 flex flex-wrap">
+						<n-alert title="功能开发中，未上线" :show-icon="true" type="info">
+							功能开发中，未上线，敬请期待后续更新~<br />
+						</n-alert>
+					</div>
+					</div>
+					<div class="flex flex-wrap">
+						<!--按钮区留空-->
+					</div>
+					<div class="flex flex-wrap">
+						<n-dropdown
+							size="large"
+							trigger="click"
+							:options="[
+								{ label: '打开性能监视器', key: 'start' },
+								{ label: '关闭性能监视器', key: 'stop' },
+							]"
+							@select="(key: 'start' | 'stop') => { deviceApi.frameRateService(key) }">
+							<n-button
+								class="mb-3 mr-3"
+								color="#8a2be2"
+								type="info"
+								secondary
+								:loading="deviceStore.loading || gameBoosterStore.loading">
+								<template #icon>
+									<n-icon>
+										<CpuChipIcon />
+									</n-icon>
+								</template>
+								性能监视器
+							</n-button>
+						</n-dropdown>
+						<n-dropdown
+							size="large"
+							trigger="click"
+							:options="[
+								{ label: '打开刷新率监视器', key: 'open' },
+								{ label: '关闭刷新率监视器', key: 'close' },
+							]"
+							@select="(key: string) => { key === 'open' ? deviceApi.setFpsFrameService(true) : deviceApi.setFpsFrameService(false) }">
+							<n-button
+								class="mb-3 mr-3"
+								type="info"
+								secondary
+								:loading="deviceStore.loading || gameBoosterStore.loading">
+								<template #icon>
+									<n-icon>
+										<BoltIcon />
+									</n-icon>
+								</template>
+								刷新率监视器
+							</n-button>
+						</n-dropdown>
+						<n-button
+							class="mb-3 mr-3"
+							type="success"
+							secondary
+							:loading="deviceStore.loading || gameBoosterStore.loading"
+							v-if="displayModeRecordHook.formatDisplayModeList.value.length"
+							@click="goToDisplayModeSettings">
+							<template #icon>
+								<n-icon>
+									<RocketLaunchIcon />
+								</n-icon>
+							</template>
+							分辨率及刷新率
+						</n-button>
+						<n-button
+							class="mb-3 mr-3"
+							type="warning"
+							secondary
+							:loading="deviceStore.loading || gameBoosterStore.loading"
+							@click="() => deviceApi.openAllAppList()">
+							<template #icon>
+								<n-icon>
+									<img src="/images/icons/all_app.png" />
+								</n-icon>
+							</template>
+							应用抽屉
+						</n-button>
+					</div>
+					<n-input-group>
+						<n-input
+							size="large"
+							clearable
+							v-model:value="gameBoosterStore.searchKeyWord"
+							ref="searchKeyWordInput"
+							placeholder="搜索游戏名称/游戏包名"
+							:style="{ width: '80%' }" />
+						<n-button
+							size="large"
+							type="primary"
+							@click="
+								() => {
+									searchKeyWordInput?.blur();
+								}
+							">
+							<template #icon>
+								<n-icon>
+									<MagnifyingGlassIcon />
+								</n-icon>
+							</template>
+							<span class="hidden sm:inline-block">搜索</span>
+						</n-button>
+						<n-button
+							size="large"
+							bordered
+							@click="
+								() => {
+									gameBoosterStore.searchKeyWord = '';
+								}
+							">
+							<template #icon>
+								<n-icon>
+									<XCircleIcon />
+								</n-icon>
+							</template>
+							<span class="hidden sm:inline-block">清空</span>
+						</n-button>
+					</n-input-group>
+				</n-card>
+			</n-tab-pane>
+		</n-tabs>
 	</main>
 	<GameBoosterAppDrawer ref="updateGameBoosterAppDrawer" type="update" title="更新设置" />
 </template>
