@@ -271,17 +271,17 @@ function createColumns(): DataTableColumns<GameBoosterTableItem> {
 			key: 'name',
 			render(row, index) {
 				const isInstalled = new Set(deviceStore.installedAndroidApplicationPackageNameList);
-				const imgSrc =
-					deviceStore.canShowApplicationIcon && isInstalled.has(row.app_name)
-						? `ksu://icon/${row.app_name}`
-						: '';
 				return (
 					<div>
 						<div class='flex'>
-							{deviceStore.canShowApplicationIcon && (
-								<n-avatar object-fit='cover' round bordered class='mr-2' size='small' src={imgSrc}>
-									{row.app_name?.charAt(0)}
-								</n-avatar>
+							{isInstalled.has(row.app_name) && (
+								<img
+									class='mr-1 w-[28px] h-[28px] rounded-full object-cover'
+									src={`ksu://icon/${row.app_name}`}
+									onError={e => {
+										(e.currentTarget as HTMLImageElement).style.display = 'none';
+									}}
+								/>
 							)}
 							{row.app_name && <p class='mt-1'>{row.app_name}</p>}
 						</div>

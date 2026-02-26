@@ -1680,19 +1680,17 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 			key: 'name',
 			render(row, index) {
 				const isInstalled = new Set(deviceStore.installedAndroidApplicationPackageNameList);
-				const imgSrc = deviceStore.canShowApplicationIcon && isInstalled.has(row.name) ? `ksu://icon/${row.name}` : '';
 				return (
 					<div>
 						<div class='flex'>
-							{deviceStore.canShowApplicationIcon && (
-								<n-avatar
-									object-fit='cover'
-									round
-									bordered
-									class='mr-2'
-									size='small'
-									src={imgSrc}
-								>{row.applicationName?.charAt(0)}</n-avatar>
+							{isInstalled.has(row.name) && (
+								<img
+									class='mr-1 w-[28px] h-[28px] rounded-full object-cover'
+									src={`ksu://icon/${row.name}`}
+									onError={e => {
+										(e.currentTarget as HTMLImageElement).style.display = 'none';
+									}}
+								/>
 							)}
 							{row.applicationName && <p class='mt-1'>{row.applicationName}</p>}
 							{deviceStore.canShowApplicationIcon && !row.applicationName && (
@@ -2096,7 +2094,6 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 		},
 	];
 }
-
 </script>
 
 <template>
