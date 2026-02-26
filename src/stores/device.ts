@@ -9,6 +9,7 @@ import { parsePropContent } from '@/utils/common';
 import { transformValues } from '@/utils/xmlFormat';
 import type { DisplayModeItem } from '@/hooks/useDisplayModeRecord';
 import type { RouteRecordNameGeneric } from 'vue-router';
+import { listPackages } from '@/utils/kernelsu/index.js';
 import { useEmbeddedStore } from './embedded';
 
 export interface ModuleProp {
@@ -70,6 +71,7 @@ export const useDeviceStore = defineStore(
 		const deviceCharacteristics = ref<string>();
 		const muiltdisplayType = ref<number>(0);
 		const androidTargetSdk = ref<number>(0);
+		const canShowApplicationIcon = ref<boolean>(false);
 		const MIOSVersion = ref<number>();
 		const deviceInfo = reactive<deviceInfo>({
 			socName: '',
@@ -145,7 +147,7 @@ export const useDeviceStore = defineStore(
 			needInstalledKsuWebUiApk: false,
 			needReloadSystemModuleVer: false,
 			needUpdateModuleVer: 0,
-			autoui2Alert: false
+			autoui2Alert: false,
 		});
 		const showThirdPartySetting = reactive({
 			amktiaoROMInterface: false,
@@ -178,23 +180,27 @@ export const useDeviceStore = defineStore(
 		async function getAndroidApplicationPackageNameList() {
 			return new Promise(async (resolve, reject) => {
 				// 获取用户已安装的应用包名
-				const [getAndroidApplicationPackageNameListErr, getAndroidApplicationPackageNameListRes] = await $to<
-					string,
-					string
-				>(deviceApi.getAndroidApplicationPackageNameList());
-				if (getAndroidApplicationPackageNameListErr) {
-					errorLogging.push({
-						type: 'getAndroidApplicationPackageNameListErr',
-						title: '获取用户已安装的应用包名',
-						msg: getAndroidApplicationPackageNameListErr,
-					});
-					reject(getAndroidApplicationPackageNameListErr);
+				const allListPackages = listPackages("all");
+				if (allListPackages && allListPackages.length > 0) {
+					canShowApplicationIcon.value = true;
+					resolve(allListPackages)
 				} else {
-					if (getAndroidApplicationPackageNameListRes) {
-						installedAndroidApplicationPackageNameList.value =
-							getAndroidApplicationPackageNameListRes?.split(',');
+					const [getAndroidApplicationPackageNameListErr, getAndroidApplicationPackageNameListRes] =
+						await $to<string, string>(deviceApi.getAndroidApplicationPackageNameList());
+					if (getAndroidApplicationPackageNameListErr) {
+						errorLogging.push({
+							type: 'getAndroidApplicationPackageNameListErr',
+							title: '获取用户已安装的应用包名',
+							msg: getAndroidApplicationPackageNameListErr,
+						});
+						reject(getAndroidApplicationPackageNameListErr);
+					} else {
+						if (getAndroidApplicationPackageNameListRes) {
+							installedAndroidApplicationPackageNameList.value =
+								getAndroidApplicationPackageNameListRes?.split(',');
+						}
+						resolve(installedAndroidApplicationPackageNameList.value);
 					}
-					resolve(installedAndroidApplicationPackageNameList.value);
 				}
 			});
 		}
@@ -490,9 +496,9 @@ export const useDeviceStore = defineStore(
 				} else {
 					deepSleepProp.module = true;
 				}
-				const [, isInstalledXiaomiPadSystemPatchAdditionalModuleRes] = await $to<string,string>(
-					deviceApi.isInstalledXiaomiPadSystemPatchAdditionalModule()
-				)
+				const [, isInstalledXiaomiPadSystemPatchAdditionalModuleRes] = await $to<string, string>(
+					deviceApi.isInstalledXiaomiPadSystemPatchAdditionalModule(),
+				);
 				if (isInstalledXiaomiPadSystemPatchAdditionalModuleRes === 'Installed') {
 					isInstalledXiaomiPadSystemPatchAdditionalModule.value = true;
 				} else {
@@ -565,7 +571,8 @@ export const useDeviceStore = defineStore(
 			lastVisitedPath,
 			isInit,
 			remoteDownloadAppUrlMap,
-			isInstalledXiaomiPadSystemPatchAdditionalModule
+			isInstalledXiaomiPadSystemPatchAdditionalModule,
+			canShowApplicationIcon,
 		};
 	},
 	{
@@ -580,7 +587,7 @@ export const useDeviceStore = defineStore(
 				'installedAppNameList',
 				'lastVersionCode',
 				'showThirdPartySetting',
-				'remoteDownloadAppUrlMap'
+				'remoteDownloadAppUrlMap',
 			],
 		},
 	},

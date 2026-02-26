@@ -1,9 +1,9 @@
-interface ExecOptions {
+export interface ExecOptions {
     cwd?: string,
     env?: { [key: string]: string }
 }
 
-interface ExecResults {
+export interface ExecResults {
     errno: number,
     stdout: string,
     stderr: string
@@ -12,16 +12,16 @@ interface ExecResults {
 declare function exec(command: string): Promise<ExecResults>;
 declare function exec(command: string, options: ExecOptions): Promise<ExecResults>;
 
-interface SpawnOptions {
+export interface SpawnOptions {
     cwd?: string,
     env?: { [key: string]: string }
 }
 
-interface Stdio {
+export interface Stdio {
     on(event: 'data', callback: (data: string) => void)
 }
 
-interface ChildProcess {
+export interface ChildProcess {
     stdout: Stdio,
     stderr: Stdio,
     on(event: 'exit', callback: (code: number) => void)
@@ -41,7 +41,7 @@ declare function toast(message: string);
 
 declare function moduleInfo(): string;
 
-interface PackagesInfo {
+export interface PackagesInfo {
     packageName: string;
     versionName: string;
     versionCode: number;

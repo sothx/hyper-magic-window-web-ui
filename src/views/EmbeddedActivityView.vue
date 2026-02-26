@@ -1678,7 +1678,17 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 			render(row, index) {
 				return (
 					<div>
-						{row.applicationName && <p>{row.applicationName}</p>}
+						<div class='flex mb-2 align-center'>
+							{deviceStore.canShowApplicationIcon && (
+								<n-avatar
+									round
+									class='mr-2'
+									size='small'
+									src={`ksu://icon/${row.name}`}
+								>{row.applicationName?.slice(0,1)}</n-avatar>
+							)}
+							{row.applicationName && <p class='mt-1'>{row.applicationName}</p>}
+						</div>
 						{row.name && (
 							<p>
 								<span class={{ hidden: !row.applicationName }}>(</span>
