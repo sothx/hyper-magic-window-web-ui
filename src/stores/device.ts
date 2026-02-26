@@ -181,7 +181,7 @@ export const useDeviceStore = defineStore(
 			return new Promise(async (resolve, reject) => {
 				// 获取用户已安装的应用包名
 				const allListPackages = listPackages("all");
-				if (allListPackages && allListPackages.length > 0) {
+				if (Array.isArray(allListPackages) && allListPackages.length > 0) {
 					canShowApplicationIcon.value = true;
 					resolve(allListPackages)
 				} else {

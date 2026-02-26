@@ -539,6 +539,8 @@ const openAddEmbeddedApp = async () => {
 					compatChangeSet.add('OVERRIDE_ANY_ORIENTATION');
 				}
 				if (addEmbeddedAppRes.modePayload.minAspectRatioCompatChange) {
+					compatChangeSet.delete('OVERRIDE_MIN_ASPECT_RATIO_MEDIUM');
+					compatChangeSet.delete('OVERRIDE_MIN_ASPECT_RATIO_LARGE');
 					compatChangeSet.add('OVERRIDE_MIN_ASPECT_RATIO');
 					compatChangeSet.add('OVERRIDE_MIN_ASPECT_RATIO_EXCLUDE_PORTRAIT_FULLSCREEN');
 					compatChangeSet.add(addEmbeddedAppRes.modePayload.minAspectRatioCompatChange);
@@ -930,15 +932,16 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 
 						if (updateEmbeddedAppRes.modePayload.hasOwnProperty('minAspectRatioCompatChange')) {
 							if (updateEmbeddedAppRes.modePayload.minAspectRatioCompatChange) {
+								compatChangeSet.delete('OVERRIDE_MIN_ASPECT_RATIO_MEDIUM');
+								compatChangeSet.delete('OVERRIDE_MIN_ASPECT_RATIO_LARGE');
 								compatChangeSet.add('OVERRIDE_MIN_ASPECT_RATIO');
 								compatChangeSet.add('OVERRIDE_MIN_ASPECT_RATIO_EXCLUDE_PORTRAIT_FULLSCREEN');
 								compatChangeSet.add(updateEmbeddedAppRes.modePayload.minAspectRatioCompatChange);
 							} else {
 								compatChangeSet.delete('OVERRIDE_MIN_ASPECT_RATIO');
 								compatChangeSet.delete('OVERRIDE_MIN_ASPECT_RATIO_EXCLUDE_PORTRAIT_FULLSCREEN');
-								if (updateEmbeddedAppRes.modePayload.minAspectRatioCompatChange) {
-									compatChangeSet.delete(updateEmbeddedAppRes.modePayload.minAspectRatioCompatChange);
-								}
+								compatChangeSet.delete('OVERRIDE_MIN_ASPECT_RATIO_MEDIUM');
+								compatChangeSet.delete('OVERRIDE_MIN_ASPECT_RATIO_LARGE');
 							}
 						}
 
@@ -1676,18 +1679,23 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 			minWidth: 250,
 			key: 'name',
 			render(row, index) {
+				const imgSrc = deviceStore.canShowApplicationIcon ? `ksu://icon/${row.name}` : '';
 				return (
 					<div>
-						<div class='flex mb-2 align-center'>
+						<div class='flex'>
 							{deviceStore.canShowApplicationIcon && (
 								<n-avatar
-									round
+									object-fit='cover'
+									bordered
 									class='mr-2'
 									size='small'
-									src={`ksu://icon/${row.name}`}
-								>{row.applicationName?.slice(0,1)}</n-avatar>
+									src={imgSrc}
+								>{row.applicationName?.charAt(0)}</n-avatar>
 							)}
 							{row.applicationName && <p class='mt-1'>{row.applicationName}</p>}
+							{deviceStore.canShowApplicationIcon && !row.applicationName && (
+								<p class='mt-1'>{row.name}</p>
+							)}
 						</div>
 						{row.name && (
 							<p>
