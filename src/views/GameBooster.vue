@@ -75,7 +75,7 @@ const openAddGame = async () => {
 							setTimeout(() => {
 								target.scrollIntoView({ behavior: 'smooth', block: 'center' });
 								observer.disconnect(); // 停止观察
-							},0)
+							}, 0);
 						}
 					});
 
@@ -117,7 +117,7 @@ const getAppDownload = async () => {
 		negativeText: '取消',
 		onPositiveClick: () => {
 			navigator.clipboard.writeText(`https://caiyun.139.com/m/i?135Cm3g2XOMGs`);
-			deviceApi.openChinaMobileMCloud()
+			deviceApi.openChinaMobileMCloud();
 		},
 		onNegativeClick: () => {},
 	});
@@ -148,7 +148,7 @@ const handleClickSetting = async (row: GameBoosterTableItem, index: number) => {
 							setTimeout(() => {
 								target.scrollIntoView({ behavior: 'smooth', block: 'center' });
 								observer.disconnect(); // 停止观察
-							},0)
+							}, 0);
 						}
 					});
 
@@ -263,7 +263,6 @@ const pagination = reactive({
 	},
 });
 
-
 function createColumns(): DataTableColumns<GameBoosterTableItem> {
 	return [
 		{
@@ -271,9 +270,19 @@ function createColumns(): DataTableColumns<GameBoosterTableItem> {
 			minWidth: 250,
 			key: 'name',
 			render(row, index) {
+				const isInstalled = new Set(deviceStore.installedAndroidApplicationPackageNameList);
+				const imgSrc =
+					deviceStore.canShowApplicationIcon && isInstalled.has(row.app_name) ? `ksu://icon/${row.app_name}` : '';
 				return (
 					<div>
-						{row.app_name && <p>{row.app_name}</p>}
+						<div class='flex'>
+							{deviceStore.canShowApplicationIcon && (
+								<n-avatar object-fit='cover' round bordered class='mr-2' size='small' src={imgSrc}>
+									{row.app_name?.charAt(0)}
+								</n-avatar>
+							)}
+							{row.app_name && <p class='mt-1'>{row.app_name}</p>}
+						</div>
 						{row.app_name && (
 							<p>
 								<span class={{ hidden: !row.app_name }}>(</span>

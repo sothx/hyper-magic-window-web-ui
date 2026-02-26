@@ -2097,57 +2097,6 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 	];
 }
 
-onMounted(() => {
-	watchEffect(() => {
-		if (embeddedStore.isNeedShowReloadPathModeDialog) {
-			nextTick(async () => {
-				const [, positiveRes] = await $to(
-					new Promise((resolve, reject) => {
-						modal.create({
-							title: '是否需要重新生成定制应用数据？',
-							type: 'info',
-							preset: 'dialog',
-							content: () => (
-								<p>
-									检测到您最近已经更新了模块版本并且开启了{' '}
-									<span
-										class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-										定制模式
-									</span>{' '}
-									，模块需要重新操作{' '}
-									<span
-										class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-										生成定制应用数据
-									</span>{' '}
-									，确定要继续吗？
-								</p>
-							),
-							positiveText: '确定',
-							negativeText: '取消',
-							onPositiveClick() {
-								resolve('success');
-							},
-							onNegativeClick() {
-								reject('cancel');
-							},
-							onMaskClick() {
-								reject('cancel');
-							},
-							onClose() {
-								reject('cancel');
-							},
-						});
-					}),
-				);
-				if (positiveRes) {
-					patchModeHook.reloadPatchMode();
-				}
-				embeddedStore.isNeedShowReloadPathModeDialog = false;
-				deviceStore.needReloadData = false;
-			});
-		}
-	});
-});
 </script>
 
 <template>
