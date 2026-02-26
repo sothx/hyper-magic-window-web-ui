@@ -989,8 +989,8 @@ function createColumns(): DataTableColumns<AutoUIMergeRuleItem> {
 				</p>
 			</div>
 		</div>
-		<n-tabs class="sm:px-0" type="card" animated>
-			<n-tab-pane class="!py-0 !by-0" name="autoui1" tab="应用布局优化 1.0" display-directive="show">
+		<n-tabs class="sm:px-0" type="line" animated>
+			<n-tab-pane name="autoui1" tab="应用布局优化 1.0" display-directive="show">
 				<n-card size="small">
 					<div class="flex flex-wrap">
 						<n-button
@@ -1160,7 +1160,7 @@ function createColumns(): DataTableColumns<AutoUIMergeRuleItem> {
 				<AutoUIAppDrawer ref="addAutoUIApp" type="add" title="添加应用" />
 				<AutoUIAppDrawer ref="updateAutoUIApp" type="update" title="更新应用" />
 			</n-tab-pane>
-			<n-tab-pane class="!py-0 !by-0" name="autoui2" :disabled="deviceStore.androidTargetSdk < 35" :tab="`应用布局优化 2.0 ${(deviceStore.androidTargetSdk < 35)  ? `(不支持)` : ''}`" display-directive="show">
+			<n-tab-pane name="autoui2" :disabled="deviceStore.androidTargetSdk < 35" :tab="`应用布局优化 2.0 ${(deviceStore.androidTargetSdk < 35)  ? `(不支持)` : ''}`" display-directive="show">
 				<n-card size="small">
 					<n-alert
 						type="info"

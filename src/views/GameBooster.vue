@@ -384,8 +384,8 @@ function createColumns(): DataTableColumns<GameBoosterTableItem> {
 				</p>
 			</div>
 		</div>
-		<n-tabs class="sm:px-0" type="card" animated>
-			<n-tab-pane class="!py-0 !by-0" name="gameCompatMode" tab="游戏显示布局" display-directive="show">
+		<n-tabs class="sm:px-0" type="line" animated>
+			<n-tab-pane name="gameCompatMode" tab="游戏显示布局" display-directive="show">
 				<n-card size="small">
 					<div class="mb-3 flex flex-wrap">
 						<n-alert v-if="deviceStore.deviceType === 'tablet'" :show-icon="true" type="info">
@@ -582,14 +582,14 @@ function createColumns(): DataTableColumns<GameBoosterTableItem> {
 					:data="gameBoosterStore.filterGameBoosterList"
 					:pagination="pagination" />
 			</n-tab-pane>
-			<n-tab-pane class="!py-0 !by-0" name="gameConfigOptimize" tab="游戏参数配置" display-directive="show">
-								<n-card size="small">
+			<n-tab-pane name="gameConfigOptimize" tab="游戏参数配置" display-directive="show">
+				<n-card size="small">
 					<div class="mb-3 flex flex-wrap">
-					<div class="mb-3 flex flex-wrap">
-						<n-alert title="功能开发中，未上线" :show-icon="true" type="info">
-							功能开发中，未上线，敬请期待后续更新~<br />
-						</n-alert>
-					</div>
+						<div class="mb-3 flex flex-wrap">
+							<n-alert title="功能开发中，未上线" :show-icon="true" type="info">
+								功能开发中，未上线，敬请期待后续更新~<br />
+							</n-alert>
+						</div>
 					</div>
 					<div class="flex flex-wrap">
 						<!--按钮区留空-->
