@@ -373,7 +373,8 @@ const importShareRule = async () => {
 											embeddedStore.applicationName[importRuleContent.name],
 									)}
 								</span>{' '}
-								的应用导入成功了OwO~如果应用更新后的规则不生效，可以尝试重启{ deviceStore.deviceType === 'tablet' ? '平板' : '手机' }再做尝试~
+								的应用导入成功了OwO~如果应用更新后的规则不生效，可以尝试重启
+								{deviceStore.deviceType === 'tablet' ? '平板' : '手机'}再做尝试~
 							</p>
 						) : (
 							<p>
@@ -385,9 +386,12 @@ const importShareRule = async () => {
 											embeddedStore.applicationName[importRuleContent.name],
 									)}
 								</span>{' '}
-								的应用导入成功了OwO~如果应用更新后的规则不生效，可以尝试重启{ deviceStore.deviceType === 'tablet' ? '平板' : '手机' }并且在{' '}
+								的应用导入成功了OwO~如果应用更新后的规则不生效，可以尝试重启
+								{deviceStore.deviceType === 'tablet' ? '平板' : '手机'}并且在{' '}
 								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-									{ deviceStore.deviceType === 'tablet' ? '平板专区-平行窗口' : '折叠屏专区-应用横屏显示' }
+									{deviceStore.deviceType === 'tablet'
+										? '平板专区-平行窗口'
+										: '折叠屏专区-应用横屏显示'}
 								</span>{' '}
 								内{' '}
 								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
@@ -534,6 +538,11 @@ const openAddEmbeddedApp = async () => {
 				if (addEmbeddedAppRes.modePayload.forceAnyOrientation) {
 					compatChangeSet.add('OVERRIDE_ANY_ORIENTATION');
 				}
+				if (addEmbeddedAppRes.modePayload.minAspectRatioCompatChange) {
+					compatChangeSet.add('OVERRIDE_MIN_ASPECT_RATIO');
+					compatChangeSet.add('OVERRIDE_MIN_ASPECT_RATIO_EXCLUDE_PORTRAIT_FULLSCREEN');
+					compatChangeSet.add(addEmbeddedAppRes.modePayload.minAspectRatioCompatChange);
+				}
 				const currentCompatChange = Array.from(compatChangeSet).join(',');
 				embeddedStore.customConfigFixedOrientationList[addEmbeddedAppRes.name] = {
 					name: addEmbeddedAppRes.name,
@@ -546,7 +555,7 @@ const openAddEmbeddedApp = async () => {
 					...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35
 						? { skipSelfAdaptive: true }
 						: {}),
-					...(addEmbeddedAppRes.modePayload.ratio !== undefined
+					...(addEmbeddedAppRes.modePayload.ratio !== undefined && deviceStore.androidTargetSdk <= 35
 						? {
 								ratio: addEmbeddedAppRes.modePayload.ratio,
 							}
@@ -882,7 +891,7 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 					if (hasIsScale) {
 						delete currentFixedOrientation.value.isScale;
 					}
-					if (updateEmbeddedAppRes.modePayload.ratio !== undefined) {
+					if (updateEmbeddedAppRes.modePayload.ratio !== undefined && deviceStore.androidTargetSdk <= 35) {
 						currentFixedOrientation.value.ratio = updateEmbeddedAppRes.modePayload.ratio;
 					} else {
 						delete currentFixedOrientation.value.ratio;
@@ -916,6 +925,20 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 								compatChangeSet.add('OVERRIDE_ANY_ORIENTATION');
 							} else {
 								compatChangeSet.delete('OVERRIDE_ANY_ORIENTATION');
+							}
+						}
+
+						if (updateEmbeddedAppRes.modePayload.hasOwnProperty('minAspectRatioCompatChange')) {
+							if (updateEmbeddedAppRes.modePayload.minAspectRatioCompatChange) {
+								compatChangeSet.add('OVERRIDE_MIN_ASPECT_RATIO');
+								compatChangeSet.add('OVERRIDE_MIN_ASPECT_RATIO_EXCLUDE_PORTRAIT_FULLSCREEN');
+								compatChangeSet.add(updateEmbeddedAppRes.modePayload.minAspectRatioCompatChange);
+							} else {
+								compatChangeSet.delete('OVERRIDE_MIN_ASPECT_RATIO');
+								compatChangeSet.delete('OVERRIDE_MIN_ASPECT_RATIO_EXCLUDE_PORTRAIT_FULLSCREEN');
+								if (updateEmbeddedAppRes.modePayload.minAspectRatioCompatChange) {
+									compatChangeSet.delete(updateEmbeddedAppRes.modePayload.minAspectRatioCompatChange);
+								}
 							}
 						}
 
@@ -953,20 +976,27 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 						deviceStore.MIOSVersion >= 2 &&
 						deviceStore.androidTargetSdk >= 35
 							? (() => {
-									const changes = [
-										updateEmbeddedAppRes.modePayload.forceFixedOrientation &&
-											'OVERRIDE_UNDEFINED_ORIENTATION_TO_PORTRAIT',
-										updateEmbeddedAppRes.modePayload.forceAnyOrientation &&
-											'OVERRIDE_ANY_ORIENTATION',
-									]
-										.filter(Boolean)
-										.join(',');
+									const changesSet = new Set<string>();
+
+									if (updateEmbeddedAppRes.modePayload.forceFixedOrientation) {
+										changesSet.add('OVERRIDE_UNDEFINED_ORIENTATION_TO_PORTRAIT');
+									}
+									if (updateEmbeddedAppRes.modePayload.forceAnyOrientation) {
+										changesSet.add('OVERRIDE_ANY_ORIENTATION');
+									}
+									if (updateEmbeddedAppRes.modePayload.minAspectRatioCompatChange) {
+										changesSet.add('OVERRIDE_MIN_ASPECT_RATIO');
+										changesSet.add('OVERRIDE_MIN_ASPECT_RATIO_EXCLUDE_PORTRAIT_FULLSCREEN');
+										changesSet.add(updateEmbeddedAppRes.modePayload.minAspectRatioCompatChange);
+									}
+
+									const changes = Array.from(changesSet).join(',');
 
 									return changes ? { compatChange: changes } : {};
 								})()
 							: {}),
 
-						...(updateEmbeddedAppRes.modePayload.ratio !== undefined
+						...(updateEmbeddedAppRes.modePayload.ratio !== undefined && deviceStore.androidTargetSdk <= 35
 							? {
 									ratio: updateEmbeddedAppRes.modePayload.ratio,
 								}
@@ -1229,7 +1259,8 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
 									{renderApplicationName(row.name, row.applicationName)}
 								</span>{' '}
-								的应用配置更新成功了OwO~如果应用更新后的规则不生效，可以尝试重启{ deviceStore.deviceType === 'tablet' ? '平板' : '手机' }再做尝试~
+								的应用配置更新成功了OwO~如果应用更新后的规则不生效，可以尝试重启
+								{deviceStore.deviceType === 'tablet' ? '平板' : '手机'}再做尝试~
 							</p>
 						) : (
 							<p>
@@ -1237,9 +1268,12 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
 									{renderApplicationName(row.name, row.applicationName)}
 								</span>{' '}
-								的应用配置更新成功了OwO~如果应用更新后的规则不生效，可以尝试重启{ deviceStore.deviceType === 'tablet' ? '平板' : '手机' }并且在{' '}
+								的应用配置更新成功了OwO~如果应用更新后的规则不生效，可以尝试重启
+								{deviceStore.deviceType === 'tablet' ? '平板' : '手机'}并且在{' '}
 								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-									{ deviceStore.deviceType === 'tablet' ? '平板专区-平行窗口' : '折叠屏专区-应用横屏显示' }
+									{deviceStore.deviceType === 'tablet'
+										? '平板专区-平行窗口'
+										: '折叠屏专区-应用横屏显示'}
 								</span>{' '}
 								内{' '}
 								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
@@ -1351,7 +1385,10 @@ const handleCustomRuleDropdown = async (
 						type: 'success',
 						preset: 'dialog',
 						content: () => (
-							<p>好耶w，清除自定义规则成功了OwO~如果应用更新后的规则不生效，可以尝试重启{ deviceStore.deviceType === 'tablet' ? '平板' : '手机' }再试试~</p>
+							<p>
+								好耶w，清除自定义规则成功了OwO~如果应用更新后的规则不生效，可以尝试重启
+								{deviceStore.deviceType === 'tablet' ? '平板' : '手机'}再试试~
+							</p>
 						),
 					});
 					cleanCustomModal.loading = false;
@@ -1579,7 +1616,8 @@ const handleModuleRuleSwitchToSystemEmbedded = async (row: EmbeddedMergeRuleItem
 										class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
 										{renderApplicationName(row.name, row.applicationName)}
 									</span>{' '}
-									的应用配置更新成功了OwO~如果应用更新后的规则不生效，可以尝试重启{ deviceStore.deviceType === 'tablet' ? '平板' : '手机' }再做尝试~
+									的应用配置更新成功了OwO~如果应用更新后的规则不生效，可以尝试重启
+									{deviceStore.deviceType === 'tablet' ? '平板' : '手机'}再做尝试~
 								</p>
 							) : (
 								<p>
@@ -1588,10 +1626,13 @@ const handleModuleRuleSwitchToSystemEmbedded = async (row: EmbeddedMergeRuleItem
 										class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
 										{renderApplicationName(row.name, row.applicationName)}
 									</span>{' '}
-									的应用配置更新成功了OwO~如果应用更新后的规则不生效，可以尝试重启{ deviceStore.deviceType === 'tablet' ? '平板' : '手机' }并且在{' '}
+									的应用配置更新成功了OwO~如果应用更新后的规则不生效，可以尝试重启
+									{deviceStore.deviceType === 'tablet' ? '平板' : '手机'}并且在{' '}
 									<span
 										class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-										{ deviceStore.deviceType === 'tablet' ? '平板专区-平行窗口' : '折叠屏专区-应用横屏显示' }
+										{deviceStore.deviceType === 'tablet'
+											? '平板专区-平行窗口'
+											: '折叠屏专区-应用横屏显示'}
 									</span>{' '}
 									内{' '}
 									<span
@@ -1956,7 +1997,9 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 									title: '折叠屏设备使用说明',
 									type: 'warning',
 									preset: 'dialog',
-									content: () => <p>折叠屏设备请前往[系统设置-折叠屏专区-应用显示布局]进行应用布局修改~</p>,
+									content: () => (
+										<p>折叠屏设备请前往[系统设置-折叠屏专区-应用显示布局]进行应用布局修改~</p>
+									),
 								});
 								return;
 							}
@@ -1972,7 +2015,9 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 									title: '折叠屏设备使用说明',
 									type: 'warning',
 									preset: 'dialog',
-									content: () => <p>折叠屏设备请前往[系统设置-折叠屏专区-应用显示布局]进行应用布局修改~</p>,
+									content: () => (
+										<p>折叠屏设备请前往[系统设置-折叠屏专区-应用显示布局]进行应用布局修改~</p>
+									),
 								});
 								return;
 							}
@@ -1988,7 +2033,9 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 									title: '折叠屏设备使用说明',
 									type: 'warning',
 									preset: 'dialog',
-									content: () => <p>折叠屏设备请前往[系统设置-折叠屏专区-应用显示布局]进行应用布局修改~</p>,
+									content: () => (
+										<p>折叠屏设备请前往[系统设置-折叠屏专区-应用显示布局]进行应用布局修改~</p>
+									),
 								});
 								return;
 							}
@@ -2004,7 +2051,9 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 									title: '折叠屏设备使用说明',
 									type: 'warning',
 									preset: 'dialog',
-									content: () => <p>折叠屏设备请前往[系统设置-折叠屏专区-应用显示布局]进行应用布局修改~</p>,
+									content: () => (
+										<p>折叠屏设备请前往[系统设置-折叠屏专区-应用显示布局]进行应用布局修改~</p>
+									),
 								});
 								return;
 							}
