@@ -821,9 +821,6 @@ function createColumns(): DataTableColumns<AutoUIMergeRuleItem> {
 								<p class='mt-1'>{getAppLabelToPackageInfo(row.name)}</p>
 							)}
 							{!deviceStore.canUsePackageInfoApi && row.applicationName && <p class='mt-1'>{row.applicationName}</p>}
-							{deviceStore.canShowApplicationIcon && !row.applicationName && (
-								<p class='mt-1'>{row.name}</p>
-							)}
 						</div>
 						{row.name && (
 							<p>
