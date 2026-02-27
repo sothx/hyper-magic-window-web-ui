@@ -91,7 +91,7 @@ export function useDisabledOS2SystemPreStart() {
 					type: 'error',
 					preset: 'dialog',
 					content: () => <p>无法修改应用预加载的配置，详情请查看日志记录~</p>,
-					negativeText: '确定',
+					positiveText: '确定',
 				});
 				return;
 			}
@@ -103,7 +103,7 @@ export function useDisabledOS2SystemPreStart() {
 						type: 'error',
 						preset: 'dialog',
 						content: () => <p>无法修改应用预加载的配置，详情请查看日志记录~</p>,
-						negativeText: '确定',
+						positiveText: '确定',
 					});
 					return;
 				}
@@ -122,7 +122,7 @@ export function useDisabledOS2SystemPreStart() {
 							type: 'error',
 							preset: 'dialog',
 							content: () => <p>无法重启设备，详情请查看日志记录~</p>,
-							negativeText: '确定',
+							positiveText: '确定',
 						});
 						return;
 					});

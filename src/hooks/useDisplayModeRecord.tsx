@@ -103,7 +103,7 @@ export function useDisplayModeRecord() {
 					type: 'error',
 					preset: 'dialog',
 					content: () => <p>无法修改模块配置文件，详情请查看日志记录~</p>,
-					negativeText: '确定',
+					positiveText: '确定',
 				});
 				return;
 			}
@@ -114,7 +114,7 @@ export function useDisplayModeRecord() {
 					type: 'error',
 					preset: 'dialog',
 					content: () => <p>无法修改模块配置文件，详情请查看日志记录~</p>,
-					negativeText: '确定',
+					positiveText: '确定',
 				});
 				return;
 			}
@@ -126,7 +126,7 @@ export function useDisplayModeRecord() {
 						type: 'error',
 						preset: 'dialog',
 						content: () => <p>无法修改模块配置文件，详情请查看日志记录~</p>,
-						negativeText: '确定',
+						positiveText: '确定',
 					});
 					return;
 				}
@@ -137,7 +137,7 @@ export function useDisplayModeRecord() {
 						type: 'error',
 						preset: 'dialog',
 						content: () => <p>无法修改模块配置文件，详情请查看日志记录~</p>,
-						negativeText: '确定',
+						positiveText: '确定',
 					});
 					return;
 				}
@@ -163,7 +163,7 @@ export function useDisplayModeRecord() {
 							type: 'error',
 							preset: 'dialog',
 							content: () => <p>无法重启设备，详情请查看日志记录~</p>,
-							negativeText: '确定',
+							positiveText: '确定',
 						});
 						return;
 					});
@@ -207,7 +207,7 @@ export function useDisplayModeRecord() {
 					type: 'error',
 					preset: 'dialog',
 					content: () => <p>无法修改模块配置文件，详情请查看日志记录~</p>,
-					negativeText: '确定',
+					positiveText: '确定',
 				});
 				return;
 			}
@@ -219,7 +219,7 @@ export function useDisplayModeRecord() {
 						type: 'error',
 						preset: 'dialog',
 						content: () => <p>无法修改模块配置文件，详情请查看日志记录~</p>,
-						negativeText: '确定',
+						positiveText: '确定',
 					});
 					return;
 				}
@@ -245,7 +245,7 @@ export function useDisplayModeRecord() {
 							type: 'error',
 							preset: 'dialog',
 							content: () => <p>无法重启设备，详情请查看日志记录~</p>,
-							negativeText: '确定',
+							positiveText: '确定',
 						});
 						return;
 					});
@@ -338,7 +338,7 @@ export function useDisplayModeRecord() {
 							type: 'error',
 							preset: 'dialog',
 							content: () => <p>修改失败，详情请查看日志记录~</p>,
-							negativeText: '确定',
+							positiveText: '确定',
 						});
 						return;
 					}
@@ -374,7 +374,7 @@ export function useDisplayModeRecord() {
 							type: 'error',
 							preset: 'dialog',
 							content: () => <p>修改失败，详情请查看日志记录~</p>,
-							negativeText: '确定',
+							positiveText: '确定',
 						});
 						return;
 					}
@@ -387,7 +387,7 @@ export function useDisplayModeRecord() {
 							type: 'error',
 							preset: 'dialog',
 							content: () => <p>修改失败，详情请查看日志记录~</p>,
-							negativeText: '确定',
+							positiveText: '确定',
 						});
 						return;
 					}
@@ -406,7 +406,7 @@ export function useDisplayModeRecord() {
 				type: 'error',
 				preset: 'dialog',
 				content: () => <p>修改失败，详情请查看日志记录~</p>,
-				negativeText: '确定',
+				positiveText: '确定',
 			});
 		}
 		if (setDisplayModeRes) {
@@ -419,7 +419,7 @@ export function useDisplayModeRecord() {
 						已成功应用该分辨率及刷新率配置，在设备下次重启前将一直维持该配置，如需恢复系统设置内的默认分辨率及刷新率配置，请手动重启设备。
 					</p>
 				),
-				negativeText: '确定',
+				positiveText: '确定',
 			});
 		}
 	};

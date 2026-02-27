@@ -38,7 +38,7 @@ export function useShowNotificationIcon() {
 					type: 'error',
 					preset: 'dialog',
 					content: () => <p>修改失败，详情请查看日志记录~</p>,
-					negativeText: '确定',
+					positiveText: '确定',
 				});
 				return;
 			}
@@ -51,7 +51,7 @@ export function useShowNotificationIcon() {
 					type: 'error',
 					preset: 'dialog',
 					content: () => <p>修改失败，详情请查看日志记录~</p>,
-					negativeText: '确定',
+					positiveText: '确定',
 				});
 				return;
 			}
@@ -66,7 +66,7 @@ export function useShowNotificationIcon() {
 					type: 'error',
 					preset: 'dialog',
 					content: () => <p>修改失败，详情请查看日志记录~</p>,
-					negativeText: '确定',
+					positiveText: '确定',
 				});
 				return;
 			}
@@ -82,7 +82,7 @@ export function useShowNotificationIcon() {
 				type: 'error',
 				preset: 'dialog',
 				content: () => <p>修改失败，详情请查看日志记录~</p>,
-				negativeText: '确定',
+				positiveText: '确定',
 			});
 			return;
 		}
@@ -95,7 +95,7 @@ export function useShowNotificationIcon() {
 				type: 'error',
 				preset: 'dialog',
 				content: () => <p>修改失败，详情请查看日志记录~</p>,
-				negativeText: '确定',
+				positiveText: '确定',
 			});
 		}
 
@@ -109,7 +109,7 @@ export function useShowNotificationIcon() {
 				type: 'error',
 				preset: 'dialog',
 				content: () => <p>修改失败，详情请查看日志记录~</p>,
-				negativeText: '确定',
+				positiveText: '确定',
 			});
 		}
 	};

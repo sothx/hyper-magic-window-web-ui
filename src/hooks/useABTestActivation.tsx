@@ -48,7 +48,7 @@ export function useABTestActivation() {
 						</p>
 					</div>
 				),
-				negativeText: '确定',
+				positiveText: '确定',
 			});
 		} else if (activateABTestRuleContent.Hyper_OS_DOT_BLACK_LIST_MANAGER) {
 			deviceStore.ABTestInfo.Hyper_OS_DOT_BLACK_LIST_MANAGER = true;
@@ -82,7 +82,7 @@ export function useABTestActivation() {
 						</p>
 					</div>
 				),
-				negativeText: '确定',
+				positiveText: '确定',
 			});
 		} else if (activateABTestRuleContent.GAME_BOOSTER_RADIO_MANAGER) {
 			deviceStore.ABTestInfo.GAME_BOOSTER_RADIO_MANAGER = true;
@@ -108,7 +108,7 @@ export function useABTestActivation() {
 						</p>
 					</div>
 				),
-				negativeText: '确定',
+				positiveText: '确定',
 			});
 		} else if (activateABTestRuleContent.GAME_BOOSTER_CUSTOM_RATIO) {
     //   if (!deviceStore.ABTestInfo.GAME_BOOSTER_RADIO_MANAGER) {
@@ -117,7 +117,7 @@ export function useABTestActivation() {
     //       type: 'error',
     //       preset: 'dialog',
     //       content: () => <p>激活自定义游戏比例失败了QwQ，请先激活游戏显示布局2.0的Beta测试！</p>,
-    //       negativeText: '确定',
+    //       positiveText: '确定',
     //     });
     //     return;
     //   }
@@ -144,7 +144,7 @@ export function useABTestActivation() {
 						</p>
 					</div>
 				),
-				negativeText: '确定',
+				positiveText: '确定',
 			});
     } else {
 			modal.create({
@@ -152,7 +152,7 @@ export function useABTestActivation() {
 				type: 'error',
 				preset: 'dialog',
 				content: () => <p>解析激活口令失败了QwQ，请检查激活口令是否有误</p>,
-				negativeText: '确定',
+				positiveText: '确定',
 			});
 		}
 

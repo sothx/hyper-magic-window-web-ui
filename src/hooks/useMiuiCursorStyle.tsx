@@ -42,7 +42,7 @@ export function useMiuiCursorStyle() {
 				type: 'error',
 				preset: 'dialog',
 				content: () => <p>修改失败，详情请查看日志记录~</p>,
-				negativeText: '确定',
+				positiveText: '确定',
 			});
 		} else {
 			currentMiuiCursorStyleType.value = value;
@@ -60,7 +60,7 @@ export function useMiuiCursorStyle() {
                     type: 'error',
                     preset: 'dialog',
                     content: () => <p>修改失败，详情请查看日志记录~</p>,
-                    negativeText: '确定',
+                    positiveText: '确定',
                 });
                 return;
             } else {
@@ -73,7 +73,7 @@ export function useMiuiCursorStyle() {
                         type: 'error',
                         preset: 'dialog',
                         content: () => <p>修改失败，详情请查看日志记录~</p>,
-                        negativeText: '确定',
+                        positiveText: '确定',
                     });
                 } else {
                     modal.create({
@@ -96,7 +96,7 @@ export function useMiuiCursorStyle() {
                     type: 'error',
                     preset: 'dialog',
                     content: () => <p>修改失败，详情请查看日志记录~</p>,
-                    negativeText: '确定',
+                    positiveText: '确定',
                 });
             } else {
                 modal.create({

@@ -100,7 +100,7 @@ const getInstalledAppNameList = async () => {
 			type: 'warning',
 			preset: 'dialog',
 			content: () => <p>您的系统环境暂不支持该功能，获取失败~</p>,
-			negativeText: '确定',
+			positiveText: '确定',
 		});
 	}
 	if (getListRes) {
@@ -109,7 +109,7 @@ const getInstalledAppNameList = async () => {
 			type: 'success',
 			preset: 'dialog',
 			content: () => <p>好耶OwO，已重新获取当前已安装的应用名称~</p>,
-			negativeText: '确定',
+			positiveText: '确定',
 		});
 	}
 };
@@ -128,7 +128,7 @@ const hotReloadApplicationData = async () => {
 			type: 'error',
 			preset: 'dialog',
 			content: () => <p>热重载应用数据失败了QwQ，详情请查看错误日志~</p>,
-			negativeText: '确定',
+			positiveText: '确定',
 		});
 		hotReloadLoading.value = false;
 	}
@@ -190,7 +190,7 @@ const importShareRule = async () => {
 						口令发生错误，无法正常解析。
 					</p>
 				),
-				negativeText: '确定',
+				positiveText: '确定',
 			});
 			importShareRuleLoading.value = false;
 			return;
@@ -216,7 +216,7 @@ const importShareRule = async () => {
 							不适用于应用布局优化。
 						</p>
 					),
-					negativeText: '确定',
+					positiveText: '确定',
 				});
 				importShareRuleLoading.value = false;
 				return;
@@ -230,7 +230,7 @@ const importShareRule = async () => {
 					type: 'error',
 					preset: 'dialog',
 					content: () => <p>导入分享规则失败了QwQ，平板和折叠屏的适配规则不能混用哦~</p>,
-					negativeText: '确定',
+					positiveText: '确定',
 				});
 				importShareRuleLoading.value = false;
 				return;
@@ -300,7 +300,7 @@ const importShareRule = async () => {
 				type: 'error',
 				preset: 'dialog',
 				content: () => <p>解析分享规则失败了QwQ，请检查导入口令是否有误</p>,
-				negativeText: '确定',
+				positiveText: '确定',
 			});
 			importShareRuleLoading.value = false;
 		}
@@ -422,7 +422,7 @@ const handleCustomRuleDropdown = async (
 						长度过大。
 					</p>
 				),
-				negativeText: '确定',
+				positiveText: '确定',
 			});
 			return;
 		} else {

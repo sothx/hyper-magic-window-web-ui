@@ -124,7 +124,7 @@ const changeShamikoMode = async (value: boolean) => {
 						)}
 					</div>
 				),
-				negativeText: '确定',
+				positiveText: '确定',
 			});
 		})
 		.catch(err => {
@@ -133,7 +133,7 @@ const changeShamikoMode = async (value: boolean) => {
 				type: 'error',
 				preset: 'dialog',
 				content: () => <p>无法切换Shamiko的工作模式，详情请查看日志记录~</p>,
-				negativeText: '确定',
+				positiveText: '确定',
 			});
 		});
 };
@@ -146,7 +146,7 @@ const changeShowRotationSuggestions = async (value: boolean) => {
 			type: 'error',
 			preset: 'dialog',
 			content: () => <p>无法 {value ? '开启' : '关闭'} 旋转建议提示按钮，详情请查看日志记录~</p>,
-			negativeText: '确定',
+			positiveText: '确定',
 		});
 		return;
 	}

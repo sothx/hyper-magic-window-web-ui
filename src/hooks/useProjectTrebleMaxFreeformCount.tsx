@@ -50,7 +50,7 @@ export function useProjectTrebleMaxFreeformCount() {
                 type: 'error',
                 preset: 'dialog',
                 content: () => <p>修改失败，详情请查看日志记录~</p>,
-                negativeText: '确定',
+                positiveText: '确定',
             });
         } else {
             if (type === 'DefaultDesktopMode') {
@@ -88,7 +88,7 @@ export function useProjectTrebleMaxFreeformCount() {
                                 type: 'error',
                                 preset: 'dialog',
                                 content: () => <p>发生异常错误，重启系统界面作用域失败QwQ，详细错误请查看日志~</p>,
-                                negativeText: '确定',
+                                positiveText: '确定',
                             });
                             return;
                         });

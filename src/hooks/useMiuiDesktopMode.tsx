@@ -37,7 +37,7 @@ export function useMiuiDesktopMode() {
 				type: 'error',
 				preset: 'dialog',
 				content: () => <p>修改失败，详情请查看日志记录~</p>,
-				negativeText: '确定',
+				positiveText: '确定',
 			});
 		} else {
 			currentMiuiDktMode.value = value;
@@ -84,7 +84,7 @@ export function useMiuiDesktopMode() {
 					type: 'error',
 					preset: 'dialog',
 					content: () => <p>修改失败，详情请查看日志记录~</p>,
-					negativeText: '确定',
+					positiveText: '确定',
 				});
 				return;
 			}
@@ -97,7 +97,7 @@ export function useMiuiDesktopMode() {
 					type: 'error',
 					preset: 'dialog',
 					content: () => <p>修改失败，详情请查看日志记录~</p>,
-					negativeText: '确定',
+					positiveText: '确定',
 				});
 				return;
 			}
@@ -110,7 +110,7 @@ export function useMiuiDesktopMode() {
 					type: 'error',
 					preset: 'dialog',
 					content: () => <p>修改失败，详情请查看日志记录~</p>,
-					negativeText: '确定',
+					positiveText: '确定',
 				});
 				return;
 			}
@@ -123,7 +123,7 @@ export function useMiuiDesktopMode() {
 					type: 'error',
 					preset: 'dialog',
 					content: () => <p>修改失败，详情请查看日志记录~</p>,
-					negativeText: '确定',
+					positiveText: '确定',
 				});
 				return;
 			}
@@ -141,7 +141,7 @@ export function useMiuiDesktopMode() {
 							type: 'error',
 							preset: 'dialog',
 							content: () => <p>无法重启设备，详情请查看日志记录~</p>,
-							negativeText: '确定',
+							positiveText: '确定',
 						});
 						return;
 					});

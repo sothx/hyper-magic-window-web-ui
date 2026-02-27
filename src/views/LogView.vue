@@ -68,7 +68,7 @@ const saveLogs = () => {
 				type: 'success',
 				preset: 'dialog',
 				content: () => <p>日志保存成功，日志保存在/data/adb/Hyper_MagicWindow/logs-{currentTimestamp}.txt</p>,
-				negativeText: '确定',
+				positiveText: '确定',
 			});
 		})
 		.catch(err => {
@@ -77,7 +77,7 @@ const saveLogs = () => {
 				type: 'error',
 				preset: 'dialog',
 				content: () => <p>日志保存失败，可能目录没有写入权限，请检查~</p>,
-				negativeText: '确定',
+				positiveText: '确定',
 			});
 		});
 };

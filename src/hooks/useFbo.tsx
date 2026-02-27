@@ -38,7 +38,7 @@ export function useFbo() {
 				type: 'success',
 				preset: 'dialog',
 				content: () => <p>当前焕新存储已经是启用状态~</p>,
-				negativeText: '确定',
+				positiveText: '确定',
 			});
 			return;
 		}
@@ -51,7 +51,7 @@ export function useFbo() {
 					type: 'error',
 					preset: 'dialog',
 					content: () => <p>修改失败，详情请查看日志记录~</p>,
-					negativeText: '确定',
+					positiveText: '确定',
 				});
 			} else {
 				fboEnable.value = true;
@@ -67,7 +67,7 @@ export function useFbo() {
 				type: 'success',
 				preset: 'dialog',
 				content: () => <p>当前焕新存储已经是激活状态~</p>,
-				negativeText: '确定',
+				positiveText: '确定',
 			});
 			return;
 		}
@@ -78,7 +78,7 @@ export function useFbo() {
 				type: 'error',
 				preset: 'dialog',
 				content: () => <p>修改失败，详情请查看日志记录~</p>,
-				negativeText: '确定',
+				positiveText: '确定',
 			});
 		} else {
 			modal.create({
@@ -158,7 +158,7 @@ export function useFbo() {
 						type: 'error',
 						preset: 'dialog',
 						content: () => <p>修改失败，详情请查看日志记录~</p>,
-						negativeText: '确定',
+						positiveText: '确定',
 					});
 					return;
 				} else {
@@ -171,7 +171,7 @@ export function useFbo() {
 							type: 'error',
 							preset: 'dialog',
 							content: () => <p>修改失败，详情请查看日志记录~</p>,
-							negativeText: '确定',
+							positiveText: '确定',
 						});
 					} else {
 						const [setFboEnableErr, setFboEnableRes] = await $to(deviceApi.setFboEnable());
@@ -181,7 +181,7 @@ export function useFbo() {
 								type: 'error',
 								preset: 'dialog',
 								content: () => <p>修改失败，详情请查看日志记录~</p>,
-								negativeText: '确定',
+								positiveText: '确定',
 							});
 						} else {
 							modal.create({
@@ -202,7 +202,7 @@ export function useFbo() {
 											type: 'error',
 											preset: 'dialog',
 											content: () => <p>无法重启设备，详情请查看日志记录~</p>,
-											negativeText: '确定',
+											positiveText: '确定',
 										});
 										return;
 									});
@@ -221,7 +221,7 @@ export function useFbo() {
 						type: 'error',
 						preset: 'dialog',
 						content: () => <p>修改失败，详情请查看日志记录~</p>,
-						negativeText: '确定',
+						positiveText: '确定',
 					});
 				} else {
 					modal.create({
@@ -242,7 +242,7 @@ export function useFbo() {
 									type: 'error',
 									preset: 'dialog',
 									content: () => <p>无法重启设备，详情请查看日志记录~</p>,
-									negativeText: '确定',
+									positiveText: '确定',
 								});
 								return;
 							});
@@ -262,7 +262,7 @@ export function useFbo() {
 					type: 'error',
 					preset: 'dialog',
 					content: () => <p>修改失败，详情请查看日志记录~</p>,
-					negativeText: '确定',
+					positiveText: '确定',
 				});
 				return;
 			} else {
@@ -273,7 +273,7 @@ export function useFbo() {
 						type: 'error',
 						preset: 'dialog',
 						content: () => <p>修改失败，详情请查看日志记录~</p>,
-						negativeText: '确定',
+						positiveText: '确定',
 					});
 				} else {
 					const [setFboEnableErr, setFboEnableRes] = await $to(deviceApi.setFboEnable());
@@ -283,7 +283,7 @@ export function useFbo() {
 							type: 'error',
 							preset: 'dialog',
 							content: () => <p>修改失败，详情请查看日志记录~</p>,
-							negativeText: '确定',
+							positiveText: '确定',
 						});
 					} else {
 						modal.create({
@@ -309,7 +309,7 @@ export function useFbo() {
 					type: 'error',
 					preset: 'dialog',
 					content: () => <p>修改失败，详情请查看日志记录~</p>,
-					negativeText: '确定',
+					positiveText: '确定',
 				});
 			} else {
 				modal.create({

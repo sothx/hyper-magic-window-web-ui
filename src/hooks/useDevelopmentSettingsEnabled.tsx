@@ -61,7 +61,7 @@ export function useDevelopmentSettingsEnabled() {
                     type: 'error',
                     preset: 'dialog',
                     content: () => <p>修改失败，详情请查看日志记录~</p>,
-                    negativeText: '确定',
+                    positiveText: '确定',
                 });
             } else {
                 isEnabled.value =  value === 1 ? true : false

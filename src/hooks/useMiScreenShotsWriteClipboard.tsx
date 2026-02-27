@@ -87,7 +87,7 @@ export function useMiScreenShotsWriteClipboard() {
 						type: 'error',
 						preset: 'dialog',
 						content: () => <p>修改失败，详情请查看日志记录~</p>,
-						negativeText: '确定',
+						positiveText: '确定',
 					});
 				});
 		}
@@ -154,7 +154,7 @@ export function useMiScreenShotsWriteClipboard() {
 						type: 'error',
 						preset: 'dialog',
 						content: () => <p>修改失败，详情请查看日志记录~</p>,
-						negativeText: '确定',
+						positiveText: '确定',
 					});
 					return;
 				} else {
@@ -168,7 +168,7 @@ export function useMiScreenShotsWriteClipboard() {
 							type: 'error',
 							preset: 'dialog',
 							content: () => <p>修改失败，详情请查看日志记录~</p>,
-							negativeText: '确定',
+							positiveText: '确定',
 						});
 					} else {
 						modal.create({
@@ -189,7 +189,7 @@ export function useMiScreenShotsWriteClipboard() {
 										type: 'error',
 										preset: 'dialog',
 										content: () => <p>无法重启设备，详情请查看日志记录~</p>,
-										negativeText: '确定',
+										positiveText: '确定',
 									});
 									return;
 								});
@@ -208,7 +208,7 @@ export function useMiScreenShotsWriteClipboard() {
 						type: 'error',
 						preset: 'dialog',
 						content: () => <p>修改失败，详情请查看日志记录~</p>,
-						negativeText: '确定',
+						positiveText: '确定',
 					});
 				} else {
 					modal.create({
@@ -227,7 +227,7 @@ export function useMiScreenShotsWriteClipboard() {
 									type: 'error',
 									preset: 'dialog',
 									content: () => <p>无法重启设备，详情请查看日志记录~</p>,
-									negativeText: '确定',
+									positiveText: '确定',
 								});
 								return;
 							});

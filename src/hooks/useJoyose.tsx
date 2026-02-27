@@ -62,7 +62,7 @@ export function useJoyose() {
 								<p>重置云控数据失败，可能 Joyose 相关服务被禁用，部分性能调度、系统线程优化、屏蔽云控类模块会禁止 Joyose 相关服务，如不需要系统 Joyose 云控调度可以选择忽略。</p>
 								<p>详情错误请查看日志记录~</p>
 							</>,
-							negativeText: '确定',
+							positiveText: '确定',
 						});
 					});
 			},

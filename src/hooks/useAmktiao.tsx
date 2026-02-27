@@ -175,7 +175,7 @@ export function useAmktiao() {
 						type: 'error',
 						preset: 'dialog',
 						content: () => <p>修改失败，详情请查看日志记录~</p>,
-						negativeText: '确定',
+						positiveText: '确定',
 					});
 				});
 		}
@@ -191,7 +191,7 @@ export function useAmktiao() {
 				type: 'error',
 				preset: 'dialog',
 				content: () => <p>修改失败，详情请查看日志记录~</p>,
-				negativeText: '确定',
+				positiveText: '确定',
 			});
 		} else {
 			if (value) {
@@ -204,7 +204,7 @@ export function useAmktiao() {
 						type: 'error',
 						preset: 'dialog',
 						content: () => <p>修改失败，详情请查看日志记录~</p>,
-						negativeText: '确定',
+						positiveText: '确定',
 					});
 				} else {
 					modal.create({
@@ -224,7 +224,7 @@ export function useAmktiao() {
 									content: () => (
 										<p>获取屏幕信息失败，请手动关闭屏幕再点亮屏幕即可更新固件，详细请查看日志~</p>
 									),
-									negativeText: '确定',
+									positiveText: '确定',
 								});
 								return;
 							}
@@ -238,7 +238,7 @@ export function useAmktiao() {
 										content: () => (
 											<p>操作失败，请手动关闭屏幕再点亮屏幕即可更新固件，详细请查看日志~</p>
 										),
-										negativeText: '确定',
+										positiveText: '确定',
 									});
 									return;
 								}
@@ -259,7 +259,7 @@ export function useAmktiao() {
 									content: () => (
 										<p>检测到您目前的屏幕状态并非亮屏状态，请手动关闭屏幕再点亮屏幕即可更新固件，详细请查看日志~</p>
 									),
-									negativeText: '确定',
+									positiveText: '确定',
 								});
 							}
 						},
@@ -276,7 +276,7 @@ export function useAmktiao() {
 						type: 'error',
 						preset: 'dialog',
 						content: () => <p>修改失败，详情请查看日志记录~</p>,
-						negativeText: '确定',
+						positiveText: '确定',
 					});
 				} else {
 					modal.create({
@@ -296,7 +296,7 @@ export function useAmktiao() {
 									content: () => (
 										<p>获取屏幕信息失败，请手动关闭屏幕再点亮屏幕即可更新固件，详细请查看日志~</p>
 									),
-									negativeText: '确定',
+									positiveText: '确定',
 								});
 								return;
 							}
@@ -310,7 +310,7 @@ export function useAmktiao() {
 										content: () => (
 											<p>操作失败，请手动关闭屏幕再点亮屏幕即可更新固件，详细请查看日志~</p>
 										),
-										negativeText: '确定',
+										positiveText: '确定',
 									});
 									return;
 								}
@@ -331,7 +331,7 @@ export function useAmktiao() {
 									content: () => (
 										<p>检测到您目前的屏幕状态并非亮屏状态，请手动关闭屏幕再点亮屏幕即可更新固件，详细请查看日志~</p>
 									),
-									negativeText: '确定',
+									positiveText: '确定',
 								});
 							}
 						},
@@ -352,7 +352,7 @@ export function useAmktiao() {
 				type: 'error',
 				preset: 'dialog',
 				content: () => <p>修改失败，详情请查看日志记录~</p>,
-				negativeText: '确定',
+				positiveText: '确定',
 			});
 		} else {
 			if (value) {
@@ -365,7 +365,7 @@ export function useAmktiao() {
 						type: 'error',
 						preset: 'dialog',
 						content: () => <p>修改失败，详情请查看日志记录~</p>,
-						negativeText: '确定',
+						positiveText: '确定',
 					});
 				} else {
 					modal.create({
@@ -385,7 +385,7 @@ export function useAmktiao() {
 									content: () => (
 										<p>获取屏幕信息失败，请手动关闭屏幕再点亮屏幕即可更新触控驱动，详细请查看日志~</p>
 									),
-									negativeText: '确定',
+									positiveText: '确定',
 								});
 								return;
 							}
@@ -399,7 +399,7 @@ export function useAmktiao() {
 										content: () => (
 											<p>操作失败，请手动关闭屏幕再点亮屏幕即可更新触控驱动，详细请查看日志~</p>
 										),
-										negativeText: '确定',
+										positiveText: '确定',
 									});
 									return;
 								}
@@ -420,7 +420,7 @@ export function useAmktiao() {
 									content: () => (
 										<p>检测到您目前的屏幕状态并非亮屏状态，请手动关闭屏幕再点亮屏幕即可更新触控驱动，详细请查看日志~</p>
 									),
-									negativeText: '确定',
+									positiveText: '确定',
 								});
 							}
 						},
@@ -437,7 +437,7 @@ export function useAmktiao() {
 						type: 'error',
 						preset: 'dialog',
 						content: () => <p>修改失败，详情请查看日志记录~</p>,
-						negativeText: '确定',
+						positiveText: '确定',
 					});
 				} else {
 					modal.create({
@@ -457,7 +457,7 @@ export function useAmktiao() {
 									content: () => (
 										<p>获取屏幕信息失败，请手动关闭屏幕再点亮屏幕即可更新触控驱动，详细请查看日志~</p>
 									),
-									negativeText: '确定',
+									positiveText: '确定',
 								});
 								return;
 							}
@@ -471,7 +471,7 @@ export function useAmktiao() {
 										content: () => (
 											<p>操作失败，请手动关闭屏幕再点亮屏幕即可更新触控驱动，详细请查看日志~</p>
 										),
-										negativeText: '确定',
+										positiveText: '确定',
 									});
 									return;
 								}
@@ -492,7 +492,7 @@ export function useAmktiao() {
 									content: () => (
 										<p>检测到您目前的屏幕状态并非亮屏状态，请手动关闭屏幕再点亮屏幕即可更新触控驱动，详细请查看日志~</p>
 									),
-									negativeText: '确定',
+									positiveText: '确定',
 								});
 							}
 						},
@@ -513,7 +513,7 @@ export function useAmktiao() {
 				type: 'error',
 				preset: 'dialog',
 				content: () => <p>修改失败，详情请查看日志记录~</p>,
-				negativeText: '确定',
+				positiveText: '确定',
 			});
 		} else {
 			if (value) {
@@ -526,7 +526,7 @@ export function useAmktiao() {
 						type: 'error',
 						preset: 'dialog',
 						content: () => <p>修改失败，详情请查看日志记录~</p>,
-						negativeText: '确定',
+						positiveText: '确定',
 					});
 				} else {
 					modal.create({
@@ -546,7 +546,7 @@ export function useAmktiao() {
 									content: () => (
 										<p>获取屏幕信息失败，请手动关闭屏幕再点亮屏幕即可切换游戏模式，详细请查看日志~</p>
 									),
-									negativeText: '确定',
+									positiveText: '确定',
 								});
 								return;
 							}
@@ -560,7 +560,7 @@ export function useAmktiao() {
 										content: () => (
 											<p>操作失败，请手动关闭屏幕再点亮屏幕即可切换游戏模式，详细请查看日志~</p>
 										),
-										negativeText: '确定',
+										positiveText: '确定',
 									});
 									return;
 								}
@@ -581,7 +581,7 @@ export function useAmktiao() {
 									content: () => (
 										<p>检测到您目前的屏幕状态并非亮屏状态，请手动关闭屏幕再点亮屏幕即可更新游戏模式，详细请查看日志~</p>
 									),
-									negativeText: '确定',
+									positiveText: '确定',
 								});
 							}
 						},
@@ -598,7 +598,7 @@ export function useAmktiao() {
 						type: 'error',
 						preset: 'dialog',
 						content: () => <p>修改失败，详情请查看日志记录~</p>,
-						negativeText: '确定',
+						positiveText: '确定',
 					});
 				} else {
 					modal.create({
@@ -618,7 +618,7 @@ export function useAmktiao() {
 									content: () => (
 										<p>获取屏幕信息失败，请手动关闭屏幕再点亮屏幕即可更新游戏模式，详细请查看日志~</p>
 									),
-									negativeText: '确定',
+									positiveText: '确定',
 								});
 								return;
 							}
@@ -632,7 +632,7 @@ export function useAmktiao() {
 										content: () => (
 											<p>操作失败，请手动关闭屏幕再点亮屏幕即可更新游戏模式，详细请查看日志~</p>
 										),
-										negativeText: '确定',
+										positiveText: '确定',
 									});
 									return;
 								}
@@ -653,7 +653,7 @@ export function useAmktiao() {
 									content: () => (
 										<p>检测到您目前的屏幕状态并非亮屏状态，请手动关闭屏幕再点亮屏幕即可更新游戏模式，详细请查看日志~</p>
 									),
-									negativeText: '确定',
+									positiveText: '确定',
 								});
 							}
 						},
@@ -675,7 +675,7 @@ export function useAmktiao() {
 						type: 'error',
 						preset: 'dialog',
 						content: () => <p>修改失败，详情请查看日志记录~</p>,
-						negativeText: '确定',
+						positiveText: '确定',
 					});
 				} else {
 					modal.create({
@@ -697,7 +697,7 @@ export function useAmktiao() {
 						type: 'error',
 						preset: 'dialog',
 						content: () => <p>修改失败，详情请查看日志记录~</p>,
-						negativeText: '确定',
+						positiveText: '确定',
 					});
 				} else {
 					modal.create({
@@ -723,7 +723,7 @@ export function useAmktiao() {
 						type: 'error',
 						preset: 'dialog',
 						content: () => <p>修改失败，详情请查看日志记录~</p>,
-						negativeText: '确定',
+						positiveText: '确定',
 					});
 				} else {
 					modal.create({
@@ -745,7 +745,7 @@ export function useAmktiao() {
 						type: 'error',
 						preset: 'dialog',
 						content: () => <p>修改失败，详情请查看日志记录~</p>,
-						negativeText: '确定',
+						positiveText: '确定',
 					});
 				} else {
 					modal.create({
@@ -771,7 +771,7 @@ export function useAmktiao() {
 						type: 'error',
 						preset: 'dialog',
 						content: () => <p>修改失败，详情请查看日志记录~</p>,
-						negativeText: '确定',
+						positiveText: '确定',
 					});
 				} else {
 					modal.create({
@@ -793,7 +793,7 @@ export function useAmktiao() {
 						type: 'error',
 						preset: 'dialog',
 						content: () => <p>修改失败，详情请查看日志记录~</p>,
-						negativeText: '确定',
+						positiveText: '确定',
 					});
 				} else {
 					modal.create({
@@ -818,7 +818,7 @@ export function useAmktiao() {
 				type: 'error',
 				preset: 'dialog',
 				content: () => <p>修改失败，详情请查看日志记录~</p>,
-				negativeText: '确定',
+				positiveText: '确定',
 			});
 		} else {
 			if (value) {
@@ -831,7 +831,7 @@ export function useAmktiao() {
 						type: 'error',
 						preset: 'dialog',
 						content: () => <p>修改失败，详情请查看日志记录~</p>,
-						negativeText: '确定',
+						positiveText: '确定',
 					});
 				} else {
 					currentPenEnable.value = 1;
@@ -846,7 +846,7 @@ export function useAmktiao() {
 						type: 'error',
 						preset: 'dialog',
 						content: () => <p>修改失败，详情请查看日志记录~</p>,
-						negativeText: '确定',
+						positiveText: '确定',
 					});
 				} else {
 					currentPenEnable.value = 0;

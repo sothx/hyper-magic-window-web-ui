@@ -153,7 +153,7 @@ const handleActivateABTest = async () => {
 				type: 'error',
 				preset: 'dialog',
 				content: () => <p>导入激活口令失败了QwQ，解析口令发生错误，无法正常解析。</p>,
-				negativeText: '确定',
+				positiveText: '确定',
 			});
 			activateABTestLoading.value = false;
 			return;
@@ -172,7 +172,7 @@ const handleActivateABTest = async () => {
 				type: 'error',
 				preset: 'dialog',
 				content: () => <p>解析激活口令失败了QwQ，请检查激活口令是否有误</p>,
-				negativeText: '确定',
+				positiveText: '确定',
 			});
 			activateABTestLoading.value = false;
 		}

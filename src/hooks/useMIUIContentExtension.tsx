@@ -45,7 +45,7 @@ export function useMIUIContentExtension() {
                         <p>下载链接:https://caiyun.139.com/m/i?2mWL9vPv2H1rh</p>
                     </div>
                 ),
-                negativeText: '确定',
+                positiveText: '确定',
             });
             return;
         }
@@ -95,7 +95,7 @@ export function useMIUIContentExtension() {
                             type: 'error',
                             preset: 'dialog',
                             content: () => <p>出现异常，无法正常打开传送门QwQ，详细问题可浏览日志记录~</p>,
-                            negativeText: '确定',
+                            positiveText: '确定',
                         });
                     },
                 );
