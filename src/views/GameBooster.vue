@@ -274,10 +274,10 @@ function createColumns(): DataTableColumns<GameBoosterTableItem> {
 				return (
 					<div>
 						<div class='flex'>
-							{isInstalled.has(row.app_name) && (
+							{isInstalled.has(row.package_name) && (
 								<img
 									class='mr-1 w-[28px] h-[28px] rounded-full object-cover'
-									src={`ksu://icon/${row.app_name}`}
+									src={`ksu://icon/${row.package_name}`}
 									onError={e => {
 										(e.currentTarget as HTMLImageElement).style.display = 'none';
 									}}

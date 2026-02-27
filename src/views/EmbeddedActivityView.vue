@@ -54,7 +54,7 @@ import {
 	ChatBubbleLeftEllipsisIcon,
 } from '@heroicons/vue/24/solid';
 import { arrayBufferToBase64, base64ToArrayBuffer } from '@/utils/format';
-import { findBase64InString, renderApplicationName } from '@/utils/common';
+import { findBase64InString, renderApplicationName, getAppLabelToPackageInfo } from '@/utils/common';
 import {
 	getAppMode,
 	getAppModeCode,
@@ -1692,7 +1692,10 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 									}}
 								/>
 							)}
-							{row.applicationName && <p class='mt-1'>{row.applicationName}</p>}
+							{deviceStore.canUsePackageInfoApi && row.name && (
+								<p class='mt-1'>{getAppLabelToPackageInfo(row.name)}</p>
+							)}
+							{!deviceStore.canUsePackageInfoApi && row.applicationName && <p class='mt-1'>{row.applicationName}</p>}
 							{deviceStore.canShowApplicationIcon && !row.applicationName && (
 								<p class='mt-1'>{row.name}</p>
 							)}
@@ -2190,6 +2193,7 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 				<n-button
 					class="mb-3 mr-3"
 					color="#69b2b6"
+					v-if="!deviceStore.canUsePackageInfoApi"
 					:loading="deviceStore.loading || embeddedStore.loading || installedAppNamesHook.loading.value"
 					@click="getInstalledAppNameList()">
 					<template #icon>

@@ -1,3 +1,5 @@
+import { getPackagesInfo } from '@/utils/kernelsu/index.js';
+
 export const findBase64InString = (input: string): string | null => {
     const base64Pattern = /([A-Za-z0-9+/=]{16,})/g; // 至少16个字符的Base64
     const match = input.match(base64Pattern);
@@ -41,4 +43,24 @@ export function parseSchedulerOutput(output: string) {
     schedulerList,
     currentScheduler
   }
+}
+
+export const canUsePackageInfo = () => {
+   const packages = getPackagesInfo(['com.android.shell']);
+   return Array.isArray(packages) && packages.length === 1;
+}
+
+export const getAppLabelToPackageInfo = (packageName:string) => {
+    const packages = getPackagesInfo([packageName]);
+    if (Array.isArray(packages) && packages.length === 1) {
+        const pkg = packages[0];
+        if (pkg.appLabel) {
+          return pkg.appLabel
+        } else {
+          return pkg.packageName
+        }
+
+    } else {
+      return packageName
+    }
 }

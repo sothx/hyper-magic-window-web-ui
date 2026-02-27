@@ -5,7 +5,7 @@ import * as deviceApi from '@/apis/deviceApi';
 import type { ErrorLogging } from '@/types/ErrorLogging';
 import type { InstallAppNameListDictionary } from '@/hooks/useInstalledAppNames';
 import { useAmktiao, type KeyboardMode, type KeyboardModeOptions } from '@/hooks/useAmktiao';
-import { parsePropContent } from '@/utils/common';
+import { parsePropContent,canUsePackageInfo } from '@/utils/common';
 import { transformValues } from '@/utils/xmlFormat';
 import type { DisplayModeItem } from '@/hooks/useDisplayModeRecord';
 import type { RouteRecordNameGeneric } from 'vue-router';
@@ -85,6 +85,7 @@ export const useDeviceStore = defineStore(
 		const lastVersionCode = ref<number>();
 		const needReloadData = ref<boolean>(false);
 		const moduleInfo = ref<ModuleProp>();
+		const canUsePackageInfoApi = ref<boolean>(false);
 		const moduleUpdateInfo = ref<deviceApi.ModuleUpdateInfo>();
 		const changeLogMsg = ref<string>('');
 		const enabledMiuiDesktopMode = ref<boolean>(false);
@@ -268,6 +269,13 @@ export const useDeviceStore = defineStore(
 				[, getHideGestureLineRes],
 				[, getDDRVendorRes],
 			] = executeWithoutWaitingResults;
+
+			// 判断能否使用PackageInfo接口来获取应用信息，来决定是否显示应用图标等相关功能
+
+			if (canUsePackageInfo()) {
+				canUsePackageInfoApi.value = true;
+			}
+
 			// 模块信息 *弱校验
 			if (!getModuleInfoRes?.length) {
 				errorLogging.push({
@@ -574,6 +582,7 @@ export const useDeviceStore = defineStore(
 			remoteDownloadAppUrlMap,
 			isInstalledXiaomiPadSystemPatchAdditionalModule,
 			canShowApplicationIcon,
+			canUsePackageInfoApi,
 		};
 	},
 	{

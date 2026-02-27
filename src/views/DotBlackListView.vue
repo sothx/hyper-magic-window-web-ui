@@ -44,7 +44,7 @@ import { useLogsStore } from '@/stores/logs';
 import { useAutoUI } from '@/hooks/useAutoUI';
 import * as validateFun from '@/utils/validateFun';
 import DotBlackListAppDrawer from '@/components/DotBlackListAppDrawer.vue';
-import { findBase64InString, renderApplicationName } from '@/utils/common';
+import { findBase64InString, getAppLabelToPackageInfo, renderApplicationName } from '@/utils/common';
 import { arrayBufferToBase64, base64ToArrayBuffer } from '@/utils/format';
 import pako from 'pako';
 import { useInstalledAppNames } from '@/hooks/useInstalledAppNames';
@@ -948,7 +948,10 @@ function createColumns(): DataTableColumns<DotBlackListMergeItem> {
 									}}
 								/>
 							)}
-							{row.applicationName && <p class='mt-1'>{row.applicationName}</p>}
+							{deviceStore.canUsePackageInfoApi && row.name && (
+								<p class='mt-1'>{getAppLabelToPackageInfo(row.name)}</p>
+							)}
+							{!deviceStore.canUsePackageInfoApi && row.applicationName && <p class='mt-1'>{row.applicationName}</p>}
 							{deviceStore.canShowApplicationIcon && !row.applicationName && (
 								<p class='mt-1'>{row.name}</p>
 							)}
@@ -1195,6 +1198,7 @@ function createColumns(): DataTableColumns<DotBlackListMergeItem> {
 				<n-button
 					class="mb-3 mr-3"
 					color="#69b2b6"
+					v-if="!deviceStore.canUsePackageInfoApi"
 					:loading="deviceStore.loading || dotBlackListStore.loading || installedAppNamesHook.loading.value"
 					@click="getInstalledAppNameList()">
 					<template #icon>
