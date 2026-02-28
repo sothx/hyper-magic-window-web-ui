@@ -10,6 +10,8 @@ import type { DisplayModeItem } from '@/hooks/useDisplayModeRecord';
 import type { RouteRecordNameGeneric } from 'vue-router';
 import { listPackages } from '@/utils/kernelsu/index.js';
 import { useEmbeddedStore } from './embedded';
+import type PackageInfoItem from '@/types/PackageInfoItem';
+import { keyBy } from 'lodash-es';
 
 export interface ModuleProp {
 	id: string;
@@ -92,7 +94,7 @@ export const useDeviceStore = defineStore(
 		const isEnableShowNotificationIconNum = ref<boolean>(false);
 		const deviceName = ref<string>('');
 		const installedAndroidApplicationPackageNameList = ref<string[]>([]);
-		const installedAppNameList = ref<InstallAppNameListDictionary>({});
+		const installedAppPackageInfoList = ref<PackageInfoItem[]>([]);
 		const systemVersion = ref<string>('');
 		const systemPreVersion = ref<string>('');
 		const currentRootManager = ref<ROOT_MANAGER_TYPE>('Magisk');
@@ -163,6 +165,10 @@ export const useDeviceStore = defineStore(
 
 		const isNeedShowErrorModal = computed(() => Boolean(errorLogging.length > 0));
 
+		const installedAppPackageInfoMap = computed(() => {
+			return keyBy(installedAppPackageInfoList.value, 'packageName');
+		});
+
 		const deviceType = computed(() => {
 			if (isInit.value) {
 				if (deviceCharacteristics.value === 'tablet') {
@@ -202,6 +208,25 @@ export const useDeviceStore = defineStore(
 						}
 						resolve(installedAndroidApplicationPackageNameList.value);
 					}
+				}
+			});
+		}
+
+		async function getInstalledAppPackageInfoList() {
+			return new Promise(async (resolve, reject) => {
+				const [getInstalledAppPackageInfoErr, getInstalledAppPackageInfoRes] =	 await $to<PackageInfoItem[], string>(deviceApi.getAllPackageInfoList(installedAndroidApplicationPackageNameList.value));
+				if (getInstalledAppPackageInfoErr) {
+					errorLogging.push({
+						type: 'getInstalledAppPackageInfoErr',
+						title: '获取已安装应用包信息',
+						msg: getInstalledAppPackageInfoErr,
+					});
+					reject(getInstalledAppPackageInfoErr);
+				} else {
+					if (getInstalledAppPackageInfoRes) {
+						installedAppPackageInfoList.value = getInstalledAppPackageInfoRes;
+					}
+					resolve(installedAppPackageInfoList.value);
 				}
 			});
 		}
@@ -355,6 +380,8 @@ export const useDeviceStore = defineStore(
 			batteryInfo.cycleCount = Number(getBatteryCycleCountRes);
 			// 获取用户已安装的应用
 			await getAndroidApplicationPackageNameList();
+			// 获取已安装应用的包信息
+			await getInstalledAppPackageInfoList();
 			// 设备特征 *强校验
 			const [getDeviceCharacteristicsErr, getDeviceCharacteristicsRes] = await $to<string, string>(
 				deviceApi.getDeviceCharacteristics(),
@@ -550,7 +577,8 @@ export const useDeviceStore = defineStore(
 			getAndroidApplicationPackageNameList,
 			miuiCompatEnable,
 			miuiAppCompatEnable,
-			installedAppNameList,
+			installedAppPackageInfoList,
+			installedAppPackageInfoMap,
 			skipConfirm,
 			showThirdPartySetting,
 			currentRootManager,
@@ -593,7 +621,6 @@ export const useDeviceStore = defineStore(
 				'isDarkMode',
 				'rhythmMode',
 				'ABTestInfo',
-				'installedAppNameList',
 				'lastVersionCode',
 				'showThirdPartySetting',
 				'remoteDownloadAppUrlMap',

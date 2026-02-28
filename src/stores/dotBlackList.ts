@@ -68,11 +68,11 @@ export const useDotBlackListStore = defineStore(
 		const customDotBlackList = ref<string[]>([]);
 		const mergeDotBlackList: ComputedRef<DotBlackListMergeItem[]> = computed(() => {
 			const deviceStore = useDeviceStore();
-			const installedAppName = deviceStore.installedAppNameList;
+			const installedAppName = deviceStore.installedAppPackageInfoMap;
 			// 生成 systemDotBlackList 的项
 			const systemItems = systemDotBlackList.value.map(item => {
 				const isInCustomList = customDotBlackList.value.includes(item);
-				const appName: string = installedAppName[item] || applicationName.value[item];
+				const appName: string = installedAppName[item]?.appLabel || applicationName.value[item];
 				return {
 					name: item,
 					applicationName: appName,
@@ -84,7 +84,7 @@ export const useDotBlackListStore = defineStore(
 			const customItems = customDotBlackList.value
 				.filter(item => !systemDotBlackList.value.includes(item))
 				.map(item => {
-					const appName: string = installedAppName[item] || applicationName.value[item];
+					const appName: string = installedAppName[item]?.appLabel || applicationName.value[item];
 					return {
 						name: item,
 						applicationName: appName,

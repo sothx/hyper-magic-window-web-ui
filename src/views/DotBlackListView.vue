@@ -456,7 +456,7 @@ const importShareRule = async () => {
 							<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
 								{renderApplicationName(
 									importRuleContent.name,
-									deviceStore.installedAppNameList[importRuleContent.name] ||
+									deviceStore.installedAppPackageInfoMap[importRuleContent.name]?.appLabel ||
 										autoUIStore.applicationName[importRuleContent.name],
 								)}
 							</span>{' '}
@@ -827,7 +827,7 @@ const openAddDrawer = async () => {
 							<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
 								{renderApplicationName(
 									addDotBlackListAppRes.name,
-									deviceStore.installedAppNameList[addDotBlackListAppRes.name] ||
+									deviceStore.installedAppPackageInfoMap[addDotBlackListAppRes.name]?.appLabel ||
 										dotBlackListStore.applicationName[addDotBlackListAppRes.name],
 								)}
 							</span>{' '}

@@ -350,7 +350,11 @@ export const deleteGameMode = (): Promise<string> => {
 				resolve(`Remove ro.config.miui_compat_enable successfully.`);
 			} else {
 				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
-				errno ? reject(stderr) : stdout === 'Remove ro.config.miui_compat_enable successfully.' ? resolve(stdout) : reject(stdout);
+				errno
+					? reject(stderr)
+					: stdout === 'Remove ro.config.miui_compat_enable successfully.'
+						? resolve(stdout)
+						: reject(stdout);
 			}
 		}),
 		shellCommon,
@@ -583,7 +587,7 @@ export const setRotationSuggestions = (mode: 1 | 0): Promise<string> => {
 };
 
 export const addIsHideGestureLine = (): Promise<string> => {
-const shellCommon = `grep -q '^is_hide_gesture_line=' /data/adb/Hyper_MagicWindow/config.prop || (source ${toolsFunc} && add_lines "is_hide_gesture_line=true" /data/adb/Hyper_MagicWindow/config.prop && echo "Command executed successfully." || echo "Command failed.");`
+	const shellCommon = `grep -q '^is_hide_gesture_line=' /data/adb/Hyper_MagicWindow/config.prop || (source ${toolsFunc} && add_lines "is_hide_gesture_line=true" /data/adb/Hyper_MagicWindow/config.prop && echo "Command executed successfully." || echo "Command failed.");`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -846,7 +850,6 @@ export const clearJoyose = (): Promise<string> => {
 	);
 };
 
-
 export const setPointerSpeed = (value: number): Promise<string> => {
 	const shellCommon = `settings put system pointer_speed ${value}`;
 	return handlePromiseWithLogging(
@@ -915,14 +918,18 @@ export const getAllPackageInfoList = (packageListArr: string[]): Promise<Package
 		if (packageListArr.length === 0) {
 			return reject('Package list is empty.');
 		}
-		const packageInfoResult = getPackagesInfo(packageListArr);
-		if (Array.isArray(packageInfoResult) && packageInfoResult.length > 0) {
-			return resolve(packageInfoResult);
+		if (import.meta.env.MODE === 'development') {
+			const response = await axios.get('/data/system/app.txt');
+			resolve(response.data);
+		} else {
+			const packageInfoResult = getPackagesInfo(packageListArr);
+			if (Array.isArray(packageInfoResult) && packageInfoResult.length > 0) {
+				return resolve(packageInfoResult);
+			}
+			return reject('Failed to get package info list.');
 		}
-		return reject('Failed to get package info list.');
 	});
 };
-
 
 export const getHasInstalledMIUIContentExtension = (): Promise<string> => {
 	const shellCommon = `ls /system/product/priv-app/MIUIContentExtension/MIUIContentExtension.apk &>/dev/null && echo "exists" || echo "not exists"`;
@@ -1037,8 +1044,7 @@ export const killGameBoosterApp = (packageName: string): Promise<string> => {
 };
 
 export const frameRateService = (status: 'start' | 'stop'): Promise<string> => {
-
-	const shellCommon =  `cmd activity ${status}service -n com.miui.powerkeeper/.ui.framerate.FrameRateService`;
+	const shellCommon = `cmd activity ${status}service -n com.miui.powerkeeper/.ui.framerate.FrameRateService`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -1318,7 +1324,7 @@ export const putCurrentPenUpdate = (mode: PenUpdate): Promise<string> => {
 };
 
 export const addIsAmktiaoPenUpdate = (): Promise<string> => {
-	const shellCommon = `grep -q '^is_amktiao_pen_update=' /data/adb/Hyper_MagicWindow/config.prop || (source ${toolsFunc} && add_lines "is_amktiao_pen_update=true" /data/adb/Hyper_MagicWindow/config.prop && echo "Command executed successfully." || echo "Command failed.");`
+	const shellCommon = `grep -q '^is_amktiao_pen_update=' /data/adb/Hyper_MagicWindow/config.prop || (source ${toolsFunc} && add_lines "is_amktiao_pen_update=true" /data/adb/Hyper_MagicWindow/config.prop && echo "Command executed successfully." || echo "Command failed.");`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -1378,7 +1384,7 @@ export const putCurrentPenEnable = (mode: PenEnable): Promise<string> => {
 };
 
 export const addIsAmktiaoPenEnable = (): Promise<string> => {
-	const shellCommon = `grep -q '^is_amktiao_pen_enable=' /data/adb/Hyper_MagicWindow/config.prop || (source ${toolsFunc} && add_lines "is_amktiao_pen_enable=true" /data/adb/Hyper_MagicWindow/config.prop && echo "Command executed successfully." || echo "Command failed.");`
+	const shellCommon = `grep -q '^is_amktiao_pen_enable=' /data/adb/Hyper_MagicWindow/config.prop || (source ${toolsFunc} && add_lines "is_amktiao_pen_enable=true" /data/adb/Hyper_MagicWindow/config.prop && echo "Command executed successfully." || echo "Command failed.");`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -1453,7 +1459,7 @@ export const getMiuiDesktopModeEnabled = (): Promise<string> => {
 };
 
 export const addIsAddDesktopModeEnabled = (): Promise<string> => {
-	const shellCommon = `grep -q '^is_add_miui_desktop_mode_enabled=' /data/adb/Hyper_MagicWindow/config.prop || (source ${toolsFunc} && add_lines "is_add_miui_desktop_mode_enabled=true" /data/adb/Hyper_MagicWindow/config.prop && echo "Command executed successfully." || echo "Command failed.");`
+	const shellCommon = `grep -q '^is_add_miui_desktop_mode_enabled=' /data/adb/Hyper_MagicWindow/config.prop || (source ${toolsFunc} && add_lines "is_add_miui_desktop_mode_enabled=true" /data/adb/Hyper_MagicWindow/config.prop && echo "Command executed successfully." || echo "Command failed.");`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -1483,7 +1489,7 @@ export const removeIsAddDesktopModeEnabled = (): Promise<string> => {
 };
 
 export const addMiuiDesktopModeEnabled = (): Promise<string> => {
-	const shellCommon = `grep -q '^ro.config.miui_desktop_mode_enabled=' /data/adb/modules/Hyper_MagicWindow/system.prop || (source ${toolsFunc} && add_lines "ro.config.miui_desktop_mode_enabled=true" /data/adb/modules/Hyper_MagicWindow/system.prop && echo "Command executed successfully." || echo "Command failed.");`
+	const shellCommon = `grep -q '^ro.config.miui_desktop_mode_enabled=' /data/adb/modules/Hyper_MagicWindow/system.prop || (source ${toolsFunc} && add_lines "ro.config.miui_desktop_mode_enabled=true" /data/adb/modules/Hyper_MagicWindow/system.prop && echo "Command executed successfully." || echo "Command failed.");`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -1545,7 +1551,7 @@ export const putCurrentMiuiDktMode = (mode: MiuiDKTMode): Promise<string> => {
 };
 
 export const addIsEnableShowNotificationIconNum = (): Promise<string> => {
-	const shellCommon = `grep -q '^is_enable_show_notification_icon_num=' /data/adb/Hyper_MagicWindow/config.prop || (source ${toolsFunc} && add_lines "is_enable_show_notification_icon_num=true" /data/adb/Hyper_MagicWindow/config.prop && echo "Command executed successfully." || echo "Command failed.");`
+	const shellCommon = `grep -q '^is_enable_show_notification_icon_num=' /data/adb/Hyper_MagicWindow/config.prop || (source ${toolsFunc} && add_lines "is_enable_show_notification_icon_num=true" /data/adb/Hyper_MagicWindow/config.prop && echo "Command executed successfully." || echo "Command failed.");`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -1620,7 +1626,7 @@ export const removeShowNotificationIconNum = (): Promise<string> => {
 };
 
 export const addShowNotificationIconNum = (num: number): Promise<string> => {
-	const shellCommon = `grep -q '^show_notification_icon_num=' /data/adb/Hyper_MagicWindow/config.prop || (source ${toolsFunc} && add_lines "show_notification_icon_num=${num}" /data/adb/Hyper_MagicWindow/config.prop && echo "Command executed successfully." || echo "Command failed.");`
+	const shellCommon = `grep -q '^show_notification_icon_num=' /data/adb/Hyper_MagicWindow/config.prop || (source ${toolsFunc} && add_lines "show_notification_icon_num=${num}" /data/adb/Hyper_MagicWindow/config.prop && echo "Command executed successfully." || echo "Command failed.");`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -2166,7 +2172,7 @@ export const getPreStartProcForModule = (): Promise<string> => {
 };
 
 export const addDisabledPreStartProc = (): Promise<string> => {
-	const shellCommon = `grep -q '^persist.sys.prestart.proc=' /data/adb/modules/Hyper_MagicWindow/system.prop || (source ${toolsFunc} && add_lines "persist.sys.prestart.proc=false" /data/adb/modules/Hyper_MagicWindow/system.prop && echo "Command executed successfully." || echo "Command failed.");`
+	const shellCommon = `grep -q '^persist.sys.prestart.proc=' /data/adb/modules/Hyper_MagicWindow/system.prop || (source ${toolsFunc} && add_lines "persist.sys.prestart.proc=false" /data/adb/modules/Hyper_MagicWindow/system.prop && echo "Command executed successfully." || echo "Command failed.");`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -2226,7 +2232,7 @@ export const getDeepSleepEnableForModule = (): Promise<string> => {
 };
 
 export const addDisabledDeepSleepEnable = (): Promise<string> => {
-	const shellCommon = `grep -q '^persist.sys.deep_sleep.enable=' /data/adb/modules/Hyper_MagicWindow/system.prop || (source ${toolsFunc} && add_lines "persist.sys.deep_sleep.enable=false" /data/adb/modules/Hyper_MagicWindow/system.prop && echo "Command executed successfully." || echo "Command failed.");`
+	const shellCommon = `grep -q '^persist.sys.deep_sleep.enable=' /data/adb/modules/Hyper_MagicWindow/system.prop || (source ${toolsFunc} && add_lines "persist.sys.deep_sleep.enable=false" /data/adb/modules/Hyper_MagicWindow/system.prop && echo "Command executed successfully." || echo "Command failed.");`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -2380,7 +2386,7 @@ export const removeIsAutoEnableFbo = (): Promise<string> => {
 };
 
 export const addIsAutoEnableFbo = (): Promise<string> => {
-	const shellCommon = `grep -q '^is_auto_enable_fbo=' /data/adb/Hyper_MagicWindow/config.prop || (source ${toolsFunc} && add_lines "is_auto_enable_fbo=true" /data/adb/Hyper_MagicWindow/config.prop && echo "Command executed successfully." || echo "Command failed.");`
+	const shellCommon = `grep -q '^is_auto_enable_fbo=' /data/adb/Hyper_MagicWindow/config.prop || (source ${toolsFunc} && add_lines "is_auto_enable_fbo=true" /data/adb/Hyper_MagicWindow/config.prop && echo "Command executed successfully." || echo "Command failed.");`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -2429,7 +2435,7 @@ export const removeIsAutoRegularlyFbo = (): Promise<string> => {
 };
 
 export const addIsAutoRegularlyFbo = (): Promise<string> => {
-	const shellCommon = `grep -q '^is_auto_regularly_fbo=' /data/adb/Hyper_MagicWindow/config.prop || (source ${toolsFunc} && add_lines "is_auto_regularly_fbo=true" /data/adb/Hyper_MagicWindow/config.prop && echo "Command executed successfully." || echo "Command failed.");`
+	const shellCommon = `grep -q '^is_auto_regularly_fbo=' /data/adb/Hyper_MagicWindow/config.prop || (source ${toolsFunc} && add_lines "is_auto_regularly_fbo=true" /data/adb/Hyper_MagicWindow/config.prop && echo "Command executed successfully." || echo "Command failed.");`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -2474,7 +2480,7 @@ export const removeAutoStartMiuiCursorStyleType = (): Promise<string> => {
 };
 
 export const addAutoStartMiuiCursorStyleType = (type: miuiCursorStyleType): Promise<string> => {
-	const shellCommon = `grep -q '^is_auto_start_miui_cursor_style_type=' /data/adb/Hyper_MagicWindow/config.prop || (source ${toolsFunc} && add_lines "is_auto_start_miui_cursor_style_type=${type}" /data/adb/Hyper_MagicWindow/config.prop && echo "Command executed successfully." || echo "Command failed.");`
+	const shellCommon = `grep -q '^is_auto_start_miui_cursor_style_type=' /data/adb/Hyper_MagicWindow/config.prop || (source ${toolsFunc} && add_lines "is_auto_start_miui_cursor_style_type=${type}" /data/adb/Hyper_MagicWindow/config.prop && echo "Command executed successfully." || echo "Command failed.");`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -2609,7 +2615,7 @@ export const getDisabledOS2InstallModuleTips = (): Promise<string> => {
 };
 
 export const addDisabledOS2InstallModuleTips = (): Promise<string> => {
-	const shellCommon = `grep -q '^ro.sothx.disabled_os2_install_module_tips=' /data/adb/modules/Hyper_MagicWindow/system.prop || (source ${toolsFunc} && add_lines "ro.sothx.disabled_os2_install_module_tips=true" /data/adb/modules/Hyper_MagicWindow/system.prop && echo "Command executed successfully." || echo "Command failed.");`
+	const shellCommon = `grep -q '^ro.sothx.disabled_os2_install_module_tips=' /data/adb/modules/Hyper_MagicWindow/system.prop || (source ${toolsFunc} && add_lines "ro.sothx.disabled_os2_install_module_tips=true" /data/adb/modules/Hyper_MagicWindow/system.prop && echo "Command executed successfully." || echo "Command failed.");`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -2654,7 +2660,7 @@ export const getAutoTurnOnDisplayMode = (): Promise<string> => {
 };
 
 export const addAutoTurnOnDisplayMode = (inputType: number): Promise<string> => {
-	const shellCommon = `grep -q '^ro.sothx.auto_turn_on_display_mode=' /data/adb/modules/Hyper_MagicWindow/system.prop || (source ${toolsFunc} && add_lines "ro.sothx.auto_turn_on_display_mode=${inputType}" /data/adb/modules/Hyper_MagicWindow/system.prop && echo "Command executed successfully." || echo "Command failed.");`
+	const shellCommon = `grep -q '^ro.sothx.auto_turn_on_display_mode=' /data/adb/modules/Hyper_MagicWindow/system.prop || (source ${toolsFunc} && add_lines "ro.sothx.auto_turn_on_display_mode=${inputType}" /data/adb/modules/Hyper_MagicWindow/system.prop && echo "Command executed successfully." || echo "Command failed.");`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -2976,10 +2982,10 @@ export const writeIOScheduler = (scheduler: string): Promise<string> => {
 		}),
 		shellCommon,
 	);
-}
+};
 
 export const addAutoSettingIOScheduler = (scheduler: string): Promise<string> => {
-	const shellCommon = `grep -q '^auto_setting_io_scheduler=' /data/adb/Hyper_MagicWindow/config.prop || (source ${toolsFunc} && add_lines "auto_setting_io_scheduler=${scheduler}" /data/adb/Hyper_MagicWindow/config.prop && echo "Command executed successfully." || echo "Command failed.");`
+	const shellCommon = `grep -q '^auto_setting_io_scheduler=' /data/adb/Hyper_MagicWindow/config.prop || (source ${toolsFunc} && add_lines "auto_setting_io_scheduler=${scheduler}" /data/adb/Hyper_MagicWindow/config.prop && echo "Command executed successfully." || echo "Command failed.");`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -3062,7 +3068,7 @@ export const removeSmartPenVVRFps = (): Promise<string> => {
 };
 
 export const addSmartPenIdleEnableIsFalse = (): Promise<string> => {
-	const shellCommon = `grep -q '^ro.vendor.display.smartpen.idle.enable=' /data/adb/modules/Hyper_MagicWindow/system.prop || (source ${toolsFunc} && add_lines "ro.vendor.display.smartpen.idle.enable=false" /data/adb/modules/Hyper_MagicWindow/system.prop && echo "Command executed successfully." || echo "Command failed.");`
+	const shellCommon = `grep -q '^ro.vendor.display.smartpen.idle.enable=' /data/adb/modules/Hyper_MagicWindow/system.prop || (source ${toolsFunc} && add_lines "ro.vendor.display.smartpen.idle.enable=false" /data/adb/modules/Hyper_MagicWindow/system.prop && echo "Command executed successfully." || echo "Command failed.");`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -3077,7 +3083,7 @@ export const addSmartPenIdleEnableIsFalse = (): Promise<string> => {
 };
 
 export const addSmartPenVVRFpsIsFalse = (): Promise<string> => {
-	const shellCommon = `grep -q '^ro.vendor.display.smartpen_vrr_fps=' /data/adb/modules/Hyper_MagicWindow/system.prop || (source ${toolsFunc} && add_lines "ro.vendor.display.smartpen_vrr_fps=false" /data/adb/modules/Hyper_MagicWindow/system.prop && echo "Command executed successfully." || echo "Command failed.");`
+	const shellCommon = `grep -q '^ro.vendor.display.smartpen_vrr_fps=' /data/adb/modules/Hyper_MagicWindow/system.prop || (source ${toolsFunc} && add_lines "ro.vendor.display.smartpen_vrr_fps=false" /data/adb/modules/Hyper_MagicWindow/system.prop && echo "Command executed successfully." || echo "Command failed.");`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -3090,7 +3096,6 @@ export const addSmartPenVVRFpsIsFalse = (): Promise<string> => {
 		shellCommon,
 	);
 };
-
 
 export const getOdmIdleDefaultFps = (): Promise<string> => {
 	const shellCommon = `source ${toolsFunc} && grep_prop ro.vendor.display.idle_default_fps /odm/etc/build.prop`;
@@ -3186,8 +3191,8 @@ export const removeIdleDefaultFps = (): Promise<string> => {
 	);
 };
 
-export const addIdleDefaultFps = (fps:number): Promise<string> => {
-	const shellCommon = `grep -q '^ro.vendor.display.idle_default_fps=' /data/adb/modules/Hyper_MagicWindow/system.prop || (source ${toolsFunc} && add_lines "ro.vendor.display.idle_default_fps=${fps}" /data/adb/modules/Hyper_MagicWindow/system.prop && echo "Command executed successfully." || echo "Command failed.");`
+export const addIdleDefaultFps = (fps: number): Promise<string> => {
+	const shellCommon = `grep -q '^ro.vendor.display.idle_default_fps=' /data/adb/modules/Hyper_MagicWindow/system.prop || (source ${toolsFunc} && add_lines "ro.vendor.display.idle_default_fps=${fps}" /data/adb/modules/Hyper_MagicWindow/system.prop && echo "Command executed successfully." || echo "Command failed.");`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -3200,7 +3205,6 @@ export const addIdleDefaultFps = (fps:number): Promise<string> => {
 		shellCommon,
 	);
 };
-
 
 export const getDisableIdleFps = (): Promise<string> => {
 	const shellCommon = `getprop persist.vendor.disable_idle_fps`;
@@ -3255,7 +3259,7 @@ export const getSplitScreenPlusIsEnabled = (): Promise<string> => {
 				resolve('installed');
 			} else {
 				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
-				errno ? reject(stderr) : stdout === 'installed' ?  resolve(stdout) :  reject(stdout);
+				errno ? reject(stderr) : stdout === 'installed' ? resolve(stdout) : reject(stdout);
 			}
 		}),
 		shellCommon,
@@ -3277,7 +3281,6 @@ export const getProjectTrebleSupoortVerticalScreenSplitForSettings = (): Promise
 	);
 };
 
-
 export const changeProjectTrebleVerticalScreenSplitEnableForSettings = (mode: 1 | 0): Promise<string> => {
 	const shellCommon = `settings put system sothx_project_treble_vertical_screen_split_enable ${mode}`;
 	return handlePromiseWithLogging(
@@ -3292,8 +3295,6 @@ export const changeProjectTrebleVerticalScreenSplitEnableForSettings = (mode: 1 
 		shellCommon,
 	);
 };
-
-
 
 export const getProjectTrebleSupoortVerticalScreenSplitForProp = (): Promise<string> => {
 	const shellCommon = `getprop ro.config.sothx_project_treble_support_vertical_screen_split`;
@@ -3340,7 +3341,7 @@ export const getProjectTrebleVerticalScreenSplitEnableForProp = (): Promise<stri
 	);
 };
 
-export const changeProjectTrebleVerticalScreenSplitEnableForProp = (mode:boolean): Promise<string> => {
+export const changeProjectTrebleVerticalScreenSplitEnableForProp = (mode: boolean): Promise<string> => {
 	const shellCommon = `setprop persist.config.sothx_project_treble_vertical_screen_split_enable ${mode}`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
@@ -3354,7 +3355,6 @@ export const changeProjectTrebleVerticalScreenSplitEnableForProp = (mode:boolean
 		shellCommon,
 	);
 };
-
 
 export const getProjectTrebleSupportCvwFullForSettings = (): Promise<string> => {
 	const shellCommon = `settings get system sothx_project_treble_cvw_full_enable`;
@@ -3371,7 +3371,6 @@ export const getProjectTrebleSupportCvwFullForSettings = (): Promise<string> => 
 	);
 };
 
-
 export const changeProjectTrebleSupoortCvwFullForSettings = (mode: 1 | 0): Promise<string> => {
 	const shellCommon = `settings put system sothx_project_treble_cvw_full_enable ${mode}`;
 	return handlePromiseWithLogging(
@@ -3386,8 +3385,6 @@ export const changeProjectTrebleSupoortCvwFullForSettings = (mode: 1 | 0): Promi
 		shellCommon,
 	);
 };
-
-
 
 export const getProjectTrebleSupoortCvwFullForProp = (): Promise<string> => {
 	const shellCommon = `getprop ro.config.sothx_project_treble_support_cvw_full`;
@@ -3434,7 +3431,6 @@ export const getEnableDebugModeForFreeFormBlackList = (): Promise<string> => {
 	);
 };
 
-
 export const changeEnableDebugModeForFreeFormBlackList = (mode: 1 | 0): Promise<string> => {
 	const shellCommon = `settings put secure enable_debug_mode_for_freeform_black_list ${mode}`;
 	return handlePromiseWithLogging(
@@ -3465,7 +3461,6 @@ export const getProjectTrebleSupoortDisableResizeBlackListForSettings = (): Prom
 	);
 };
 
-
 export const changeProjectTrebleSupportDisableResizeBlackListForSettings = (mode: 1 | 0): Promise<string> => {
 	const shellCommon = `settings put system sothx_project_treble_disable_resize_black_list_enable ${mode}`;
 	return handlePromiseWithLogging(
@@ -3480,8 +3475,6 @@ export const changeProjectTrebleSupportDisableResizeBlackListForSettings = (mode
 		shellCommon,
 	);
 };
-
-
 
 export const getProjectTrebleSupoortDisableResizeBlackListForProp = (): Promise<string> => {
 	const shellCommon = `getprop ro.config.sothx_project_treble_support_disable_resize_black_list`;
@@ -3512,7 +3505,6 @@ export const getProjectTrebleDisableResizeBlackListVersion = (): Promise<string>
 		shellCommon,
 	);
 };
-
 
 export const getIsSupportMiuiDesktopMaxFreeformMaxNum = (): Promise<string> => {
 	const shellCommon = `getprop ro.config.sothx_project_treble_support_miui_desktop_mode_max_freeform_count`;
@@ -3619,7 +3611,6 @@ export const getProjectTrebleSupportCvwFullGlobalEnable = (): Promise<string> =>
 	);
 };
 
-
 export const changeProjectTrebleCvwFullGlobalEnable = (mode: 1 | 0): Promise<string> => {
 	const shellCommon = `settings put system sothx_project_treble_cvw_full_global_enable ${mode}`;
 	return handlePromiseWithLogging(
@@ -3649,7 +3640,6 @@ export const getProjectTrebleCvwFullDefaultDesktopEnable = (): Promise<string> =
 		shellCommon,
 	);
 };
-
 
 export const changeProjectTrebleCvwFullDefaultDesktopEnable = (mode: 1 | 0): Promise<string> => {
 	const shellCommon = `settings put system sothx_project_treble_cvw_full_default_desktop_enable ${mode}`;
@@ -3816,9 +3806,8 @@ export const getIsAmktiaoPenUpdateAutoTask = (): Promise<string> => {
 	);
 };
 
-
 export const addIsAmktiaoPenUpdateAutoTask = (): Promise<string> => {
-	const shellCommon = `grep -q '^is_amktiao_pen_update_auto_task=' /data/adb/Hyper_MagicWindow/config.prop || (source ${toolsFunc} && add_lines "is_amktiao_pen_update_auto_task=true" /data/adb/Hyper_MagicWindow/config.prop && echo "Command executed successfully." || echo "Command failed.");`
+	const shellCommon = `grep -q '^is_amktiao_pen_update_auto_task=' /data/adb/Hyper_MagicWindow/config.prop || (source ${toolsFunc} && add_lines "is_amktiao_pen_update_auto_task=true" /data/adb/Hyper_MagicWindow/config.prop && echo "Command executed successfully." || echo "Command failed.");`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -3862,7 +3851,6 @@ export const getMiScreenShotsWriteClipboardEnable = (): Promise<string> => {
 	);
 };
 
-
 export const changeMiScreenShotsWriteClipboardEnable = (mode: 1 | 0): Promise<string> => {
 	const shellCommon = `settings put secure mi_screen_shots_write_clipboard_enable ${mode}`;
 	return handlePromiseWithLogging(
@@ -3893,9 +3881,8 @@ export const getIsAutoEnableMiScreenShotsWriteClipboard = (): Promise<string> =>
 	);
 };
 
-
 export const addIsAutoEnableMiScreenShotsWriteClipboard = (): Promise<string> => {
-	const shellCommon = `grep -q '^is_auto_enable_mi_screen_shots_write_clipboard=' /data/adb/Hyper_MagicWindow/config.prop || (source ${toolsFunc} && add_lines "is_auto_enable_mi_screen_shots_write_clipboard=true" /data/adb/Hyper_MagicWindow/config.prop && echo "Command executed successfully." || echo "Command failed.");`
+	const shellCommon = `grep -q '^is_auto_enable_mi_screen_shots_write_clipboard=' /data/adb/Hyper_MagicWindow/config.prop || (source ${toolsFunc} && add_lines "is_auto_enable_mi_screen_shots_write_clipboard=true" /data/adb/Hyper_MagicWindow/config.prop && echo "Command executed successfully." || echo "Command failed.");`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -3923,7 +3910,6 @@ export const removeIsAutoEnableMiScreenShotsWriteClipboard = (): Promise<string>
 		shellCommon,
 	);
 };
-
 
 export const getCurrentTpFirmware = (): Promise<string> => {
 	const shellCommon = `cat /sys/touchpanel/tpfirmware`;
@@ -3956,7 +3942,7 @@ export const putCurrentTpFirmware = (mode: TpFirmware): Promise<string> => {
 };
 
 export const addIsAmktiaoTpFirmware = (): Promise<string> => {
-	const shellCommon = `grep -q '^is_amktiao_tp_firmware=' /data/adb/Hyper_MagicWindow/config.prop || (source ${toolsFunc} && add_lines "is_amktiao_tp_firmware=true" /data/adb/Hyper_MagicWindow/config.prop && echo "Command executed successfully." || echo "Command failed.");`
+	const shellCommon = `grep -q '^is_amktiao_tp_firmware=' /data/adb/Hyper_MagicWindow/config.prop || (source ${toolsFunc} && add_lines "is_amktiao_tp_firmware=true" /data/adb/Hyper_MagicWindow/config.prop && echo "Command executed successfully." || echo "Command failed.");`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -3968,7 +3954,7 @@ export const addIsAmktiaoTpFirmware = (): Promise<string> => {
 		}),
 		shellCommon,
 	);
-}
+};
 
 export const removeIsAmktiaoTpFirmware = (): Promise<string> => {
 	const shellCommon = `sed -i '/^is_amktiao_tp_firmware=/d' //data/adb/Hyper_MagicWindow/config.prop && echo "Remove is_amktiao_tp_firmware successfully." || echo "Remove is_amktiao_tp_firmware failed."`;
@@ -3983,7 +3969,7 @@ export const removeIsAmktiaoTpFirmware = (): Promise<string> => {
 		}),
 		shellCommon,
 	);
-}
+};
 
 export const getIsAmktiaoTpFirmwareAutoTask = (): Promise<string> => {
 	const shellCommon = `grep 'is_amktiao_tp_firmware_auto_task=' /data/adb/Hyper_MagicWindow/config.prop | awk -F'=' '{print $2}'`;
@@ -4001,7 +3987,7 @@ export const getIsAmktiaoTpFirmwareAutoTask = (): Promise<string> => {
 };
 
 export const addIsAmktiaoTpFirmwareAutoTask = (): Promise<string> => {
-	const shellCommon = `grep -q '^is_amktiao_tp_firmware_auto_task=' /data/adb/Hyper_MagicWindow/config.prop || (source ${toolsFunc} && add_lines "is_amktiao_tp_firmware_auto_task=true" /data/adb/Hyper_MagicWindow/config.prop && echo "Command executed successfully." || echo "Command failed.");`
+	const shellCommon = `grep -q '^is_amktiao_tp_firmware_auto_task=' /data/adb/Hyper_MagicWindow/config.prop || (source ${toolsFunc} && add_lines "is_amktiao_tp_firmware_auto_task=true" /data/adb/Hyper_MagicWindow/config.prop && echo "Command executed successfully." || echo "Command failed.");`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -4014,7 +4000,6 @@ export const addIsAmktiaoTpFirmwareAutoTask = (): Promise<string> => {
 		shellCommon,
 	);
 };
-
 
 export const removeIsAmktiaoTpFirmwareAutoTask = (): Promise<string> => {
 	const shellCommon = `sed -i '/^is_amktiao_tp_firmware_auto_task=/d' //data/adb/Hyper_MagicWindow/config.prop && echo "Remove is_amktiao_tp_firmware_auto_task successfully." || echo "Remove is_amktiao_tp_firmware_auto_task failed."`;
@@ -4029,7 +4014,7 @@ export const removeIsAmktiaoTpFirmwareAutoTask = (): Promise<string> => {
 		}),
 		shellCommon,
 	);
-}
+};
 
 export const getHasTpFirmwareControl = (): Promise<string> => {
 	const shellCommon = `ls /sys/touchpanel/tpfirmware &>/dev/null && echo "exists" || echo "not exists"`;
@@ -4077,7 +4062,7 @@ export const putCurrentGameMode = (mode: GameMode): Promise<string> => {
 };
 
 export const addIsAmktiaoGameMode = (): Promise<string> => {
-	const shellCommon = `grep -q '^is_amktiao_game_mode=' /data/adb/Hyper_MagicWindow/config.prop || (source ${toolsFunc} && add_lines "is_amktiao_game_mode=true" /data/adb/Hyper_MagicWindow/config.prop && echo "Command executed successfully." || echo "Command failed.");`
+	const shellCommon = `grep -q '^is_amktiao_game_mode=' /data/adb/Hyper_MagicWindow/config.prop || (source ${toolsFunc} && add_lines "is_amktiao_game_mode=true" /data/adb/Hyper_MagicWindow/config.prop && echo "Command executed successfully." || echo "Command failed.");`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -4089,7 +4074,7 @@ export const addIsAmktiaoGameMode = (): Promise<string> => {
 		}),
 		shellCommon,
 	);
-}
+};
 
 export const removeIsAmktiaoGameMode = (): Promise<string> => {
 	const shellCommon = `sed -i '/^is_amktiao_game_mode=/d' //data/adb/Hyper_MagicWindow/config.prop && echo "Remove is_amktiao_game_mode successfully." || echo "Remove is_amktiao_game_mode failed."`;
@@ -4104,7 +4089,7 @@ export const removeIsAmktiaoGameMode = (): Promise<string> => {
 		}),
 		shellCommon,
 	);
-}
+};
 
 export const getIsAmktiaoGameModeAutoTask = (): Promise<string> => {
 	const shellCommon = `grep 'is_amktiao_game_mode_auto_task=' /data/adb/Hyper_MagicWindow/config.prop | awk -F'=' '{print $2}'`;
@@ -4122,7 +4107,7 @@ export const getIsAmktiaoGameModeAutoTask = (): Promise<string> => {
 };
 
 export const addIsAmktiaoGameModeAutoTask = (): Promise<string> => {
-	const shellCommon = `grep -q '^is_amktiao_game_mode_auto_task=' /data/adb/Hyper_MagicWindow/config.prop || (source ${toolsFunc} && add_lines "is_amktiao_game_mode_auto_task=true" /data/adb/Hyper_MagicWindow/config.prop && echo "Command executed successfully." || echo "Command failed.");`
+	const shellCommon = `grep -q '^is_amktiao_game_mode_auto_task=' /data/adb/Hyper_MagicWindow/config.prop || (source ${toolsFunc} && add_lines "is_amktiao_game_mode_auto_task=true" /data/adb/Hyper_MagicWindow/config.prop && echo "Command executed successfully." || echo "Command failed.");`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -4135,7 +4120,6 @@ export const addIsAmktiaoGameModeAutoTask = (): Promise<string> => {
 		shellCommon,
 	);
 };
-
 
 export const removeIsAmktiaoGameModeAutoTask = (): Promise<string> => {
 	const shellCommon = `sed -i '/^is_amktiao_game_mode_auto_task=/d' //data/adb/Hyper_MagicWindow/config.prop && echo "Remove is_amktiao_game_mode_auto_task successfully." || echo "Remove is_amktiao_game_mode_auto_task failed."`;
@@ -4150,7 +4134,7 @@ export const removeIsAmktiaoGameModeAutoTask = (): Promise<string> => {
 		}),
 		shellCommon,
 	);
-}
+};
 
 export const getHasGameModeControl = (): Promise<string> => {
 	const shellCommon = `ls /sys/touchpanel/game_mode &>/dev/null && echo "exists" || echo "not exists"`;
@@ -4182,7 +4166,7 @@ export const getMiIslandProp = (): Promise<string> => {
 	);
 };
 
-export const changeMiIslandProp = (mode:boolean): Promise<string> => {
+export const changeMiIslandProp = (mode: boolean): Promise<string> => {
 	const shellCommon = `setprop feature.island.debug ${mode}`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
@@ -4213,7 +4197,7 @@ export const getIsMiIsLandAutoTask = (): Promise<string> => {
 };
 
 export const addIsMiIsLandAutoTask = (): Promise<string> => {
-	const shellCommon = `grep -q '^is_mi_island_auto_task=' /data/adb/Hyper_MagicWindow/config.prop || (source ${toolsFunc} && add_lines "is_mi_island_auto_task=true" /data/adb/Hyper_MagicWindow/config.prop && echo "Command executed successfully." || echo "Command failed.");`
+	const shellCommon = `grep -q '^is_mi_island_auto_task=' /data/adb/Hyper_MagicWindow/config.prop || (source ${toolsFunc} && add_lines "is_mi_island_auto_task=true" /data/adb/Hyper_MagicWindow/config.prop && echo "Command executed successfully." || echo "Command failed.");`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
@@ -4226,7 +4210,6 @@ export const addIsMiIsLandAutoTask = (): Promise<string> => {
 		shellCommon,
 	);
 };
-
 
 export const removeIsMiIsLandAutoTask = (): Promise<string> => {
 	const shellCommon = `sed -i '/^is_mi_island_auto_task=/d' //data/adb/Hyper_MagicWindow/config.prop && echo "Remove is_mi_island_auto_task successfully." || echo "Remove is_mi_island_auto_task failed."`;
@@ -4241,4 +4224,4 @@ export const removeIsMiIsLandAutoTask = (): Promise<string> => {
 		}),
 		shellCommon,
 	);
-}
+};

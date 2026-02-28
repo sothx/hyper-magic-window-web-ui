@@ -1,7 +1,7 @@
 /**
  * 表示Android应用的包名信息
  */
-export default interface PackageItem {
+export default interface PackageInfoItem {
     // 应用包名（必填）
     packageName: string;
 

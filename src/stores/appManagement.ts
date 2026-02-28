@@ -33,14 +33,14 @@ export const useAppManagementStore = defineStore(
             const searchValue = searchKeyWord.value.trim().toLowerCase();
             const cachedMergeRuleList = mergeRuleList.value;
             const deviceStore = useDeviceStore();
-            const installedAppName = deviceStore.installedAppNameList;
+            const installedAppName = deviceStore.installedAppPackageInfoMap;
             return cachedMergeRuleList
                 .reduce((result: AutoUIMergeRuleItem[], item) => {
                     const itemName = item.name.trim().toLowerCase();
 
                     // 先更新 applicationName
                     if (installedAppName[item.name] && !item.applicationName) {
-                        item.applicationName = installedAppName[item.name];
+                        item.applicationName = installedAppName[item.name].appLabel;
                     }
                     if (applicationName.value[item.name] && !item.applicationName) {
                         item.applicationName = applicationName.value[item.name];

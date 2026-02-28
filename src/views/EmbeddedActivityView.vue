@@ -341,7 +341,7 @@ const importShareRule = async () => {
 								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
 									{renderApplicationName(
 										importRuleContent.name,
-										deviceStore.installedAppNameList[importRuleContent.name] ||
+										deviceStore.installedAppPackageInfoMap[importRuleContent.name]?.appLabel ||
 											embeddedStore.applicationName[importRuleContent.name],
 									)}
 								</span>{' '}
@@ -354,7 +354,7 @@ const importShareRule = async () => {
 								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
 									{renderApplicationName(
 										importRuleContent.name,
-										deviceStore.installedAppNameList[importRuleContent.name] ||
+										deviceStore.installedAppPackageInfoMap[importRuleContent.name]?.appLabel ||
 											embeddedStore.applicationName[importRuleContent.name],
 									)}
 								</span>{' '}
@@ -618,7 +618,7 @@ const openAddEmbeddedApp = async () => {
 								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
 									{renderApplicationName(
 										addEmbeddedAppRes.name,
-										deviceStore.installedAppNameList[addEmbeddedAppRes.name] ||
+										deviceStore.installedAppPackageInfoMap[addEmbeddedAppRes.name]?.appLabel ||
 											embeddedStore.applicationName[addEmbeddedAppRes.name],
 									)}
 								</span>{' '}
@@ -630,7 +630,7 @@ const openAddEmbeddedApp = async () => {
 								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
 									{renderApplicationName(
 										addEmbeddedAppRes.name,
-										deviceStore.installedAppNameList[addEmbeddedAppRes.name] ||
+										deviceStore.installedAppPackageInfoMap[addEmbeddedAppRes.name]?.appLabel ||
 											embeddedStore.applicationName[addEmbeddedAppRes.name],
 									)}
 								</span>{' '}

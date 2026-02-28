@@ -257,7 +257,7 @@ const importShareRule = async () => {
 							<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
 								{renderApplicationName(
 									importRuleContent.name,
-									deviceStore.installedAppNameList[importRuleContent.name] ||
+									deviceStore.installedAppPackageInfoMap[importRuleContent.name]?.appLabel ||
 										autoUIStore.applicationName[importRuleContent.name],
 								)}
 							</span>{' '}
@@ -718,7 +718,7 @@ function createColumns(): DataTableColumns<AutoUIMergeRuleItem> {
 					type="success"
 					:loading="deviceStore.loading || autoUIStore.loading"
 					@click="() => {
-						console.log(getPackagesInfo(deviceStore.installedAndroidApplicationPackageNameList));
+						JSON.stringify(getPackagesInfo(deviceStore.installedAndroidApplicationPackageNameList));
 					}">
 					<template #icon>
 						<n-icon>
