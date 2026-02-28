@@ -95,7 +95,7 @@ export function useProjectTrebleVerticalScreenSplit() {
 					</div>
 				</>
 			),
-			negativeText: '关闭',
+			positiveText: '关闭',
 		});
 	};
 

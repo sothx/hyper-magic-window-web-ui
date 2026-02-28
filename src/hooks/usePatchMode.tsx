@@ -27,85 +27,98 @@ export function usePatchMode() {
 		configProviderProps: configProviderPropsRef,
 	});
 
-	const showReloadModal = () => {
-		modal.create({
-			title: '是否需要重新生成定制应用数据？',
-			preset: 'dialog',
-			positiveText: '确定',
-			negativeText: '取消',
-
-			onPositiveClick() {
-				// 包一层 Promise，让按钮自动 loading，modal 阻塞关闭
-				return new Promise(async resolve => {
-					const res = await reloadPatchMode();
-					resolve(res); // true → 关闭 modal，false → 保持 modal
+	const showReloadModal = async () => {
+		const [, positiveRes] = await $to(
+			new Promise((resolve, reject) => {
+				modal.create({
+					title: '是否需要重新生成定制应用数据？',
+					type: 'info',
+					preset: 'dialog',
+					content: () => (
+						<p>
+							检测到您最近已经更新了模块版本并且开启了{' '}
+							<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+								定制模式
+							</span>{' '}
+							，模块需要重新操作{' '}
+							<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+								生成定制应用数据
+							</span>{' '}
+							，确定要继续吗？
+						</p>
+					),
+					positiveText: '确定',
+					negativeText: '取消',
+					onPositiveClick() {
+						resolve('success');
+					},
+					onNegativeClick() {
+						reject('cancel');
+					},
+					onMaskClick() {
+						reject('cancel');
+					},
+					onClose() {
+						reject('cancel');
+					},
 				});
-			},
-		});
+			}),
+		);
+		if (positiveRes) {
+			await reloadPatchMode();
+		}
+		embeddedStore.isNeedShowReloadPathModeDialog = false;
+		deviceStore.needReloadData = false;
 	};
 
 	const reloadPatchMode = async () => {
+		await deviceStore.getAndroidApplicationPackageNameList();
 		loading.value = true;
-		try {
-			// 获取应用列表
-			await deviceStore.getAndroidApplicationPackageNameList();
-
-			// 更新嵌入式应用
-			const [submitErr, submitRes] = await $to(embeddedApi.updateEmbeddedApp());
-
-			if (submitErr) {
-				loading.value = false;
-				// 失败提示
-				modal.create({
-					title: '操作失败',
-					type: 'error',
-					preset: 'dialog',
-					content: () => <p>发生异常错误，更新失败了 QwQ，详细错误请查看错误日志~</p>,
-					positiveText: '确定',
-				});
-				throw submitErr; // 抛出错误，modal 可以捕获
-			}
-
+		const [submitUpdateEmbeddedAppErr, submitUpdateEmbeddedAppRes] = await $to(embeddedApi.updateEmbeddedApp());
+		if (submitUpdateEmbeddedAppErr) {
+			modal.create({
+				title: '操作失败',
+				type: 'error',
+				preset: 'dialog',
+				content: () => <p>发生异常错误，更新失败了QwQ，详细错误请查看错误日志~</p>,
+			});
 			loading.value = false;
-
-			// 成功更新数据
+		} else {
 			embeddedStore.updateMergeRuleList();
-			embeddedStore.isNeedShowReloadPathModeDialog = false;
-			deviceStore.needReloadData = false;
-
-			// 成功提示
+			loading.value = false;
 			modal.create({
 				title: '操作成功',
 				type: 'success',
 				preset: 'dialog',
 				content: () => (
 					<div>
-						{embeddedStore.isDeepPatchMode ? (
+						{embeddedStore.isDeepPatchMode && (
 							<p>
-								好耶 w，检测到您已启用{' '}
+								好耶w，检测到您已启用{' '}
 								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
 									深度定制模式
-								</span>
+								</span>{' '}
 								，已根据您当前已安装应用列表重新{' '}
 								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
 									修剪模块应用适配列表
-								</span>
+								</span>{' '}
 								，后续每次更新模块或者安装新的应用后，均需要重新操作{' '}
 								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
 									生成定制应用数据
-								</span>
+								</span>{' '}
 								。
 							</p>
-						) : (
+						)}
+						{!embeddedStore.isDeepPatchMode && (
 							<p>
-								好耶 w，已根据您设备当前的整体应用情况重新{' '}
+								好耶w，已根据您设备当前的整体应用情况重新{' '}
 								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
 									修剪模块应用适配列表
-								</span>
+								</span>{' '}
 								，后续每次更新模块或者安装新的应用后，建议重新操作{' '}
 								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
 									生成定制应用数据
-								</span>
+								</span>{' '}
 								。
 							</p>
 						)}
@@ -113,10 +126,6 @@ export function usePatchMode() {
 				),
 				positiveText: '确定',
 			});
-
-			return true; // 成功完成
-		} catch (e) {
-			return false; // 调用方可根据返回值处理
 		}
 	};
 

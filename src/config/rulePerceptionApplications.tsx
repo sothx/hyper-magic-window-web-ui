@@ -337,8 +337,8 @@ export const embeddedPerceptionApplications: Record<string, EmbeddedPerceptionAp
 						</div>
 					);
 				},
-				negativeText: '关闭',
-				onNegativeClick: () => {},
+				positiveText: '关闭',
+				onPositiveClick: () => {},
 			});
 		},
 	},
