@@ -178,6 +178,7 @@ export const useEmbeddedStore = defineStore(
 			const currentApplicationName = applicationName.value;
 			const currentMergeThirdPartyAppOptimizeConfig = mergeThirdPartyAppOptimizeConfig.value;
 			const installedAppName = deviceStore.installedAppPackageInfoMap;
+			console.log(deviceStore.installedAppPackageInfoMap.value,'installedAppName')
 			return cachedMergeRuleList
 				.reduce((result: EmbeddedMergeRuleItem[], item) => {
 					const itemName = item.name.trim().toLowerCase();
@@ -187,6 +188,7 @@ export const useEmbeddedStore = defineStore(
 					if (installedAppName[item.name] && !item.applicationName) {
 						item.applicationName = installedAppName[item.name].appLabel;
 					}
+
 					if (currentApplicationName[item.name] && !item.applicationName) {
 						item.applicationName = currentApplicationName[item.name];
 					}

@@ -1,4 +1,4 @@
-import { exec, spawn, fullScreen, toast, getPackagesInfo, type ExecResults } from '@/utils/kernelsu/index.js';
+import { exec, spawn, fullScreen, toast, getPackagesInfo, type ExecResults, listPackages } from '@/utils/kernelsu/index.js';
 import axios from 'axios';
 import handlePromiseWithLogging from '@/utils/handlePromiseWithLogging';
 import $to from 'await-to-js';
@@ -895,21 +895,24 @@ export const getRootManagerInfo = (): Promise<string> => {
 	);
 };
 
-export const getAndroidApplicationPackageNameList = (): Promise<string> => {
-	const shellCommon = `pm list packages -a | awk -F':' '{print $2}' | tr '\n' ',' | sed 's/,$/\n/'`;
+export const getAndroidApplicationPackageNameList = (): Promise<string[]> => {
 	// 列出包名和UID
 	//  pm list packages -U | awk -F'[: ]+' '{print $2":"$4}' | tr '\n' ',' | sed 's/,$/\n/'
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
 				const response = await axios.get('/data/system/app.txt');
-				resolve(response.data);
+				const getAndroidApplicationPackageNameListRes = response.data;
+				resolve(getAndroidApplicationPackageNameListRes?.split(',') || []);
 			} else {
-				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
-				errno ? reject(stderr) : resolve(stdout);
+				const allListPackages = listPackages("all");
+				if (Array.isArray(allListPackages) && allListPackages.length > 0) {
+					resolve(allListPackages)
+				} else {
+					reject('Failed to get package list.');
+				}
 			}
-		}),
-		shellCommon,
+		})
 	);
 };
 
@@ -919,7 +922,7 @@ export const getAllPackageInfoList = (packageListArr: string[]): Promise<Package
 			return reject('Package list is empty.');
 		}
 		if (import.meta.env.MODE === 'development') {
-			const response = await axios.get('/data/system/app.txt');
+			const response = await axios.get('/data/system/packageInfoList.json');
 			resolve(response.data);
 		} else {
 			const packageInfoResult = getPackagesInfo(packageListArr);

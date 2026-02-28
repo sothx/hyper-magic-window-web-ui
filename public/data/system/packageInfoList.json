@@ -1,0 +1,4570 @@
+[
+    {
+        "packageName": "air.tv.douyu.android",
+        "versionName": "8.0.9.0",
+        "versionCode": 10809002,
+        "appLabel": "斗鱼",
+        "isSystem": false,
+        "uid": 10333
+    },
+    {
+        "packageName": "allsettings.observer",
+        "versionName": "7",
+        "versionCode": 7,
+        "appLabel": "设置项监视器",
+        "isSystem": false,
+        "uid": 10368
+    },
+    {
+        "packageName": "android",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "Android 系统",
+        "isSystem": true,
+        "uid": 99901000
+    },
+    {
+        "packageName": "android",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "Android 系统",
+        "isSystem": true,
+        "uid": 99901000
+    },
+    {
+        "packageName": "android.aosp.overlay",
+        "versionName": "15",
+        "versionCode": 35,
+        "appLabel": "android.aosp.overlay",
+        "isSystem": true,
+        "uid": 10003
+    },
+    {
+        "packageName": "android.aosp.overlay.telephony",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "android.aosp.overlay.telephony",
+        "isSystem": true,
+        "uid": 10001
+    },
+    {
+        "packageName": "android.auto_generated_characteristics_rro",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "android.auto_generated_characteristics_rro",
+        "isSystem": true,
+        "uid": 10076
+    },
+    {
+        "packageName": "android.ext.services",
+        "versionName": "2019-09",
+        "versionCode": 309999900,
+        "appLabel": "Android Services Library",
+        "isSystem": true,
+        "uid": 10242
+    },
+    {
+        "packageName": "android.miui.home.launcher.res",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "android.miui.home.launcher.res",
+        "isSystem": true,
+        "uid": 10038
+    },
+    {
+        "packageName": "android.miui.overlay",
+        "versionName": "15",
+        "versionCode": 35,
+        "appLabel": "android.miui.overlay",
+        "isSystem": true,
+        "uid": 10035
+    },
+    {
+        "packageName": "android.miui.overlay.telephony",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "android.miui.overlay.telephony",
+        "isSystem": true,
+        "uid": 10037
+    },
+    {
+        "packageName": "android.overlay.common",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "android.overlay.common",
+        "isSystem": true,
+        "uid": 10017
+    },
+    {
+        "packageName": "android.overlay.target",
+        "versionName": "12",
+        "versionCode": 31,
+        "appLabel": "android.overlay.target",
+        "isSystem": true,
+        "uid": 10080
+    },
+    {
+        "packageName": "android.qvaoverlay.common",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "android.qvaoverlay.common",
+        "isSystem": true,
+        "uid": 10016
+    },
+    {
+        "packageName": "bin.mt.plus",
+        "versionName": "2.26.2",
+        "versionCode": 26020493,
+        "appLabel": "MT管理器",
+        "isSystem": false,
+        "uid": 10392
+    },
+    {
+        "packageName": "bin.mt.plus.canary",
+        "versionName": "2.18.5-clone",
+        "versionCode": 25070709,
+        "appLabel": "MT管理器",
+        "isSystem": false,
+        "uid": 10409
+    },
+    {
+        "packageName": "bin.mt.termex",
+        "versionName": "v3.8",
+        "versionCode": 3008,
+        "appLabel": "MT终端扩展包",
+        "isSystem": false,
+        "uid": 10422
+    },
+    {
+        "packageName": "cmccwm.mobilemusic",
+        "versionName": "7.62.0",
+        "versionCode": 523,
+        "appLabel": "咪咕音乐",
+        "isSystem": false,
+        "uid": 10439
+    },
+    {
+        "packageName": "cn.com.langeasy.LangEasyLexis",
+        "versionName": "5.9.21",
+        "versionCode": 360,
+        "appLabel": "不背单词",
+        "isSystem": false,
+        "uid": 10363
+    },
+    {
+        "packageName": "cn.myflv.monitor.noactive",
+        "versionName": "1.7",
+        "versionCode": 8,
+        "appLabel": "NoActive Monitor",
+        "isSystem": false,
+        "uid": 10330
+    },
+    {
+        "packageName": "cn.trinea.android.developertools.pro",
+        "versionName": "6.9.1-gp",
+        "versionCode": 691,
+        "appLabel": "开发助手专业版",
+        "isSystem": false,
+        "uid": 10450
+    },
+    {
+        "packageName": "cn.wenyu.bodian",
+        "versionName": "5.5.1",
+        "versionCode": 417,
+        "appLabel": "波点音乐",
+        "isSystem": false,
+        "uid": 10395
+    },
+    {
+        "packageName": "cn.wps.moffice_eng",
+        "versionName": "14.39.0",
+        "versionCode": 1890,
+        "appLabel": "WPS Office",
+        "isSystem": false,
+        "uid": 10294
+    },
+    {
+        "packageName": "cn.wps.moffice_eng.xiaomi.lite",
+        "versionName": "4.0.4",
+        "versionCode": 404,
+        "appLabel": "小米文档查看器（WPS定制）",
+        "isSystem": false,
+        "uid": 10270
+    },
+    {
+        "packageName": "cn.xuexi.android",
+        "versionName": "2.70.0",
+        "versionCode": 27004,
+        "appLabel": "学习强国",
+        "isSystem": false,
+        "uid": 10283
+    },
+    {
+        "packageName": "com.WoofWoofStudio.COSL",
+        "versionName": "0.1.1193",
+        "versionCode": 1193,
+        "appLabel": "英王的宝冠",
+        "isSystem": false,
+        "uid": 10339
+    },
+    {
+        "packageName": "com.absinthe.libchecker",
+        "versionName": "2.4.4.167126b8",
+        "versionCode": 1897,
+        "appLabel": "LibChecker",
+        "isSystem": false,
+        "uid": 10378
+    },
+    {
+        "packageName": "com.aistra.hail",
+        "versionName": "1.7.0",
+        "versionCode": 30,
+        "appLabel": "雹",
+        "isSystem": false,
+        "uid": 10394
+    },
+    {
+        "packageName": "com.aiwu.market",
+        "versionName": "2.5.9.3",
+        "versionCode": 2050932,
+        "appLabel": "爱吾游戏宝盒",
+        "isSystem": false,
+        "uid": 10460
+    },
+    {
+        "packageName": "com.alibaba.ailabs.tg",
+        "versionName": "8.24.0",
+        "versionCode": 210082400,
+        "appLabel": "天猫精灵",
+        "isSystem": false,
+        "uid": 10301
+    },
+    {
+        "packageName": "com.alicloud.databox",
+        "versionName": "6.12.2",
+        "versionCode": 271,
+        "appLabel": "阿里云盘",
+        "isSystem": false,
+        "uid": 10306
+    },
+    {
+        "packageName": "com.aliyun.tongyi",
+        "versionName": "6.3.3.2796",
+        "versionCode": 60303,
+        "appLabel": "千问",
+        "isSystem": false,
+        "uid": 10444
+    },
+    {
+        "packageName": "com.android.DeviceAsWebcam",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "摄像头服务",
+        "isSystem": true,
+        "uid": 1000
+    },
+    {
+        "packageName": "com.android.adservices.api",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "广告隐私权",
+        "isSystem": true,
+        "uid": 10260
+    },
+    {
+        "packageName": "com.android.apps.tag",
+        "versionName": "1.1",
+        "versionCode": 101,
+        "appLabel": "Tags",
+        "isSystem": true,
+        "uid": 10100
+    },
+    {
+        "packageName": "com.android.appsearch.apk",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "com.android.appsearch.apk",
+        "isSystem": true,
+        "uid": 10257
+    },
+    {
+        "packageName": "com.android.avatarpicker",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "选择一张照片",
+        "isSystem": true,
+        "uid": 10199
+    },
+    {
+        "packageName": "com.android.backupconfirm",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "com.android.backupconfirm",
+        "isSystem": true,
+        "uid": 10084
+    },
+    {
+        "packageName": "com.android.bips",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "系统打印服务",
+        "isSystem": true,
+        "uid": 10087
+    },
+    {
+        "packageName": "com.android.bluetooth",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "蓝牙",
+        "isSystem": true,
+        "uid": 1002
+    },
+    {
+        "packageName": "com.android.bluetooth.overlay",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "com.android.bluetooth.overlay",
+        "isSystem": true,
+        "uid": 10006
+    },
+    {
+        "packageName": "com.android.bluetoothmidiservice",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "Bluetooth MIDI Service",
+        "isSystem": true,
+        "uid": 10104
+    },
+    {
+        "packageName": "com.android.browser",
+        "versionName": "20.2.800203",
+        "versionCode": 200208000,
+        "appLabel": "浏览器",
+        "isSystem": true,
+        "uid": 10131
+    },
+    {
+        "packageName": "com.android.calendar",
+        "versionName": "17.10.6.20-HD",
+        "versionCode": 171006200,
+        "appLabel": "日历",
+        "isSystem": false,
+        "uid": 10289
+    },
+    {
+        "packageName": "com.android.calllogbackup",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "Call Log Backup/Restore",
+        "isSystem": true,
+        "uid": 10085
+    },
+    {
+        "packageName": "com.android.camera",
+        "versionName": "5.3.001580.1",
+        "versionCode": 530015801,
+        "appLabel": "相机",
+        "isSystem": true,
+        "uid": 10141
+    },
+    {
+        "packageName": "com.android.cameraextensions",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "CameraExtensionsProxy",
+        "isSystem": true,
+        "uid": 10102
+    },
+    {
+        "packageName": "com.android.captiveportallogin",
+        "versionName": "16",
+        "versionCode": 360499999,
+        "appLabel": "强制门户登录",
+        "isSystem": true,
+        "uid": 10103
+    },
+    {
+        "packageName": "com.android.carrierconfig",
+        "versionName": "1.0.0",
+        "versionCode": 1,
+        "appLabel": "com.android.carrierconfig",
+        "isSystem": true,
+        "uid": 10197
+    },
+    {
+        "packageName": "com.android.carrierconfig.overlay.common",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "com.android.carrierconfig.overlay.common",
+        "isSystem": true,
+        "uid": 10005
+    },
+    {
+        "packageName": "com.android.carrierconfig.overlay.miui",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "com.android.carrierconfig.overlay.miui",
+        "isSystem": true,
+        "uid": 10031
+    },
+    {
+        "packageName": "com.android.carrierdefaultapp",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "运营商通知",
+        "isSystem": true,
+        "uid": 10105
+    },
+    {
+        "packageName": "com.android.cellbroadcastreceiver",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "无线紧急警报",
+        "isSystem": true,
+        "uid": 10198
+    },
+    {
+        "packageName": "com.android.cellbroadcastreceiver.overlay.common",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "com.android.cellbroadcastreceiver.overlay.common",
+        "isSystem": true,
+        "uid": 10004
+    },
+    {
+        "packageName": "com.android.cellbroadcastservice",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "Cell Broadcast Service",
+        "isSystem": true,
+        "uid": 1001
+    },
+    {
+        "packageName": "com.android.certinstaller",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "证书安装程序",
+        "isSystem": true,
+        "uid": 10106
+    },
+    {
+        "packageName": "com.android.companiondevicemanager",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "配套设备管理器",
+        "isSystem": true,
+        "uid": 10107
+    },
+    {
+        "packageName": "com.android.companiondevicemanager.auto_generated_characteristics_rro",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "com.android.companiondevicemanager.auto_generated_characteristics_rro",
+        "isSystem": true,
+        "uid": 10008
+    },
+    {
+        "packageName": "com.android.compos.payload",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "CompOS",
+        "isSystem": true,
+        "uid": 10253
+    },
+    {
+        "packageName": "com.android.connectivity.resources",
+        "versionName": "S-initial",
+        "versionCode": 1,
+        "appLabel": "系统网络连接资源",
+        "isSystem": true,
+        "uid": 10252
+    },
+    {
+        "packageName": "com.android.contacts",
+        "versionName": "17.9.10.23",
+        "versionCode": 91023,
+        "appLabel": "通讯录与拨号",
+        "isSystem": true,
+        "uid": 10132
+    },
+    {
+        "packageName": "com.android.credentialmanager",
+        "versionName": "2.0.0",
+        "versionCode": 20000,
+        "appLabel": "Credential Manager",
+        "isSystem": true,
+        "uid": 10174
+    },
+    {
+        "packageName": "com.android.cts.ctsshim",
+        "versionName": "15",
+        "versionCode": 35,
+        "appLabel": "com.android.cts.ctsshim",
+        "isSystem": true,
+        "uid": 10244
+    },
+    {
+        "packageName": "com.android.cts.priv.ctsshim",
+        "versionName": "15",
+        "versionCode": 35,
+        "appLabel": "com.android.cts.priv.ctsshim",
+        "isSystem": true,
+        "uid": 10243
+    },
+    {
+        "packageName": "com.android.deskclock",
+        "versionName": "17.41.0",
+        "versionCode": 1305004100,
+        "appLabel": "时钟",
+        "isSystem": false,
+        "uid": 10274
+    },
+    {
+        "packageName": "com.android.devicediagnostics",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "设备诊断",
+        "isSystem": true,
+        "uid": 10088
+    },
+    {
+        "packageName": "com.android.devicelockcontroller",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "DeviceLockController",
+        "isSystem": true,
+        "uid": 10249
+    },
+    {
+        "packageName": "com.android.dreams.basic",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "基本互动屏保",
+        "isSystem": true,
+        "uid": 10101
+    },
+    {
+        "packageName": "com.android.dynsystem",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "Dynamic System Updates",
+        "isSystem": true,
+        "uid": 1000
+    },
+    {
+        "packageName": "com.android.egg",
+        "versionName": "1.0",
+        "versionCode": 12,
+        "appLabel": "Android Easter Egg",
+        "isSystem": true,
+        "uid": 10109
+    },
+    {
+        "packageName": "com.android.email",
+        "versionName": "V13_20251030_d1",
+        "versionCode": 1070001,
+        "appLabel": "电子邮件",
+        "isSystem": false,
+        "uid": 10264
+    },
+    {
+        "packageName": "com.android.emergency",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "急救信息",
+        "isSystem": true,
+        "uid": 10200
+    },
+    {
+        "packageName": "com.android.externalstorage",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "外部存储设备",
+        "isSystem": true,
+        "uid": 10089
+    },
+    {
+        "packageName": "com.android.federatedcompute.services",
+        "versionName": "16",
+        "versionCode": 360499999,
+        "appLabel": "com.android.federatedcompute.services",
+        "isSystem": true,
+        "uid": 10251
+    },
+    {
+        "packageName": "com.android.fileexplorer",
+        "versionName": "8.0.2.2",
+        "versionCode": 8022,
+        "appLabel": "文件管理",
+        "isSystem": true,
+        "uid": 10160
+    },
+    {
+        "packageName": "com.android.health.connect.backuprestore",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "com.android.health.connect.backuprestore",
+        "isSystem": true,
+        "uid": 10238
+    },
+    {
+        "packageName": "com.android.healthconnect.controller",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "健康数据共享",
+        "isSystem": true,
+        "uid": 10237
+    },
+    {
+        "packageName": "com.android.hotspot2.osulogin",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "OsuLogin",
+        "isSystem": true,
+        "uid": 10241
+    },
+    {
+        "packageName": "com.android.htmlviewer",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "HTML 查看器",
+        "isSystem": true,
+        "uid": 10092
+    },
+    {
+        "packageName": "com.android.imsserviceentitlement",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "com.android.imsserviceentitlement",
+        "isSystem": true,
+        "uid": 10125
+    },
+    {
+        "packageName": "com.android.incallui",
+        "versionName": "5.1.1.92",
+        "versionCode": 4278,
+        "appLabel": "电话",
+        "isSystem": true,
+        "uid": 10126
+    },
+    {
+        "packageName": "com.android.inputdevices",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "输入设备",
+        "isSystem": true,
+        "uid": 1000
+    },
+    {
+        "packageName": "com.android.inputsettings.overlay.miui",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "com.android.inputsettings.overlay.miui",
+        "isSystem": true,
+        "uid": 10041
+    },
+    {
+        "packageName": "com.android.intentresolver",
+        "versionName": "2021-11",
+        "versionCode": 0,
+        "appLabel": "IntentResolver",
+        "isSystem": true,
+        "uid": 99910201
+    },
+    {
+        "packageName": "com.android.intentresolver",
+        "versionName": "2021-11",
+        "versionCode": 0,
+        "appLabel": "IntentResolver",
+        "isSystem": true,
+        "uid": 99910201
+    },
+    {
+        "packageName": "com.android.internal.display.cutout.emulation.corner",
+        "versionName": "1.0",
+        "versionCode": 1,
+        "appLabel": "边角刘海屏",
+        "isSystem": true,
+        "uid": 10012
+    },
+    {
+        "packageName": "com.android.internal.display.cutout.emulation.double",
+        "versionName": "1.0",
+        "versionCode": 1,
+        "appLabel": "双刘海屏",
+        "isSystem": true,
+        "uid": 10009
+    },
+    {
+        "packageName": "com.android.internal.display.cutout.emulation.hole",
+        "versionName": "1.0",
+        "versionCode": 1,
+        "appLabel": "打孔屏",
+        "isSystem": true,
+        "uid": 10014
+    },
+    {
+        "packageName": "com.android.internal.display.cutout.emulation.tall",
+        "versionName": "1.0",
+        "versionCode": 1,
+        "appLabel": "长型刘海屏",
+        "isSystem": true,
+        "uid": 10011
+    },
+    {
+        "packageName": "com.android.internal.display.cutout.emulation.waterfall",
+        "versionName": "1.0",
+        "versionCode": 1,
+        "appLabel": "瀑布刘海屏",
+        "isSystem": true,
+        "uid": 10015
+    },
+    {
+        "packageName": "com.android.internal.systemui.navbar.gestural",
+        "versionName": "1.0",
+        "versionCode": 1,
+        "appLabel": "Gestural Navigation Bar",
+        "isSystem": true,
+        "uid": 10054
+    },
+    {
+        "packageName": "com.android.internal.systemui.navbar.threebutton",
+        "versionName": "1.0",
+        "versionCode": 1,
+        "appLabel": "3 Button Navigation Bar",
+        "isSystem": true,
+        "uid": 10049
+    },
+    {
+        "packageName": "com.android.internal.systemui.navbar.transparent",
+        "versionName": "1.0",
+        "versionCode": 1,
+        "appLabel": "Transparent navigation bar",
+        "isSystem": true,
+        "uid": 10067
+    },
+    {
+        "packageName": "com.android.keychain",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "密钥链",
+        "isSystem": true,
+        "uid": 99901000
+    },
+    {
+        "packageName": "com.android.keychain",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "密钥链",
+        "isSystem": true,
+        "uid": 99901000
+    },
+    {
+        "packageName": "com.android.localtransport",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "com.android.localtransport",
+        "isSystem": true,
+        "uid": 1000
+    },
+    {
+        "packageName": "com.android.location.fused",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "一体化位置信息",
+        "isSystem": true,
+        "uid": 1000
+    },
+    {
+        "packageName": "com.android.managedprovisioning",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "工作设置",
+        "isSystem": true,
+        "uid": 10094
+    },
+    {
+        "packageName": "com.android.managedprovisioning.overlay",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "com.android.managedprovisioning.overlay",
+        "isSystem": true,
+        "uid": 10027
+    },
+    {
+        "packageName": "com.android.microdroid.empty_payload",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "com.android.microdroid.empty_payload",
+        "isSystem": true,
+        "uid": 10255
+    },
+    {
+        "packageName": "com.android.mms.service",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "Network Message Service",
+        "isSystem": true,
+        "uid": 1001
+    },
+    {
+        "packageName": "com.android.modulemetadata",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "Module Metadata",
+        "isSystem": true,
+        "uid": 10172
+    },
+    {
+        "packageName": "com.android.mtp",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "MTP 主机",
+        "isSystem": true,
+        "uid": 10090
+    },
+    {
+        "packageName": "com.android.musicfx",
+        "versionName": "1.4",
+        "versionCode": 10400,
+        "appLabel": "MusicFX",
+        "isSystem": true,
+        "uid": 10095
+    },
+    {
+        "packageName": "com.android.ncm.overlay.common",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "com.android.ncm.overlay.common",
+        "isSystem": true,
+        "uid": 10060
+    },
+    {
+        "packageName": "com.android.networkstack",
+        "versionName": "16",
+        "versionCode": 360499999,
+        "appLabel": "网络管理器",
+        "isSystem": true,
+        "uid": 1073
+    },
+    {
+        "packageName": "com.android.networkstack.overlay.miui",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "NetworkStackOverlay",
+        "isSystem": true,
+        "uid": 10053
+    },
+    {
+        "packageName": "com.android.networkstack.tethering",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "Tethering",
+        "isSystem": true,
+        "uid": 1073
+    },
+    {
+        "packageName": "com.android.nfc.resources.overlay.common",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "com.android.nfc.resources.overlay.common",
+        "isSystem": true,
+        "uid": 10061
+    },
+    {
+        "packageName": "com.android.ondevicepersonalization.services",
+        "versionName": "16",
+        "versionCode": 360499999,
+        "appLabel": "com.android.ondevicepersonalization.services.OnDevicePersonalizationApplication",
+        "isSystem": true,
+        "uid": 10250
+    },
+    {
+        "packageName": "com.android.ons",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "com.android.ons",
+        "isSystem": true,
+        "uid": 1001
+    },
+    {
+        "packageName": "com.android.overlay.cngmstelecomm",
+        "versionName": "1.0",
+        "versionCode": 1,
+        "appLabel": "com.android.overlay.cngmstelecomm",
+        "isSystem": true,
+        "uid": 10024
+    },
+    {
+        "packageName": "com.android.overlay.gmscontactprovider",
+        "versionName": "1.0",
+        "versionCode": 1,
+        "appLabel": "com.android.overlay.gmscontactprovider",
+        "isSystem": true,
+        "uid": 10023
+    },
+    {
+        "packageName": "com.android.overlay.gmssettingprovider",
+        "versionName": "1.0",
+        "versionCode": 1,
+        "appLabel": "com.android.overlay.gmssettingprovider",
+        "isSystem": true,
+        "uid": 10025
+    },
+    {
+        "packageName": "com.android.overlay.gmssettings",
+        "versionName": "1.0",
+        "versionCode": 1,
+        "appLabel": "com.android.overlay.gmssettings",
+        "isSystem": true,
+        "uid": 10021
+    },
+    {
+        "packageName": "com.android.overlay.gmstelecomm",
+        "versionName": "1.0",
+        "versionCode": 1,
+        "appLabel": "com.android.overlay.gmstelecomm",
+        "isSystem": true,
+        "uid": 10077
+    },
+    {
+        "packageName": "com.android.overlay.gmstelephony",
+        "versionName": "1.0",
+        "versionCode": 1,
+        "appLabel": "com.android.overlay.gmstelephony",
+        "isSystem": true,
+        "uid": 10078
+    },
+    {
+        "packageName": "com.android.overlay.systemui",
+        "versionName": "1.0",
+        "versionCode": 1,
+        "appLabel": "com.android.overlay.systemui",
+        "isSystem": true,
+        "uid": 10022
+    },
+    {
+        "packageName": "com.android.pacprocessor",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "PacProcessor",
+        "isSystem": true,
+        "uid": 10108
+    },
+    {
+        "packageName": "com.android.permissioncontroller",
+        "versionName": "33 system image",
+        "versionCode": 330000000,
+        "appLabel": "权限控制器",
+        "isSystem": true,
+        "uid": 99910259
+    },
+    {
+        "packageName": "com.android.permissioncontroller",
+        "versionName": "33 system image",
+        "versionCode": 330000000,
+        "appLabel": "权限控制器",
+        "isSystem": true,
+        "uid": 99910259
+    },
+    {
+        "packageName": "com.android.phone",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "电话服务",
+        "isSystem": true,
+        "uid": 99901001
+    },
+    {
+        "packageName": "com.android.phone",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "电话服务",
+        "isSystem": true,
+        "uid": 99901001
+    },
+    {
+        "packageName": "com.android.phone.auto_generated_characteristics_rro",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "com.android.phone.auto_generated_characteristics_rro",
+        "isSystem": true,
+        "uid": 10066
+    },
+    {
+        "packageName": "com.android.phone.overlay.common",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "com.android.phone.overlay.common",
+        "isSystem": true,
+        "uid": 10069
+    },
+    {
+        "packageName": "com.android.phone.overlay.miui",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "com.android.phone.overlay.miui",
+        "isSystem": true,
+        "uid": 10047
+    },
+    {
+        "packageName": "com.android.photopicker",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "照片和视频",
+        "isSystem": true,
+        "uid": 10245
+    },
+    {
+        "packageName": "com.android.printspooler",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "打印处理服务",
+        "isSystem": true,
+        "uid": 10223
+    },
+    {
+        "packageName": "com.android.providers.blockednumber",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "存储已屏蔽的号码",
+        "isSystem": true,
+        "uid": 10085
+    },
+    {
+        "packageName": "com.android.providers.calendar",
+        "versionName": "16.0.0.0",
+        "versionCode": 16000000,
+        "appLabel": "日历存储",
+        "isSystem": true,
+        "uid": 10086
+    },
+    {
+        "packageName": "com.android.providers.contactkeys",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "ContactsKeys Storage",
+        "isSystem": true,
+        "uid": 10085
+    },
+    {
+        "packageName": "com.android.providers.contacts",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "联系人存储",
+        "isSystem": true,
+        "uid": 10085
+    },
+    {
+        "packageName": "com.android.providers.downloads",
+        "versionName": "136.25.09.800010",
+        "versionCode": 1362509010,
+        "appLabel": "下载管理程序",
+        "isSystem": true,
+        "uid": 10090
+    },
+    {
+        "packageName": "com.android.providers.downloads.ui",
+        "versionName": "125.08.27.807005",
+        "versionCode": 1250827705,
+        "appLabel": "下载管理",
+        "isSystem": false,
+        "uid": 10284
+    },
+    {
+        "packageName": "com.android.providers.media",
+        "versionName": "16",
+        "versionCode": 1024,
+        "appLabel": "com.android.providers.media",
+        "isSystem": true,
+        "uid": 10090
+    },
+    {
+        "packageName": "com.android.providers.media.module",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "媒体选择工具",
+        "isSystem": true,
+        "uid": 10246
+    },
+    {
+        "packageName": "com.android.providers.partnerbookmarks",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "com.android.providers.partnerbookmarks",
+        "isSystem": true,
+        "uid": 10096
+    },
+    {
+        "packageName": "com.android.providers.settings",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "设置存储",
+        "isSystem": true,
+        "uid": 1000
+    },
+    {
+        "packageName": "com.android.providers.settings.overlay",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "com.android.providers.settings.overlay",
+        "isSystem": true,
+        "uid": 10056
+    },
+    {
+        "packageName": "com.android.providers.telephony",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "网络服务配置",
+        "isSystem": true,
+        "uid": 1001
+    },
+    {
+        "packageName": "com.android.providers.telephony.auto_generated_characteristics_rro",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "com.android.providers.telephony.auto_generated_characteristics_rro",
+        "isSystem": true,
+        "uid": 10065
+    },
+    {
+        "packageName": "com.android.providers.telephony.overlay.miui",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "com.android.providers.telephony.overlay.miui",
+        "isSystem": true,
+        "uid": 10048
+    },
+    {
+        "packageName": "com.android.providers.userdictionary",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "用户字典",
+        "isSystem": true,
+        "uid": 10085
+    },
+    {
+        "packageName": "com.android.provision",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "开机引导",
+        "isSystem": true,
+        "uid": 1000
+    },
+    {
+        "packageName": "com.android.proxyhandler",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "ProxyHandler",
+        "isSystem": true,
+        "uid": 10097
+    },
+    {
+        "packageName": "com.android.quicksearchbox",
+        "versionName": "10.0.0.70",
+        "versionCode": 202501023,
+        "appLabel": "搜索",
+        "isSystem": true,
+        "uid": 10144
+    },
+    {
+        "packageName": "com.android.rkpdapp",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "RemoteProvisioner",
+        "isSystem": true,
+        "uid": 10239
+    },
+    {
+        "packageName": "com.android.role.notes.enabled",
+        "versionName": "1.0",
+        "versionCode": 1,
+        "appLabel": "Notes Role enabled",
+        "isSystem": true,
+        "uid": 10055
+    },
+    {
+        "packageName": "com.android.safetycenter.resources",
+        "versionName": "33 system image",
+        "versionCode": 330000000,
+        "appLabel": "安全中心资源",
+        "isSystem": true,
+        "uid": 10258
+    },
+    {
+        "packageName": "com.android.sdksandbox",
+        "versionName": "T-initial",
+        "versionCode": 1,
+        "appLabel": "com.android.sdksandbox",
+        "isSystem": true,
+        "uid": 10261
+    },
+    {
+        "packageName": "com.android.se",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "SecureElementApplication",
+        "isSystem": true,
+        "uid": 1068
+    },
+    {
+        "packageName": "com.android.server.deviceconfig.resources",
+        "versionName": "V",
+        "versionCode": 1,
+        "appLabel": "com.android.server.deviceconfig.resources",
+        "isSystem": true,
+        "uid": 10247
+    },
+    {
+        "packageName": "com.android.server.telecom",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "通话管理",
+        "isSystem": true,
+        "uid": 99901000
+    },
+    {
+        "packageName": "com.android.server.telecom",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "通话管理",
+        "isSystem": true,
+        "uid": 99901000
+    },
+    {
+        "packageName": "com.android.server.telecom.overlay.common",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "com.android.server.telecom.overlay.common",
+        "isSystem": true,
+        "uid": 10063
+    },
+    {
+        "packageName": "com.android.server.telecom.overlay.miui",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "通话管理",
+        "isSystem": true,
+        "uid": 10052
+    },
+    {
+        "packageName": "com.android.settings",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "设置",
+        "isSystem": true,
+        "uid": 1000
+    },
+    {
+        "packageName": "com.android.settings.intelligence",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "设置建议",
+        "isSystem": true,
+        "uid": 10143
+    },
+    {
+        "packageName": "com.android.settings.overlay.common",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "com.android.settings.overlay.common",
+        "isSystem": true,
+        "uid": 10057
+    },
+    {
+        "packageName": "com.android.settings.overlay.miui",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "com.android.settings.overlay.miui",
+        "isSystem": true,
+        "uid": 10043
+    },
+    {
+        "packageName": "com.android.sharedstoragebackup",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "com.android.sharedstoragebackup",
+        "isSystem": true,
+        "uid": 10099
+    },
+    {
+        "packageName": "com.android.shell",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "Shell",
+        "isSystem": true,
+        "uid": 2000
+    },
+    {
+        "packageName": "com.android.simappdialog",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "Carrier App Dialog",
+        "isSystem": true,
+        "uid": 10110
+    },
+    {
+        "packageName": "com.android.smspush",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "com.android.smspush",
+        "isSystem": true,
+        "uid": 10229
+    },
+    {
+        "packageName": "com.android.soundpicker",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "声音",
+        "isSystem": true,
+        "uid": 10090
+    },
+    {
+        "packageName": "com.android.soundrecorder",
+        "versionName": "7.8.1",
+        "versionCode": 708010,
+        "appLabel": "录音机",
+        "isSystem": false,
+        "uid": 10293
+    },
+    {
+        "packageName": "com.android.statementservice",
+        "versionName": "1.0",
+        "versionCode": 1,
+        "appLabel": "Intent Filter Verification Service",
+        "isSystem": true,
+        "uid": 10210
+    },
+    {
+        "packageName": "com.android.stk",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "USIM卡应用",
+        "isSystem": true,
+        "uid": 1001
+    },
+    {
+        "packageName": "com.android.stk.overlay.miui",
+        "versionName": "1.0.3",
+        "versionCode": 34,
+        "appLabel": "com.android.stk.overlay.miui",
+        "isSystem": true,
+        "uid": 10079
+    },
+    {
+        "packageName": "com.android.storagemanager",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "存储空间管理器",
+        "isSystem": true,
+        "uid": 10212
+    },
+    {
+        "packageName": "com.android.superli.btremote",
+        "versionName": "2.0.9",
+        "versionCode": 19,
+        "appLabel": "蓝牙遥控",
+        "isSystem": false,
+        "uid": 10350
+    },
+    {
+        "packageName": "com.android.systemui",
+        "versionName": "20250121.0",
+        "versionCode": 202501210,
+        "appLabel": "系统界面",
+        "isSystem": true,
+        "uid": 99901000
+    },
+    {
+        "packageName": "com.android.systemui",
+        "versionName": "20250121.0",
+        "versionCode": 202501210,
+        "appLabel": "系统界面",
+        "isSystem": true,
+        "uid": 99901000
+    },
+    {
+        "packageName": "com.android.systemui.accessibility.accessibilitymenu",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "com.android.systemui.accessibility.accessibilitymenu",
+        "isSystem": true,
+        "uid": 10222
+    },
+    {
+        "packageName": "com.android.systemui.gesture.line.overlay",
+        "versionName": "1.0",
+        "versionCode": 1,
+        "appLabel": "com.android.systemui.gesture.line.overlay",
+        "isSystem": true,
+        "uid": 10020
+    },
+    {
+        "packageName": "com.android.systemui.navigation.bar.overlay",
+        "versionName": "1.0",
+        "versionCode": 1,
+        "appLabel": "com.android.systemui.navigation.bar.overlay",
+        "isSystem": true,
+        "uid": 10013
+    },
+    {
+        "packageName": "com.android.systemui.overlay.common",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "com.android.systemui.overlay.common",
+        "isSystem": true,
+        "uid": 10062
+    },
+    {
+        "packageName": "com.android.systemui.overlay.miui",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "com.android.systemui.overlay.miui",
+        "isSystem": true,
+        "uid": 10046
+    },
+    {
+        "packageName": "com.android.theme.font.notoserifsource",
+        "versionName": "1.0",
+        "versionCode": 1,
+        "appLabel": "Noto Serif / Source Sans Pro",
+        "isSystem": true,
+        "uid": 10019
+    },
+    {
+        "packageName": "com.android.thememanager",
+        "versionName": "90.5.5.0-HD",
+        "versionCode": 90550,
+        "appLabel": "壁纸与个性化",
+        "isSystem": true,
+        "uid": 6101
+    },
+    {
+        "packageName": "com.android.thememanager.customthemeconfig.config.overlay",
+        "versionName": "1.0",
+        "versionCode": 1,
+        "appLabel": "com.android.thememanager.customthemeconfig.config.overlay",
+        "isSystem": true,
+        "uid": 10050
+    },
+    {
+        "packageName": "com.android.traceur",
+        "versionName": "1.0",
+        "versionCode": 2,
+        "appLabel": "系统跟踪",
+        "isSystem": true,
+        "uid": 10112
+    },
+    {
+        "packageName": "com.android.updater",
+        "versionName": "9.1.7",
+        "versionCode": 917,
+        "appLabel": "系统更新",
+        "isSystem": true,
+        "uid": 6102
+    },
+    {
+        "packageName": "com.android.uwb.resources",
+        "versionName": "T-initial",
+        "versionCode": 1,
+        "appLabel": "System UWB Resources",
+        "isSystem": true,
+        "uid": 10248
+    },
+    {
+        "packageName": "com.android.uwb.resources.overlay.common",
+        "versionName": "1.0",
+        "versionCode": 1,
+        "appLabel": "com.android.uwb.resources.overlay.common",
+        "isSystem": true,
+        "uid": 10071
+    },
+    {
+        "packageName": "com.android.vending",
+        "versionName": "50.1.33-31 [0] [PR] 867780628",
+        "versionCode": 85013330,
+        "appLabel": "Google Play 商店",
+        "isSystem": true,
+        "uid": 10124
+    },
+    {
+        "packageName": "com.android.virtualization.terminal",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "终端",
+        "isSystem": true,
+        "uid": 10254
+    },
+    {
+        "packageName": "com.android.virtualmachine.res",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "com.android.virtualmachine.res",
+        "isSystem": true,
+        "uid": 10256
+    },
+    {
+        "packageName": "com.android.vpndialogs",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "VpnDialogs",
+        "isSystem": true,
+        "uid": 10204
+    },
+    {
+        "packageName": "com.android.wallpaper.livepicker",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "Live Wallpaper Picker",
+        "isSystem": true,
+        "uid": 10091
+    },
+    {
+        "packageName": "com.android.wallpaperbackup",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "com.android.wallpaperbackup",
+        "isSystem": true,
+        "uid": 10111
+    },
+    {
+        "packageName": "com.android.wallpapercropper",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "com.android.wallpapercropper",
+        "isSystem": true,
+        "uid": 10211
+    },
+    {
+        "packageName": "com.android.wifi.dialog",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "com.android.wifi.dialog",
+        "isSystem": true,
+        "uid": 10205
+    },
+    {
+        "packageName": "com.android.wifi.resources",
+        "versionName": "R-initial",
+        "versionCode": 1,
+        "appLabel": "系统 WLAN 资源",
+        "isSystem": true,
+        "uid": 10240
+    },
+    {
+        "packageName": "com.android.wifi.resources.overlay.common",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "com.android.wifi.resources.overlay.common",
+        "isSystem": true,
+        "uid": 10073
+    },
+    {
+        "packageName": "com.android.wifi.resources.overlay.target",
+        "versionName": "12",
+        "versionCode": 31,
+        "appLabel": "com.android.wifi.resources.overlay.target",
+        "isSystem": true,
+        "uid": 10081
+    },
+    {
+        "packageName": "com.android.wifi.resources.overlay.taro",
+        "versionName": "12",
+        "versionCode": 31,
+        "appLabel": "com.android.wifi.resources.overlay.taro",
+        "isSystem": true,
+        "uid": 10082
+    },
+    {
+        "packageName": "com.android.wifi.resources.xiaomi",
+        "versionName": "1.0",
+        "versionCode": 1,
+        "appLabel": "com.android.wifi.resources.xiaomi",
+        "isSystem": true,
+        "uid": 10000
+    },
+    {
+        "packageName": "com.andromeda.androbench2",
+        "versionName": "5.0.1_ZH-CN_V3",
+        "versionCode": 17,
+        "appLabel": "AndroBench",
+        "isSystem": false,
+        "uid": 10441
+    },
+    {
+        "packageName": "com.antgroup.aijk.android",
+        "versionName": "1.0.88.8000",
+        "versionCode": 1881,
+        "appLabel": "蚂蚁阿福",
+        "isSystem": false,
+        "uid": 10457
+    },
+    {
+        "packageName": "com.baidu.input_mi",
+        "versionName": "10.6.124.538",
+        "versionCode": 5902,
+        "appLabel": "百度输入法小米版",
+        "isSystem": false,
+        "uid": 10285
+    },
+    {
+        "packageName": "com.baidu.netdisk",
+        "versionName": "13.18.3",
+        "versionCode": 4029,
+        "appLabel": "百度网盘",
+        "isSystem": false,
+        "uid": 10319
+    },
+    {
+        "packageName": "com.baidu.tieba",
+        "versionName": "22.1.1.0",
+        "versionCode": 369164544,
+        "appLabel": "百度贴吧",
+        "isSystem": false,
+        "uid": 10349
+    },
+    {
+        "packageName": "com.bilibili.app.blue",
+        "versionName": "8.74.1",
+        "versionCode": 8741100,
+        "appLabel": "哔哩哔哩概念",
+        "isSystem": false,
+        "uid": 10442
+    },
+    {
+        "packageName": "com.bilibili.comic",
+        "versionName": "6.26.0",
+        "versionCode": 36626000,
+        "appLabel": "哔哩哔哩漫画",
+        "isSystem": false,
+        "uid": 10403
+    },
+    {
+        "packageName": "com.bsp.catchlog",
+        "versionName": "1.3.7",
+        "versionCode": 137,
+        "appLabel": "CatchLog",
+        "isSystem": true,
+        "uid": 1000
+    },
+    {
+        "packageName": "com.byyoung.setting",
+        "versionName": "S-22.0.9.8",
+        "versionCode": 22098,
+        "appLabel": "爱玩机工具箱",
+        "isSystem": false,
+        "uid": 10421
+    },
+    {
+        "packageName": "com.cainiao.wireless",
+        "versionName": "8.11.105",
+        "versionCode": 455,
+        "appLabel": "菜鸟",
+        "isSystem": false,
+        "uid": 10335
+    },
+    {
+        "packageName": "com.catxk.n32",
+        "versionName": "3.3.7",
+        "versionCode": 30307,
+        "appLabel": "网飞猫",
+        "isSystem": false,
+        "uid": 10408
+    },
+    {
+        "packageName": "com.chinamobile.mcloud",
+        "versionName": "mCloud12.5.3",
+        "versionCode": 30125332,
+        "appLabel": "中国移动云盘",
+        "isSystem": false,
+        "uid": 10317
+    },
+    {
+        "packageName": "com.commercepro.and",
+        "versionName": "1.2.8",
+        "versionCode": 1281600,
+        "appLabel": "小云雀",
+        "isSystem": false,
+        "uid": 10459
+    },
+    {
+        "packageName": "com.coolapk.market",
+        "versionName": "16.0.3",
+        "versionCode": 2602111,
+        "appLabel": "酷安",
+        "isSystem": false,
+        "uid": 10297
+    },
+    {
+        "packageName": "com.crunchyroll.gv.eternights.game",
+        "versionName": "1.0.0",
+        "versionCode": 31,
+        "appLabel": "永恒之夜",
+        "isSystem": false,
+        "uid": 10446
+    },
+    {
+        "packageName": "com.crunchyroll.gv.shinchanshiroandcoal.game",
+        "versionName": "1.0.2",
+        "versionCode": 11,
+        "appLabel": "Shin chan: Shiro & Coal Town",
+        "isSystem": false,
+        "uid": 10464
+    },
+    {
+        "packageName": "com.ctg.itrdc.clouddesk",
+        "versionName": "3.2.0",
+        "versionCode": 103020002,
+        "appLabel": "天翼云电脑",
+        "isSystem": false,
+        "uid": 10326
+    },
+    {
+        "packageName": "com.deepseek.chat",
+        "versionName": "1.7.5",
+        "versionCode": 171,
+        "appLabel": "DeepSeek",
+        "isSystem": false,
+        "uid": 10313
+    },
+    {
+        "packageName": "com.dna.tools",
+        "versionName": "4.0.5",
+        "versionCode": 202304200,
+        "appLabel": "DNA-Android",
+        "isSystem": false,
+        "uid": 10341
+    },
+    {
+        "packageName": "com.douban.frodo",
+        "versionName": "7.119.0",
+        "versionCode": 345,
+        "appLabel": "豆瓣",
+        "isSystem": false,
+        "uid": 10419
+    },
+    {
+        "packageName": "com.duokan.phone.remotecontroller",
+        "versionName": "7.2.2M",
+        "versionCode": 6408,
+        "appLabel": "万能遥控",
+        "isSystem": false,
+        "uid": 10357
+    },
+    {
+        "packageName": "com.duokan.reader",
+        "versionName": "8.2.27.1",
+        "versionCode": 802270001,
+        "appLabel": "多看",
+        "isSystem": false,
+        "uid": 10402
+    },
+    {
+        "packageName": "com.duolingo",
+        "versionName": "6.66.5-china",
+        "versionCode": 2293,
+        "appLabel": "多邻国",
+        "isSystem": false,
+        "uid": 10309
+    },
+    {
+        "packageName": "com.duowan.kiwi",
+        "versionName": "13.1.85",
+        "versionCode": 110557,
+        "appLabel": "虎牙直播",
+        "isSystem": false,
+        "uid": 10334
+    },
+    {
+        "packageName": "com.eastmoney.android.berlin",
+        "versionName": "10.38.7",
+        "versionCode": 10038007,
+        "appLabel": "东方财富",
+        "isSystem": false,
+        "uid": 10382
+    },
+    {
+        "packageName": "com.eg.android.AlipayGphone",
+        "versionName": "10.8.30.8000",
+        "versionCode": 3610,
+        "appLabel": "支付宝",
+        "isSystem": false,
+        "uid": 10458
+    },
+    {
+        "packageName": "com.fankes.forcerotate",
+        "versionName": "1.1",
+        "versionCode": 2,
+        "appLabel": "自由屏幕旋转",
+        "isSystem": false,
+        "uid": 10426
+    },
+    {
+        "packageName": "com.fdg.flashplay.farsee",
+        "versionName": "7.2.7.3",
+        "versionCode": 2025111114,
+        "appLabel": "飞智游戏厅",
+        "isSystem": false,
+        "uid": 10400
+    },
+    {
+        "packageName": "com.fido.asm",
+        "versionName": "220250317",
+        "versionCode": 220250317,
+        "appLabel": "MI FIDO",
+        "isSystem": true,
+        "uid": 10153
+    },
+    {
+        "packageName": "com.fingerprints.sensortesttool",
+        "versionName": "3.54",
+        "versionCode": 354,
+        "appLabel": "Sensor Test Tool",
+        "isSystem": true,
+        "uid": 10121
+    },
+    {
+        "packageName": "com.freenotes.freenotes",
+        "versionName": "2.43.0",
+        "versionCode": 122,
+        "appLabel": "自由笔记",
+        "isSystem": false,
+        "uid": 10387
+    },
+    {
+        "packageName": "com.gamestar.pianoperfect",
+        "versionName": "7.4.5",
+        "versionCode": 1201745,
+        "appLabel": "随身乐队",
+        "isSystem": false,
+        "uid": 10310
+    },
+    {
+        "packageName": "com.github.dan.NoStorageRestrict",
+        "versionName": "0.5.0",
+        "versionCode": 5,
+        "appLabel": "NoStorageRestrict",
+        "isSystem": false,
+        "uid": 10427
+    },
+    {
+        "packageName": "com.github.kr328.clash.foss",
+        "versionName": "2.4.9.foss",
+        "versionCode": 204009,
+        "appLabel": "Clash for Android",
+        "isSystem": false,
+        "uid": 10391
+    },
+    {
+        "packageName": "com.google.android.accessibility.switchaccess",
+        "versionName": "1.16.1.798952610",
+        "versionCode": 755,
+        "appLabel": "开关控制",
+        "isSystem": true,
+        "uid": 10179
+    },
+    {
+        "packageName": "com.google.android.cellbroadcastreceiver.overlay.miui",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "com.google.android.cellbroadcastreceiver.overlay.miui",
+        "isSystem": true,
+        "uid": 10032
+    },
+    {
+        "packageName": "com.google.android.cellbroadcastservice.overlay.miui",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "com.google.android.cellbroadcastservice.overlay.miui",
+        "isSystem": true,
+        "uid": 10033
+    },
+    {
+        "packageName": "com.google.android.configupdater",
+        "versionName": "16-13928101",
+        "versionCode": 36,
+        "appLabel": "ConfigUpdater",
+        "isSystem": true,
+        "uid": 10122
+    },
+    {
+        "packageName": "com.google.android.contactkeys",
+        "versionName": "1.307.858531162",
+        "versionCode": 13285,
+        "appLabel": "Android System Key Verifier",
+        "isSystem": false,
+        "uid": 10436
+    },
+    {
+        "packageName": "com.google.android.documentsui",
+        "versionName": "16",
+        "versionCode": 360716080,
+        "appLabel": "文件",
+        "isSystem": true,
+        "uid": 10093
+    },
+    {
+        "packageName": "com.google.android.ext.shared",
+        "versionName": "1",
+        "versionCode": 1,
+        "appLabel": "Android Shared Library",
+        "isSystem": true,
+        "uid": 10150
+    },
+    {
+        "packageName": "com.google.android.gm",
+        "versionName": "2025.12.29.855765709.Release",
+        "versionCode": 65512427,
+        "appLabel": "Gmail",
+        "isSystem": false,
+        "uid": 10338
+    },
+    {
+        "packageName": "com.google.android.gms",
+        "versionName": "26.08.33 (260400-873118776)",
+        "versionCode": 260833035,
+        "appLabel": "Google Play 服务",
+        "isSystem": true,
+        "uid": 10137
+    },
+    {
+        "packageName": "com.google.android.gms.location.history",
+        "versionName": "1.2",
+        "versionCode": 3,
+        "appLabel": "Google 位置记录",
+        "isSystem": true,
+        "uid": 10151
+    },
+    {
+        "packageName": "com.google.android.gsf",
+        "versionName": "16-13928101",
+        "versionCode": 36,
+        "appLabel": "Google 服务框架",
+        "isSystem": true,
+        "uid": 10202
+    },
+    {
+        "packageName": "com.google.android.marvin.talkback",
+        "versionName": "16.2.0.855052621",
+        "versionCode": 60192274,
+        "appLabel": "Android 无障碍套件",
+        "isSystem": true,
+        "uid": 10196
+    },
+    {
+        "packageName": "com.google.android.ncm.overlay.common",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "com.google.android.ncm.overlay.common",
+        "isSystem": true,
+        "uid": 10059
+    },
+    {
+        "packageName": "com.google.android.onetimeinitializer",
+        "versionName": "16-13928101",
+        "versionCode": 36,
+        "appLabel": "Google One Time Init",
+        "isSystem": true,
+        "uid": 10123
+    },
+    {
+        "packageName": "com.google.android.overlay.gmsconfig",
+        "versionName": "1.0",
+        "versionCode": 1,
+        "appLabel": "com.google.android.overlay.gmsconfig",
+        "isSystem": true,
+        "uid": 10018
+    },
+    {
+        "packageName": "com.google.android.printservice.recommendation",
+        "versionName": "1.3.0",
+        "versionCode": 4,
+        "appLabel": "Print Service Recommendation Service",
+        "isSystem": true,
+        "uid": 10152
+    },
+    {
+        "packageName": "com.google.android.uwb.resources.overlay.common",
+        "versionName": "1.0",
+        "versionCode": 1,
+        "appLabel": "com.google.android.uwb.resources.overlay.common",
+        "isSystem": true,
+        "uid": 10072
+    },
+    {
+        "packageName": "com.google.android.webview",
+        "versionName": "145.0.7632.79",
+        "versionCode": 763207903,
+        "appLabel": "Android System WebView",
+        "isSystem": true,
+        "uid": 99910185
+    },
+    {
+        "packageName": "com.google.android.webview",
+        "versionName": "145.0.7632.79",
+        "versionCode": 763207903,
+        "appLabel": "Android System WebView",
+        "isSystem": true,
+        "uid": 99910185
+    },
+    {
+        "packageName": "com.google.android.wifi.resources.overlay.common",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "com.google.android.wifi.resources.overlay.common",
+        "isSystem": true,
+        "uid": 10075
+    },
+    {
+        "packageName": "com.google.android.wifi.resources.xiaomi",
+        "versionName": "1.0",
+        "versionCode": 1,
+        "appLabel": "com.google.android.wifi.resources.xiaomi",
+        "isSystem": true,
+        "uid": 10002
+    },
+    {
+        "packageName": "com.greenpoint.android.mc10086.activity",
+        "versionName": "12.0.7",
+        "versionCode": 120700,
+        "appLabel": "中国移动",
+        "isSystem": false,
+        "uid": 10320
+    },
+    {
+        "packageName": "com.gzhi.neatreader.r2.main",
+        "versionName": "8.2.1",
+        "versionCode": 195,
+        "appLabel": "Neat Reader",
+        "isSystem": false,
+        "uid": 10405
+    },
+    {
+        "packageName": "com.hchen.cherry.splitscreenplus",
+        "versionName": "1.0",
+        "versionCode": 2025063000,
+        "appLabel": "SplitScreenPlus",
+        "isSystem": false,
+        "uid": 10430
+    },
+    {
+        "packageName": "com.hchen.superlyric",
+        "versionName": "2.7",
+        "versionCode": 2025071800,
+        "appLabel": "SuperLyric",
+        "isSystem": false,
+        "uid": 10425
+    },
+    {
+        "packageName": "com.heytap.headset",
+        "versionName": "16.4.1",
+        "versionCode": 116004001,
+        "appLabel": "欢律",
+        "isSystem": false,
+        "uid": 10300
+    },
+    {
+        "packageName": "com.heytap.htms",
+        "versionName": "2.1.6_d1222fb_231109_outgoing",
+        "versionCode": 2010601,
+        "appLabel": "移动服务",
+        "isSystem": false,
+        "uid": 10432
+    },
+    {
+        "packageName": "com.heytap.market",
+        "versionName": "11.17.1",
+        "versionCode": 111703,
+        "appLabel": "软件商店",
+        "isSystem": false,
+        "uid": 10355
+    },
+    {
+        "packageName": "com.hhk.hh17",
+        "versionName": "3.3.6",
+        "versionCode": 30306,
+        "appLabel": "好好看",
+        "isSystem": false,
+        "uid": 10354
+    },
+    {
+        "packageName": "com.hihonor.appmarket",
+        "versionName": "16.0.38.305",
+        "versionCode": 160038305,
+        "appLabel": "应用市场",
+        "isSystem": false,
+        "uid": 10381
+    },
+    {
+        "packageName": "com.hihonor.id",
+        "versionName": "9.0.7.351",
+        "versionCode": 90700351,
+        "appLabel": "荣耀基础服务",
+        "isSystem": false,
+        "uid": 10428
+    },
+    {
+        "packageName": "com.houvven.guise",
+        "versionName": "1.1.2",
+        "versionCode": 12,
+        "appLabel": "Guise",
+        "isSystem": false,
+        "uid": 10386
+    },
+    {
+        "packageName": "com.huawei.appmarket",
+        "versionName": "15.2.2.300",
+        "versionCode": 150202300,
+        "appLabel": "华为应用市场",
+        "isSystem": false,
+        "uid": 10307
+    },
+    {
+        "packageName": "com.huawei.hwid",
+        "versionName": "6.12.0.302",
+        "versionCode": 61200302,
+        "appLabel": "HMS Core",
+        "isSystem": false,
+        "uid": 10429
+    },
+    {
+        "packageName": "com.huluxia.gametools",
+        "versionName": "4.4.1.5.2",
+        "versionCode": 491,
+        "appLabel": "葫芦侠",
+        "isSystem": false,
+        "uid": 10451
+    },
+    {
+        "packageName": "com.hunantv.imgo.activity",
+        "versionName": "9.1.8",
+        "versionCode": 9108100,
+        "appLabel": "芒果TV",
+        "isSystem": false,
+        "uid": 10456
+    },
+    {
+        "packageName": "com.iflytek.inputmethod.miui",
+        "versionName": "8.1.8302",
+        "versionCode": 8302,
+        "appLabel": "讯飞输入法小米版",
+        "isSystem": false,
+        "uid": 10288
+    },
+    {
+        "packageName": "com.iunis.tools.display",
+        "versionName": "1.3.6",
+        "versionCode": 32,
+        "appLabel": "屏幕一览",
+        "isSystem": false,
+        "uid": 10325
+    },
+    {
+        "packageName": "com.jd.app.reader",
+        "versionName": "4.50.6",
+        "versionCode": 4500600,
+        "appLabel": "京东读书",
+        "isSystem": false,
+        "uid": 10369
+    },
+    {
+        "packageName": "com.jihuanshe",
+        "versionName": "3.36.0",
+        "versionCode": 3360000,
+        "appLabel": "集换社",
+        "isSystem": false,
+        "uid": 10337
+    },
+    {
+        "packageName": "com.jingdong.app.mall",
+        "versionName": "15.5.0",
+        "versionCode": 101964,
+        "appLabel": "京东",
+        "isSystem": false,
+        "uid": 10374
+    },
+    {
+        "packageName": "com.join.android.app.mgsim.wufun",
+        "versionName": "6.0.1.6",
+        "versionCode": 506,
+        "appLabel": "悟饭游戏厅",
+        "isSystem": false,
+        "uid": 10462
+    },
+    {
+        "packageName": "com.kugou.android",
+        "versionName": "20.5.3",
+        "versionCode": 20539,
+        "appLabel": "酷狗音乐",
+        "isSystem": false,
+        "uid": 10413
+    },
+    {
+        "packageName": "com.kugou.android.lite",
+        "versionName": "5.1.5",
+        "versionCode": 11450,
+        "appLabel": "酷狗概念版",
+        "isSystem": false,
+        "uid": 10380
+    },
+    {
+        "packageName": "com.kylin.read",
+        "versionName": "7.0.9.32",
+        "versionCode": 70932,
+        "appLabel": "红果免费漫剧",
+        "isSystem": false,
+        "uid": 10445
+    },
+    {
+        "packageName": "com.lbe.security.miui",
+        "versionName": "1.9.0",
+        "versionCode": 190,
+        "appLabel": "权限管理服务",
+        "isSystem": true,
+        "uid": 10203
+    },
+    {
+        "packageName": "com.lenovo.leos.appstore",
+        "versionName": "12.12.10.88",
+        "versionCode": 121210,
+        "appLabel": "应用商店",
+        "isSystem": false,
+        "uid": 10423
+    },
+    {
+        "packageName": "com.liuzho.file.explorer",
+        "versionName": "v1.8.5.1",
+        "versionCode": 294,
+        "appLabel": "流舟文件",
+        "isSystem": false,
+        "uid": 10305
+    },
+    {
+        "packageName": "com.luna.music",
+        "versionName": "18.2.0",
+        "versionCode": 100182030,
+        "appLabel": "汽水音乐",
+        "isSystem": false,
+        "uid": 10345
+    },
+    {
+        "packageName": "com.max.xiaoheihe",
+        "versionName": "1.3.380",
+        "versionCode": 1063,
+        "appLabel": "小黑盒",
+        "isSystem": false,
+        "uid": 10367
+    },
+    {
+        "packageName": "com.maxframing.mipad",
+        "versionName": "5.2.6",
+        "versionCode": 526,
+        "appLabel": "远程控制",
+        "isSystem": false,
+        "uid": 10281
+    },
+    {
+        "packageName": "com.mfcloudcalculate.networkdisk",
+        "versionName": "3.1.11",
+        "versionCode": 3111,
+        "appLabel": "123云盘",
+        "isSystem": false,
+        "uid": 10308
+    },
+    {
+        "packageName": "com.mfhd.ygj.p3",
+        "versionName": "1.0.0.5",
+        "versionCode": 6,
+        "appLabel": "动漫共和国",
+        "isSystem": false,
+        "uid": 10372
+    },
+    {
+        "packageName": "com.mi.health",
+        "versionName": "3.53.1",
+        "versionCode": 353001,
+        "appLabel": "小米运动健康",
+        "isSystem": false,
+        "uid": 10302
+    },
+    {
+        "packageName": "com.miHoYo.Yuanshen",
+        "versionName": "6.4.0_42040338_42314721",
+        "versionCode": 1143,
+        "appLabel": "原神",
+        "isSystem": false,
+        "uid": 10452
+    },
+    {
+        "packageName": "com.microsoft.emmx",
+        "versionName": "144.0.3719.115",
+        "versionCode": 371911505,
+        "appLabel": "Edge",
+        "isSystem": false,
+        "uid": 10314
+    },
+    {
+        "packageName": "com.milink.service",
+        "versionName": "17.1.3.1.2512221245",
+        "versionCode": 170010301,
+        "appLabel": "设备互联",
+        "isSystem": true,
+        "uid": 10171
+    },
+    {
+        "packageName": "com.mipay.wallet",
+        "versionName": "6.90.5.5321.2268",
+        "versionCode": 20577605,
+        "appLabel": "钱包",
+        "isSystem": false,
+        "uid": 10263
+    },
+    {
+        "packageName": "com.miui.accessibility",
+        "versionName": "V7.8.0.CN",
+        "versionCode": 325102810,
+        "appLabel": "小米闻声",
+        "isSystem": true,
+        "uid": 10156
+    },
+    {
+        "packageName": "com.miui.analytics",
+        "versionName": "6.23.0",
+        "versionCode": 2025122400,
+        "appLabel": "Analytics",
+        "isSystem": true,
+        "uid": 99910146
+    },
+    {
+        "packageName": "com.miui.analytics",
+        "versionName": "6.23.0",
+        "versionCode": 2025122400,
+        "appLabel": "Analytics",
+        "isSystem": true,
+        "uid": 99910146
+    },
+    {
+        "packageName": "com.miui.aod",
+        "versionName": "DEV-PAD-2314.0.1.1-11251855",
+        "versionCode": 22314011,
+        "appLabel": "锁屏编辑",
+        "isSystem": true,
+        "uid": 1000
+    },
+    {
+        "packageName": "com.miui.audiomonitor",
+        "versionName": "16.3.2",
+        "versionCode": 20250605,
+        "appLabel": "应用通话录音",
+        "isSystem": true,
+        "uid": 1000
+    },
+    {
+        "packageName": "com.miui.autoui.ext",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "AutoUIExtension",
+        "isSystem": true,
+        "uid": 10221
+    },
+    {
+        "packageName": "com.miui.backup",
+        "versionName": "7.0.0.8-OS3",
+        "versionCode": 7008,
+        "appLabel": "备份",
+        "isSystem": true,
+        "uid": 6100
+    },
+    {
+        "packageName": "com.miui.bugreport",
+        "versionName": "17.0.5.0",
+        "versionCode": 17000500,
+        "appLabel": "用户反馈",
+        "isSystem": true,
+        "uid": 1000
+    },
+    {
+        "packageName": "com.miui.calculator",
+        "versionName": "16.1.6",
+        "versionCode": 316000016,
+        "appLabel": "计算器",
+        "isSystem": false,
+        "uid": 10273
+    },
+    {
+        "packageName": "com.miui.cit",
+        "versionName": "1.4.9",
+        "versionCode": 149,
+        "appLabel": "CIT",
+        "isSystem": true,
+        "uid": 1000
+    },
+    {
+        "packageName": "com.miui.cleanmaster",
+        "versionName": "1022.0.260112.release",
+        "versionCode": 101022,
+        "appLabel": "垃圾清理",
+        "isSystem": false,
+        "uid": 10265
+    },
+    {
+        "packageName": "com.miui.cloudbackup",
+        "versionName": "1.12.1.6.42.5",
+        "versionCode": 1120106425,
+        "appLabel": "小米云备份",
+        "isSystem": true,
+        "uid": 10129
+    },
+    {
+        "packageName": "com.miui.cloudservice",
+        "versionName": "1.12.0.6.87",
+        "versionCode": 112000687,
+        "appLabel": "小米云服务",
+        "isSystem": true,
+        "uid": 10158
+    },
+    {
+        "packageName": "com.miui.contentcatcher",
+        "versionName": "3.1.3",
+        "versionCode": 220250926,
+        "appLabel": "应用程序扩展服务",
+        "isSystem": true,
+        "uid": 99901000
+    },
+    {
+        "packageName": "com.miui.contentcatcher",
+        "versionName": "3.1.3",
+        "versionCode": 220250926,
+        "appLabel": "应用程序扩展服务",
+        "isSystem": true,
+        "uid": 99901000
+    },
+    {
+        "packageName": "com.miui.contentextension",
+        "versionName": "4.0.5",
+        "versionCode": 40005,
+        "appLabel": "传送门",
+        "isSystem": true,
+        "uid": 10130
+    },
+    {
+        "packageName": "com.miui.core",
+        "versionName": "1.20.2.5-7",
+        "versionCode": 1202507,
+        "appLabel": "System SDK",
+        "isSystem": true,
+        "uid": 10184
+    },
+    {
+        "packageName": "com.miui.core.internal.services",
+        "versionName": "2.0",
+        "versionCode": 2,
+        "appLabel": "com.miui.core.internal.services",
+        "isSystem": true,
+        "uid": 10042
+    },
+    {
+        "packageName": "com.miui.creation",
+        "versionName": "3.1.0",
+        "versionCode": 310,
+        "appLabel": "小米创作",
+        "isSystem": false,
+        "uid": 10379
+    },
+    {
+        "packageName": "com.miui.daemon",
+        "versionName": "2.1",
+        "versionCode": 31,
+        "appLabel": "系统质量服务",
+        "isSystem": true,
+        "uid": 1000
+    },
+    {
+        "packageName": "com.miui.extraphoto",
+        "versionName": "2.0.15.3.0",
+        "versionCode": 200150300,
+        "appLabel": "Bokeh",
+        "isSystem": true,
+        "uid": 10139
+    },
+    {
+        "packageName": "com.miui.face",
+        "versionName": "1.44.0-A140031",
+        "versionCode": 1440000,
+        "appLabel": "Biometric",
+        "isSystem": true,
+        "uid": 1000
+    },
+    {
+        "packageName": "com.miui.findmy",
+        "versionName": "1.0.9",
+        "versionCode": 10009,
+        "appLabel": "查找设备",
+        "isSystem": false,
+        "uid": 10286
+    },
+    {
+        "packageName": "com.miui.gallery",
+        "versionName": "4.3.0.63",
+        "versionCode": 4030063,
+        "appLabel": "相册",
+        "isSystem": false,
+        "uid": 10292
+    },
+    {
+        "packageName": "com.miui.greenguard",
+        "versionName": "3.12.10.29.00-tablet",
+        "versionCode": 1220251031,
+        "appLabel": "家人守护",
+        "isSystem": true,
+        "uid": 10166
+    },
+    {
+        "packageName": "com.miui.guardprovider",
+        "versionName": "2.5.6-20251106.0",
+        "versionCode": 256,
+        "appLabel": "系统安全组件",
+        "isSystem": true,
+        "uid": 10159
+    },
+    {
+        "packageName": "com.miui.home",
+        "versionName": "RELEASE-4.50.0.1089-1118-01142042",
+        "versionCode": 450001089,
+        "appLabel": "系统桌面",
+        "isSystem": true,
+        "uid": 10142
+    },
+    {
+        "packageName": "com.miui.huanji",
+        "versionName": "4.5.4.6",
+        "versionCode": 45406,
+        "appLabel": "小米换机",
+        "isSystem": false,
+        "uid": 6100
+    },
+    {
+        "packageName": "com.miui.hybrid",
+        "versionName": "1.31.4.0",
+        "versionCode": 13140003,
+        "appLabel": "快应用服务框架",
+        "isSystem": true,
+        "uid": 10336
+    },
+    {
+        "packageName": "com.miui.mediaeditor",
+        "versionName": "2.3.0.1.3",
+        "versionCode": 203990013,
+        "appLabel": "小米相册-编辑",
+        "isSystem": false,
+        "uid": 10272
+    },
+    {
+        "packageName": "com.miui.mediaviewer",
+        "versionName": "v2103251105(MediaViewer-ROM)",
+        "versionCode": 2103251105,
+        "appLabel": "媒体查看器",
+        "isSystem": true,
+        "uid": 10169
+    },
+    {
+        "packageName": "com.miui.micloudsync",
+        "versionName": "1.12.0.1.35",
+        "versionCode": 112000135,
+        "appLabel": "MiCloudSync",
+        "isSystem": true,
+        "uid": 10158
+    },
+    {
+        "packageName": "com.miui.miservice",
+        "versionName": "17.0.0.0",
+        "versionCode": 17000000,
+        "appLabel": "服务与反馈",
+        "isSystem": false,
+        "uid": 10269
+    },
+    {
+        "packageName": "com.miui.mishare.connectivity",
+        "versionName": "4.12.0",
+        "versionCode": 41200,
+        "appLabel": "小米互传",
+        "isSystem": true,
+        "uid": 10127
+    },
+    {
+        "packageName": "com.miui.misightservice",
+        "versionName": "0.9.5",
+        "versionCode": 20220706,
+        "appLabel": "系统质量监测",
+        "isSystem": true,
+        "uid": 1000
+    },
+    {
+        "packageName": "com.miui.misound",
+        "versionName": "15-3.2-3-20251117",
+        "versionCode": 251117,
+        "appLabel": "音质音效",
+        "isSystem": true,
+        "uid": 10173
+    },
+    {
+        "packageName": "com.miui.miwallpaper",
+        "versionName": "5.3.3-ALPHA-11251425",
+        "versionCode": 500533000,
+        "appLabel": "壁纸",
+        "isSystem": true,
+        "uid": 10183
+    },
+    {
+        "packageName": "com.miui.miwallpaper.config.overlay",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "com.miui.miwallpaper.config.overlay",
+        "isSystem": true,
+        "uid": 10026
+    },
+    {
+        "packageName": "com.miui.miwallpaper.overlay.customize",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "com.miui.miwallpaper.overlay.customize",
+        "isSystem": true,
+        "uid": 10034
+    },
+    {
+        "packageName": "com.miui.newmidrive",
+        "versionName": "1.12.0.8.20",
+        "versionCode": 112000820,
+        "appLabel": "小米云盘",
+        "isSystem": false,
+        "uid": 10271
+    },
+    {
+        "packageName": "com.miui.notes",
+        "versionName": "2.3.2.0",
+        "versionCode": 2320,
+        "appLabel": "笔记",
+        "isSystem": false,
+        "uid": 10266
+    },
+    {
+        "packageName": "com.miui.notification",
+        "versionName": "1.1.8.62",
+        "versionCode": 1010862,
+        "appLabel": "通知管理",
+        "isSystem": true,
+        "uid": 1000
+    },
+    {
+        "packageName": "com.miui.packageinstaller",
+        "versionName": "5.4.5.0.2-20260128P",
+        "versionCode": 54502,
+        "appLabel": "应用包管理组件",
+        "isSystem": true,
+        "uid": 10133
+    },
+    {
+        "packageName": "com.miui.personalassistant",
+        "versionName": "15.30.31-11281417",
+        "versionCode": 153031,
+        "appLabel": "智能助理",
+        "isSystem": true,
+        "uid": 10134
+    },
+    {
+        "packageName": "com.miui.phrase",
+        "versionName": "4.7.0",
+        "versionCode": 10170,
+        "appLabel": "剪贴板与常用语",
+        "isSystem": true,
+        "uid": 99910157
+    },
+    {
+        "packageName": "com.miui.phrase",
+        "versionName": "4.7.0",
+        "versionCode": 10170,
+        "appLabel": "剪贴板与常用语",
+        "isSystem": true,
+        "uid": 99910157
+    },
+    {
+        "packageName": "com.miui.player",
+        "versionName": "4.39.2.3-R-pad",
+        "versionCode": 4390203,
+        "appLabel": "音乐",
+        "isSystem": false,
+        "uid": 10267
+    },
+    {
+        "packageName": "com.miui.powerinsight",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "powerinsight",
+        "isSystem": true,
+        "uid": 10207
+    },
+    {
+        "packageName": "com.miui.powerkeeper",
+        "versionName": "4.2.00",
+        "versionCode": 40200,
+        "appLabel": "电量和性能",
+        "isSystem": true,
+        "uid": 1000
+    },
+    {
+        "packageName": "com.miui.qr",
+        "versionName": "2025_11_04_10_42",
+        "versionCode": 20251104,
+        "appLabel": "com.miui.qr.InfoApplication",
+        "isSystem": true,
+        "uid": 1000
+    },
+    {
+        "packageName": "com.miui.rom",
+        "versionName": "1.11.0.0",
+        "versionCode": 1110000,
+        "appLabel": "com.miui.rom",
+        "isSystem": true,
+        "uid": 99910083
+    },
+    {
+        "packageName": "com.miui.rom",
+        "versionName": "1.11.0.0",
+        "versionCode": 1110000,
+        "appLabel": "com.miui.rom",
+        "isSystem": true,
+        "uid": 99910083
+    },
+    {
+        "packageName": "com.miui.screenrecorder",
+        "versionName": "4.15.2.8.1",
+        "versionCode": 41502081,
+        "appLabel": "屏幕录制",
+        "isSystem": false,
+        "uid": 10290
+    },
+    {
+        "packageName": "com.miui.screenshot",
+        "versionName": "RELEASE-1.6.2.9-01161359",
+        "versionCode": 10602009,
+        "appLabel": "截屏",
+        "isSystem": true,
+        "uid": 10162
+    },
+    {
+        "packageName": "com.miui.securityadd",
+        "versionName": "9.12.03-250829.0.1",
+        "versionCode": 91203,
+        "appLabel": "系统服务组件",
+        "isSystem": true,
+        "uid": 10163
+    },
+    {
+        "packageName": "com.miui.securitycenter",
+        "versionName": "12.3.0-260211.0.1",
+        "versionCode": 400011232,
+        "appLabel": "手机管家",
+        "isSystem": true,
+        "uid": 1000
+    },
+    {
+        "packageName": "com.miui.securitycore",
+        "versionName": "3.2.2-3-251112.pad",
+        "versionCode": 40000322,
+        "appLabel": "系统功能组件",
+        "isSystem": true,
+        "uid": 99901000
+    },
+    {
+        "packageName": "com.miui.securitycore",
+        "versionName": "3.2.2-3-251112.pad",
+        "versionCode": 40000322,
+        "appLabel": "系统功能组件",
+        "isSystem": true,
+        "uid": 99901000
+    },
+    {
+        "packageName": "com.miui.securityinputmethod",
+        "versionName": "3.8.6",
+        "versionCode": 386,
+        "appLabel": "小米安全键盘",
+        "isSystem": true,
+        "uid": 10161
+    },
+    {
+        "packageName": "com.miui.settings.rro.device.config.overlay",
+        "versionName": "1.0",
+        "versionCode": 1,
+        "appLabel": "com.miui.settings.rro.device.config.overlay",
+        "isSystem": true,
+        "uid": 10058
+    },
+    {
+        "packageName": "com.miui.settings.rro.device.systemui.overlay",
+        "versionName": "1.0",
+        "versionCode": 1,
+        "appLabel": "com.miui.settings.rro.device.systemui.overlay",
+        "isSystem": true,
+        "uid": 10068
+    },
+    {
+        "packageName": "com.miui.settings.rro.device.type.overlay",
+        "versionName": "1.0",
+        "versionCode": 1,
+        "appLabel": "com.miui.settings.rro.device.type.overlay",
+        "isSystem": true,
+        "uid": 10064
+    },
+    {
+        "packageName": "com.miui.system",
+        "versionName": "1.15.0.0",
+        "versionCode": 1150000,
+        "appLabel": "com.miui.internal.app.SystemApplication",
+        "isSystem": true,
+        "uid": 10234
+    },
+    {
+        "packageName": "com.miui.system.overlay",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "com.miui.system.overlay",
+        "isSystem": true,
+        "uid": 10045
+    },
+    {
+        "packageName": "com.miui.systemAdSolution",
+        "versionName": "2025.12.25.09-release",
+        "versionCode": 2025122509,
+        "appLabel": "智能服务",
+        "isSystem": true,
+        "uid": 10165
+    },
+    {
+        "packageName": "com.miui.systemui.carriers.overlay",
+        "versionName": "1.0",
+        "versionCode": 1,
+        "appLabel": "MccMncOverlay",
+        "isSystem": true,
+        "uid": 10028
+    },
+    {
+        "packageName": "com.miui.systemui.devices.overlay",
+        "versionName": "1.0",
+        "versionCode": 1,
+        "appLabel": "DevicesOverlay",
+        "isSystem": true,
+        "uid": 10010
+    },
+    {
+        "packageName": "com.miui.systemui.overlay.devices.android",
+        "versionName": "1.0",
+        "versionCode": 1,
+        "appLabel": "DevicesAndroidOverlay",
+        "isSystem": true,
+        "uid": 10007
+    },
+    {
+        "packageName": "com.miui.thirdappassistant",
+        "versionName": "5.8",
+        "versionCode": 1040,
+        "appLabel": "智能应用助手",
+        "isSystem": true,
+        "uid": 1000
+    },
+    {
+        "packageName": "com.miui.timezone.location.provider",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "小米位置时区检测服务",
+        "isSystem": true,
+        "uid": 10140
+    },
+    {
+        "packageName": "com.miui.touchassistant",
+        "versionName": "16.0.0.5.1",
+        "versionCode": 160000051,
+        "appLabel": "悬浮球",
+        "isSystem": true,
+        "uid": 1000
+    },
+    {
+        "packageName": "com.miui.uireporter",
+        "versionName": "3.4.0",
+        "versionCode": 30400,
+        "appLabel": "UI信息工具",
+        "isSystem": true,
+        "uid": 1000
+    },
+    {
+        "packageName": "com.miui.video",
+        "versionName": "v2026012990(MiVideo-UN)",
+        "versionCode": 2026012990,
+        "appLabel": "小米视频",
+        "isSystem": false,
+        "uid": 10282
+    },
+    {
+        "packageName": "com.miui.voiceassist",
+        "versionName": "7.11.20.1317",
+        "versionCode": 507011020,
+        "appLabel": "超级小爱",
+        "isSystem": true,
+        "uid": 10192
+    },
+    {
+        "packageName": "com.miui.voiceassistProxy",
+        "versionName": "1.4.0",
+        "versionCode": 5,
+        "appLabel": "超级小爱",
+        "isSystem": false,
+        "uid": 10280
+    },
+    {
+        "packageName": "com.miui.voiceassistoverlay",
+        "versionName": "2.0",
+        "versionCode": 2,
+        "appLabel": "com.miui.voiceassistoverlay",
+        "isSystem": true,
+        "uid": 10074
+    },
+    {
+        "packageName": "com.miui.voicetrigger",
+        "versionName": "v-8.0.0.21-qcom",
+        "versionCode": 2025101417,
+        "appLabel": "语音唤醒",
+        "isSystem": true,
+        "uid": 10181
+    },
+    {
+        "packageName": "com.miui.vsimcore",
+        "versionName": "1.0.9",
+        "versionCode": 109,
+        "appLabel": "MConnService",
+        "isSystem": true,
+        "uid": 1001
+    },
+    {
+        "packageName": "com.miui.wallpaper.overlay.customize",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "com.miui.wallpaper.overlay.customize",
+        "isSystem": true,
+        "uid": 10036
+    },
+    {
+        "packageName": "com.miui.weather2",
+        "versionName": "17.0.3.24-HD",
+        "versionCode": 170003024,
+        "appLabel": "天气",
+        "isSystem": false,
+        "uid": 10278
+    },
+    {
+        "packageName": "com.miui.wmsvc",
+        "versionName": "1.1.6",
+        "versionCode": 1010601,
+        "appLabel": "WMService",
+        "isSystem": true,
+        "uid": 1000
+    },
+    {
+        "packageName": "com.miui.yellowpage",
+        "versionName": "23.0.251030",
+        "versionCode": 230251030,
+        "appLabel": "生活黄页",
+        "isSystem": true,
+        "uid": 10136
+    },
+    {
+        "packageName": "com.miuix.editor",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "floatingwindow",
+        "isSystem": true,
+        "uid": 10226
+    },
+    {
+        "packageName": "com.nearme.fusionplay",
+        "versionName": "16.4.9.4",
+        "versionCode": 16494,
+        "appLabel": "PC 掌玩",
+        "isSystem": false,
+        "uid": 10443
+    },
+    {
+        "packageName": "com.netease.cloudmusic",
+        "versionName": "9.4.67",
+        "versionCode": 9004067,
+        "appLabel": "网易云音乐",
+        "isSystem": false,
+        "uid": 10312
+    },
+    {
+        "packageName": "com.netease.filmlytv",
+        "versionName": "2.9.10",
+        "versionCode": 371,
+        "appLabel": "网易爆米花",
+        "isSystem": false,
+        "uid": 10415
+    },
+    {
+        "packageName": "com.netease.gl",
+        "versionName": "4.5.0",
+        "versionCode": 98070,
+        "appLabel": "网易大神",
+        "isSystem": false,
+        "uid": 10311
+    },
+    {
+        "packageName": "com.netease.nshm",
+        "versionName": "3.2.41470058",
+        "versionCode": 1470058,
+        "appLabel": "逆水寒",
+        "isSystem": false,
+        "uid": 10433
+    },
+    {
+        "packageName": "com.netease.uu",
+        "versionName": "11.0.2",
+        "versionCode": 1389,
+        "appLabel": "UU加速器",
+        "isSystem": false,
+        "uid": 10356
+    },
+    {
+        "packageName": "com.netease.uuremote",
+        "versionName": "4.16.1",
+        "versionCode": 416001,
+        "appLabel": "UU远程",
+        "isSystem": false,
+        "uid": 10370
+    },
+    {
+        "packageName": "com.netease.uurouter",
+        "versionName": "6.0.0",
+        "versionCode": 610,
+        "appLabel": "UU主机加速器",
+        "isSystem": false,
+        "uid": 10414
+    },
+    {
+        "packageName": "com.newcall.overlay.miui",
+        "versionName": "1.0.1",
+        "versionCode": 34,
+        "appLabel": "com.newcall.overlay.miui",
+        "isSystem": true,
+        "uid": 10039
+    },
+    {
+        "packageName": "com.newskyer.draw",
+        "versionName": "6.6.6.1",
+        "versionCode": 141994,
+        "appLabel": "享做笔记",
+        "isSystem": false,
+        "uid": 10384
+    },
+    {
+        "packageName": "com.omarea.vtools",
+        "versionName": "9.1.5",
+        "versionCode": 920251228,
+        "appLabel": "Scene",
+        "isSystem": false,
+        "uid": 10318
+    },
+    {
+        "packageName": "com.onyx.galaxy.note",
+        "versionName": "1.3.2",
+        "versionCode": 5672,
+        "appLabel": "StarNote笔记",
+        "isSystem": false,
+        "uid": 10412
+    },
+    {
+        "packageName": "com.oppo.store",
+        "versionName": "4.61.3",
+        "versionCode": 406103,
+        "appLabel": "OPPO 商城",
+        "isSystem": false,
+        "uid": 10407
+    },
+    {
+        "packageName": "com.panda.mouse",
+        "versionName": "5.9",
+        "versionCode": 591,
+        "appLabel": "Panda Mouse Pro",
+        "isSystem": false,
+        "uid": 10440
+    },
+    {
+        "packageName": "com.parseus.codecinfo",
+        "versionName": "2.9.0",
+        "versionCode": 10028,
+        "appLabel": "Codec Info",
+        "isSystem": false,
+        "uid": 10435
+    },
+    {
+        "packageName": "com.ping.cimoc.manqu",
+        "versionName": "v1.4.1",
+        "versionCode": 15,
+        "appLabel": "漫趣漫画",
+        "isSystem": false,
+        "uid": 10385
+    },
+    {
+        "packageName": "com.prpr.musedash.TapTap",
+        "versionName": "5.6.2",
+        "versionCode": 509,
+        "appLabel": "喵斯快跑",
+        "isSystem": false,
+        "uid": 10434
+    },
+    {
+        "packageName": "com.qidian.QDReader",
+        "versionName": "7.9.446",
+        "versionCode": 1806,
+        "appLabel": "起点读书",
+        "isSystem": false,
+        "uid": 10454
+    },
+    {
+        "packageName": "com.qiyi.video.pad",
+        "versionName": "17.2.0",
+        "versionCode": 800170250,
+        "appLabel": "爱奇艺PAD",
+        "isSystem": false,
+        "uid": 10291
+    },
+    {
+        "packageName": "com.ql.app.discount",
+        "versionName": "1.0.5.0",
+        "versionCode": 64,
+        "appLabel": "六方",
+        "isSystem": false,
+        "uid": 10463
+    },
+    {
+        "packageName": "com.qti.dcf",
+        "versionName": "1.0",
+        "versionCode": 1,
+        "appLabel": "dcf",
+        "isSystem": true,
+        "uid": 10216
+    },
+    {
+        "packageName": "com.qti.dpmserviceapp",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "com.qti.dpmserviceapp",
+        "isSystem": true,
+        "uid": 1001
+    },
+    {
+        "packageName": "com.qti.ltebc",
+        "versionName": "MSDC_LA_5.4.05.00.0",
+        "versionCode": 5405000,
+        "appLabel": "LTE Broadcast Manager",
+        "isSystem": true,
+        "uid": 10206
+    },
+    {
+        "packageName": "com.qti.phone",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "com.qti.phone",
+        "isSystem": true,
+        "uid": 10149
+    },
+    {
+        "packageName": "com.qti.powermodule",
+        "versionName": "13",
+        "versionCode": 33,
+        "appLabel": "com.qti.powermodule",
+        "isSystem": true,
+        "uid": 10118
+    },
+    {
+        "packageName": "com.qti.qcc",
+        "versionName": "QCC16.0-20250629-3722a4b",
+        "versionCode": 6,
+        "appLabel": "QCC",
+        "isSystem": true,
+        "uid": 10228
+    },
+    {
+        "packageName": "com.qti.qualcomm.datastatusnotification",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "com.qti.qualcomm.datastatusnotification",
+        "isSystem": true,
+        "uid": 1001
+    },
+    {
+        "packageName": "com.qti.qualcomm.deviceinfo",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "设备信息",
+        "isSystem": true,
+        "uid": 1001
+    },
+    {
+        "packageName": "com.qti.service.colorservice",
+        "versionName": "1.0",
+        "versionCode": 1,
+        "appLabel": "com.qti.service.colorservice",
+        "isSystem": true,
+        "uid": 10232
+    },
+    {
+        "packageName": "com.qualcomm.atfwd",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "com.qualcomm.atfwd",
+        "isSystem": true,
+        "uid": 1001
+    },
+    {
+        "packageName": "com.qualcomm.atfwd2",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "com.qualcomm.atfwd2",
+        "isSystem": true,
+        "uid": 10149
+    },
+    {
+        "packageName": "com.qualcomm.location",
+        "versionName": "16.2025.7.29",
+        "versionCode": 16003,
+        "appLabel": "EmergencyLocServices",
+        "isSystem": true,
+        "uid": 10217
+    },
+    {
+        "packageName": "com.qualcomm.qcrilmsgtunnel",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "com.qualcomm.qcrilmsgtunnel",
+        "isSystem": true,
+        "uid": 10149
+    },
+    {
+        "packageName": "com.qualcomm.qti.cne",
+        "versionName": "12.23",
+        "versionCode": 12,
+        "appLabel": "CneApp",
+        "isSystem": true,
+        "uid": 10114
+    },
+    {
+        "packageName": "com.qualcomm.qti.confdialer",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "会议拨号器",
+        "isSystem": true,
+        "uid": 10148
+    },
+    {
+        "packageName": "com.qualcomm.qti.devicestatisticsservice",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "com.qualcomm.qti.devicestatisticsservice",
+        "isSystem": true,
+        "uid": 10149
+    },
+    {
+        "packageName": "com.qualcomm.qti.dynamicddsservice",
+        "versionName": "16.1",
+        "versionCode": 16,
+        "appLabel": "com.qualcomm.qti.dynamicddsservice",
+        "isSystem": true,
+        "uid": 1001
+    },
+    {
+        "packageName": "com.qualcomm.qti.gpudrivers.taro.api31",
+        "versionName": "0.1.0",
+        "versionCode": 4096,
+        "appLabel": "Adreno Graphics Drivers",
+        "isSystem": true,
+        "uid": 10117
+    },
+    {
+        "packageName": "com.qualcomm.qti.ims",
+        "versionName": "1.0",
+        "versionCode": 1,
+        "appLabel": "com.qualcomm.qti.ims",
+        "isSystem": true,
+        "uid": 10236
+    },
+    {
+        "packageName": "com.qualcomm.qti.poweroffalarm",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "关机闹钟",
+        "isSystem": true,
+        "uid": 10225
+    },
+    {
+        "packageName": "com.qualcomm.qti.powersavemode",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "Usable Power Mode",
+        "isSystem": true,
+        "uid": 10224
+    },
+    {
+        "packageName": "com.qualcomm.qti.qcolor",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "QColor",
+        "isSystem": true,
+        "uid": 10227
+    },
+    {
+        "packageName": "com.qualcomm.qti.qms.service.trustzoneaccess",
+        "versionName": "12",
+        "versionCode": 31,
+        "appLabel": "com.qualcomm.qti.qms.service.trustzoneaccess",
+        "isSystem": true,
+        "uid": 10120
+    },
+    {
+        "packageName": "com.qualcomm.qti.remoteSimlockAuth",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "com.qualcomm.qti.remoteSimlockAuth",
+        "isSystem": true,
+        "uid": 10187
+    },
+    {
+        "packageName": "com.qualcomm.qti.ridemodeaudio",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "RideMode Recording list",
+        "isSystem": true,
+        "uid": 10175
+    },
+    {
+        "packageName": "com.qualcomm.qti.server.qtiwifi",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "QtiWifiService",
+        "isSystem": true,
+        "uid": 10208
+    },
+    {
+        "packageName": "com.qualcomm.qti.server.wigig.tethering.rro",
+        "versionName": "1.0",
+        "versionCode": 1,
+        "appLabel": "com.qualcomm.qti.server.wigig.tethering.rro",
+        "isSystem": true,
+        "uid": 10230
+    },
+    {
+        "packageName": "com.qualcomm.qti.services.systemhelper",
+        "versionName": "1.1",
+        "versionCode": 1,
+        "appLabel": "System Helper Service",
+        "isSystem": true,
+        "uid": 1000
+    },
+    {
+        "packageName": "com.qualcomm.qti.simcontacts",
+        "versionName": "1.1.0",
+        "versionCode": 2,
+        "appLabel": "SIM卡联系人",
+        "isSystem": true,
+        "uid": 10231
+    },
+    {
+        "packageName": "com.qualcomm.qti.telephonyservice",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "com.qualcomm.qti.telephonyservice",
+        "isSystem": true,
+        "uid": 10149
+    },
+    {
+        "packageName": "com.qualcomm.qti.uceShimService",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "uceShimService",
+        "isSystem": true,
+        "uid": 1001
+    },
+    {
+        "packageName": "com.qualcomm.qti.uim",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "com.qualcomm.qti.uim",
+        "isSystem": true,
+        "uid": 10189
+    },
+    {
+        "packageName": "com.qualcomm.qti.uimGbaApp",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "com.qualcomm.qti.uimGbaApp",
+        "isSystem": true,
+        "uid": 10191
+    },
+    {
+        "packageName": "com.qualcomm.qti.workloadclassifier",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "com.qualcomm.qti.workloadclassifier",
+        "isSystem": true,
+        "uid": 10235
+    },
+    {
+        "packageName": "com.qualcomm.qti.xrcb",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "XRCB",
+        "isSystem": true,
+        "uid": 10218
+    },
+    {
+        "packageName": "com.qualcomm.qti.xrvd.service",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "XRVD",
+        "isSystem": true,
+        "uid": 1000
+    },
+    {
+        "packageName": "com.qualcomm.qti.xrwifi",
+        "versionName": "0.1.3",
+        "versionCode": 4,
+        "appLabel": "XR Wifi Service",
+        "isSystem": true,
+        "uid": 10220
+    },
+    {
+        "packageName": "com.qualcomm.qtil.aptxacu",
+        "versionName": "16.0.3",
+        "versionCode": 1,
+        "appLabel": "acu",
+        "isSystem": true,
+        "uid": 10233
+    },
+    {
+        "packageName": "com.qualcomm.timeservice",
+        "versionName": "12",
+        "versionCode": 31,
+        "appLabel": "com.qualcomm.timeservice",
+        "isSystem": true,
+        "uid": 10119
+    },
+    {
+        "packageName": "com.qualcomm.uimremoteclient",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "com.qualcomm.uimremoteclient",
+        "isSystem": true,
+        "uid": 10194
+    },
+    {
+        "packageName": "com.qualcomm.uimremoteserver",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "com.qualcomm.uimremoteserver",
+        "isSystem": true,
+        "uid": 10193
+    },
+    {
+        "packageName": "com.qualcomm.wfd.service",
+        "versionName": "2.0",
+        "versionCode": 2,
+        "appLabel": "Wfd Service",
+        "isSystem": true,
+        "uid": 10213
+    },
+    {
+        "packageName": "com.quark.browser",
+        "versionName": "10.5.1.1026",
+        "versionCode": 1026,
+        "appLabel": "夸克",
+        "isSystem": false,
+        "uid": 10315
+    },
+    {
+        "packageName": "com.rcmiku.payload.dumper.compose",
+        "versionName": "1.5",
+        "versionCode": 15,
+        "appLabel": "Payload Dumper",
+        "isSystem": false,
+        "uid": 10346
+    },
+    {
+        "packageName": "com.ruanmei.ithome",
+        "versionName": "9.22",
+        "versionCode": 20009220,
+        "appLabel": "IT之家",
+        "isSystem": false,
+        "uid": 10390
+    },
+    {
+        "packageName": "com.salt.music",
+        "versionName": "11.0.4",
+        "versionCode": 2025123102,
+        "appLabel": "Salt Player",
+        "isSystem": false,
+        "uid": 10364
+    },
+    {
+        "packageName": "com.sankuai.meituan",
+        "versionName": "12.52.403",
+        "versionCode": 1200520403,
+        "appLabel": "美团",
+        "isSystem": false,
+        "uid": 10360
+    },
+    {
+        "packageName": "com.sankuai.meituan.takeoutnew",
+        "versionName": "8.68.6",
+        "versionCode": 800680006,
+        "appLabel": "美团外卖",
+        "isSystem": false,
+        "uid": 10323
+    },
+    {
+        "packageName": "com.sbskk.k23",
+        "versionName": "3.3.4",
+        "versionCode": 30304,
+        "appLabel": "可可影视",
+        "isSystem": false,
+        "uid": 10344
+    },
+    {
+        "packageName": "com.sevtinge.hyperceiler",
+        "versionName": "2.6.162_e17413bdd_r4296",
+        "versionCode": 4296,
+        "appLabel": "HyperCeiler",
+        "isSystem": false,
+        "uid": 10353
+    },
+    {
+        "packageName": "com.sina.weibo",
+        "versionName": "16.2.2",
+        "versionCode": 7837,
+        "appLabel": "微博",
+        "isSystem": false,
+        "uid": 10365
+    },
+    {
+        "packageName": "com.smile.gifmaker",
+        "versionName": "14.0.20.46232",
+        "versionCode": 46232,
+        "appLabel": "快手",
+        "isSystem": false,
+        "uid": 10287
+    },
+    {
+        "packageName": "com.smzdm.client.android",
+        "versionName": "11.1.60",
+        "versionCode": 1160,
+        "appLabel": "什么值得买",
+        "isSystem": false,
+        "uid": 10359
+    },
+    {
+        "packageName": "com.snda.wifilocating",
+        "versionName": "5.2.05",
+        "versionCode": 260225,
+        "appLabel": "WiFi万能钥匙",
+        "isSystem": false,
+        "uid": 10448
+    },
+    {
+        "packageName": "com.sohu.inputmethod.sogou.xiaomi",
+        "versionName": "10.32.21.202511241122",
+        "versionCode": 10030,
+        "appLabel": "搜狗输入法小米版",
+        "isSystem": true,
+        "uid": 10180
+    },
+    {
+        "packageName": "com.sothx.notes.overlay",
+        "versionName": "1.0",
+        "versionCode": 1,
+        "appLabel": "com.sothx.notes.overlay",
+        "isSystem": true,
+        "uid": 10040
+    },
+    {
+        "packageName": "com.sothx.soundrecorder.overlay",
+        "versionName": "1.0",
+        "versionCode": 1,
+        "appLabel": "com.sothx.soundrecorder.overlay",
+        "isSystem": true,
+        "uid": 10044
+    },
+    {
+        "packageName": "com.sothx.thememanager.overlay",
+        "versionName": "1.0",
+        "versionCode": 1,
+        "appLabel": "com.sothx.thememanager.overlay",
+        "isSystem": true,
+        "uid": 10051
+    },
+    {
+        "packageName": "com.speedsoftware.sqleditor",
+        "versionName": "2.5.2",
+        "versionCode": 24,
+        "appLabel": "SQLite Editor",
+        "isSystem": false,
+        "uid": 10343
+    },
+    {
+        "packageName": "com.ss.android.ugc.aweme",
+        "versionName": "37.8.0",
+        "versionCode": 370801,
+        "appLabel": "抖音",
+        "isSystem": false,
+        "uid": 10277
+    },
+    {
+        "packageName": "com.ss.android.ugc.aweme.lite",
+        "versionName": "37.8.0",
+        "versionCode": 370801,
+        "appLabel": "抖音极速版",
+        "isSystem": false,
+        "uid": 10366
+    },
+    {
+        "packageName": "com.sspai.sspaiandroid",
+        "versionName": "2.34.13",
+        "versionCode": 2034013,
+        "appLabel": "少数派",
+        "isSystem": false,
+        "uid": 10401
+    },
+    {
+        "packageName": "com.st.android.nfc_extensions_16",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "ST Extension Service",
+        "isSystem": true,
+        "uid": 1027
+    },
+    {
+        "packageName": "com.taobao.idlefish",
+        "versionName": "7.25.10",
+        "versionCode": 481,
+        "appLabel": "闲鱼",
+        "isSystem": false,
+        "uid": 10328
+    },
+    {
+        "packageName": "com.taobao.litetao",
+        "versionName": "10.56.11",
+        "versionCode": 305,
+        "appLabel": "淘宝特价版",
+        "isSystem": false,
+        "uid": 10399
+    },
+    {
+        "packageName": "com.taobao.taobao",
+        "versionName": "10.58.10",
+        "versionCode": 829,
+        "appLabel": "淘宝",
+        "isSystem": false,
+        "uid": 10406
+    },
+    {
+        "packageName": "com.taptap",
+        "versionName": "2.93.0-rel#100100",
+        "versionCode": 293001001,
+        "appLabel": "TapTap",
+        "isSystem": false,
+        "uid": 10416
+    },
+    {
+        "packageName": "com.tencent.android.qqdownloader",
+        "versionName": "9.1.3",
+        "versionCode": 9133130,
+        "appLabel": "应用宝",
+        "isSystem": false,
+        "uid": 10447
+    },
+    {
+        "packageName": "com.tencent.androidqqmail",
+        "versionName": "7.1.2",
+        "versionCode": 10165309,
+        "appLabel": "QQ邮箱",
+        "isSystem": false,
+        "uid": 10304
+    },
+    {
+        "packageName": "com.tencent.mm",
+        "versionName": "8.0.69",
+        "versionCode": 3040,
+        "appLabel": "微信",
+        "isSystem": false,
+        "uid": 10299
+    },
+    {
+        "packageName": "com.tencent.mobileqq",
+        "versionName": "9.2.66",
+        "versionCode": 13188,
+        "appLabel": "QQ",
+        "isSystem": false,
+        "uid": 99910295
+    },
+    {
+        "packageName": "com.tencent.mobileqq",
+        "versionName": "9.2.66",
+        "versionCode": 13188,
+        "appLabel": "QQ",
+        "isSystem": false,
+        "uid": 99910295
+    },
+    {
+        "packageName": "com.tencent.qqlive",
+        "versionName": "9.03.10.31245",
+        "versionCode": 31245,
+        "appLabel": "腾讯视频",
+        "isSystem": false,
+        "uid": 10371
+    },
+    {
+        "packageName": "com.tencent.qqmusic",
+        "versionName": "20.1.5.8",
+        "versionCode": 6958,
+        "appLabel": "QQ音乐",
+        "isSystem": false,
+        "uid": 10296
+    },
+    {
+        "packageName": "com.tencent.qqmusicpad",
+        "versionName": "6.9.0.7",
+        "versionCode": 6090007,
+        "appLabel": "QQ音乐HD",
+        "isSystem": false,
+        "uid": 10404
+    },
+    {
+        "packageName": "com.tencent.soter.soterserver",
+        "versionName": "12",
+        "versionCode": 31,
+        "appLabel": "SoterService",
+        "isSystem": true,
+        "uid": 10116
+    },
+    {
+        "packageName": "com.tencent.start",
+        "versionName": "0.10.200.22463",
+        "versionCode": 10056,
+        "appLabel": "腾讯START云游戏",
+        "isSystem": false,
+        "uid": 10438
+    },
+    {
+        "packageName": "com.tencent.tmgp.nz",
+        "versionName": "1.0.30.860.0",
+        "versionCode": 3031435,
+        "appLabel": "逆战：未来",
+        "isSystem": false,
+        "uid": 10455
+    },
+    {
+        "packageName": "com.tencent.wemeet.app",
+        "versionName": "3.41.10.443",
+        "versionCode": 2023961414,
+        "appLabel": "腾讯会议",
+        "isSystem": false,
+        "uid": 10321
+    },
+    {
+        "packageName": "com.tencent.weread",
+        "versionName": "10.0.3",
+        "versionCode": 10167270,
+        "appLabel": "微信读书",
+        "isSystem": false,
+        "uid": 10352
+    },
+    {
+        "packageName": "com.topmiaohan.hidebllist",
+        "versionName": "1.5",
+        "versionCode": 15,
+        "appLabel": "隐藏BL列表",
+        "isSystem": false,
+        "uid": 10388
+    },
+    {
+        "packageName": "com.topmiaohan.superlist",
+        "versionName": "1.0",
+        "versionCode": 1,
+        "appLabel": "超级用户列表",
+        "isSystem": false,
+        "uid": 10397
+    },
+    {
+        "packageName": "com.tsng.hidemyapplist",
+        "versionName": "3.3.1.r424.95f8f82",
+        "versionCode": 424,
+        "appLabel": "隐藏应用列表",
+        "isSystem": false,
+        "uid": 10329
+    },
+    {
+        "packageName": "com.tvbc.maiduidui",
+        "versionName": "5.8.02",
+        "versionCode": 50802,
+        "appLabel": "埋堆堆",
+        "isSystem": false,
+        "uid": 10420
+    },
+    {
+        "packageName": "com.unofficial.orekemo",
+        "versionName": "1.0",
+        "versionCode": 1,
+        "appLabel": "Orekemo",
+        "isSystem": false,
+        "uid": 10342
+    },
+    {
+        "packageName": "com.upgadata.up7723",
+        "versionName": "5.7.5",
+        "versionCode": 575,
+        "appLabel": "7723游戏盒",
+        "isSystem": false,
+        "uid": 10461
+    },
+    {
+        "packageName": "com.vortex",
+        "versionName": "1.5.6",
+        "versionCode": 10506,
+        "appLabel": "NTHUCC",
+        "isSystem": false,
+        "uid": 10375
+    },
+    {
+        "packageName": "com.wapi.wapicertmanage",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "WAPI证书",
+        "isSystem": true,
+        "uid": 1000
+    },
+    {
+        "packageName": "com.x7890.shortcutcreator",
+        "versionName": "1.17",
+        "versionCode": 117,
+        "appLabel": "创建快捷方式",
+        "isSystem": false,
+        "uid": 10398
+    },
+    {
+        "packageName": "com.xiachufang.lazycook",
+        "versionName": "3.0.4",
+        "versionCode": 3989,
+        "appLabel": "懒饭",
+        "isSystem": false,
+        "uid": 10324
+    },
+    {
+        "packageName": "com.xiaoji.egggame",
+        "versionName": "5.3.5",
+        "versionCode": 78,
+        "appLabel": "盖世游戏",
+        "isSystem": false,
+        "uid": 10327
+    },
+    {
+        "packageName": "com.xiaomi.ab",
+        "versionName": "3.0.1.20250225",
+        "versionCode": 175,
+        "appLabel": "售后支持",
+        "isSystem": true,
+        "uid": 10190
+    },
+    {
+        "packageName": "com.xiaomi.account",
+        "versionName": "R-25.10.23.00",
+        "versionCode": 325102300,
+        "appLabel": "小米账号",
+        "isSystem": true,
+        "uid": 10167
+    },
+    {
+        "packageName": "com.xiaomi.aiasst.vision",
+        "versionName": "5.11.2.21",
+        "versionCode": 540110221,
+        "appLabel": "翻译",
+        "isSystem": true,
+        "uid": 1000
+    },
+    {
+        "packageName": "com.xiaomi.aicr",
+        "versionName": "3.4.6",
+        "versionCode": 2030030406,
+        "appLabel": "小米澎湃AI引擎",
+        "isSystem": true,
+        "uid": 10128
+    },
+    {
+        "packageName": "com.xiaomi.aon",
+        "versionName": "1.0.90",
+        "versionCode": 90,
+        "appLabel": "com.xiaomi.aon.AonApplication",
+        "isSystem": true,
+        "uid": 1000
+    },
+    {
+        "packageName": "com.xiaomi.app.toolbox",
+        "versionName": "1.0",
+        "versionCode": 1,
+        "appLabel": "Toolbox",
+        "isSystem": true,
+        "uid": 10215
+    },
+    {
+        "packageName": "com.xiaomi.barrage",
+        "versionName": "3.0.0.251010",
+        "versionCode": 321,
+        "appLabel": "弹幕通知",
+        "isSystem": true,
+        "uid": 1000
+    },
+    {
+        "packageName": "com.xiaomi.bluetooth",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "Bluetooth Extension",
+        "isSystem": true,
+        "uid": 1002
+    },
+    {
+        "packageName": "com.xiaomi.bluetooth.rro.device.config.overlay",
+        "versionName": "1.0",
+        "versionCode": 1,
+        "appLabel": "com.xiaomi.bluetooth.rro.device.config.overlay",
+        "isSystem": true,
+        "uid": 10030
+    },
+    {
+        "packageName": "com.xiaomi.cadlauncher",
+        "versionName": "3.2.5",
+        "versionCode": 325,
+        "appLabel": "中望CAD",
+        "isSystem": false,
+        "uid": 10376
+    },
+    {
+        "packageName": "com.xiaomi.cajlauncher",
+        "versionName": "3.2.0",
+        "versionCode": 320,
+        "appLabel": "CAJViewer PC",
+        "isSystem": false,
+        "uid": 10383
+    },
+    {
+        "packageName": "com.xiaomi.cameramind",
+        "versionName": "1.0.0",
+        "versionCode": 1,
+        "appLabel": "CameraMind",
+        "isSystem": true,
+        "uid": 6120
+    },
+    {
+        "packageName": "com.xiaomi.cameratools",
+        "versionName": "25.09.04.13.0",
+        "versionCode": 250904130,
+        "appLabel": "相机标定",
+        "isSystem": true,
+        "uid": 10147
+    },
+    {
+        "packageName": "com.xiaomi.continuity.sdkapp",
+        "versionName": "5.0.136.10.0625201",
+        "versionCode": 5000136,
+        "appLabel": "com.xiaomi.continuity.sdkapp",
+        "isSystem": true,
+        "uid": 10154
+    },
+    {
+        "packageName": "com.xiaomi.devauth",
+        "versionName": "1.0.240109",
+        "versionCode": 240109,
+        "appLabel": "devauth",
+        "isSystem": true,
+        "uid": 10168
+    },
+    {
+        "packageName": "com.xiaomi.digitalkey",
+        "versionName": "13.0.43",
+        "versionCode": 243,
+        "appLabel": "小米数字钥匙框架",
+        "isSystem": true,
+        "uid": 1000
+    },
+    {
+        "packageName": "com.xiaomi.finddevice",
+        "versionName": "20.13.34",
+        "versionCode": 201334,
+        "appLabel": "查找",
+        "isSystem": true,
+        "uid": 6110
+    },
+    {
+        "packageName": "com.xiaomi.gamecenter",
+        "versionName": "81.11.0.200",
+        "versionCode": 811100200,
+        "appLabel": "游戏中心",
+        "isSystem": false,
+        "uid": 10275
+    },
+    {
+        "packageName": "com.xiaomi.gamecenter.sdk.service",
+        "versionName": "8.8.21",
+        "versionCode": 8802100,
+        "appLabel": "游戏服务",
+        "isSystem": true,
+        "uid": 99910138
+    },
+    {
+        "packageName": "com.xiaomi.gamecenter.sdk.service",
+        "versionName": "8.8.21",
+        "versionCode": 8802100,
+        "appLabel": "游戏服务",
+        "isSystem": true,
+        "uid": 99910138
+    },
+    {
+        "packageName": "com.xiaomi.joyose",
+        "versionName": "2.4.77",
+        "versionCode": 477,
+        "appLabel": "Joyose",
+        "isSystem": true,
+        "uid": 1000
+    },
+    {
+        "packageName": "com.xiaomi.kidspace",
+        "versionName": "1.4.20.260107",
+        "versionCode": 10420,
+        "appLabel": "小米教育中心",
+        "isSystem": true,
+        "uid": 10145
+    },
+    {
+        "packageName": "com.xiaomi.location.fused",
+        "versionName": "16.2025.7.22.1",
+        "versionCode": 16002,
+        "appLabel": "融合位置服务",
+        "isSystem": true,
+        "uid": 1000
+    },
+    {
+        "packageName": "com.xiaomi.macro",
+        "versionName": "2.2.12.S",
+        "versionCode": 31220532,
+        "appLabel": "自动连招",
+        "isSystem": true,
+        "uid": 10188
+    },
+    {
+        "packageName": "com.xiaomi.market",
+        "versionName": "8.20.0",
+        "versionCode": 8002440,
+        "appLabel": "应用商店",
+        "isSystem": true,
+        "uid": 10164
+    },
+    {
+        "packageName": "com.xiaomi.metoknlp",
+        "versionName": "16.2025.11.20",
+        "versionCode": 16015,
+        "appLabel": "网络位置服务",
+        "isSystem": true,
+        "uid": 10135
+    },
+    {
+        "packageName": "com.xiaomi.mi_connect_service",
+        "versionName": "5.1.143.10",
+        "versionCode": 50011431,
+        "appLabel": "小米互联通信服务",
+        "isSystem": true,
+        "uid": 1000
+    },
+    {
+        "packageName": "com.xiaomi.mibrain.speech",
+        "versionName": "1.6.0",
+        "versionCode": 60,
+        "appLabel": "系统语音引擎",
+        "isSystem": false,
+        "uid": 10262
+    },
+    {
+        "packageName": "com.xiaomi.micloud.sdk",
+        "versionName": "2.0.0.0",
+        "versionCode": 20,
+        "appLabel": "com.xiaomi.micloudsdk.SdkApplication",
+        "isSystem": true,
+        "uid": 10209
+    },
+    {
+        "packageName": "com.xiaomi.miralink",
+        "versionName": "3.0.3.2",
+        "versionCode": 3000302,
+        "appLabel": "无线副屏",
+        "isSystem": true,
+        "uid": 10170
+    },
+    {
+        "packageName": "com.xiaomi.mirror",
+        "versionName": "17.01.11-12.26.2",
+        "versionCode": 170111,
+        "appLabel": "跨屏协同服务",
+        "isSystem": true,
+        "uid": 1000
+    },
+    {
+        "packageName": "com.xiaomi.mis",
+        "versionName": "2.3.8-2025123020",
+        "versionCode": 203008,
+        "appLabel": "小米汽车互联服务",
+        "isSystem": true,
+        "uid": 10155
+    },
+    {
+        "packageName": "com.xiaomi.misettings",
+        "versionName": "15.03.1103.10-tablet",
+        "versionCode": 251103319,
+        "appLabel": "小米设置",
+        "isSystem": true,
+        "uid": 1000
+    },
+    {
+        "packageName": "com.xiaomi.mslgrdp",
+        "versionName": "3.0.2",
+        "versionCode": 302,
+        "appLabel": "PC 框架",
+        "isSystem": true,
+        "uid": 7100
+    },
+    {
+        "packageName": "com.xiaomi.mtb",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "鲁班(MTB)",
+        "isSystem": true,
+        "uid": 1000
+    },
+    {
+        "packageName": "com.xiaomi.otrpbroker",
+        "versionName": "1.0.250820",
+        "versionCode": 250820,
+        "appLabel": "otrpbroker",
+        "isSystem": true,
+        "uid": 1000
+    },
+    {
+        "packageName": "com.xiaomi.payment",
+        "versionName": "2.9.4",
+        "versionCode": 2003064,
+        "appLabel": "米币支付",
+        "isSystem": true,
+        "uid": 10177
+    },
+    {
+        "packageName": "com.xiaomi.phone",
+        "versionName": "15.0.2",
+        "versionCode": 38,
+        "appLabel": "HyperPhone",
+        "isSystem": true,
+        "uid": 1001
+    },
+    {
+        "packageName": "com.xiaomi.phone.overlay",
+        "versionName": "1.0.3",
+        "versionCode": 34,
+        "appLabel": "com.xiaomi.phone.overlay",
+        "isSystem": true,
+        "uid": 10029
+    },
+    {
+        "packageName": "com.xiaomi.scanner",
+        "versionName": "15.9.52",
+        "versionCode": 1322032472,
+        "appLabel": "AI扫描",
+        "isSystem": false,
+        "uid": 10276
+    },
+    {
+        "packageName": "com.xiaomi.security.onetrack",
+        "versionName": "1.0.250813",
+        "versionCode": 250813,
+        "appLabel": "SecurityOnetrackService",
+        "isSystem": true,
+        "uid": 10176
+    },
+    {
+        "packageName": "com.xiaomi.shop",
+        "versionName": "5.48.0.20260205.r1",
+        "versionCode": 20260205,
+        "appLabel": "小米商城",
+        "isSystem": false,
+        "uid": 10410
+    },
+    {
+        "packageName": "com.xiaomi.smarthome",
+        "versionName": "11.1.707",
+        "versionCode": 11011707,
+        "appLabel": "米家",
+        "isSystem": false,
+        "uid": 10303
+    },
+    {
+        "packageName": "com.xiaomi.touchservice",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "com.xiaomi.touchservice",
+        "isSystem": true,
+        "uid": 1000
+    },
+    {
+        "packageName": "com.xiaomi.trustservice",
+        "versionName": "1.2.251009",
+        "versionCode": 12251009,
+        "appLabel": "MiTrustService",
+        "isSystem": true,
+        "uid": 1000
+    },
+    {
+        "packageName": "com.xiaomi.ugd",
+        "versionName": "1.2.2",
+        "versionCode": 122,
+        "appLabel": "GPU 驱动更新",
+        "isSystem": true,
+        "uid": 10186
+    },
+    {
+        "packageName": "com.xiaomi.vipaccount",
+        "versionName": "6.6.0.P",
+        "versionCode": 260107,
+        "appLabel": "小米社区",
+        "isSystem": false,
+        "uid": 10268
+    },
+    {
+        "packageName": "com.xiaomi.waedisplay",
+        "versionName": "1.04.20-68df5df_25.01.16",
+        "versionCode": 17,
+        "appLabel": "WAE Display",
+        "isSystem": false,
+        "uid": 10431
+    },
+    {
+        "packageName": "com.xiaomi.wpslauncher",
+        "versionName": "3.4.6",
+        "versionCode": 346,
+        "appLabel": "WPS Office PC",
+        "isSystem": false,
+        "uid": 10373
+    },
+    {
+        "packageName": "com.xiaomi.xmsf",
+        "versionName": "7.4.87-C",
+        "versionCode": 70004087,
+        "appLabel": "小米服务框架",
+        "isSystem": true,
+        "uid": 99910195
+    },
+    {
+        "packageName": "com.xiaomi.xmsf",
+        "versionName": "7.4.87-C",
+        "versionCode": 70004087,
+        "appLabel": "小米服务框架",
+        "isSystem": true,
+        "uid": 99910195
+    },
+    {
+        "packageName": "com.xiaomi.xmsfkeeper",
+        "versionName": "1.0.5",
+        "versionCode": 10005,
+        "appLabel": "Xiaomi Service Framework Keeper",
+        "isSystem": true,
+        "uid": 10182
+    },
+    {
+        "packageName": "com.xingin.xhs",
+        "versionName": "9.19.4",
+        "versionCode": 9194803,
+        "appLabel": "小红书",
+        "isSystem": false,
+        "uid": 10358
+    },
+    {
+        "packageName": "com.xmcy.hykb",
+        "versionName": "1.5.7.807",
+        "versionCode": 382,
+        "appLabel": "好游快爆",
+        "isSystem": false,
+        "uid": 10332
+    },
+    {
+        "packageName": "com.xunmeng.pinduoduo",
+        "versionName": "7.95.0",
+        "versionCode": 79500,
+        "appLabel": "拼多多",
+        "isSystem": false,
+        "uid": 10347
+    },
+    {
+        "packageName": "com.xzl.pandaactivate",
+        "versionName": "10.0",
+        "versionCode": 10,
+        "appLabel": "Panda Activate",
+        "isSystem": false,
+        "uid": 10449
+    },
+    {
+        "packageName": "com.yifeplayte.maxfreeform",
+        "versionName": "4.0.1",
+        "versionCode": 27,
+        "appLabel": "MaxFreeForm",
+        "isSystem": false,
+        "uid": 10377
+    },
+    {
+        "packageName": "com.youdao.translator",
+        "versionName": "4.3.22",
+        "versionCode": 20251127,
+        "appLabel": "有道翻译官",
+        "isSystem": false,
+        "uid": 10340
+    },
+    {
+        "packageName": "com.yuk.fuckMiuiThemeManager",
+        "versionName": "1.7-final",
+        "versionCode": 17,
+        "appLabel": "Miui 主题破解",
+        "isSystem": false,
+        "uid": 10424
+    },
+    {
+        "packageName": "com.yxer.packageinstalles",
+        "versionName": "2.6.9-beta",
+        "versionCode": 344,
+        "appLabel": "R-安装组件",
+        "isSystem": false,
+        "uid": 10348
+    },
+    {
+        "packageName": "com.yzdhz.transplantoverlay_shadow",
+        "versionName": "1.0",
+        "versionCode": 1,
+        "appLabel": "TransplantOverlay_Shadow",
+        "isSystem": true,
+        "uid": 10070
+    },
+    {
+        "packageName": "dev.miuiicons.pedroz",
+        "versionName": "3.0.2",
+        "versionCode": 1698514773,
+        "appLabel": "完美图标计划",
+        "isSystem": false,
+        "uid": 10418
+    },
+    {
+        "packageName": "github.tornaco.android.thanos.pro",
+        "versionName": "8.4-row",
+        "versionCode": 3350588,
+        "appLabel": "Thanox Pro",
+        "isSystem": false,
+        "uid": 10411
+    },
+    {
+        "packageName": "info.muge.appshare",
+        "versionName": "5.0.5",
+        "versionCode": 395,
+        "appLabel": "AppShare",
+        "isSystem": false,
+        "uid": 10437
+    },
+    {
+        "packageName": "io.github.a13e300.ksuwebui",
+        "versionName": "1.0",
+        "versionCode": 48,
+        "appLabel": "KsuWebUI",
+        "isSystem": false,
+        "uid": 10389
+    },
+    {
+        "packageName": "io.github.vvb2060.keyattestation",
+        "versionName": "1.8.4",
+        "versionCode": 198,
+        "appLabel": "密钥认证",
+        "isSystem": false,
+        "uid": 10393
+    },
+    {
+        "packageName": "mark.via",
+        "versionName": "7.0.0",
+        "versionCode": 20260211,
+        "appLabel": "Via",
+        "isSystem": false,
+        "uid": 10322
+    },
+    {
+        "packageName": "me.ele",
+        "versionName": "12.1.68",
+        "versionCode": 1501,
+        "appLabel": "淘宝闪购",
+        "isSystem": false,
+        "uid": 10316
+    },
+    {
+        "packageName": "me.weishu.kernelsu",
+        "versionName": "v3.1.0",
+        "versionCode": 32302,
+        "appLabel": "KernelSU",
+        "isSystem": false,
+        "uid": 10396
+    },
+    {
+        "packageName": "miui.systemui.plugin",
+        "versionName": "17.0.3.2.3",
+        "versionCode": 170030203,
+        "appLabel": "系统界面组件",
+        "isSystem": true,
+        "uid": 1000
+    },
+    {
+        "packageName": "net.huanci.hsjpro",
+        "versionName": "3.3.2",
+        "versionCode": 265,
+        "appLabel": "画世界Pro",
+        "isSystem": false,
+        "uid": 10279
+    },
+    {
+        "packageName": "org.codeaurora.ims",
+        "versionName": "1.0",
+        "versionCode": 1,
+        "appLabel": "org.codeaurora.ims",
+        "isSystem": true,
+        "uid": 10219
+    },
+    {
+        "packageName": "org.fdroid.fdroid",
+        "versionName": "1.23.0",
+        "versionCode": 1023050,
+        "appLabel": "F-Droid",
+        "isSystem": false,
+        "uid": 10362
+    },
+    {
+        "packageName": "org.ifaa.aidl.manager",
+        "versionName": "12",
+        "versionCode": 31,
+        "appLabel": "IFAAService",
+        "isSystem": true,
+        "uid": 99910113
+    },
+    {
+        "packageName": "org.ifaa.aidl.manager",
+        "versionName": "12",
+        "versionCode": 31,
+        "appLabel": "IFAAService",
+        "isSystem": true,
+        "uid": 99910113
+    },
+    {
+        "packageName": "org.kde.kdeconnect_tp",
+        "versionName": "1.33.4",
+        "versionCode": 13304,
+        "appLabel": "KDE Connect",
+        "isSystem": false,
+        "uid": 10298
+    },
+    {
+        "packageName": "org.mipay.android.manager",
+        "versionName": "12",
+        "versionCode": 31,
+        "appLabel": "MipayService",
+        "isSystem": true,
+        "uid": 99910115
+    },
+    {
+        "packageName": "org.mipay.android.manager",
+        "versionName": "12",
+        "versionCode": 31,
+        "appLabel": "MipayService",
+        "isSystem": true,
+        "uid": 99910115
+    },
+    {
+        "packageName": "top.yukonga.updater.kmp",
+        "versionName": "1.5.2",
+        "versionCode": 354,
+        "appLabel": "Updater",
+        "isSystem": false,
+        "uid": 10361
+    },
+    {
+        "packageName": "tv.danmaku.bili",
+        "versionName": "8.84.0",
+        "versionCode": 8840100,
+        "appLabel": "哔哩哔哩",
+        "isSystem": false,
+        "uid": 10331
+    },
+    {
+        "packageName": "tv.danmaku.bilibilihd",
+        "versionName": "2.5.1",
+        "versionCode": 2051100,
+        "appLabel": "哔哩哔哩HD",
+        "isSystem": false,
+        "uid": 10417
+    },
+    {
+        "packageName": "vendor.qti.bluetooth.xpan",
+        "versionName": "1.0.1",
+        "versionCode": 1,
+        "appLabel": "vendor.qti.bluetooth.xpan.XpanApplication",
+        "isSystem": true,
+        "uid": 10214
+    },
+    {
+        "packageName": "vendor.qti.data.ntnsatapp",
+        "versionName": "16.2",
+        "versionCode": 16,
+        "appLabel": "NtnSatApp",
+        "isSystem": true,
+        "uid": 1001
+    },
+    {
+        "packageName": "vendor.qti.frameworks.utils",
+        "versionName": "1.0",
+        "versionCode": 1,
+        "appLabel": "FrameworksUtilsApp",
+        "isSystem": true,
+        "uid": 1000
+    },
+    {
+        "packageName": "vendor.qti.hardware.cacert.server",
+        "versionName": "12.6",
+        "versionCode": 12,
+        "appLabel": "CACertApp",
+        "isSystem": true,
+        "uid": 10114
+    },
+    {
+        "packageName": "vendor.qti.imsdatachannel",
+        "versionName": "16",
+        "versionCode": 36,
+        "appLabel": "vendor.qti.imsdatachannel",
+        "isSystem": true,
+        "uid": 1001
+    },
+    {
+        "packageName": "vendor.qti.iwlan",
+        "versionName": "12.12",
+        "versionCode": 12,
+        "appLabel": "vendor.qti.iwlan",
+        "isSystem": true,
+        "uid": 10114
+    }
+]

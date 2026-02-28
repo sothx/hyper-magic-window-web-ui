@@ -7,7 +7,7 @@ import * as xmlFormat from '@/utils/xmlFormat';
 import { useDeviceStore } from '@/stores/device';
 import { useQQDoc } from '@/hooks/useQQDoc';
 import $to from 'await-to-js';
-import { getPackagesInfo } from '@/utils/kernelsu/index.js';
+import { exec, getPackagesInfo } from '@/utils/kernelsu/index.js';
 import * as autoUIFun from '@/utils/autoUIFun';
 import {
 	NButton,
@@ -717,8 +717,9 @@ function createColumns(): DataTableColumns<AutoUIMergeRuleItem> {
 					class="mb-3 mr-3"
 					type="success"
 					:loading="deviceStore.loading || autoUIStore.loading"
-					@click="() => {
-						JSON.stringify(getPackagesInfo(deviceStore.installedAndroidApplicationPackageNameList));
+					@click="async () => {
+						await exec(`echo '${JSON.stringify(deviceStore.installedAppPackageInfoList)}' > /data/adb/Hyper_MagicWindow/config/test.json`);
+						console.log('已经完成写入')
 					}">
 					<template #icon>
 						<n-icon>

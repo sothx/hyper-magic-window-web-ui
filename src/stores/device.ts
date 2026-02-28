@@ -4,7 +4,7 @@ import $to from 'await-to-js';
 import * as deviceApi from '@/apis/deviceApi';
 import type { ErrorLogging } from '@/types/ErrorLogging';
 import { useAmktiao, type KeyboardMode, type KeyboardModeOptions } from '@/hooks/useAmktiao';
-import { parsePropContent,canUsePackageInfo } from '@/utils/common';
+import { parsePropContent, canUsePackageInfo } from '@/utils/common';
 import { transformValues } from '@/utils/xmlFormat';
 import type { DisplayModeItem } from '@/hooks/useDisplayModeRecord';
 import type { RouteRecordNameGeneric } from 'vue-router';
@@ -149,7 +149,7 @@ export const useDeviceStore = defineStore(
 			patchModeAlert: false,
 			needUpdateKsuWebUIApk: false,
 			needReloadSystemModuleVer: false,
-			needUpdateModuleVer: 0
+			needUpdateModuleVer: 0,
 		});
 		const showThirdPartySetting = reactive({
 			amktiaoROMInterface: false,
@@ -166,6 +166,7 @@ export const useDeviceStore = defineStore(
 		const isNeedShowErrorModal = computed(() => Boolean(errorLogging.length > 0));
 
 		const installedAppPackageInfoMap = computed(() => {
+			console.log(installedAppPackageInfoList.value,'553')
 			return keyBy(installedAppPackageInfoList.value, 'packageName');
 		});
 
@@ -186,26 +187,22 @@ export const useDeviceStore = defineStore(
 		async function getAndroidApplicationPackageNameList() {
 			return new Promise(async (resolve, reject) => {
 				// 获取用户已安装的应用包名
-				const allListPackages = listPackages("all");
-				if (Array.isArray(allListPackages) && allListPackages.length > 0) {
-					canShowApplicationIcon.value = true;
-					installedAndroidApplicationPackageNameList.value = allListPackages;
-					resolve(allListPackages)
+
+				const [getAndroidApplicationPackageNameListErr, getAndroidApplicationPackageNameListRes] = await $to<
+					string[],
+					string
+				>(deviceApi.getAndroidApplicationPackageNameList());
+				if (getAndroidApplicationPackageNameListErr) {
+					errorLogging.push({
+						type: 'getAndroidApplicationPackageNameListErr',
+						title: '获取用户已安装的应用包名',
+						msg: getAndroidApplicationPackageNameListErr,
+					});
+					reject(getAndroidApplicationPackageNameListErr);
 				} else {
-					const [getAndroidApplicationPackageNameListErr, getAndroidApplicationPackageNameListRes] =
-						await $to<string, string>(deviceApi.getAndroidApplicationPackageNameList());
-					if (getAndroidApplicationPackageNameListErr) {
-						errorLogging.push({
-							type: 'getAndroidApplicationPackageNameListErr',
-							title: '获取用户已安装的应用包名',
-							msg: getAndroidApplicationPackageNameListErr,
-						});
-						reject(getAndroidApplicationPackageNameListErr);
-					} else {
-						if (getAndroidApplicationPackageNameListRes) {
-							installedAndroidApplicationPackageNameList.value =
-								getAndroidApplicationPackageNameListRes?.split(',');
-						}
+					if (getAndroidApplicationPackageNameListRes) {
+						canShowApplicationIcon.value = true;
+						installedAndroidApplicationPackageNameList.value = getAndroidApplicationPackageNameListRes;
 						resolve(installedAndroidApplicationPackageNameList.value);
 					}
 				}
@@ -214,7 +211,10 @@ export const useDeviceStore = defineStore(
 
 		async function getInstalledAppPackageInfoList() {
 			return new Promise(async (resolve, reject) => {
-				const [getInstalledAppPackageInfoErr, getInstalledAppPackageInfoRes] =	 await $to<PackageInfoItem[], string>(deviceApi.getAllPackageInfoList(installedAndroidApplicationPackageNameList.value));
+				const [getInstalledAppPackageInfoErr, getInstalledAppPackageInfoRes] = await $to<
+					PackageInfoItem[],
+					string
+				>(deviceApi.getAllPackageInfoList(installedAndroidApplicationPackageNameList.value));
 				if (getInstalledAppPackageInfoErr) {
 					errorLogging.push({
 						type: 'getInstalledAppPackageInfoErr',
