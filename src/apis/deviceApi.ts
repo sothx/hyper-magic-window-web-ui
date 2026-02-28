@@ -2823,7 +2823,7 @@ export const setMTKDisplayBrightnessToZero = (): Promise<string> => {
 };
 
 export const openChinaMobileMCloud = (): Promise<string> => {
-	const shellCommon = `(pm list packages com.chinamobile.mcloud  | grep -q com.chinamobile.mcloud && am start -n com.chinamobile.mcloud/.client.ui.logo.LogoActivity) || am start -a android.intent.action.VIEW -d "http://app.xiaomi.com/detail/6527"`;
+	const shellCommon = `(pm list packages com.chinamobile.mcloud  | grep -q com.chinamobile.mcloud && am start -n com.chinamobile.mcloud/com.chinamobile.mcloud.client.logo.LogoActivity) || am start -a android.intent.action.VIEW -d "http://app.xiaomi.com/detail/6527"`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
