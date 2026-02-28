@@ -146,7 +146,7 @@ export const useDeviceStore = defineStore(
 			MIUIContentExt: false,
 			lowWebViewVersion: false,
 			patchModeAlert: false,
-			needInstalledKsuWebUiApk: false,
+			needUpdateKsuWebUIApk: false,
 			needReloadSystemModuleVer: false,
 			needUpdateModuleVer: 0
 		});

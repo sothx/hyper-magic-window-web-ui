@@ -233,8 +233,8 @@ onMounted(async () => {
 	await deviceStore.initDefault();
 	await loadRoutes();
 	if (
-		['KernelSU', 'APatch'].includes(deviceStore.currentRootManager) &&
-		!deviceStore.skipConfirm.needInstalledKsuWebUiApk
+		!deviceStore.canUsePackageInfoApi &&
+		!deviceStore.skipConfirm.needUpdateKsuWebUIApk
 	) {
 		modal.create({
 			title: 'Web UI 升级提醒',
@@ -243,9 +243,7 @@ onMounted(async () => {
 			content: () => (
 				<div>
 					<p>
-						KernelSU/APatch 自带的 Web UI 存在部分问题，可能导致模块功能显示不全，例如
-						「窗口控制器」等。建议可以安装波奇大佬提取制作的 「KsuWebUI」，取代自带的 Web
-						UI，这不是必选项，您可以选择忽略此条建议，但可能导致模块部分功能无法正常工作。
+						您当前运行的 Web UI 管理器版本较低，可能导致模块功能显示不全，建议安装全新独立版本的 「KsuWebUI」，这不是必选项，您可以选择忽略此条建议，但可能导致模块部分功能无法正常工作。
 					</p>
 					<p>下载地址:https://caiyun.139.com/m/i?135CljmnAbpAy</p>
 				</div>
@@ -256,7 +254,7 @@ onMounted(async () => {
 				navigator.clipboard.writeText(`https://caiyun.139.com/m/i?135CljmnAbpAy`);
 			},
 			onNegativeClick: () => {
-				deviceStore.skipConfirm.needInstalledKsuWebUiApk = true;
+				deviceStore.skipConfirm.needUpdateKsuWebUIApk = true;
 			},
 		});
 	}
