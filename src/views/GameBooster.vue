@@ -27,7 +27,6 @@ import {
 import { ArrowPathIcon, XCircleIcon, MagnifyingGlassIcon, PlusIcon } from '@heroicons/vue/24/outline';
 import { useGameMode } from '@/hooks/useGameMode';
 import GameBoosterAppDrawer from '@/components/GameBoosterAppDrawer.vue';
-import { useInstalledAppNames } from '@/hooks/useInstalledAppNames';
 import type GameBoosterTableItem from '@/types/GameBoosterTableItem';
 import { gameGravityOptions, gameRatioOptions } from '@/constant/gameBooster';
 import { keyBy, mapKeys } from 'lodash-es';
@@ -38,7 +37,6 @@ const searchKeyWordInput = ref<SearchKeyWordInputInstance | null>(null);
 const columns = createColumns();
 const deviceStore = useDeviceStore();
 const router = useRouter();
-const installedAppNames = useInstalledAppNames();
 const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
 	theme: deviceStore.isDarkMode ? darkTheme : lightTheme,
 }));

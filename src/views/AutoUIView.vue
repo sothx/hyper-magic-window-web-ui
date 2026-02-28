@@ -46,13 +46,11 @@ import AutoUIAppDrawer from '@/components/AutoUIAppDrawer.vue';
 import { findBase64InString, getAppLabelToPackageInfo, renderApplicationName } from '@/utils/common';
 import { arrayBufferToBase64, base64ToArrayBuffer } from '@/utils/format';
 import pako from 'pako';
-import { useInstalledAppNames } from '@/hooks/useInstalledAppNames';
 type SearchKeyWordInputInstance = InstanceType<typeof NInput>;
 type AutoUIAppDrawerInstance = InstanceType<typeof AutoUIAppDrawer>;
 const searchKeyWordInput = ref<SearchKeyWordInputInstance | null>(null);
 const columns = createColumns();
 const deviceStore = useDeviceStore();
-const installedAppNamesHook = useInstalledAppNames();
 const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
 	theme: deviceStore.isDarkMode ? darkTheme : lightTheme,
 }));
@@ -92,27 +90,6 @@ const reloadPage = async () => {
 	await autoUIStore.initDefault();
 };
 
-const getInstalledAppNameList = async () => {
-	const [getListErr, getListRes] = await $to(installedAppNamesHook.getList());
-	if (getListErr) {
-		modal.create({
-			title: '获取失败',
-			type: 'warning',
-			preset: 'dialog',
-			content: () => <p>您的系统环境暂不支持该功能，获取失败~</p>,
-			positiveText: '确定',
-		});
-	}
-	if (getListRes) {
-		modal.create({
-			title: '获取成功',
-			type: 'success',
-			preset: 'dialog',
-			content: () => <p>好耶OwO，已重新获取当前已安装的应用名称~</p>,
-			positiveText: '确定',
-		});
-	}
-};
 
 const filterHasBeenInstalledApp = () => {
 	autoUIStore.filterInstalledApps = !autoUIStore.filterInstalledApps;

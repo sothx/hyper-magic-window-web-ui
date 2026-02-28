@@ -3,7 +3,6 @@ import { defineStore } from 'pinia';
 import $to from 'await-to-js';
 import * as deviceApi from '@/apis/deviceApi';
 import type { ErrorLogging } from '@/types/ErrorLogging';
-import type { InstallAppNameListDictionary } from '@/hooks/useInstalledAppNames';
 import { useAmktiao, type KeyboardMode, type KeyboardModeOptions } from '@/hooks/useAmktiao';
 import { parsePropContent,canUsePackageInfo } from '@/utils/common';
 import { transformValues } from '@/utils/xmlFormat';

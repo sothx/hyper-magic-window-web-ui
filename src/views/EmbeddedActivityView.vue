@@ -8,7 +8,6 @@ import { useEmbedded } from '@/hooks/useEmbedded';
 import EmbeddedAppDrawer from '@/components/EmbeddedAppDrawer.vue';
 import { useAutoUIStore } from '@/stores/autoui';
 const autoUIStore = useAutoUIStore();
-import { useInstalledAppNames } from '@/hooks/useInstalledAppNames';
 import { usePatchMode } from '@/hooks/usePatchMode';
 import {
 	NButton,
@@ -74,7 +73,6 @@ type NDataTabletInstance = InstanceType<typeof NDataTable>;
 const shareRuleTextarea = ref('');
 const router = useRouter();
 const disabledOS2SystemAppOptimizeHook = useDisabledOS2SystemAppOptimize();
-const installedAppNamesHook = useInstalledAppNames();
 const deviceStore = useDeviceStore();
 const embeddedStore = useEmbeddedStore();
 const patchModeHook = usePatchMode();

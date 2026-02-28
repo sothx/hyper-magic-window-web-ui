@@ -1,4 +1,4 @@
-import { exec, spawn, fullScreen, toast, type ExecResults } from '@/utils/kernelsu/index.js';
+import { exec, spawn, fullScreen, toast, getPackagesInfo, type ExecResults } from '@/utils/kernelsu/index.js';
 import axios from 'axios';
 import handlePromiseWithLogging from '@/utils/handlePromiseWithLogging';
 import $to from 'await-to-js';
@@ -6,6 +6,7 @@ import { useDeviceStore } from '@/stores/device';
 import type { GameMode, KeyboardMode, PenEnable, PenUpdate, TpFirmware } from '@/hooks/useAmktiao';
 import type { DisplayModeItem } from '@/hooks/useDisplayModeRecord';
 import type { miuiCursorStyleType } from '@/hooks/useMiuiCursorStyle';
+import type PackageInfoItem from '@/types/PackageInfoItem';
 const toolsFunc = `/data/adb/modules/Hyper_MagicWindow/common/utils/tools_functions.sh`;
 
 export interface SmartFocusIOResult extends ExecResults {
@@ -891,8 +892,8 @@ export const getRootManagerInfo = (): Promise<string> => {
 	);
 };
 
-export const getAndroidApplicationPackageNameList = (getType: 'all' | 'user' | 'system' = 'all'): Promise<string> => {
-	const shellCommon = `pm list packages ${getType === 'all' ? '-a' : getType === 'system' ? '-s' : '-3'} | awk -F':' '{print $2}' | tr '\n' ',' | sed 's/,$/\n/'`;
+export const getAndroidApplicationPackageNameList = (): Promise<string> => {
+	const shellCommon = `pm list packages -a | awk -F':' '{print $2}' | tr '\n' ',' | sed 's/,$/\n/'`;
 	// 列出包名和UID
 	//  pm list packages -U | awk -F'[: ]+' '{print $2":"$4}' | tr '\n' ',' | sed 's/,$/\n/'
 	return handlePromiseWithLogging(
@@ -909,23 +910,19 @@ export const getAndroidApplicationPackageNameList = (getType: 'all' | 'user' | '
 	);
 };
 
-
-export const getInstalledAppNameList = (): Promise<string> => {
-	const shellCommon = `CLASSPATH="/data/adb/modules/Hyper_MagicWindow/common/utils/classes.dex" app_process /system/bin com.xayah.dex.HiddenApiUtil getInstalledPackagesAsUser 0 "user" "pkgName|label"`;
-	return handlePromiseWithLogging(
-		new Promise(async (resolve, reject) => {
-			if (import.meta.env.MODE === 'development') {
-				resolve(
-					`,com.xiaomi.scanner,小爱视觉\n,com.max.xiaoheihe,小黑盒\n,com.xingin.xhs,小红书\n,com.miui.creation,小米创作`,
-				);
-			} else {
-				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
-				errno ? reject(stderr) : resolve(stdout);
-			}
-		}),
-		shellCommon,
-	);
+export const getAllPackageInfoList = (packageListArr: string[]): Promise<PackageInfoItem[]> => {
+	return new Promise(async (resolve, reject) => {
+		if (packageListArr.length === 0) {
+			return reject('Package list is empty.');
+		}
+		const packageInfoResult = getPackagesInfo(packageListArr);
+		if (Array.isArray(packageInfoResult) && packageInfoResult.length > 0) {
+			return resolve(packageInfoResult);
+		}
+		return reject('Failed to get package info list.');
+	});
 };
+
 
 export const getHasInstalledMIUIContentExtension = (): Promise<string> => {
 	const shellCommon = `ls /system/product/priv-app/MIUIContentExtension/MIUIContentExtension.apk &>/dev/null && echo "exists" || echo "not exists"`;
