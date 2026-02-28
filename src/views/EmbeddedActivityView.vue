@@ -111,32 +111,6 @@ function renderIcon(icon: Component, size?: number) {
 	};
 }
 
-const getInstalledAppNameList = async () => {
-	// notification.info({
-	// 	content: '已加入任务队列',
-	// 	meta: '正在获取已安装应用名称，请不要关闭模块的 Web UI，完成后会弹出通知，请稍等~',
-	// 	duration: 2500,
-	// });
-	const [getListErr, getListRes] = await $to(installedAppNamesHook.getList());
-	if (getListErr) {
-		modal.create({
-			title: '获取失败',
-			type: 'warning',
-			preset: 'dialog',
-			content: () => <p>您的系统环境暂不支持该功能，获取失败~</p>,
-			positiveText: '确定',
-		});
-	}
-	if (getListRes) {
-		modal.create({
-			title: '获取成功',
-			type: 'success',
-			preset: 'dialog',
-			content: () => <p>好耶OwO，已重新获取当前已安装的应用名称~</p>,
-			positiveText: '确定',
-		});
-	}
-};
 
 const filterHasBeenInstalledApp = () => {
 	embeddedStore.filterInstalledApps = !embeddedStore.filterInstalledApps;
@@ -2186,19 +2160,6 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 						</n-icon>
 					</template>
 					生成定制应用数据
-				</n-button>
-				<n-button
-					class="mb-3 mr-3"
-					color="#69b2b6"
-					v-if="!deviceStore.canUsePackageInfoApi"
-					:loading="deviceStore.loading || embeddedStore.loading || installedAppNamesHook.loading.value"
-					@click="getInstalledAppNameList()">
-					<template #icon>
-						<n-icon>
-							<CircleStackIcon />
-						</n-icon>
-					</template>
-					获取已安装应用名称
 				</n-button>
 				<n-button
 					class="mb-3 mr-3"

@@ -1194,19 +1194,6 @@ function createColumns(): DataTableColumns<DotBlackListMergeItem> {
 				</n-button>
 				<n-button
 					class="mb-3 mr-3"
-					color="#69b2b6"
-					v-if="!deviceStore.canUsePackageInfoApi"
-					:loading="deviceStore.loading || dotBlackListStore.loading || installedAppNamesHook.loading.value"
-					@click="getInstalledAppNameList()">
-					<template #icon>
-						<n-icon>
-							<CircleStackIcon />
-						</n-icon>
-					</template>
-					获取已安装应用名称
-				</n-button>
-				<n-button
-					class="mb-3 mr-3"
 					type="warning"
 					:loading="deviceStore.loading || dotBlackListStore.loading || importShareRuleLoading"
 					@click="importShareRule()">
