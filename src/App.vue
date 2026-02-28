@@ -233,29 +233,29 @@ onMounted(async () => {
 	await deviceStore.initDefault();
 	await loadRoutes();
 	if (
-		!deviceStore.canUsePackageInfoApi &&
-		!deviceStore.skipConfirm.needUpdateKsuWebUIApk
+		!deviceStore.canUsePackageInfoApi && import.meta.env.MODE !== 'development'
 	) {
 		modal.create({
 			title: 'Web UI 升级提醒',
-			type: 'warning',
+			type: 'error',
 			preset: 'dialog',
+			closeOnEsc: false,
+			show: true,
+			maskClosable: false,
+			closable:false,
 			content: () => (
 				<div>
 					<p>
-						您当前运行的 Web UI 管理器版本较低，可能导致模块功能显示不全，建议安装全新独立版本的 「KsuWebUI」，这不是必选项，您可以选择忽略此条建议，但可能导致模块部分功能无法正常工作。
+						您当前运行的 Web UI 管理器版本较低，会导致模块功能显示不全，请安装全新独立版本的 「KsuWebUI」，并授予root权限，否则模块将无法正常工作。
 					</p>
 					<p>下载地址:https://caiyun.139.com/m/i?135CljmnAbpAy</p>
 				</div>
 			),
 			positiveText: '复制下载链接到剪切板',
-			negativeText: '已安装，不再提醒',
 			onPositiveClick: () => {
 				navigator.clipboard.writeText(`https://caiyun.139.com/m/i?135CljmnAbpAy`);
-			},
-			onNegativeClick: () => {
-				deviceStore.skipConfirm.needUpdateKsuWebUIApk = true;
-			},
+				return false;
+			}
 		});
 	}
 	if (

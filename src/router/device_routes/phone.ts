@@ -8,8 +8,16 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/home',
     name: 'home',
-    component: () => import('../../views/SystemExperienceEnhance.vue'),
+    component: () => import('../../views/AppManagement.vue'),
   },
+  {
+		path: '/system-experience-enhance',
+		name: 'system-experience-enhance',
+		// route level code-splitting
+		// this generates a separate chunk (About.[hash].js) for this route
+		// which is lazy-loaded when the route is visited.
+		component: () => import('../../views/SystemExperienceEnhance.vue'),
+	},
   {
     path: '/embedded-webview',
     name: 'embedded-webview',

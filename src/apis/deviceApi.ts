@@ -891,8 +891,8 @@ export const getRootManagerInfo = (): Promise<string> => {
 	);
 };
 
-export const getAndroidApplicationPackageNameList = (): Promise<string> => {
-	const shellCommon = `pm list packages -a | awk -F':' '{print $2}' | tr '\n' ',' | sed 's/,$/\n/'`;
+export const getAndroidApplicationPackageNameList = (getType: 'all' | 'user' | 'system' = 'all'): Promise<string> => {
+	const shellCommon = `pm list packages ${getType === 'all' ? '-a' : getType === 'system' ? '-s' : '-3'} | awk -F':' '{print $2}' | tr '\n' ',' | sed 's/,$/\n/'`;
 	// 列出包名和UID
 	//  pm list packages -U | awk -F'[: ]+' '{print $2":"$4}' | tr '\n' ',' | sed 's/,$/\n/'
 	return handlePromiseWithLogging(
@@ -908,6 +908,7 @@ export const getAndroidApplicationPackageNameList = (): Promise<string> => {
 		shellCommon,
 	);
 };
+
 
 export const getInstalledAppNameList = (): Promise<string> => {
 	const shellCommon = `CLASSPATH="/data/adb/modules/Hyper_MagicWindow/common/utils/classes.dex" app_process /system/bin com.xayah.dex.HiddenApiUtil getInstalledPackagesAsUser 0 "user" "pkgName|label"`;
