@@ -198,7 +198,7 @@ export const embeddedPerceptionApplications: Record<string, EmbeddedPerceptionAp
 									'com.coolapk.market.view.main.MainActivity,com.coolapk.market.view.feedv8.multiSubmit.MultiSubmitActivity,com.coolapk.market.view.feedv8.SubmitFeedV8Activity,com.coolapk.market.view.message.ChattingActivity,com.coolapk.market.view.feed.ReplyActivity,com.coolapk.market.view.feed.FeedReplyDetailActivity',
 								isShowDivider: true,
 								supportFullSize: true,
-								flags: 'reusePreContainer:com.coolapk.market.view.photo.PhotoViewActivity,com.coolapk.market.view.collectionList.CollectionSelectActivity;',
+								flags: 'reusePreContainer:com.coolapk.market.view.photo.PhotoViewActivity,com.coolapk.market.view.collectionList.CollectionSelectActivity,com.coolapk.market.view.feedv8.entrance.FeedEntranceV16Activity;',
 								...(deviceStore.deviceType === 'tablet'
 									? {
 											splitMinWidth: 900,
@@ -303,8 +303,7 @@ export const embeddedPerceptionApplications: Record<string, EmbeddedPerceptionAp
 								进行导入~
 								{NButtonTemplate &&
 									NButtonTemplate('获取全局横屏自定义规则', 'info', () => handleClickFullRule())}
-								{deviceStore.deviceType === 'tablet' &&
-									deviceStore.MIOSVersion &&
+								{deviceStore.MIOSVersion &&
 									deviceStore.MIOSVersion >= 2 &&
 									deviceStore.androidTargetSdk >= 35 && (
 										<div>
