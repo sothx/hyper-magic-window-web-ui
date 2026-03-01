@@ -895,24 +895,21 @@ export const getRootManagerInfo = (): Promise<string> => {
 	);
 };
 
-export const getAndroidApplicationPackageList = (): Promise<string[]> => {
+export const getAndroidApplicationPackageList = (): Promise<string> => {
+	const shellCommon = `pm list packages -a | awk -F':' '{print $2}' | tr '\n' ',' | sed 's/,$/\n/'`;
 	// 列出包名和UID
 	//  pm list packages -U | awk -F'[: ]+' '{print $2":"$4}' | tr '\n' ',' | sed 's/,$/\n/'
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
 				const response = await axios.get('/data/system/app.txt');
-				const getAndroidApplicationPackageListRes = response.data;
-				resolve(getAndroidApplicationPackageListRes?.split(',') || []);
+				resolve(response.data);
 			} else {
-				const allListPackages = listPackages("all");
-				if (Array.isArray(allListPackages) && allListPackages.length > 0) {
-					resolve(allListPackages)
-				} else {
-					reject('Failed to get package list.');
-				}
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
 			}
-		})
+		}),
+		shellCommon,
 	);
 };
 
@@ -932,6 +929,24 @@ export const getAllPackageInfoList = (packageListArr: string[]): Promise<Package
 			return reject('Failed to get package info list.');
 		}
 	});
+};
+
+export const getAllPackageInfoListToShell = (): Promise<string> => {
+	const shellCommon = `cmd package list packages -U -s | awk -F'[ :]' '{printf "%s,%s,true;", $2,$4}'; cmd package list packages -U -3 | awk -F'[ :]' '{printf "%s,%s,false;", $2,$4}'`;
+	// 列出包名和UID
+	//  pm list packages -U | awk -F'[: ]+' '{print $2":"$4}' | tr '\n' ',' | sed 's/,$/\n/'
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				const response = await axios.get('/data/system/packageInfoShell.txt');
+				resolve(response.data);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
 };
 
 export const getHasInstalledMIUIContentExtension = (): Promise<string> => {

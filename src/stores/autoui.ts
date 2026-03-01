@@ -36,7 +36,7 @@ export const useAutoUIStore = defineStore(
 					const itemName = item.name.trim().toLowerCase();
 
 					// 先更新 applicationName
-					if (installedAppName[item.name] && !item.applicationName) {
+					if (installedAppName[item.name]?.appLabel && !item.applicationName) {
 						item.applicationName = installedAppName[item.name].appLabel;
 					}
 					if (applicationName.value[item.name] && !item.applicationName) {

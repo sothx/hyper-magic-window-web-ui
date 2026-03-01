@@ -4,7 +4,7 @@ import $to from 'await-to-js';
 import * as deviceApi from '@/apis/deviceApi';
 import type { ErrorLogging } from '@/types/ErrorLogging';
 import { useAmktiao, type KeyboardMode, type KeyboardModeOptions } from '@/hooks/useAmktiao';
-import { parsePropContent, canUsePackageInfo } from '@/utils/common';
+import { parsePropContent, canUsePackageInfo, parsePackageListShell } from '@/utils/common';
 import { transformValues } from '@/utils/xmlFormat';
 import type { DisplayModeItem } from '@/hooks/useDisplayModeRecord';
 import type { RouteRecordNameGeneric } from 'vue-router';
@@ -86,7 +86,6 @@ export const useDeviceStore = defineStore(
 		const lastVersionCode = ref<number>();
 		const needReloadData = ref<boolean>(false);
 		const moduleInfo = ref<ModuleProp>();
-		const canUsePackageInfoApi = ref<boolean>(false);
 		const moduleUpdateInfo = ref<deviceApi.ModuleUpdateInfo>();
 		const changeLogMsg = ref<string>('');
 		const enabledMiuiDesktopMode = ref<boolean>(false);
@@ -185,35 +184,36 @@ export const useDeviceStore = defineStore(
 
 		async function getAndroidApplicationPackageList() {
 			return new Promise(async (resolve, reject) => {
-				// 获取用户已安装的应用包名
-
-				const [getAndroidApplicationPackageListErr, getAndroidApplicationPackageListRes] = await $to<
-					string[],
+				const [getAndroidApplicationPackageNameListErr, getAndroidApplicationPackageNameListRes] = await $to<
+					string,
 					string
 				>(deviceApi.getAndroidApplicationPackageList());
-				if (getAndroidApplicationPackageListErr) {
+				if (getAndroidApplicationPackageNameListErr) {
 					errorLogging.push({
-						type: 'getAndroidApplicationPackageListErr',
+						type: 'getAndroidApplicationPackageNameListErr',
 						title: '获取用户已安装的应用包名',
-						msg: getAndroidApplicationPackageListErr,
+						msg: getAndroidApplicationPackageNameListErr,
 					});
-					reject(getAndroidApplicationPackageListErr);
+					reject(getAndroidApplicationPackageNameListErr);
 				} else {
-					if (getAndroidApplicationPackageListRes) {
-						canShowApplicationIcon.value = true;
-						installedAndroidApplicationPackageList.value = getAndroidApplicationPackageListRes;
-						resolve(installedAndroidApplicationPackageList.value);
+					if (getAndroidApplicationPackageNameListRes) {
+						installedAndroidApplicationPackageList.value =
+							getAndroidApplicationPackageNameListRes?.split(',');
 					}
+					resolve(installedAndroidApplicationPackageList.value);
 				}
 			});
 		}
 
-		async function getInstalledAppPackageInfoList(packageList: string[] = installedAndroidApplicationPackageList.value) {
+		async function getInstalledAppPackageInfoList() {
 			return new Promise(async (resolve, reject) => {
 				const [getInstalledAppPackageInfoErr, getInstalledAppPackageInfoRes] = await $to<
 					PackageInfoItem[],
 					string
-				>(deviceApi.getAllPackageInfoList(packageList));
+				>(deviceApi.getAllPackageInfoList(installedAndroidApplicationPackageList.value));
+				const [getAllPackageInfoListToShellErr, getAllPackageInfoListToShellRes] = await $to<string, string>(
+					deviceApi.getAllPackageInfoListToShell(),
+				);
 				if (getInstalledAppPackageInfoErr) {
 					errorLogging.push({
 						type: 'getInstalledAppPackageInfoErr',
@@ -221,11 +221,42 @@ export const useDeviceStore = defineStore(
 						msg: getInstalledAppPackageInfoErr,
 					});
 					reject(getInstalledAppPackageInfoErr);
-				} else {
-					if (getInstalledAppPackageInfoRes) {
-						installedAppPackageInfoList.value = getInstalledAppPackageInfoRes;
+				}
+				if (getAllPackageInfoListToShellErr) {
+					errorLogging.push({
+						type: 'getAllPackageInfoListToShellErr',
+						title: '通过Shell获取已安装应用包信息',
+						msg: getAllPackageInfoListToShellErr,
+					});
+					reject(getAllPackageInfoListToShellErr);
+				}
+
+				if (getAllPackageInfoListToShellRes && getInstalledAppPackageInfoRes) {
+					const shellResultList = parsePackageListShell(getAllPackageInfoListToShellRes);
+
+					const map = new Map<string, PackageInfoItem>();
+
+					// 先放旧数据（完整但可能过期）
+					for (const item of getInstalledAppPackageInfoRes) {
+						map.set(item.packageName, item);
 					}
-					resolve(installedAppPackageInfoList.value);
+
+					// 再用 shell 数据覆盖关键字段（最新）
+					for (const shellItem of shellResultList) {
+						const old = map.get(shellItem.packageName);
+
+						map.set(shellItem.packageName, {
+							...old,
+							...shellItem, // uid / isSystem 永远最新
+						});
+					}
+
+					const mergeResult = Array.from(map.values());
+
+					installedAppPackageInfoList.value = mergeResult;
+					resolve(mergeResult);
+				} else {
+					reject('获取已安装应用包信息失败');
 				}
 			});
 		}
@@ -292,12 +323,6 @@ export const useDeviceStore = defineStore(
 				[, getHideGestureLineRes],
 				[, getDDRVendorRes],
 			] = executeWithoutWaitingResults;
-
-			// 判断能否使用PackageInfo接口来获取应用信息，来决定是否显示应用图标等相关功能
-
-			if (canUsePackageInfo()) {
-				canUsePackageInfoApi.value = true;
-			}
 
 			// 模块信息 *弱校验
 			if (!getModuleInfoRes?.length) {
@@ -609,7 +634,7 @@ export const useDeviceStore = defineStore(
 			remoteDownloadAppUrlMap,
 			isInstalledXiaomiPadSystemPatchAdditionalModule,
 			canShowApplicationIcon,
-			canUsePackageInfoApi,
+			canUsePackageInfo,
 		};
 	},
 	{

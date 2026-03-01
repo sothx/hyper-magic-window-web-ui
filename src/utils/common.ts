@@ -1,3 +1,4 @@
+import type PackageInfoItem from '@/types/PackageInfoItem';
 import { getPackagesInfo } from '@/utils/kernelsu/index.js';
 
 export const findBase64InString = (input: string): string | null => {
@@ -63,4 +64,21 @@ export const getAppLabelToPackageInfo = (packageName:string) => {
     } else {
       return packageName
     }
+}
+
+export function parsePackageListShell(input: string): PackageInfoItem[] {
+  if (!input) return [];
+
+  return input
+    .split(';')
+    .filter((item) => item.length > 0)
+    .map((item): PackageInfoItem => {
+      const [packageName, uid, isSystem] = item.split(',');
+
+      return {
+        packageName,
+        uid: Number(uid),
+        isSystem: isSystem === 'true',
+      };
+    });
 }
