@@ -55,7 +55,7 @@ export const useAutoUIStore = defineStore(
 					return result;
 					}
 
-					const isInstalled = new Set(deviceStore.installedAndroidApplicationPackageNameList);
+					const isInstalled = new Set(deviceStore.installedAndroidApplicationPackageList);
 
 					// 如果 filterInstalledApps 为 true，检查 item 是否为已安装的应用
 					if (filterInstalledApps.value && !isInstalled.has(item.name)) {

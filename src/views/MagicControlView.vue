@@ -99,7 +99,8 @@ const reloadPage = async () => {
 		});
 		return;
 	}
-	await deviceStore.getAndroidApplicationPackageNameList();
+	await deviceStore.getAndroidApplicationPackageList();
+	await deviceStore.getInstalledAppPackageInfoList();
 	await dotBlackListStore.initDefault();
 };
 

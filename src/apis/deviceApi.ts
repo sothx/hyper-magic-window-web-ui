@@ -895,15 +895,15 @@ export const getRootManagerInfo = (): Promise<string> => {
 	);
 };
 
-export const getAndroidApplicationPackageNameList = (): Promise<string[]> => {
+export const getAndroidApplicationPackageList = (): Promise<string[]> => {
 	// 列出包名和UID
 	//  pm list packages -U | awk -F'[: ]+' '{print $2":"$4}' | tr '\n' ',' | sed 's/,$/\n/'
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
 				const response = await axios.get('/data/system/app.txt');
-				const getAndroidApplicationPackageNameListRes = response.data;
-				resolve(getAndroidApplicationPackageNameListRes?.split(',') || []);
+				const getAndroidApplicationPackageListRes = response.data;
+				resolve(getAndroidApplicationPackageListRes?.split(',') || []);
 			} else {
 				const allListPackages = listPackages("all");
 				if (Array.isArray(allListPackages) && allListPackages.length > 0) {

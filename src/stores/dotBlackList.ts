@@ -114,7 +114,7 @@ export const useDotBlackListStore = defineStore(
 					}
 
 					// 如果 filterInstalledApps 为 true，检查 item 是否为已安装的应用
-					const isInstalled = new Set(deviceStore.installedAndroidApplicationPackageNameList);
+					const isInstalled = new Set(deviceStore.installedAndroidApplicationPackageList);
 					if (filterInstalledApps.value && !isInstalled.has(item.name)) {
 						return result; // 如果不是已安装的应用，跳过该项
 					}

@@ -87,7 +87,8 @@ function renderIcon(icon: Component, size?: number) {
 }
 
 const reloadPage = async () => {
-	await deviceStore.getAndroidApplicationPackageNameList();
+	await deviceStore.getAndroidApplicationPackageList();
+	await deviceStore.getInstalledAppPackageInfoList();
 	await autoUIStore.initDefault();
 };
 
@@ -565,7 +566,7 @@ function createColumns(): DataTableColumns<AutoUIMergeRuleItem> {
 			width: 250,
 			key: 'name',
 			render(row, index) {
-				const isInstalled = new Set(deviceStore.installedAndroidApplicationPackageNameList);
+				const isInstalled = new Set(deviceStore.installedAndroidApplicationPackageList);
 
 				return (
 					<div>
@@ -712,8 +713,13 @@ function createColumns(): DataTableColumns<AutoUIMergeRuleItem> {
 			</div>
 		</div>
 		<n-card size="small">
+				<n-alert class="mb-3" :show-icon="false" type="warning">
+					<p
+						>功能正在开发中，敬请期待后续更新。</p
+					>
+				</n-alert>
 			<div class="flex flex-wrap">
-				<n-button
+				<!-- <n-button
 					class="mb-3 mr-3"
 					type="success"
 					:loading="deviceStore.loading || autoUIStore.loading"
@@ -727,7 +733,7 @@ function createColumns(): DataTableColumns<AutoUIMergeRuleItem> {
 						</n-icon>
 					</template>
 					测试按钮
-				</n-button>
+				</n-button> -->
 				<n-button
 					class="mb-3 mr-3"
 					type="success"

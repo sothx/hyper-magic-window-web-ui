@@ -67,11 +67,11 @@ export const useEmbeddedStore = defineStore(
 			const deviceStore = useDeviceStore();
 			const combinedSet = new Set(
 				isDeepPatchMode.value
-					? [...deviceStore.installedAndroidApplicationPackageNameList]
+					? [...deviceStore.installedAndroidApplicationPackageList]
 					: [
 							...Object.keys(systemEmbeddedRulesList.value),
 							...Object.keys(systemFixedOrientationList.value),
-							...deviceStore.installedAndroidApplicationPackageNameList,
+							...deviceStore.installedAndroidApplicationPackageList,
 							...Object.keys(whitelistApplications),
 						],
 			);
@@ -89,11 +89,11 @@ export const useEmbeddedStore = defineStore(
 				const deviceStore = useDeviceStore();
 				const combinedSet = new Set(
 					isDeepPatchMode.value
-						? [...deviceStore.installedAndroidApplicationPackageNameList]
+						? [...deviceStore.installedAndroidApplicationPackageList]
 						: [
 								...Object.keys(systemEmbeddedRulesList.value),
 								...Object.keys(systemFixedOrientationList.value),
-								...deviceStore.installedAndroidApplicationPackageNameList,
+								...deviceStore.installedAndroidApplicationPackageList,
 								...Object.keys(whitelistApplications),
 							],
 				);
@@ -113,11 +113,11 @@ export const useEmbeddedStore = defineStore(
 				const deviceStore = useDeviceStore();
 				const combinedSet = new Set(
 					isDeepPatchMode.value
-						? [...deviceStore.installedAndroidApplicationPackageNameList]
+						? [...deviceStore.installedAndroidApplicationPackageList]
 						: [
 								...Object.keys(systemEmbeddedRulesList.value),
 								...Object.keys(systemFixedOrientationList.value),
-								...deviceStore.installedAndroidApplicationPackageNameList,
+								...deviceStore.installedAndroidApplicationPackageList,
 								...Object.keys(whitelistApplications),
 							],
 				);
@@ -134,7 +134,7 @@ export const useEmbeddedStore = defineStore(
 		// 需要设置应用模式的应用列表
 		const filterSetAppModeAppList = computed(() => {
 			const deviceStore = useDeviceStore();
-			const hasInstalledApp = new Set(deviceStore.installedAndroidApplicationPackageNameList);
+			const hasInstalledApp = new Set(deviceStore.installedAndroidApplicationPackageList);
 			const needSetAppModeAppList: string[] = mergeRuleList.value.reduce((result: string[], item) => {
 				if (hasInstalledApp.has(item.name)) {
 					result.push(item.name);
@@ -145,7 +145,7 @@ export const useEmbeddedStore = defineStore(
 		});
 		const filterResetAppCompatAppList = computed(() => {
 			const deviceStore = useDeviceStore();
-			const hasInstalledApp = new Set(deviceStore.installedAndroidApplicationPackageNameList);
+			const hasInstalledApp = new Set(deviceStore.installedAndroidApplicationPackageList);
 			const compatAppList: string[] = mergeRuleList.value.reduce((result: string[], item) => {
 				if (hasInstalledApp.has(item.name)) {
 					if (item.fixedOrientationRule?.compatChange) {
@@ -172,13 +172,12 @@ export const useEmbeddedStore = defineStore(
 		const filterMergeRuleList = computed(() => {
 			const cachedMergeRuleList = mergeRuleList.value;
 			const deviceStore = useDeviceStore();
-			const isInstalled = new Set(deviceStore.installedAndroidApplicationPackageNameList);
+			const isInstalled = new Set(deviceStore.installedAndroidApplicationPackageList);
 			const isFilterInstalledApps = filterInstalledApps.value;
 			const currentSearchValue = searchValue.value;
 			const currentApplicationName = applicationName.value;
 			const currentMergeThirdPartyAppOptimizeConfig = mergeThirdPartyAppOptimizeConfig.value;
 			const installedAppName = deviceStore.installedAppPackageInfoMap;
-			console.log(deviceStore.installedAppPackageInfoMap.value,'installedAppName')
 			return cachedMergeRuleList
 				.reduce((result: EmbeddedMergeRuleItem[], item) => {
 					const itemName = item.name.trim().toLowerCase();

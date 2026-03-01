@@ -72,7 +72,8 @@ export function usePatchMode() {
 	};
 
 	const reloadPatchMode = async () => {
-		await deviceStore.getAndroidApplicationPackageNameList();
+		await deviceStore.getAndroidApplicationPackageList();
+		await deviceStore.getInstalledAppPackageInfoList();
 		loading.value = true;
 		const [submitUpdateEmbeddedAppErr, submitUpdateEmbeddedAppRes] = await $to(embeddedApi.updateEmbeddedApp());
 		if (submitUpdateEmbeddedAppErr) {
@@ -218,7 +219,8 @@ export function usePatchMode() {
 				loading.value = false;
 				embeddedStore.isPatchMode = false;
 			}
-			await deviceStore.getAndroidApplicationPackageNameList();
+			await deviceStore.getAndroidApplicationPackageList();
+			await deviceStore.getInstalledAppPackageInfoList();
 			const [submitUpdateEmbeddedAppErr, submitUpdateEmbeddedAppRes] = await $to(embeddedApi.updateEmbeddedApp());
 			if (submitUpdateEmbeddedAppErr) {
 				modal.create({
@@ -380,7 +382,8 @@ export function usePatchMode() {
 				loading.value = false;
 				embeddedStore.isDeepPatchMode = false;
 			}
-			await deviceStore.getAndroidApplicationPackageNameList();
+			await deviceStore.getAndroidApplicationPackageList();
+			await deviceStore.getInstalledAppPackageInfoList();
 			const [submitUpdateEmbeddedAppErr, submitUpdateEmbeddedAppRes] = await $to(embeddedApi.updateEmbeddedApp());
 			if (submitUpdateEmbeddedAppErr) {
 				modal.create({

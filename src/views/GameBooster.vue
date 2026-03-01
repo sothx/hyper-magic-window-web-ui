@@ -268,7 +268,7 @@ function createColumns(): DataTableColumns<GameBoosterTableItem> {
 			minWidth: 250,
 			key: 'name',
 			render(row, index) {
-				const isInstalled = new Set(deviceStore.installedAndroidApplicationPackageNameList);
+				const isInstalled = new Set(deviceStore.installedAndroidApplicationPackageList);
 				return (
 					<div>
 						<div class='flex'>

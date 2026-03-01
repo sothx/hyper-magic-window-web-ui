@@ -201,7 +201,9 @@ export function useNavigation() {
 			),
 		},
 		{
-			name: () => <>应用管理增强</>,
+			name: () => <>应用管理增强<n-badge
+						offset={[25, 2]}
+						value='开发中'></n-badge></>,
 			routeName: 'app-management',
 			href: '/app-management',
 			icon: () => (
@@ -301,25 +303,37 @@ export function useNavigation() {
 
 	const phoneSidebarList = reactive<NavigationItem[]>([
 		{
-			name: () => <>应用管理增强</>,
+			name: () => <>系统体验增强</>,
 			routeName: 'home',
 			href: '/home',
-			icon: () => (
-				<svg class='icon' aria-hidden='true'>
-					<use xlinkHref='#icon-icon-icon-test'></use>
-				</svg>
-			),
-		},
-		{
-			name: () => <>系统体验增强</>,
-			routeName: 'system-experience-enhance',
-			href: '/system-experience-enhance',
 			icon: () => (
 				<svg class='icon' aria-hidden='true'>
 					<use xlinkHref='#icon-jiqunchushihua1'></use>
 				</svg>
 			),
 		},
+		{
+			name: () => <>应用管理增强<n-badge
+						offset={[25, 2]}
+						value='开发中'></n-badge></>,
+			routeName: 'app-management',
+			href: '/app-management',
+			icon: () => (
+				<svg class='icon' aria-hidden='true'>
+					<use xlinkHref='#icon-icon-test'></use>
+				</svg>
+			),
+		},
+		// {
+		// 	name: () => <>系统体验增强</>,
+		// 	routeName: 'system-experience-enhance',
+		// 	href: '/system-experience-enhance',
+		// 	icon: () => (
+		// 		<svg class='icon' aria-hidden='true'>
+		// 			<use xlinkHref='#icon-jiqunchushihua1'></use>
+		// 		</svg>
+		// 	),
+		// },
 		{
 			name: () => <>分辨率与刷新率</>,
 			routeName: 'display-mode-record',

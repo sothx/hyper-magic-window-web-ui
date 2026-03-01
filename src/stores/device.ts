@@ -93,7 +93,7 @@ export const useDeviceStore = defineStore(
 		const windowWidth = ref(window.innerWidth);
 		const isEnableShowNotificationIconNum = ref<boolean>(false);
 		const deviceName = ref<string>('');
-		const installedAndroidApplicationPackageNameList = ref<string[]>([]);
+		const installedAndroidApplicationPackageList = ref<string[]>([]);
 		const installedAppPackageInfoList = ref<PackageInfoItem[]>([]);
 		const systemVersion = ref<string>('');
 		const systemPreVersion = ref<string>('');
@@ -166,7 +166,6 @@ export const useDeviceStore = defineStore(
 		const isNeedShowErrorModal = computed(() => Boolean(errorLogging.length > 0));
 
 		const installedAppPackageInfoMap = computed(() => {
-			console.log(installedAppPackageInfoList.value,'553')
 			return keyBy(installedAppPackageInfoList.value, 'packageName');
 		});
 
@@ -184,37 +183,37 @@ export const useDeviceStore = defineStore(
 			}
 		});
 
-		async function getAndroidApplicationPackageNameList() {
+		async function getAndroidApplicationPackageList() {
 			return new Promise(async (resolve, reject) => {
 				// 获取用户已安装的应用包名
 
-				const [getAndroidApplicationPackageNameListErr, getAndroidApplicationPackageNameListRes] = await $to<
+				const [getAndroidApplicationPackageListErr, getAndroidApplicationPackageListRes] = await $to<
 					string[],
 					string
-				>(deviceApi.getAndroidApplicationPackageNameList());
-				if (getAndroidApplicationPackageNameListErr) {
+				>(deviceApi.getAndroidApplicationPackageList());
+				if (getAndroidApplicationPackageListErr) {
 					errorLogging.push({
-						type: 'getAndroidApplicationPackageNameListErr',
+						type: 'getAndroidApplicationPackageListErr',
 						title: '获取用户已安装的应用包名',
-						msg: getAndroidApplicationPackageNameListErr,
+						msg: getAndroidApplicationPackageListErr,
 					});
-					reject(getAndroidApplicationPackageNameListErr);
+					reject(getAndroidApplicationPackageListErr);
 				} else {
-					if (getAndroidApplicationPackageNameListRes) {
+					if (getAndroidApplicationPackageListRes) {
 						canShowApplicationIcon.value = true;
-						installedAndroidApplicationPackageNameList.value = getAndroidApplicationPackageNameListRes;
-						resolve(installedAndroidApplicationPackageNameList.value);
+						installedAndroidApplicationPackageList.value = getAndroidApplicationPackageListRes;
+						resolve(installedAndroidApplicationPackageList.value);
 					}
 				}
 			});
 		}
 
-		async function getInstalledAppPackageInfoList() {
+		async function getInstalledAppPackageInfoList(packageList: string[] = installedAndroidApplicationPackageList.value) {
 			return new Promise(async (resolve, reject) => {
 				const [getInstalledAppPackageInfoErr, getInstalledAppPackageInfoRes] = await $to<
 					PackageInfoItem[],
 					string
-				>(deviceApi.getAllPackageInfoList(installedAndroidApplicationPackageNameList.value));
+				>(deviceApi.getAllPackageInfoList(packageList));
 				if (getInstalledAppPackageInfoErr) {
 					errorLogging.push({
 						type: 'getInstalledAppPackageInfoErr',
@@ -379,7 +378,7 @@ export const useDeviceStore = defineStore(
 			// 当前电池循环次数
 			batteryInfo.cycleCount = Number(getBatteryCycleCountRes);
 			// 获取用户已安装的应用
-			await getAndroidApplicationPackageNameList();
+			await getAndroidApplicationPackageList();
 			// 获取已安装应用的包信息
 			await getInstalledAppPackageInfoList();
 			// 设备特征 *强校验
@@ -573,8 +572,8 @@ export const useDeviceStore = defineStore(
 			lastVersionCode,
 			needReloadData,
 			showRotationSuggestions,
-			installedAndroidApplicationPackageNameList,
-			getAndroidApplicationPackageNameList,
+			installedAndroidApplicationPackageList,
+			getAndroidApplicationPackageList,
 			miuiCompatEnable,
 			miuiAppCompatEnable,
 			installedAppPackageInfoList,
@@ -602,6 +601,7 @@ export const useDeviceStore = defineStore(
 			DDRVendor,
 			deviceType,
 			projectTrebleSupportMagicWindowFix,
+			getInstalledAppPackageInfoList,
 			muiltdisplayType,
 			changeLogMsg,
 			lastVisitedPath,
@@ -617,7 +617,7 @@ export const useDeviceStore = defineStore(
 			pick: [
 				'skipConfirm',
 				'lastVisitedPath',
-				'installedAndroidApplicationPackageNameList',
+				'installedAndroidApplicationPackageList',
 				'isDarkMode',
 				'rhythmMode',
 				'ABTestInfo',
