@@ -63,7 +63,7 @@ const appList: AppInfo[] = [
 	{
 		id: 'mipad-dpi-fix',
 		title: '小米平板 DPI 修复模块',
-		isShow: () => ['tablet'].includes(deviceStore.deviceType) && Boolean(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 3) && Boolean(deviceStore.androidTargetSdk && deviceStore.androidTargetSdk === 35),
+		isShow: () => ['tablet'].includes(deviceStore.deviceType) && Boolean(deviceStore.androidTargetSdk && deviceStore.androidTargetSdk === 35),
 		versionNum: 20260214,
 		description: () => (
 			<div>

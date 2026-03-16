@@ -244,11 +244,13 @@ onMounted(async () => {
 						您当前运行的 Web UI 管理器版本较低，会导致模块功能显示不全，请安装全新独立版本的
 						「KsuWebUI」，并授予root权限，否则模块将无法正常工作。
 					</p>
-					{/* <p class="whitespace-wrap">
+          {
+            <p class="whitespace-wrap">
 						您也可前往
 						<p>/data/adb/modules/Hyper_MagicWindow/common/apks</p>
 						目录下，找到名为KsuWebUI.apk的安装包，安装后同样可以解决问题。
-					</p> */}
+					</p>
+          }
 					<p class="mt-2">下载地址:https://caiyun.139.com/m/i?135CljmnAbpAy</p>
 				</div>
 			),
