@@ -15,6 +15,7 @@ import { useDotBlackListStore } from '@/stores/dotBlackList';
 import { useLogsStore } from '@/stores/logs';
 import { usePatchMode } from '@/hooks/usePatchMode';
 import { useAutoUIStore } from '@/stores/autoui';
+import { useAutoUI2Store } from '@/stores/autoui2';
 import { useGameBoosterStore } from './stores/gameBooster';
 import axios from 'axios';
 import { decryptAesEcb, fetchAndDecryptJsonFile, generateKey } from './utils/joyoseConfig/decryptor';
@@ -33,6 +34,7 @@ const { message, modal } = createDiscreteApi(['message', 'modal'], {
 const embeddedStore = useEmbeddedStore();
 const fontStore = useFontStore();
 const autoUIStore = useAutoUIStore();
+const autoUI2Store = useAutoUI2Store();
 const patchModeHook = usePatchMode();
 const dotBlackListStore = useDotBlackListStore();
 const showErrorModal = ref(false);
@@ -296,10 +298,11 @@ onMounted(async () => {
 				patchModeHook.showReloadModal();
 			}
 		});
-		autoUIStore.initDefault();
+    autoUIStore.initDefault();
 		gameBoosterStore.initDefault();
 		if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 1) {
-			dotBlackListStore.initDefault();
+      dotBlackListStore.initDefault();
+      autoUI2Store.initDefault();
 		}
 	}
 	// 获取更新信息

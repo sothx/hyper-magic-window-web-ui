@@ -18,13 +18,12 @@ export const useAutoUIStore = defineStore(
 		const filterInstalledApps = ref<boolean>(false);
 		// 应用布局优化
 		const sourceAutoUIList = ref<Record<AutoUIItem['name'], AutoUIItem>>({});
-		const sourceAutoUI2List = ref<Record<AutoUIItem['name'], AutoUIItem>>({});
 		const customConfigAutoUIList = ref<Record<string, AutoUIItem>>({});
 		const applicationName = ref<ApplicationName>({});
 		// 配置文件
 		const autoUISettingConfig = ref<Record<string, AutoUISettingRuleItem>>({});
 		// 合并后的配置
-		const mergeRuleList = ref<AutoUIMergeRuleItem[]>([]);
+    const mergeRuleList = ref<AutoUIMergeRuleItem[]>([]);
 		// 搜索后的配置列表
 		const filterMergeRuleList = computed(() => {
 			const searchValue = searchKeyWord.value.trim().toLowerCase();
@@ -124,21 +123,6 @@ export const useAutoUIStore = defineStore(
 			if (getSourceAutoUIListRes) {
 				sourceAutoUIList.value = xmlFormat.parseXMLToObject<AutoUIItem>(
 					getSourceAutoUIListRes,
-					'packageRules',
-					'package',
-				);
-			}
-
-			const [getSourceAutoUI2ListErr, getSourceAutoUI2ListRes] = await $to<string, string>(
-				autouiApi.getSourceAutoUI2List(),
-			);
-      if (getSourceAutoUI2ListErr) {
-        sourceAutoUI2List.value = {}
-			}
-
-			if (getSourceAutoUI2ListRes) {
-				sourceAutoUI2List.value = xmlFormat.parseXMLToObject<AutoUIItem>(
-					getSourceAutoUI2ListRes,
 					'packageRules',
 					'package',
 				);

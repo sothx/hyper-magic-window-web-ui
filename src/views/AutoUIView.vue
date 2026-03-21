@@ -1,6 +1,7 @@
 <script setup lang="tsx">
 import { ref, reactive, watch, type CSSProperties, h, type Component, computed } from 'vue';
 import { useAutoUIStore } from '@/stores/autoui';
+import { useAutoUI2Store } from '@/stores/autoui2';
 import * as deviceApi from '@/apis/deviceApi';
 import * as autouiApi from '@/apis/autouiApi';
 import * as xmlFormat from '@/utils/xmlFormat';
@@ -31,6 +32,7 @@ import {
 	CircleStackIcon,
 } from '@heroicons/vue/24/outline';
 import type AutoUIMergeRuleItem from '@/types/AutoUIMergeRuleItem';
+import type AutoUI2MergeRuleItem from '@/types/AutoUI2MergeRuleItem';
 import { useRouter, useRoute } from 'vue-router';
 import {
 	Cog6ToothIcon,
@@ -50,6 +52,7 @@ type SearchKeyWordInputInstance = InstanceType<typeof NInput>;
 type AutoUIAppDrawerInstance = InstanceType<typeof AutoUIAppDrawer>;
 const searchKeyWordInput = ref<SearchKeyWordInputInstance | null>(null);
 const columns = createColumns();
+const columns2 = createColumns2();
 const deviceStore = useDeviceStore();
 const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
 	theme: deviceStore.isDarkMode ? darkTheme : lightTheme,
@@ -58,6 +61,7 @@ const { message, modal, notification } = createDiscreteApi(['message', 'modal', 
 	configProviderProps: configProviderPropsRef,
 });
 const autoUIStore = useAutoUIStore();
+const autoUI2Store = useAutoUI2Store();
 const QQDocHook = useQQDoc();
 const importShareRuleLoading = ref(false);
 const hotReloadLoading = ref(false);
@@ -88,12 +92,18 @@ function renderIcon(icon: Component, size?: number) {
 const reloadPage = async () => {
 	await deviceStore.getAndroidApplicationPackageList();
 	await deviceStore.getInstalledAppPackageInfoList();
-	await autoUIStore.initDefault();
+  await autoUIStore.initDefault();
+  await autoUI2Store.initDefault();
 };
 
 
-const filterHasBeenInstalledApp = () => {
-	autoUIStore.filterInstalledApps = !autoUIStore.filterInstalledApps;
+const filterHasBeenInstalledApp = (type: 'autoui' | 'autoui2') => {
+  if (type === 'autoui') {
+    autoUIStore.filterInstalledApps = !autoUIStore.filterInstalledApps;
+  }
+  if (type === 'autoui2') {
+    autoUI2Store.filterInstalledApps = !autoUI2Store.filterInstalledApps;
+  }
 };
 
 const hotReloadApplicationData = async () => {
@@ -439,7 +449,7 @@ const handleCustomRuleDropdown = async (
 	}
 };
 
-const handleModuleRuleMode = (row: AutoUIMergeRuleItem, index: number) => {
+const handleModuleRuleMode = (row: AutoUIMergeRuleItem | AutoUI2MergeRuleItem, index: number) => {
 	if (row.ruleMode === 'module') {
 		modal.create({
 			title: '模块规则说明',
@@ -934,6 +944,88 @@ function createColumns(): DataTableColumns<AutoUIMergeRuleItem> {
 		},
 	];
 }
+
+function createColumns2(): DataTableColumns<AutoUI2MergeRuleItem> {
+	return [
+		{
+			title: '应用名称',
+			width: 250,
+			key: 'name',
+			render(row, index) {
+				const isInstalled = new Set(deviceStore.installedAndroidApplicationPackageList);
+
+				return (
+					<div>
+						<div class='flex'>
+							{isInstalled.has(row.name) && (
+								<img
+									class='mr-1 w-[28px] h-[28px] rounded-full object-cover'
+									src={`ksu://icon/${row.name}`}
+									onError={e => {
+										(e.currentTarget as HTMLImageElement).style.display = 'none';
+									}}
+								/>
+							)}
+							<p class='mt-1'>{row.applicationName ? row.applicationName : row.name}</p>
+						</div>
+						{row.name && (
+							<p>
+								<span>(</span>
+								{row.name}
+								<span>)</span>
+							</p>
+						)}
+					</div>
+				);
+			},
+		},
+		{
+			title: '规则来源',
+			key: 'ruleMode',
+			render(row, index) {
+				const slots = {
+					icon: row.ruleMode === 'custom' ? EllipsisHorizontalCircleIcon : QuestionMarkCircleIcon,
+				};
+				if (row.ruleMode === 'custom') {
+					return (
+							<n-button size='small' v-slots={slots} dashed type='info'>
+								自定义规则
+							</n-button>
+					);
+				}
+				return (
+					<n-button
+						size='small'
+						dashed
+						type='error'
+						v-slots={slots}
+						onClick={() => handleModuleRuleMode(row, index)}>
+						模块规则
+					</n-button>
+				);
+			},
+		},
+		{
+			title: 'WebView优化',
+			minWidth: 110,
+			key: 'isOptimizeWebView',
+			render(row, index) {
+				if (row.autoUI2Rule?.optimizeWebView) {
+					return (
+						<n-tag bordered={false} dashed type='success'>
+							已启用
+						</n-tag>
+					);
+				}
+				return (
+					<n-tag bordered={false} dashed type='info'>
+						未启用
+					</n-tag>
+				);
+			},
+		},
+	];
+}
 </script>
 <template>
 	<main class="autoui-view mb-10">
@@ -1022,7 +1114,7 @@ function createColumns(): DataTableColumns<AutoUIMergeRuleItem> {
 							strong
 							:loading="deviceStore.loading || autoUIStore.loading"
 							secondary
-							@click="filterHasBeenInstalledApp">
+							@click="filterHasBeenInstalledApp('autoui')">
 							<template #icon>
 								<n-icon>
 									<FunnelSolidIcon v-if="autoUIStore.filterInstalledApps" />
@@ -1125,9 +1217,8 @@ function createColumns(): DataTableColumns<AutoUIMergeRuleItem> {
 				<n-card size="small">
 					<n-alert
 						type="info"
-						title="功能开发中，未上线"
 						class="mb-3">
-						应用布局优化2.0规则将直接内置进模块内，目前暂不支持展示或进行任何修改，应用布局优化1.0规则不受此影响。
+						应用布局优化2.0规则将直接内置进模块内，目前不支进行任何修改，应用布局优化1.0规则不受此影响。
 					</n-alert>
 					<div class="flex flex-wrap">
 						<!--按钮区预留-->
@@ -1135,24 +1226,24 @@ function createColumns(): DataTableColumns<AutoUIMergeRuleItem> {
 					<div class="flex flex-wrap">
 						<n-button
 							class="mb-3 mr-3"
-							:type="autoUIStore.filterInstalledApps ? 'success' : 'info'"
+							:type="autoUI2Store.filterInstalledApps ? 'success' : 'info'"
 							strong
-							:loading="deviceStore.loading || autoUIStore.loading"
+							:loading="deviceStore.loading || autoUI2Store.loading"
 							secondary
-							@click="filterHasBeenInstalledApp">
+							@click="filterHasBeenInstalledApp('autoui2')">
 							<template #icon>
 								<n-icon>
-									<FunnelSolidIcon v-if="autoUIStore.filterInstalledApps" />
+									<FunnelSolidIcon v-if="autoUI2Store.filterInstalledApps" />
 									<FunnelIcon v-else />
 								</n-icon>
 							</template>
-							{{ autoUIStore.filterInstalledApps ? '已安装应用' : '全部应用' }}
+							{{ autoUI2Store.filterInstalledApps ? '已安装应用' : '全部应用' }}
 						</n-button>
 						<n-button
 							class="mb-3 mr-3"
 							type="warning"
 							secondary
-							:loading="deviceStore.loading || autoUIStore.loading"
+							:loading="deviceStore.loading || autoUI2Store.loading"
 							@click="() => deviceApi.openAllAppList()">
 							<template #icon>
 								<n-icon>
@@ -1178,7 +1269,7 @@ function createColumns(): DataTableColumns<AutoUIMergeRuleItem> {
 							class="mb-3 mr-3"
 							type="info"
 							secondary
-							:loading="deviceStore.loading || autoUIStore.loading"
+							:loading="deviceStore.loading || autoUI2Store.loading"
 							@click="QQDocHook.getModal()">
 							<template #icon>
 								<n-icon size="16">
@@ -1192,7 +1283,7 @@ function createColumns(): DataTableColumns<AutoUIMergeRuleItem> {
 						<n-input
 							size="large"
 							clearable
-							v-model:value="autoUIStore.searchKeyWord"
+							v-model:value="autoUI2Store.searchKeyWord"
 							ref="searchKeyWordInput"
 							placeholder="搜索应用名称/应用包名"
 							:style="{ width: '80%' }" />
@@ -1216,7 +1307,7 @@ function createColumns(): DataTableColumns<AutoUIMergeRuleItem> {
 							bordered
 							@click="
 								() => {
-									autoUIStore.searchKeyWord = '';
+									autoUI2Store.searchKeyWord = '';
 								}
 							">
 							<template #icon>
@@ -1228,6 +1319,13 @@ function createColumns(): DataTableColumns<AutoUIMergeRuleItem> {
 						</n-button>
 					</n-input-group>
 				</n-card>
+        <n-data-table
+					size="small"
+					:loading="deviceStore.loading || autoUI2Store.loading"
+					:columns="columns2"
+					class="mt-3"
+					:data="autoUI2Store.filterMergeRuleList"
+					:pagination="pagination" />
 			</n-tab-pane>
 		</n-tabs>
 	</main>

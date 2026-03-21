@@ -10,4 +10,4 @@ export default interface AutoUIMergeRuleItem {
     ruleMode: 'module' | 'custom';
     autoUIRule?: Omit<AutoUIItem, "name">;
     settingRule?: Omit<AutoUISettingRuleItem, "name">;
-};
+}

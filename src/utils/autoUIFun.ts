@@ -18,3 +18,4 @@ export const getBuiltInSettingMode = (activityRule: string) => {
 
     return 'CUSTOM_VIEW_POLICY'
 }
+

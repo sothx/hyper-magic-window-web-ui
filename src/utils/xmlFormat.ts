@@ -10,6 +10,8 @@ import type AutoUIMergeRuleItem from "@/types/AutoUIMergeRuleItem";
 import * as autoUIFun from '@/utils/autoUIFun';
 import { useDeviceStore } from "@/stores/device";
 import { getSettingMode } from "./embeddedFun";
+import type { AutoUI2Activity, AutoUI2Package, AutoUI2PackageRules, AutoUI2View } from "@/types/AutoUi2PackageRules"
+import type AutoUI2MergeRuleItem from "@/types/AutoUI2MergeRuleItem";
 
 export const transformValues = <T>(obj: Record<string, T>): Record<string, T> => {
   return mapValues(obj, (value) => {
@@ -295,4 +297,229 @@ export const mergeAutoUIRule = (
   });
 
   return result;
+};
+
+export const mergeAutoUI2Rule = (
+  sourceAutoUI2List: Record<string, AutoUI2Package> = {},
+  customConfigAutoUI2List: Record<string, AutoUI2Package> = {}, // 默认值为 {}
+  autoUISettingConfig: Record<string, AutoUISettingRuleItem> = {} // 默认值为 {}
+): AutoUI2MergeRuleItem[] => {
+  const result: AutoUI2MergeRuleItem[] = [];
+  const allPackages = new Set([
+    ...Object.keys(sourceAutoUI2List),
+    ...Object.keys(customConfigAutoUI2List),
+  ]);
+
+  allPackages.forEach((pkgName) => {
+    const autoUI2Config = customConfigAutoUI2List[pkgName] ? customConfigAutoUI2List[pkgName] : sourceAutoUI2List[pkgName];
+    const settingConfig = autoUISettingConfig[pkgName];
+
+    // Determine currentMode
+    let ruleMode: AutoUIMergeRuleItem["ruleMode"] = "module";
+
+    // 初始化自定义规则类型
+    if (customConfigAutoUI2List[pkgName]) {
+      ruleMode = 'custom';
+    }
+
+
+    const omitSettingConfig = omitName(settingConfig);
+    const omitAutoUI2Config = omitName(autoUI2Config)
+
+    // Build the result object
+    const ruleData: AutoUI2MergeRuleItem = {
+      name: pkgName,
+      ruleMode,
+      autoUI2Rule: omitAutoUI2Config ? omitAutoUI2Config : undefined, // 排除 name 属性
+      settingRule: omitSettingConfig ? omitSettingConfig : undefined,
+    };
+
+    result.push(ruleData);
+  });
+
+  return result;
+};
+
+
+const getDirectChildren = (node: Element, tag: string): Element[] => {
+  const res: Element[] = [];
+
+  for (let i = 0; i < node.childNodes.length; i++) {
+    const child = node.childNodes[i];
+    if (child.nodeType === 1 && (child as Element).tagName === tag) {
+      res.push(child as Element);
+    }
+  }
+
+  return res;
+};
+
+const parseBool = (val: string | null): boolean => val === 'true';
+
+const parseOptionalBool = (val: string | null): boolean | undefined => {
+  if (val == null) return undefined;
+  return val === 'true';
+};
+
+const parseNumber = (val: string | null): number => {
+  if (!val) return 0;
+  const n = Number(val);
+  return isNaN(n) ? 0 : n;
+};
+
+const emptyToUndefined = (val: string | null): string | undefined => {
+  if (!val || val.trim() === '') return undefined;
+  return val;
+};
+
+/**
+ * 解析 AutoUI2 packageRules XML
+ */
+export const parseAutoUI2PackageRulesXml = (xml: string): AutoUI2PackageRules => {
+  const doc = new DOMParser().parseFromString(xml, 'text/xml');
+
+  const result: AutoUI2PackageRules = {};
+
+  const packageNodes = getDirectChildren(doc.documentElement, 'package');
+
+  packageNodes.forEach(pkg => {
+    const packageName = pkg.getAttribute('name');
+    if (!packageName) return;
+
+    const pkgObj: AutoUI2Package = {
+      name: packageName,
+      enable: parseBool(pkg.getAttribute('enable')),
+      describe: pkg.getAttribute('describe') || undefined,
+      optimizeWebView: parseOptionalBool(pkg.getAttribute('optimizeWebView')),
+      activity: []
+    };
+
+    const activityNodes = getDirectChildren(pkg, 'activity');
+
+    pkgObj.activity = activityNodes.map(activity => {
+      const actObj: AutoUI2Activity = {
+        name: activity.getAttribute('name') || '',
+        policy: parseNumber(activity.getAttribute('policy')),
+        view: []
+      };
+
+      const viewNodes = getDirectChildren(activity, 'view');
+
+      actObj.view = viewNodes.map(view => {
+        const viewObj: AutoUI2View = {
+          name: emptyToUndefined(view.getAttribute('name')),
+          id: emptyToUndefined(view.getAttribute('id')),
+          path: emptyToUndefined(view.getAttribute('path'))
+        };
+
+        const policyNode = getDirectChildren(view, 'view_policy')[0];
+
+        if (policyNode) {
+          viewObj.view_policy = {
+            range: parseNumber(policyNode.getAttribute('range')),
+            policytype: policyNode.getAttribute('policytype') || '',
+            oldcolumns: parseNumber(policyNode.getAttribute('oldcolumns')),
+            newcolumns: parseNumber(policyNode.getAttribute('newcolumns')),
+            itemdecorationflag: parseNumber(policyNode.getAttribute('itemdecorationflag')),
+            multisetflag: parseNumber(policyNode.getAttribute('multisetflag')),
+            resetflag: parseNumber(policyNode.getAttribute('resetflag'))
+          };
+        }
+
+        return viewObj;
+      });
+
+      return actObj;
+    });
+
+    result[packageName] = pkgObj;
+  });
+
+  return result;
+};
+
+/**
+ * 设置属性（自动过滤 undefined）
+ */
+const setAttr = (el: Element, key: string, val: any) => {
+  if (val === undefined || val === null) return;
+  el.setAttribute(key, String(val));
+};
+
+const formatXml = (xml: string): string => {
+  const PADDING = '  ';
+  let formatted = '';
+  let pad = 0;
+
+  xml.split(/>\s*</).forEach(node => {
+    if (node.match(/^\/\w/)) pad--;
+
+    formatted += PADDING.repeat(pad) + '<' + node + '>\n';
+
+    if (node.match(/^<?\w[^>]*[^\/]$/)) pad++;
+  });
+
+  return formatted.trim();
+};
+
+/**
+ * JSON -> AutoUI2 XML
+ */
+export const stringifyAutoUI2PackageRulesXml = (
+  data: AutoUI2PackageRules
+): string => {
+  const impl = new DOMImplementation();
+  const doc = impl.createDocument(null, 'packageRules', null);
+
+  const root = doc.documentElement;
+
+  Object.entries(data).forEach(([packageName, pkg]) => {
+    const pkgEl = doc.createElement('package');
+
+    setAttr(pkgEl, 'name', packageName);
+    setAttr(pkgEl, 'enable', pkg.enable);
+    setAttr(pkgEl, 'describe', pkg.describe);
+    setAttr(pkgEl, 'optimizeWebView', pkg.optimizeWebView);
+
+    pkg.activity.forEach(activity => {
+      const actEl = doc.createElement('activity');
+
+      setAttr(actEl, 'name', activity.name);
+      setAttr(actEl, 'policy', activity.policy);
+
+      activity.view?.forEach(view => {
+        const viewEl = doc.createElement('view');
+
+        setAttr(viewEl, 'name', view.name);
+        setAttr(viewEl, 'id', view.id);
+        setAttr(viewEl, 'path', view.path);
+
+        if (view.view_policy) {
+          const policyEl = doc.createElement('view_policy');
+
+          const p = view.view_policy;
+
+          setAttr(policyEl, 'range', p.range);
+          setAttr(policyEl, 'policytype', p.policytype);
+          setAttr(policyEl, 'oldcolumns', p.oldcolumns);
+          setAttr(policyEl, 'newcolumns', p.newcolumns);
+          setAttr(policyEl, 'itemdecorationflag', p.itemdecorationflag);
+          setAttr(policyEl, 'multisetflag', p.multisetflag);
+          setAttr(policyEl, 'resetflag', p.resetflag);
+
+          viewEl.appendChild(policyEl);
+        }
+
+        actEl.appendChild(viewEl);
+      });
+
+      pkgEl.appendChild(actEl);
+    });
+
+    root.appendChild(pkgEl);
+  });
+
+  const xml = new XMLSerializer().serializeToString(doc);
+
+  return formatXml(xml);
 };
