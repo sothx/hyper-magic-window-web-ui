@@ -93,7 +93,9 @@ const reloadPage = async () => {
 	await deviceStore.getAndroidApplicationPackageList();
 	await deviceStore.getInstalledAppPackageInfoList();
   await autoUIStore.initDefault();
-  await autoUI2Store.initDefault();
+  if (deviceStore.androidTargetSdk >= 35) {
+    await autoUI2Store.initDefault();
+  }
 };
 
 

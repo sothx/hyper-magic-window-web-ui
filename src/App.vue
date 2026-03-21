@@ -302,8 +302,10 @@ onMounted(async () => {
 		gameBoosterStore.initDefault();
 		if (deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 1) {
       dotBlackListStore.initDefault();
+    }
+    if (deviceStore.androidTargetSdk >= 35) {
       autoUI2Store.initDefault();
-		}
+    }
 	}
 	// 获取更新信息
 	if (deviceStore.moduleInfo?.updateJson) {
