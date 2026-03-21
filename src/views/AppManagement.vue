@@ -784,7 +784,7 @@ function createColumns(): DataTableColumns<AutoUIMergeRuleItem> {
 		</n-card>
 		<n-data-table
 			size="small"
-			:loading="deviceStore.loading || autoUIStore.loading"
+			:loading="deviceStore.loading"
 			:columns="columns"
 			class="mt-3"
 			:data="autoUIStore.filterMergeRuleList"

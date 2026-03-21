@@ -132,12 +132,8 @@ export const useAutoUIStore = defineStore(
 			const [getSourceAutoUI2ListErr, getSourceAutoUI2ListRes] = await $to<string, string>(
 				autouiApi.getSourceAutoUI2List(),
 			);
-			if (getSourceAutoUI2ListErr) {
-				errorLogging.push({
-					type: 'sourceAutoUI2List',
-					title: '[模块]应用布局优化2.0配置文件',
-					msg: getSourceAutoUI2ListErr,
-				});
+      if (getSourceAutoUI2ListErr) {
+        sourceAutoUI2List.value = {}
 			}
 
 			if (getSourceAutoUI2ListRes) {
