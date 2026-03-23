@@ -2079,7 +2079,7 @@ const enhanceList: EnhanceItemInfo[] = [
 
 				<n-alert class='mt-5' type='error' show-icon={false} bordered={false}>
 					<p>
-						重置 Joyose 云控数据后系统会尝试重新获取 Joyose 的云控数据，清确保当前在 Wifi
+						重置 Joyose 云控数据后系统会尝试重新获取 Joyose 的云控数据，请确保当前在 Wifi
 						网络环境下，否则无法正常获取云控数据。
 					</p>
 					<p>(如仍然无法获取到新的 Joyose 云控数据，请尝试重启设备)</p>

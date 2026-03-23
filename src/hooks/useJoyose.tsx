@@ -30,7 +30,10 @@ export function useJoyose() {
 			preset: 'dialog',
 			content: () => (
 				<div>
-					<p>重置 Joyose 云控数据后系统会尝试重新获取 Joyose 的云控数据，清确保当前在 Wifi 网络环境下，否则无法正常获取云控数据。</p>
+					<p>
+						重置 Joyose 云控数据后系统会尝试重新获取 Joyose 的云控数据，请确保当前在 Wifi
+						网络环境下，否则无法正常获取云控数据。
+					</p>
 					<p>(如仍然无法获取到新的 Joyose 云控数据，请尝试重启设备)</p>
 				</div>
 			),
@@ -47,7 +50,7 @@ export function useJoyose() {
 							content: () => (
 								<p>
 									好耶w，已经成功重置 Joyose 云控数据，系统会尝试重新获取 Joyose
-									的云控数据，清确保当前在 Wifi 网络环境下，否则无法正常获取云控数据~
+									的云控数据，请确保当前在 Wifi 网络环境下，否则无法正常获取云控数据~
 								</p>
 							),
 							positiveText: '确定',
@@ -58,10 +61,16 @@ export function useJoyose() {
 							title: '重置云控数据失败',
 							type: 'error',
 							preset: 'dialog',
-							content: () => <>
-								<p>重置云控数据失败，可能 Joyose 相关服务被禁用，部分性能调度、系统线程优化、屏蔽云控类模块会禁止 Joyose 相关服务，如不需要系统 Joyose 云控调度可以选择忽略。</p>
-								<p>详情错误请查看日志记录~</p>
-							</>,
+							content: () => (
+								<>
+									<p>
+										重置云控数据失败，可能 Joyose
+										相关服务被禁用，部分性能调度、系统线程优化、屏蔽云控类模块会禁止 Joyose
+										相关服务，如不需要系统 Joyose 云控调度可以选择忽略。
+									</p>
+									<p>详情错误请查看日志记录~</p>
+								</>
+							),
 							positiveText: '确定',
 						});
 					});
