@@ -40,7 +40,7 @@ export function useProjectTrebleMaxFreeformCount() {
 
 	const isSupportDefaultDesktopModeMaxFreeformCount = ref<boolean>(false);
 
-	const isSupportSplitScreenModeMaxFreeformCountCount = ref<boolean>(false);
+	const isSupportSplitScreenModeMaxFreeformCount = ref<boolean>(false);
 
 	const isSupportMiuiDesktopModeMaxFreeformCount = ref<boolean>(false);
 
@@ -131,6 +131,14 @@ export function useProjectTrebleMaxFreeformCount() {
 			isSupportDefaultDesktopModeMaxFreeformCount.value = true;
 		}
 
+		const [, getIsSupportSplitScreenModeMaxFreeformCountRes] = await $to(
+			deviceApi.getIsSupportSplitScreenModeMaxFreeformCount(),
+		);
+
+		if (getIsSupportSplitScreenModeMaxFreeformCountRes === 'true') {
+			isSupportSplitScreenModeMaxFreeformCount.value = true;
+		}
+
 		if (isSupportMiuiDesktopModeMaxFreeformCount.value) {
 			const [, getCurrentMiuiDesktopMaxFreeformCountRes] = await $to(
 				deviceApi.getCurrentMiuiDesktopMaxFreeformCount(),
@@ -158,6 +166,21 @@ export function useProjectTrebleMaxFreeformCount() {
 				currentDefaultDesktopModeMaxFreeformCount.value = 2;
 			}
 		}
+
+		if (isSupportSplitScreenModeMaxFreeformCount.value) {
+			const [, getCurrentSplitScreenModeMaxFreeformCountRes] = await $to(
+				deviceApi.getCurrentSplitScreenModeMaxFreeformCount(),
+			);
+			if (
+				Number(getCurrentSplitScreenModeMaxFreeformCountRes) &&
+				Number(getCurrentSplitScreenModeMaxFreeformCountRes) >= 1
+			) {
+				currentDefaultDesktopModeMaxFreeformCount.value = Number(getCurrentSplitScreenModeMaxFreeformCountRes);
+			} else {
+				currentDefaultDesktopModeMaxFreeformCount.value = 1;
+			}
+		}
+
 		isLoading.value = false;
 		isInit.value = true;
 	};
@@ -177,7 +200,7 @@ export function useProjectTrebleMaxFreeformCount() {
 		currentSplitScreenModeMaxFreeformCount,
 		isSupportDefaultDesktopModeMaxFreeformCount,
 		isSupportMiuiDesktopModeMaxFreeformCount,
-		isSupportSplitScreenModeMaxFreeformCountCount,
+		isSupportSplitScreenModeMaxFreeformCount,
 		changeMaxFreeformCount,
 		isInit,
 		isLoading,

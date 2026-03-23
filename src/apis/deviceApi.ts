@@ -4244,7 +4244,22 @@ export const removeIsMiIsLandAutoTask = (): Promise<string> => {
 	);
 };
 
-export const getSplitScreenModeMaxFreeformCountForProp = (): Promise<string> => {
+export const getCurrentSplitScreenModeMaxFreeformCount = (): Promise<string> => {
+	const shellCommon = `settings get system sothx_project_treble_split_screen_mode_max_freeform_count`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve('1');
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const getIsSupportSplitScreenModeMaxFreeformCount = (): Promise<string> => {
 	const shellCommon = `getprop ro.config.sothx_project_treble_support_split_screen_mode_max_freeform_count`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
@@ -4275,7 +4290,7 @@ export const getSplitScreenModeMaxFreeformCountVersion = (): Promise<string> => 
 };
 
 export const putCurrentSplitScreenModeMaxFreeformCount = (countNum: number): Promise<string> => {
-	const shellCommon = `settings put system ro.config.sothx_project_treble_support_split_screen_mode_max_freeform_count ${countNum}`;
+	const shellCommon = `settings put system ro.config.sothx_project_treble_split_screen_mode_max_freeform_count ${countNum}`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
