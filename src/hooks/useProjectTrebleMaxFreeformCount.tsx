@@ -175,9 +175,9 @@ export function useProjectTrebleMaxFreeformCount() {
 				Number(getCurrentSplitScreenModeMaxFreeformCountRes) &&
 				Number(getCurrentSplitScreenModeMaxFreeformCountRes) >= 1
 			) {
-				currentDefaultDesktopModeMaxFreeformCount.value = Number(getCurrentSplitScreenModeMaxFreeformCountRes);
+				currentSplitScreenModeMaxFreeformCount.value = Number(getCurrentSplitScreenModeMaxFreeformCountRes);
 			} else {
-				currentDefaultDesktopModeMaxFreeformCount.value = 1;
+				currentSplitScreenModeMaxFreeformCount.value = 1;
 			}
 		}
 
