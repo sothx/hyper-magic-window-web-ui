@@ -1008,7 +1008,7 @@ const enhanceList: EnhanceItemInfo[] = [
 		),
 		isShow: () =>
 			['tablet'].includes(deviceStore.deviceType) &&
-			projectTrebleMaxFreeformCountHook.isSupportMiuiDesktopModeMaxFreeformCount.value,
+			projectTrebleMaxFreeformCountHook.isSupportSplitScreenModeMaxFreeformCount.value,
 	},
 	{
 		title: (titleText: string) => (
