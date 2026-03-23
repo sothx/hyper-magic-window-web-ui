@@ -717,23 +717,23 @@ const enhanceList: EnhanceItemInfo[] = [
 					</div>
 				) : (
 					<div>
-						{projectTrebleMaxFreeformCountHook.isEditMiuiDesktopModeMaxFreeformMaxCount.value ? (
+						{projectTrebleMaxFreeformCountHook.isEditMiuiDesktopModeMaxFreeformCount.value ? (
 							<>
 								<n-slider
 									size='small'
 									min={4}
 									max={8}
 									disabled={
-										!projectTrebleMaxFreeformCountHook.isEditMiuiDesktopModeMaxFreeformMaxCount
+										!projectTrebleMaxFreeformCountHook.isEditMiuiDesktopModeMaxFreeformCount
 											.value
 									}
 									step={1}
 									value={
-										projectTrebleMaxFreeformCountHook.currentMiuiDesktopModeMaxFreeformMaxCount
+										projectTrebleMaxFreeformCountHook.currentMiuiDesktopModeMaxFreeformCount
 											.value
 									}
 									onUpdateValue={(value: number) => {
-										projectTrebleMaxFreeformCountHook.currentMiuiDesktopModeMaxFreeformMaxCount.value =
+										projectTrebleMaxFreeformCountHook.currentMiuiDesktopModeMaxFreeformCount.value =
 											value;
 									}}
 								/>
@@ -742,7 +742,7 @@ const enhanceList: EnhanceItemInfo[] = [
 									class='pt-3'
 									readonly
 									value={
-										projectTrebleMaxFreeformCountHook.currentMiuiDesktopModeMaxFreeformMaxCount
+										projectTrebleMaxFreeformCountHook.currentMiuiDesktopModeMaxFreeformCount
 											.value
 									}
 									placeholder='请输入工作台小窗数量上限'
@@ -750,7 +750,7 @@ const enhanceList: EnhanceItemInfo[] = [
 									max={8}
 									step={1}
 									onUpdateValue={(value: number) => {
-										projectTrebleMaxFreeformCountHook.currentMiuiDesktopModeMaxFreeformMaxCount.value =
+										projectTrebleMaxFreeformCountHook.currentMiuiDesktopModeMaxFreeformCount.value =
 											value;
 									}}
 								/>
@@ -762,7 +762,7 @@ const enhanceList: EnhanceItemInfo[] = [
 									onClick={() =>
 										projectTrebleMaxFreeformCountHook.changeMaxFreeformCount(
 											'MiuiDesktopMode',
-											projectTrebleMaxFreeformCountHook.currentMiuiDesktopModeMaxFreeformMaxCount
+											projectTrebleMaxFreeformCountHook.currentMiuiDesktopModeMaxFreeformCount
 												.value,
 										)
 									}>
@@ -777,7 +777,7 @@ const enhanceList: EnhanceItemInfo[] = [
 									<n-tag type='info'>
 										当前工作台小窗数量上限 :{' '}
 										{
-											projectTrebleMaxFreeformCountHook.currentMiuiDesktopModeMaxFreeformMaxCount
+											projectTrebleMaxFreeformCountHook.currentMiuiDesktopModeMaxFreeformCount
 												.value
 										}
 									</n-tag>
@@ -787,7 +787,7 @@ const enhanceList: EnhanceItemInfo[] = [
 									type='info'
 									loading={deviceStore.loading}
 									onClick={() =>
-										(projectTrebleMaxFreeformCountHook.isEditMiuiDesktopModeMaxFreeformMaxCount.value = true)
+										(projectTrebleMaxFreeformCountHook.isEditMiuiDesktopModeMaxFreeformCount.value = true)
 									}>
 									{{
 										default: () => <>修改工作台小窗数量上限</>,
@@ -802,7 +802,7 @@ const enhanceList: EnhanceItemInfo[] = [
 				</n-alert>
 			</>
 		),
-		isShow: () => projectTrebleMaxFreeformCountHook.isSupportMiuiDesktopModeMaxFreeformMaxCount.value,
+		isShow: () => projectTrebleMaxFreeformCountHook.isSupportMiuiDesktopModeMaxFreeformCount.value,
 	},
 	{
 		title: (titleText: string) => (
@@ -818,23 +818,23 @@ const enhanceList: EnhanceItemInfo[] = [
 					</div>
 				) : (
 					<div>
-						{projectTrebleMaxFreeformCountHook.isEditDefaultDesktopModeMaxFreeformMaxCount.value ? (
+						{projectTrebleMaxFreeformCountHook.isEditDefaultDesktopModeMaxFreeformCount.value ? (
 							<>
 								<n-slider
 									size='small'
 									min={2}
 									max={8}
 									disabled={
-										!projectTrebleMaxFreeformCountHook.isEditDefaultDesktopModeMaxFreeformMaxCount
+										!projectTrebleMaxFreeformCountHook.isEditDefaultDesktopModeMaxFreeformCount
 											.value
 									}
 									step={1}
 									value={
-										projectTrebleMaxFreeformCountHook.currentDefaultDesktopModeMaxFreeformMaxCount
+										projectTrebleMaxFreeformCountHook.currentDefaultDesktopModeMaxFreeformCount
 											.value
 									}
 									onUpdateValue={(value: number) => {
-										projectTrebleMaxFreeformCountHook.currentDefaultDesktopModeMaxFreeformMaxCount.value =
+										projectTrebleMaxFreeformCountHook.currentDefaultDesktopModeMaxFreeformCount.value =
 											value;
 									}}
 								/>
@@ -843,7 +843,7 @@ const enhanceList: EnhanceItemInfo[] = [
 									class='pt-3'
 									readonly
 									value={
-										projectTrebleMaxFreeformCountHook.currentDefaultDesktopModeMaxFreeformMaxCount
+										projectTrebleMaxFreeformCountHook.currentDefaultDesktopModeMaxFreeformCount
 											.value
 									}
 									placeholder='请输入默认桌面小窗数量上限'
@@ -851,7 +851,7 @@ const enhanceList: EnhanceItemInfo[] = [
 									max={8}
 									step={1}
 									onUpdateValue={(value: number) => {
-										projectTrebleMaxFreeformCountHook.currentDefaultDesktopModeMaxFreeformMaxCount.value =
+										projectTrebleMaxFreeformCountHook.currentDefaultDesktopModeMaxFreeformCount.value =
 											value;
 									}}
 								/>
@@ -864,7 +864,7 @@ const enhanceList: EnhanceItemInfo[] = [
 										projectTrebleMaxFreeformCountHook.changeMaxFreeformCount(
 											'DefaultDesktopMode',
 											projectTrebleMaxFreeformCountHook
-												.currentDefaultDesktopModeMaxFreeformMaxCount.value,
+												.currentDefaultDesktopModeMaxFreeformCount.value,
 										)
 									}>
 									{{
@@ -879,7 +879,7 @@ const enhanceList: EnhanceItemInfo[] = [
 										当前默认桌面小窗数量上限 :{' '}
 										{
 											projectTrebleMaxFreeformCountHook
-												.currentDefaultDesktopModeMaxFreeformMaxCount.value
+												.currentDefaultDesktopModeMaxFreeformCount.value
 										}
 									</n-tag>
 								</div>
@@ -888,7 +888,7 @@ const enhanceList: EnhanceItemInfo[] = [
 									type='info'
 									loading={deviceStore.loading}
 									onClick={() =>
-										(projectTrebleMaxFreeformCountHook.isEditDefaultDesktopModeMaxFreeformMaxCount.value = true)
+										(projectTrebleMaxFreeformCountHook.isEditDefaultDesktopModeMaxFreeformCount.value = true)
 									}>
 									{{
 										default: () => <>修改默认桌面小窗数量上限</>,
@@ -905,7 +905,110 @@ const enhanceList: EnhanceItemInfo[] = [
 		),
 		isShow: () =>
 			['tablet'].includes(deviceStore.deviceType) &&
-			projectTrebleMaxFreeformCountHook.isSupportMiuiDesktopModeMaxFreeformMaxCount.value,
+			projectTrebleMaxFreeformCountHook.isSupportMiuiDesktopModeMaxFreeformCount.value,
+  },
+  	{
+		title: (titleText: string) => (
+			<>{`${titleText}${deviceStore.isInstalledXiaomiPadSystemPatchAdditionalModule ? `（附加模块）` : `（移植包）`}`}</>
+		),
+		titleText: '分屏模式小窗数量上限',
+		content: () => (
+			<>
+				{!projectTrebleMaxFreeformCountHook.isInit.value ? (
+					<div>
+						<n-skeleton text repeat={1} sharp={false} round />
+						<n-skeleton text repeat={1} sharp={false} size='small' />
+					</div>
+				) : (
+					<div>
+						{projectTrebleMaxFreeformCountHook.isEditSplitScreenModeMaxFreeformCount.value ? (
+							<>
+								<n-slider
+									size='small'
+									min={1}
+									max={4}
+									disabled={
+										!projectTrebleMaxFreeformCountHook.isEditSplitScreenModeMaxFreeformCount
+											.value
+									}
+									step={1}
+									value={
+										projectTrebleMaxFreeformCountHook.currentSplitScreenModeMaxFreeformCount
+											.value
+									}
+									onUpdateValue={(value: number) => {
+										projectTrebleMaxFreeformCountHook.currentSplitScreenModeMaxFreeformCount.value =
+											value;
+									}}
+								/>
+								<n-input-number
+									showButton={false}
+									class='pt-3'
+									readonly
+									value={
+										projectTrebleMaxFreeformCountHook.currentSplitScreenModeMaxFreeformCount
+											.value
+									}
+									placeholder='请输入分屏模式小窗数量上限'
+									min={1}
+									max={4}
+									step={1}
+									onUpdateValue={(value: number) => {
+										projectTrebleMaxFreeformCountHook.currentSplitScreenModeMaxFreeformCount.value =
+											value;
+									}}
+								/>
+								<n-button
+									size='small'
+									type='info'
+									class='mt-5'
+									loading={deviceStore.loading}
+									onClick={() =>
+										projectTrebleMaxFreeformCountHook.changeMaxFreeformCount(
+											'SplitScreenMode',
+											projectTrebleMaxFreeformCountHook
+												.currentSplitScreenModeMaxFreeformCount.value,
+										)
+									}>
+									{{
+										default: () => <>保存修改</>,
+									}}
+								</n-button>
+							</>
+						) : (
+							<>
+								<div class='mb-5 flex'>
+									<n-tag type='info'>
+										当前分屏模式小窗数量上限 :{' '}
+										{
+											projectTrebleMaxFreeformCountHook
+												.currentSplitScreenModeMaxFreeformCount.value
+										}
+									</n-tag>
+								</div>
+								<n-button
+									size='small'
+									type='info'
+									loading={deviceStore.loading}
+									onClick={() =>
+										(projectTrebleMaxFreeformCountHook.isEditSplitScreenModeMaxFreeformCount.value = true)
+									}>
+									{{
+										default: () => <>修改分屏模式小窗数量上限</>,
+									}}
+								</n-button>
+							</>
+						)}
+					</div>
+				)}
+				<n-alert class='mt-5' type='warning' show-icon={false} bordered={false}>
+					<p>配置后在分屏模式下支持更多数量的小窗显示</p>
+				</n-alert>
+			</>
+		),
+		isShow: () =>
+			['tablet'].includes(deviceStore.deviceType) &&
+			projectTrebleMaxFreeformCountHook.isSupportMiuiDesktopModeMaxFreeformCount.value,
 	},
 	{
 		title: (titleText: string) => (

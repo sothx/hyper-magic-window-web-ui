@@ -3554,7 +3554,7 @@ export const getIsSupportDefaultDesktopMaxFreeformMaxNum = (): Promise<string> =
 	);
 };
 
-export const getCurrentDefaultDesktopMaxFreeformMaxCount = (): Promise<string> => {
+export const getCurrentDefaultDesktopMaxFreeformCount = (): Promise<string> => {
 	const shellCommon = `settings get system sothx_project_treble_default_desktop_mode_max_freeform_count`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
@@ -3569,7 +3569,7 @@ export const getCurrentDefaultDesktopMaxFreeformMaxCount = (): Promise<string> =
 	);
 };
 
-export const putCurrentDefaultDesktopMaxFreeformMaxCount = (countNum: number): Promise<string> => {
+export const putCurrentDefaultDesktopMaxFreeformCount = (countNum: number): Promise<string> => {
 	const shellCommon = `settings put system sothx_project_treble_default_desktop_mode_max_freeform_count ${countNum}`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
@@ -3584,7 +3584,7 @@ export const putCurrentDefaultDesktopMaxFreeformMaxCount = (countNum: number): P
 	);
 };
 
-export const getCurrentMiuiDesktopMaxFreeformMaxCount = (): Promise<string> => {
+export const getCurrentMiuiDesktopMaxFreeformCount = (): Promise<string> => {
 	const shellCommon = `settings get system sothx_project_treble_miui_desktop_mode_max_freeform_count`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
@@ -3599,7 +3599,7 @@ export const getCurrentMiuiDesktopMaxFreeformMaxCount = (): Promise<string> => {
 	);
 };
 
-export const putCurrentMiuiDesktopMaxFreeformMaxCount = (countNum: number): Promise<string> => {
+export const putCurrentMiuiDesktopMaxFreeformCount = (countNum: number): Promise<string> => {
 	const shellCommon = `settings put system sothx_project_treble_miui_desktop_mode_max_freeform_count ${countNum}`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
@@ -4237,6 +4237,51 @@ export const removeIsMiIsLandAutoTask = (): Promise<string> => {
 				resolve(`Remove is_mi_island_auto_task successfully.`);
 			} else {
 				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const getSplitScreenModeMaxFreeformCountForProp = (): Promise<string> => {
+	const shellCommon = `getprop ro.config.sothx_project_treble_support_split_screen_mode_max_freeform_count`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve('true');
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const getSplitScreenModeMaxFreeformCountVersion = (): Promise<string> => {
+	const shellCommon = `getprop ro.config.sothx_project_treble_split_screen_mode_max_freeform_count_version`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve('1');
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const putCurrentSplitScreenModeMaxFreeformCount = (countNum: number): Promise<string> => {
+	const shellCommon = `settings put system ro.config.sothx_project_treble_support_split_screen_mode_max_freeform_count ${countNum}`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`success`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = (await exec(shellCommon)) as ExecResults;
 				errno ? reject(stderr) : resolve(stdout);
 			}
 		}),
