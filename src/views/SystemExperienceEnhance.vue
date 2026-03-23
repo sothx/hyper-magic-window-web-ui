@@ -926,7 +926,7 @@ const enhanceList: EnhanceItemInfo[] = [
 								<n-slider
 									size='small'
 									min={1}
-									max={4}
+									max={6}
 									disabled={
 										!projectTrebleMaxFreeformCountHook.isEditSplitScreenModeMaxFreeformCount
 											.value
@@ -951,7 +951,7 @@ const enhanceList: EnhanceItemInfo[] = [
 									}
 									placeholder='请输入分屏模式小窗数量上限'
 									min={1}
-									max={4}
+									max={6}
 									step={1}
 									onUpdateValue={(value: number) => {
 										projectTrebleMaxFreeformCountHook.currentSplitScreenModeMaxFreeformCount.value =
