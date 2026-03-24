@@ -10,7 +10,7 @@ import type AutoUIMergeRuleItem from "@/types/AutoUIMergeRuleItem";
 import * as autoUIFun from '@/utils/autoUIFun';
 import { useDeviceStore } from "@/stores/device";
 import { getSettingMode } from "./embeddedFun";
-import type { AutoUI2Activity, AutoUI2Package, AutoUI2PackageRules, AutoUI2View } from "@/types/AutoUi2PackageRules"
+import type { AutoUI2Activity, AutoUI2Package, AutoUI2PackageRules, AutoUI2View } from "@/types/AutoUI2PackageRules"
 import type AutoUI2MergeRuleItem from "@/types/AutoUI2MergeRuleItem";
 
 export const transformValues = <T>(obj: Record<string, T>): Record<string, T> => {

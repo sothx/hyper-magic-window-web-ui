@@ -1,4 +1,4 @@
-import type { AutoUI2Package, AutoUI2PackageRules } from "@/types/AutoUi2PackageRules";
+import type { AutoUI2Package, AutoUI2PackageRules } from "@/types/AutoUI2PackageRules";
 import type AutoUIItem from "@/types/AutoUIItem";
 import type AutoUISettingRuleItem from "@/types/AutoUISettingRuleItem";
 

@@ -8,7 +8,7 @@ import * as xmlFormat from '@/utils/xmlFormat';
 import type { ErrorLogging } from '@/types/ErrorLogging';
 type ApplicationName = Record<string, string>;
 import { useDeviceStore } from './device';
-import type { AutoUI2Package, AutoUI2PackageRules } from "@/types/AutoUi2PackageRules"
+import type { AutoUI2Package, AutoUI2PackageRules } from "@/types/AutoUI2PackageRules"
 import type AutoUI2MergeRuleItem from '@/types/AutoUI2MergeRuleItem';
 
 export const useAutoUI2Store = defineStore(

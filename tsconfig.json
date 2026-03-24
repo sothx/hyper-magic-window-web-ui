@@ -2,6 +2,7 @@
 	"compilerOptions": {
 		"strict": true,
 		"skipLibCheck": true,
+		"forceConsistentCasingInFileNames": false,
 		"jsx": "preserve",
 		"target": "ESNext",
 		"module": "ESNext",

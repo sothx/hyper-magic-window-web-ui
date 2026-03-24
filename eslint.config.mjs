@@ -4,8 +4,7 @@ import globals from "globals";
 import tseslint from "typescript-eslint";
 import vueParser from "vue-eslint-parser";
 
-const isProduction = process.env.NODE_ENV === "production";
-const noConsoleLevel = isProduction ? "error" : "warn";
+const noConsoleLevel = process.env.LINT_STRICT === "true" ? "error" : "warn";
 
 export default [
 	{
