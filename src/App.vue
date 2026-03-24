@@ -40,6 +40,22 @@ const dotBlackListStore = useDotBlackListStore();
 const showErrorModal = ref(false);
 const isSplashVisible = ref(true);
 
+const preloadRouteComponent = async (targetPath: string) => {
+	try {
+		const resolved = router.resolve(targetPath);
+		const loaders: Array<() => Promise<unknown>> = [];
+		resolved.matched.forEach(record => {
+			const defaultComponent = record.components?.default;
+			if (typeof defaultComponent === 'function') {
+				loaders.push(defaultComponent as () => Promise<unknown>);
+			}
+		});
+		await Promise.allSettled(loaders.map(loader => loader()));
+	} catch (error) {
+		// 预热失败不影响正常路由跳转
+	}
+};
+
 watchEffect(onCleanup => {
 	// 检查 deviceStore.loading 和 embeddedStore.loading 是否都为 false
 	if (!deviceStore.loading) {
@@ -137,6 +153,7 @@ const loadRoutes = async () => {
 		const routeExists = resolved.matched.length > 0;
 
 		if (routeExists) {
+			preloadRouteComponent(lastPath);
 			router.replace(lastPath);
 			return; // 成功跳转后直接 return，避免后续逻辑干扰
 		}

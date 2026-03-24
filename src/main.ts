@@ -1,7 +1,6 @@
 import "./assets/fonts.css";
 import "./assets/main.css";
 import "./style.css";
-import "./assets/iconfont.js";
 // 通用字体
 import "vfonts/Lato.css";
 // 等宽字体
@@ -64,6 +63,13 @@ import {
 import App from "./App.vue";
 import router from "./router";
 
+const loadIconfont = () => {
+  // @ts-expect-error iconfont runtime script has no type declarations
+  import("./assets/iconfont.js").catch(() => {
+    // 图标字体加载失败不应阻塞应用初始化
+  });
+};
+
 const naive = create({
   components: [
     NButton,
@@ -123,3 +129,13 @@ app.use(pinia);
 app.use(naive);
 app.use(router);
 app.mount("#app");
+
+const idleWindow = window as Window & {
+  requestIdleCallback?: (callback: IdleRequestCallback) => number;
+};
+
+if (typeof idleWindow.requestIdleCallback === "function") {
+  idleWindow.requestIdleCallback(loadIconfont);
+} else {
+  setTimeout(loadIconfont, 0);
+}
