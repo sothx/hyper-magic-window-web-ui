@@ -8,7 +8,7 @@ import vueJsx from '@vitejs/plugin-vue-jsx';
 import postcssPresetEnv from 'postcss-preset-env';
 import vueDevTools from 'vite-plugin-vue-devtools';
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
 	css: {
 		postcss: {
 			plugins: [
@@ -22,7 +22,7 @@ export default defineConfig({
 	plugins: [
 		vue(),
 		vueJsx(),
-		vueDevTools(),
+		mode === 'development' ? vueDevTools() : null,
 		{
 			name: 'run-powershell-command',
 			configureServer(server) {
@@ -94,14 +94,26 @@ export default defineConfig({
 		rollupOptions: {
 			output: {
 				manualChunks(id) {
-					if (id.includes('pako')) {
+					if (id.includes('node_modules/vue') || id.includes('node_modules/@vue')) {
+						return 'vendor-vue';
+					}
+					if (id.includes('node_modules/naive-ui')) {
+						return 'vendor-naive';
+					}
+					if (id.includes('node_modules/pinia')) {
+						return 'vendor-pinia';
+					}
+					if (id.includes('node_modules/vue-router')) {
+						return 'vendor-router';
+					}
+					if (id.includes('node_modules/lodash')) {
+						return 'vendor-lodash';
+					}
+					if (id.includes('node_modules/pako')) {
 						return 'pako';
 					}
 					if (id.includes('iconfont')) {
 						return 'iconfont';
-					}
-					if (id.includes('lodash')) {
-						return 'lodash';
 					}
 					if (id.includes('hooks')) {
 						return 'hooks';
@@ -120,4 +132,4 @@ export default defineConfig({
 			$: path.resolve(import.meta.dirname, './node_modules'),
 		},
 	},
-});
+}));

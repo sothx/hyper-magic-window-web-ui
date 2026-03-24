@@ -18,14 +18,14 @@ export interface SpawnOptions {
 }
 
 export interface Stdio {
-    on(event: 'data', callback: (data: string) => void)
+    on(event: 'data', callback: (data: string) => void): void
 }
 
 export interface ChildProcess {
     stdout: Stdio,
     stderr: Stdio,
-    on(event: 'exit', callback: (code: number) => void)
-    on(event: 'error', callback: (err: any) => void)
+    on(event: 'exit', callback: (code: number) => void): void
+    on(event: 'error', callback: (err: unknown) => void): void
 }
 
 declare function spawn(command: string): ChildProcess;
@@ -33,11 +33,11 @@ declare function spawn(command: string, args: string[]): ChildProcess;
 declare function spawn(command: string, options: SpawnOptions): ChildProcess;
 declare function spawn(command: string, args: string[], options: SpawnOptions): ChildProcess;
 
-declare function fullScreen(isFullScreen: boolean);
+declare function fullScreen(isFullScreen: boolean): void;
 
-declare function enableEdgeToEdge(enable: boolean);
+declare function enableEdgeToEdge(enable: boolean): void;
 
-declare function toast(message: string);
+declare function toast(message: string): void;
 
 declare function moduleInfo(): string;
 
@@ -54,7 +54,7 @@ declare function listPackages(type: string): string[];
 
 declare function getPackagesInfo(packages: string[]): PackagesInfo[];
 
-declare function exit();
+declare function exit(): void;
 
 export {
     exec,

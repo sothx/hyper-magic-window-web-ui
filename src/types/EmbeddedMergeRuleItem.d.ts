@@ -15,4 +15,4 @@ export default interface EmbeddedMergeRuleItem {
     embeddedRules?: Omit<EmbeddedRuleItem, "name">;
     fixedOrientationRule?: Omit<FixedOrientationRuleItem, "name">;
     settingRule?: Omit<EmbeddedSettingRuleItem, "name">;
-};
+}

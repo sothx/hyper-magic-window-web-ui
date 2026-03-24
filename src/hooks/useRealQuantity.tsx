@@ -27,7 +27,7 @@ export function useRealQuantity() {
 		autoReload: boolean
 		timer: number
 		reload: () => Promise<void>
-		interval: number | null
+		interval: ReturnType<typeof setInterval> | null
 	}
 
 	const qcomBatteryFg1RSocInfo = reactive<realQuantityInfo>({

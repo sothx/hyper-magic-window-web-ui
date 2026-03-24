@@ -6,10 +6,10 @@ export default interface DotBlackListItem {
     dataId: number;
   
     /** 数据库原始数据 */
-    productData: any;
+    productData: Record<string, unknown>;
   
     /** 窗口控制器列表 */
-    dataList: array[];
+    dataList: string[];
   
-  }
+}
   

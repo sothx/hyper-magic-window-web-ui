@@ -4,6 +4,9 @@ import globals from "globals";
 import tseslint from "typescript-eslint";
 import vueParser from "vue-eslint-parser";
 
+const isProduction = process.env.NODE_ENV === "production";
+const noConsoleLevel = isProduction ? "error" : "warn";
+
 export default [
 	{
 		ignores: ["dist/**", "node_modules/**", "public/**"]
@@ -21,7 +24,7 @@ export default [
 			}
 		},
 		rules: {
-			"no-console": "warn",
+			"no-console": noConsoleLevel,
 			"no-async-promise-executor": "off",
 			"@typescript-eslint/no-unused-vars": "off",
 			"@typescript-eslint/no-unused-expressions": "off",
@@ -55,7 +58,7 @@ export default [
 			}
 		},
 		rules: {
-			"no-console": "warn",
+			"no-console": noConsoleLevel,
 			"no-async-promise-executor": "off",
 			"@typescript-eslint/no-unused-vars": "off",
 			"@typescript-eslint/no-unused-expressions": "off",
