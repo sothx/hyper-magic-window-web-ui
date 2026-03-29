@@ -568,40 +568,6 @@ export const mergeAutoUI2CustomFromPersisted = (
 };
 
 /**
- * 解析 autoui2_custom.json：新格式为 { 包名: boolean }；兼容旧版整包规则 JSON。
- */
-export const parseAutoUI2CustomPersisted = (
-  deployXml: string,
-  enableJson: string | null | undefined,
-  source: AutoUI2PackageRules
-): AutoUI2PackageRules => {
-  const trimmed = enableJson?.trim();
-  if (trimmed) {
-    try {
-      const p = JSON.parse(trimmed) as unknown;
-      if (p && typeof p === 'object' && !Array.isArray(p)) {
-        const rec = p as Record<string, unknown>;
-        if (isLegacyAutoUI2FullJson(rec) && !isAutoUI2EnableOnlyRecord(rec)) {
-          return rec as AutoUI2PackageRules;
-        }
-        if (isAutoUI2EnableOnlyRecord(rec)) {
-          const enableMap = rec as AutoUI2EnableMap;
-          return mergeAutoUI2CustomFromPersisted(deployXml, enableMap, source);
-        }
-      }
-    } catch {
-      /* 仅使用 XML */
-    }
-  }
-
-  if (deployXml.trim()) {
-    return parseAutoUI2PackageRulesXml(deployXml);
-  }
-
-  return {};
-};
-
-/**
  * JSON -> AutoUI2 XML
  */
 export const stringifyAutoUI2PackageRulesXml = (
