@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<packageRules>
+	<package name="tv.danmaku.bili" enable="true" describe="哔哩哔哩" optimizeWebView="true">
+		<activity name="tv.danmaku.bili.MainActivityV2" policy="8">
+			<view name="" id="RecyclerView" path="recycler_view:-1">
+				<view_policy range="3" policytype="column" oldcolumns="2" newcolumns="4" itemdecorationflag="1" multisetflag="0" resetflag="1" />
+			</view>
+			<view name="" id="RecyclerView" path="recyclerView:-1">
+				<view_policy range="3" policytype="column" oldcolumns="2" newcolumns="4" itemdecorationflag="1" multisetflag="0" resetflag="1" />
+			</view>
+		</activity>
+	</package>
+</packageRules>

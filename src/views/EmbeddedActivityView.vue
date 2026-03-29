@@ -1091,7 +1091,7 @@ const openUpdateEmbeddedApp = async (row: EmbeddedMergeRuleItem, index: number) 
 					}
 					if (isNeedPatchOrigin) {
 						embeddedStore.customConfigEmbeddedRulesList[row.name] = {
-							...(embeddedStore.isPatchMode
+							...(deviceStore.isPatchMode
 								? embeddedStore.patchEmbeddedRulesList[row.name]
 								: embeddedStore.sourceEmbeddedRulesList[row.name]),
 							...(updateEmbeddedAppRes.modePayload.hasOwnProperty('splitRatio') && {
@@ -1323,10 +1323,10 @@ const handleCustomRuleDropdown = async (
 										name: row.name,
 										action: getAppModeCode(
 											getSettingMode(
-												embeddedStore.isPatchMode
+												deviceStore.isPatchMode
 													? embeddedStore.patchEmbeddedRulesList[row.name]
 													: embeddedStore.sourceEmbeddedRulesList[row.name],
-												embeddedStore.isPatchMode
+												deviceStore.isPatchMode
 													? embeddedStore.patchFixedOrientationList[row.name]
 													: embeddedStore.sourceFixedOrientationList[row.name],
 											),
@@ -1337,7 +1337,7 @@ const handleCustomRuleDropdown = async (
 									switchAction: {
 										name: row.name,
 										action: (
-											embeddedStore.isPatchMode
+											deviceStore.isPatchMode
 												? embeddedStore.patchEmbeddedRulesList[row.name]
 												: embeddedStore.sourceEmbeddedRulesList[row.name]
 										)
@@ -2146,7 +2146,7 @@ function createColumns(): DataTableColumns<EmbeddedMergeRuleItem> {
 				</n-button>
 				<n-button
 					class="mb-3 mr-3"
-					v-if="embeddedStore.isPatchMode"
+					v-if="deviceStore.isPatchMode"
 					type="error"
 					:loading="deviceStore.loading || embeddedStore.loading || patchModeHook.loading.value"
 					@click="() => patchModeHook.reloadPatchMode()">

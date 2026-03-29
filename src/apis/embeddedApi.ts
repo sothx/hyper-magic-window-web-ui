@@ -6,6 +6,7 @@ import * as deviceApi from '@/apis/deviceApi';
 import { useDeviceStore } from '@/stores/device';
 import * as xmlFormat from '@/utils/xmlFormat';
 import { useEmbeddedStore } from '@/stores/embedded';
+import { useAutoUI2Store } from '@/stores/autoui2';
 import {
 	thirdPartyAppOptimizeJSONFormatToProp,
 	thirdPartyAppOptimizeJSONFormatToRunnerShell,
@@ -297,6 +298,7 @@ export const updateEmbeddedApp = (
 }> => {
 	const deviceStore = useDeviceStore();
 	const embeddedStore = useEmbeddedStore();
+	const autoUI2Store = useAutoUI2Store();
 	const updateData = {
 		...(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35
 			? {
@@ -308,7 +310,7 @@ export const updateEmbeddedApp = (
 					),
 				}
 			: undefined),
-		isPatchMode: embeddedStore.isPatchMode,
+		isPatchMode: deviceStore.isPatchMode,
 		patchEmbeddedRulesListXML: xmlFormat.objectToXML(
 			embeddedStore.patchEmbeddedRulesList,
 			'package',
@@ -324,6 +326,19 @@ export const updateEmbeddedApp = (
 			'setting',
 			'setting_rule',
 		),
+		patchAutoUI2DeployXML: deviceStore.isPatchMode && Object.keys(autoUI2Store.customConfigAutoUI2List).length > 0
+			? xmlFormat.stringifyAutoUI2PackageRulesXml(
+					xmlFormat.filterAutoUI2PackagesForDeploy(
+						xmlFormat.mergeAutoUI2ForPatchRule(
+							autoUI2Store.sourceAutoUI2List,
+							autoUI2Store.customConfigAutoUI2List,
+							Object.fromEntries(
+								Object.entries(autoUI2Store.customConfigAutoUI2List).map(([k, v]) => [k, v.enable !== false])
+							),
+						),
+					),
+				)
+			: undefined,
 		customEmbeddedRulesListXML: xmlFormat.objectToXML(
 			embeddedStore.customConfigEmbeddedRulesList,
 			'package',
@@ -497,6 +512,51 @@ export const updateEmbeddedApp = (
 							name: '[定制模式]信箱模式配置文件',
 							message: '更新成功',
 						});
+					}
+
+					// 处理 AutoUI2 patch_rule 配置
+					if (updateData.patchAutoUI2DeployXML) {
+						const {
+							errno: PatchAutoUI2Errno,
+							stdout: PatchAutoUI2Stdout,
+							stderr: PatchAutoUI2Stderr,
+						}: ExecResults = await exec(
+							`echo '${updateData.patchAutoUI2DeployXML}' > /data/adb/Hyper_MagicWindow/patch_rule/autoui2_list.xml`,
+						);
+						if (PatchAutoUI2Errno) {
+							errorLogging.push({
+								type: 'patchAutoUI2DeployXML',
+								name: '[定制模式]应用布局优化 2.0 配置文件',
+								message: PatchAutoUI2Stderr,
+							});
+						} else {
+							successLogging.push({
+								type: 'patchAutoUI2DeployXML',
+								name: '[定制模式]应用布局优化 2.0 配置文件',
+								message: '更新成功',
+							});
+						}
+					} else {
+						const {
+							errno: PatchAutoUI2RmErrno,
+							stdout: PatchAutoUI2RmStdout,
+							stderr: PatchAutoUI2RmStderr,
+						}: ExecResults = await exec(
+							`rm -f /data/adb/Hyper_MagicWindow/patch_rule/autoui2_list.xml`,
+						);
+						if (PatchAutoUI2RmErrno) {
+							errorLogging.push({
+								type: 'patchAutoUI2DeployXML',
+								name: '[定制模式]应用布局优化 2.0 配置文件',
+								message: PatchAutoUI2RmStderr,
+							});
+						} else {
+							successLogging.push({
+								type: 'patchAutoUI2DeployXML',
+								name: '[定制模式]应用布局优化 2.0 配置文件',
+								message: '配置为空，文件已删除',
+							});
+						}
 					}
 
 					// 仅针对平板设备更新配置文件

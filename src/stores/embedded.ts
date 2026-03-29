@@ -21,9 +21,6 @@ export type ThirdPartyAppOptimizeAppModeType = -1 | 0 | 1 | 2 | 3;
 export const useEmbeddedStore = defineStore(
 	'embedded',
 	() => {
-		// 是否补丁模式
-		const isPatchMode = ref<boolean>(false);
-		const isDeepPatchMode = ref<boolean>(false);
 		const filterInstalledApps = ref<boolean>(false);
 		const applicationName = ref<ApplicationName>({});
 		const isNeedShowReloadPathModeDialog = ref<boolean>(false);
@@ -66,7 +63,7 @@ export const useEmbeddedStore = defineStore(
 		const patchEmbeddedRulesList = computed((): Record<EmbeddedRuleItem['name'], EmbeddedRuleItem> => {
 			const deviceStore = useDeviceStore();
 			const combinedSet = new Set(
-				isDeepPatchMode.value
+				deviceStore.isDeepPatchMode
 					? [...deviceStore.installedAndroidApplicationPackageList]
 					: [
 							...Object.keys(systemEmbeddedRulesList.value),
@@ -88,7 +85,7 @@ export const useEmbeddedStore = defineStore(
 			(): Record<FixedOrientationRuleItem['name'], FixedOrientationRuleItem> => {
 				const deviceStore = useDeviceStore();
 				const combinedSet = new Set(
-					isDeepPatchMode.value
+					deviceStore.isDeepPatchMode
 						? [...deviceStore.installedAndroidApplicationPackageList]
 						: [
 								...Object.keys(systemEmbeddedRulesList.value),
@@ -112,7 +109,7 @@ export const useEmbeddedStore = defineStore(
 			(): Record<EmbeddedSettingRuleItem['name'], EmbeddedSettingRuleItem> => {
 				const deviceStore = useDeviceStore();
 				const combinedSet = new Set(
-					isDeepPatchMode.value
+					deviceStore.isDeepPatchMode
 						? [...deviceStore.installedAndroidApplicationPackageList]
 						: [
 								...Object.keys(systemEmbeddedRulesList.value),
@@ -240,12 +237,13 @@ export const useEmbeddedStore = defineStore(
 		// 错误存储
 		const errorLogging = reactive<ErrorLogging[]>([]);
 		//
-		const allPackageName = computed(() => {
+    const allPackageName = computed(() => {
+      const deviceStore = useDeviceStore();
 			return new Set([
-				...(isPatchMode.value
+				...(deviceStore.isPatchMode
 					? Object.keys(patchEmbeddedRulesList.value)
 					: Object.keys(sourceEmbeddedRulesList.value)),
-				...(isPatchMode.value
+				...(deviceStore.isPatchMode
 					? Object.keys(patchFixedOrientationList.value)
 					: Object.keys(sourceFixedOrientationList.value)),
 				...Object.keys(customConfigEmbeddedRulesList.value),
@@ -256,10 +254,10 @@ export const useEmbeddedStore = defineStore(
 		function updateMergeRuleList() {
 			const deviceStore = useDeviceStore();
 			mergeRuleList.value = xmlFormat.mergeEmbeddedRule(
-				isPatchMode.value ? patchEmbeddedRulesList.value : sourceEmbeddedRulesList.value,
-				isPatchMode.value ? patchFixedOrientationList.value : sourceFixedOrientationList.value,
+				deviceStore.isPatchMode ? patchEmbeddedRulesList.value : sourceEmbeddedRulesList.value,
+				deviceStore.isPatchMode ? patchFixedOrientationList.value : sourceFixedOrientationList.value,
 				deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35
-					? isPatchMode.value
+					? deviceStore.isPatchMode
 						? patchEmbeddedSettingConfig.value
 						: sourceEmbeddedSettingConfig.value
 					: systemEmbeddedSettingConfig.value,
@@ -291,9 +289,9 @@ export const useEmbeddedStore = defineStore(
 				});
 			} else {
 				if (getIsPatchModeRes === 'true') {
-					isPatchMode.value = true;
+					deviceStore.isPatchMode = true;
 				} else {
-					isPatchMode.value = false;
+					deviceStore.isPatchMode = false;
 				}
 			}
 
@@ -305,9 +303,9 @@ export const useEmbeddedStore = defineStore(
 				});
 			} else {
 				if (getIsDeepPatchModeRes === 'true') {
-					isDeepPatchMode.value = true;
+					deviceStore.isDeepPatchMode = true;
 				} else {
-					isDeepPatchMode.value = false;
+					deviceStore.isDeepPatchMode = false;
 				}
 			}
 
@@ -500,10 +498,10 @@ export const useEmbeddedStore = defineStore(
 			logsStore.info('deviceStore.MIOSVersion', deviceStore.MIOSVersion);
 
 			mergeRuleList.value = xmlFormat.mergeEmbeddedRule(
-				isPatchMode.value ? patchEmbeddedRulesList.value : sourceEmbeddedRulesList.value,
-				isPatchMode.value ? patchFixedOrientationList.value : sourceFixedOrientationList.value,
+				deviceStore.isPatchMode ? patchEmbeddedRulesList.value : sourceEmbeddedRulesList.value,
+				deviceStore.isPatchMode ? patchFixedOrientationList.value : sourceFixedOrientationList.value,
 				deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 2 && deviceStore.androidTargetSdk >= 35
-					? isPatchMode.value
+					? deviceStore.isPatchMode
 						? patchEmbeddedSettingConfig.value
 						: sourceEmbeddedSettingConfig.value
 					: systemEmbeddedSettingConfig.value,
@@ -528,7 +526,7 @@ export const useEmbeddedStore = defineStore(
 
 			if (!errorLogging.length) {
 				loading.value = false;
-				if (deviceStore.needReloadData && isPatchMode.value) {
+				if (deviceStore.needReloadData && deviceStore.isPatchMode) {
 					isNeedShowReloadPathModeDialog.value = true;
 				}
 			}
@@ -562,11 +560,9 @@ export const useEmbeddedStore = defineStore(
 			ruleCount,
 			allPackageName,
 			applicationName,
-			isPatchMode,
 			initDefault,
 			updateMergeRuleList,
 			isNeedShowReloadPathModeDialog,
-			isDeepPatchMode,
 		};
 	},
 	{

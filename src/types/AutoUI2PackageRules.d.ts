@@ -30,3 +30,6 @@ export interface AutoUI2Package {
 }
 
 export type AutoUI2PackageRules = Record<string, AutoUI2Package>;
+
+/** 仅包名 → 是否启用（写入 autoui2_custom.json） */
+export type AutoUI2EnableMap = Record<string, boolean>;

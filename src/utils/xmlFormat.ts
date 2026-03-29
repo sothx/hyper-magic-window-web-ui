@@ -1,4 +1,4 @@
-import { mapValues, toLower } from "lodash-es";
+import { cloneDeep, mapValues, toLower } from "lodash-es";
 import type EmbeddedRuleItem from "@/types/EmbeddedRuleItem";
 import type FixedOrientationRuleItem from "@/types/FixedOrientationRuleItem";
 import type EmbeddedSettingRuleItem from "@/types/EmbeddedSettingRuleItem";
@@ -10,7 +10,7 @@ import type AutoUIMergeRuleItem from "@/types/AutoUIMergeRuleItem";
 import * as autoUIFun from '@/utils/autoUIFun';
 import { useDeviceStore } from "@/stores/device";
 import { getSettingMode } from "./embeddedFun";
-import type { AutoUI2Activity, AutoUI2Package, AutoUI2PackageRules, AutoUI2View } from "@/types/AutoUI2PackageRules"
+import type { AutoUI2Activity, AutoUI2Package, AutoUI2PackageRules, AutoUI2View, AutoUI2EnableMap } from "@/types/AutoUI2PackageRules"
 import type AutoUI2MergeRuleItem from "@/types/AutoUI2MergeRuleItem";
 
 export const transformValues = <T>(obj: Record<string, T>): Record<string, T> => {
@@ -340,6 +340,54 @@ export const mergeAutoUI2Rule = (
   return result;
 };
 
+/**
+ * 为 patch_rule 合并 AutoUI2 配置：系统配置 + 自定义配置 + 开关配置
+ * 仅当存在开关配置时才进行合并
+ */
+export const mergeAutoUI2ForPatchRule = (
+	sourceAutoUI2List: Record<string, AutoUI2Package> = {},
+	customConfigAutoUI2List: Record<string, AutoUI2Package> = {},
+	enableMap: AutoUI2EnableMap = {},
+): AutoUI2PackageRules => {
+	// 如果没有开关配置，返回空
+	if (Object.keys(enableMap).length === 0) {
+		return {};
+	}
+
+	const result: AutoUI2PackageRules = {};
+	const allKeys = new Set([
+		...Object.keys(sourceAutoUI2List),
+		...Object.keys(customConfigAutoUI2List),
+		...Object.keys(enableMap),
+	]);
+
+	for (const key of allKeys) {
+		const hasCustom = Object.prototype.hasOwnProperty.call(customConfigAutoUI2List, key);
+		const hasEnable = Object.prototype.hasOwnProperty.call(enableMap, key);
+
+		// 优先使用自定义配置，其次使用系统配置
+		let base: AutoUI2Package;
+		if (hasCustom) {
+			base = cloneDeep(customConfigAutoUI2List[key]);
+		} else if (sourceAutoUI2List[key]) {
+			base = cloneDeep(sourceAutoUI2List[key]);
+		} else {
+			// 仅在开关配置中存在
+			base = { name: key, enable: enableMap[key], activity: [] };
+		}
+
+		base.name = key;
+		// 开关配置优先级最高
+		if (hasEnable) {
+			base.enable = enableMap[key];
+		}
+
+		result[key] = base;
+	}
+
+	return result;
+};
+
 
 const getDirectChildren = (node: Element, tag: string): Element[] => {
   const res: Element[] = [];
@@ -386,9 +434,10 @@ export const parseAutoUI2PackageRulesXml = (xml: string): AutoUI2PackageRules =>
     const packageName = pkg.getAttribute('name');
     if (!packageName) return;
 
+    const enAttr = pkg.getAttribute('enable');
     const pkgObj: AutoUI2Package = {
       name: packageName,
-      enable: parseBool(pkg.getAttribute('enable')),
+      enable: enAttr == null || enAttr === '' ? true : enAttr === 'true',
       describe: pkg.getAttribute('describe') || undefined,
       optimizeWebView: parseOptionalBool(pkg.getAttribute('optimizeWebView')),
       activity: []
@@ -462,14 +511,106 @@ const formatXml = (xml: string): string => {
   return formatted.trim();
 };
 
+/** 写入设备生效 XML 时仅保留启用项（关闭项仍保留在 autoui2_custom.json） */
+export const filterAutoUI2PackagesForDeploy = (data: AutoUI2PackageRules): AutoUI2PackageRules => {
+  const out: AutoUI2PackageRules = {};
+  for (const [k, pkg] of Object.entries(data)) {
+    if (pkg.enable !== false) {
+      out[k] = pkg;
+    }
+  }
+  return out;
+};
+
+const isAutoUI2EnableOnlyRecord = (p: Record<string, unknown>): boolean => {
+  const vals = Object.values(p);
+  if (vals.length === 0) return true;
+  return vals.every((v) => typeof v === 'boolean');
+};
+
+const isLegacyAutoUI2FullJson = (p: Record<string, unknown>): boolean =>
+  Object.values(p).some(
+    (v) =>
+      v !== null &&
+      typeof v === 'object' &&
+      !Array.isArray(v) &&
+      Array.isArray((v as AutoUI2Package).activity),
+  );
+
+/** 由生效 XML + 仅 enable 的 JSON + 模块源还原内存中的自定义层 */
+export const mergeAutoUI2CustomFromPersisted = (
+  deployXml: string,
+  enableMap: AutoUI2EnableMap,
+  source: AutoUI2PackageRules
+): AutoUI2PackageRules => {
+  const fromXml = deployXml.trim() ? parseAutoUI2PackageRulesXml(deployXml) : {};
+  const allKeys = new Set([...Object.keys(fromXml), ...Object.keys(enableMap)]);
+  const result: AutoUI2PackageRules = {};
+
+  for (const key of allKeys) {
+    const hasEnable = Object.prototype.hasOwnProperty.call(enableMap, key);
+    const en = hasEnable ? enableMap[key] : fromXml[key] != null;
+
+    let base: AutoUI2Package;
+    if (fromXml[key]) {
+      base = cloneDeep(fromXml[key]);
+    } else if (source[key]) {
+      base = cloneDeep(source[key]);
+    } else {
+      base = { name: key, enable: en, activity: [] };
+    }
+    base.name = key;
+    base.enable = en;
+    result[key] = base;
+  }
+
+  return result;
+};
+
+/**
+ * 解析 autoui2_custom.json：新格式为 { 包名: boolean }；兼容旧版整包规则 JSON。
+ */
+export const parseAutoUI2CustomPersisted = (
+  deployXml: string,
+  enableJson: string | null | undefined,
+  source: AutoUI2PackageRules
+): AutoUI2PackageRules => {
+  const trimmed = enableJson?.trim();
+  if (trimmed) {
+    try {
+      const p = JSON.parse(trimmed) as unknown;
+      if (p && typeof p === 'object' && !Array.isArray(p)) {
+        const rec = p as Record<string, unknown>;
+        if (isLegacyAutoUI2FullJson(rec) && !isAutoUI2EnableOnlyRecord(rec)) {
+          return rec as AutoUI2PackageRules;
+        }
+        if (isAutoUI2EnableOnlyRecord(rec)) {
+          const enableMap = rec as AutoUI2EnableMap;
+          return mergeAutoUI2CustomFromPersisted(deployXml, enableMap, source);
+        }
+      }
+    } catch {
+      /* 仅使用 XML */
+    }
+  }
+
+  if (deployXml.trim()) {
+    return parseAutoUI2PackageRulesXml(deployXml);
+  }
+
+  return {};
+};
+
 /**
  * JSON -> AutoUI2 XML
  */
 export const stringifyAutoUI2PackageRulesXml = (
   data: AutoUI2PackageRules
 ): string => {
-  const impl = new DOMImplementation();
-  const doc = impl.createDocument(null, 'packageRules', null);
+  if (typeof document === 'undefined' || !document.implementation) {
+    throw new Error('stringifyAutoUI2PackageRulesXml requires a browser DOM');
+  }
+  const doc = document.implementation.createDocument(null, 'packageRules', null);
 
   const root = doc.documentElement;
 

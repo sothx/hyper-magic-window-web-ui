@@ -93,7 +93,7 @@ export function usePatchMode() {
 				preset: 'dialog',
 				content: () => (
 					<div>
-						{embeddedStore.isDeepPatchMode && (
+						{deviceStore.isDeepPatchMode && (
 							<p>
 								好耶w，检测到您已启用{' '}
 								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
@@ -110,7 +110,7 @@ export function usePatchMode() {
 								。
 							</p>
 						)}
-						{!embeddedStore.isDeepPatchMode && (
+						{!deviceStore.isDeepPatchMode && (
 							<p>
 								好耶w，已根据您设备当前的整体应用情况重新{' '}
 								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
@@ -214,10 +214,10 @@ export function usePatchMode() {
 					loading.value = false;
 					return;
 				}
-				embeddedStore.isPatchMode = true;
+				deviceStore.isPatchMode = true;
 			} else {
 				loading.value = false;
-				embeddedStore.isPatchMode = false;
+				deviceStore.isPatchMode = false;
 			}
 			await deviceStore.getAndroidApplicationPackageList();
 			await deviceStore.getInstalledAppPackageInfoList();
@@ -229,7 +229,7 @@ export function usePatchMode() {
 					preset: 'dialog',
 					content: () => <p>发生异常错误，更新失败了QwQ，详细错误请查看错误日志~</p>,
 				});
-				embeddedStore.isPatchMode = !embeddedStore.isPatchMode;
+				deviceStore.isPatchMode = !deviceStore.isPatchMode;
 				loading.value = false;
 			} else {
 				modal.create({
@@ -377,10 +377,10 @@ export function usePatchMode() {
 					loading.value = false;
 					return;
 				}
-				embeddedStore.isDeepPatchMode = true;
+				deviceStore.isDeepPatchMode = true;
 			} else {
 				loading.value = false;
-				embeddedStore.isDeepPatchMode = false;
+				deviceStore.isDeepPatchMode = false;
 			}
 			await deviceStore.getAndroidApplicationPackageList();
 			await deviceStore.getInstalledAppPackageInfoList();
@@ -392,7 +392,7 @@ export function usePatchMode() {
 					preset: 'dialog',
 					content: () => <p>发生异常错误，更新失败了QwQ，详细错误请查看错误日志~</p>,
 				});
-				embeddedStore.isPatchMode = !embeddedStore.isPatchMode;
+				deviceStore.isPatchMode = !deviceStore.isPatchMode;
 				loading.value = false;
 			} else {
 				modal.create({

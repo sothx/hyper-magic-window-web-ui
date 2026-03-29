@@ -7,8 +7,8 @@ import { useEmbeddedStore } from '@/stores/embedded';
 import type EmbeddedRuleItem from '@/types/EmbeddedRuleItem';
 import type FixedOrientationRuleItem from '@/types/FixedOrientationRuleItem';
 export function useEmbedded(rowName: string) {
-    const embeddedStore = useEmbeddedStore(); // 根据实际情况获取你的 store
-
+  const deviceStore = useDeviceStore();
+  const embeddedStore = useEmbeddedStore(); // 根据实际情况获取你的 store
     interface EmbeddedState {
       moduleEmbeddedRules: EmbeddedRuleItem; // 你可以根据实际情况修改为具体类型
       currentEmbeddedRules: EmbeddedRuleItem;
@@ -19,24 +19,24 @@ export function useEmbedded(rowName: string) {
   // 使用 reactive 创建一个响应式对象
   const state: EmbeddedState = reactive({
     moduleEmbeddedRules: cloneDeep(
-      embeddedStore.isPatchMode
+      deviceStore.isPatchMode
         ? embeddedStore.patchEmbeddedRulesList[rowName]
         : embeddedStore.sourceEmbeddedRulesList[rowName]
     ),
     currentEmbeddedRules: cloneDeep(
       embeddedStore.customConfigEmbeddedRulesList[rowName] ||
-      (embeddedStore.isPatchMode
+      (deviceStore.isPatchMode
         ? embeddedStore.patchEmbeddedRulesList[rowName]
         : embeddedStore.sourceEmbeddedRulesList[rowName])
     ) || {},
     moduleFixedOrientation: cloneDeep(
-      embeddedStore.isPatchMode
+      deviceStore.isPatchMode
         ? embeddedStore.patchFixedOrientationList[rowName]
         : embeddedStore.sourceFixedOrientationList[rowName]
     ),
     currentFixedOrientation: cloneDeep(
       embeddedStore.customConfigFixedOrientationList[rowName] ||
-      (embeddedStore.isPatchMode
+      (deviceStore.isPatchMode
         ? embeddedStore.patchFixedOrientationList[rowName]
         : embeddedStore.sourceFixedOrientationList[rowName])
     ) || {},

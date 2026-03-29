@@ -69,7 +69,10 @@ export type ROOT_MANAGER_TYPE = 'Magisk' | 'APatch' | 'KernelSU';
 
 export const useDeviceStore = defineStore(
 	'device',
-	() => {
+  () => {
+    // 是否补丁模式
+		const isPatchMode = ref<boolean>(false);
+		const isDeepPatchMode = ref<boolean>(false);
 		const deviceCharacteristics = ref<string>();
 		const muiltdisplayType = ref<number>(0);
 		const androidTargetSdk = ref<number>(0);
@@ -634,7 +637,9 @@ export const useDeviceStore = defineStore(
 			remoteDownloadAppUrlMap,
 			isInstalledXiaomiPadSystemPatchAdditionalModule,
 			canShowApplicationIcon,
-			canUsePackageInfo,
+      canUsePackageInfo,
+      isPatchMode,
+      isDeepPatchMode
 		};
 	},
 	{

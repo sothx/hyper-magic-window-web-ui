@@ -225,7 +225,7 @@ const settingList: SettingItemInfo[] = [
 		content: () => (
 			<>
 				<n-switch
-					value={embeddedStore.isPatchMode}
+					value={deviceStore.isPatchMode}
 					loading={patchModeHook.loading.value}
 					disabled={deviceStore.androidTargetSdk && deviceStore.androidTargetSdk < 32}
 					railStyle={railStyle}
@@ -235,7 +235,7 @@ const settingList: SettingItemInfo[] = [
 						unchecked: () => '完整模式',
 					}}
 				</n-switch>
-				{embeddedStore.isPatchMode && (
+				{deviceStore.isPatchMode && (
 					<n-alert class='mt-5' type='warning' show-icon={false} bordered={false}>
 						<p>
 							「定制模式」还额外提供了仅根据当前「已安装应用列表」修剪「模块应用适配列表」的功能，
@@ -245,7 +245,7 @@ const settingList: SettingItemInfo[] = [
 						</p>
 						<n-switch
 							class='mt-5'
-							value={embeddedStore.isDeepPatchMode}
+							value={deviceStore.isDeepPatchMode}
 							loading={patchModeHook.loading.value}
 							disabled={deviceStore.androidTargetSdk && deviceStore.androidTargetSdk < 32}
 							railStyle={railStyle}
