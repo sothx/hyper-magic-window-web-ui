@@ -476,7 +476,20 @@ const enhanceList: EnhanceItemInfo[] = [
 		isShow: () => amktiaoHook.hasKeyboardControl.value && ['tablet'].includes(deviceStore.deviceType),
   },
   	{
-		title: '第三方触控笔管理（水龙）',
+      title: '第三方触控笔管理（水龙）',
+    	titleSlot: () => (
+			<>
+				{(
+					<div class='mt-2'>
+						<n-tag
+              bordered={false}
+							type='error'>
+							小米平板 6 Pro 机型专属
+						</n-tag>
+					</div>
+				)}
+			</>
+		),
 		content: () => (
 			<>
 				{!amktiaoHook.isInit.value ? (
