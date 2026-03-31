@@ -474,6 +474,37 @@ const enhanceList: EnhanceItemInfo[] = [
 			</>
 		),
 		isShow: () => amktiaoHook.hasKeyboardControl.value && ['tablet'].includes(deviceStore.deviceType),
+  },
+  	{
+		title: '第三方触控笔管理（水龙）',
+		content: () => (
+			<>
+				{!amktiaoHook.isInit.value ? (
+					<n-skeleton width={75} sharp={false} size='small' />
+				) : (
+					<n-dropdown
+						value={amktiaoHook.currentLiuqinPenEnableSelect}
+						size='large'
+						trigger='click'
+						options={amktiaoHook.liuqinPenEnableOptions.value}
+						onSelect={amktiaoHook.changeLiuqinPenEnableMode}>
+						<n-button
+							strong
+							secondary
+							disabled={amktiaoHook.loading.value}
+							size='small'
+							type={amktiaoHook.currentLiuqinPenEnableSelect.value.type}>
+							{amktiaoHook.currentLiuqinPenEnableSelect.value.label}
+						</n-button>
+					</n-dropdown>
+				)}
+
+				<n-alert class='mt-5' type='warning' show-icon={false} bordered={false}>
+					<p>仅兼容小米平板6 Pro，其他机型请勿使用</p>
+				</n-alert>
+			</>
+		),
+		isShow: () => ['tablet'].includes(deviceStore.deviceType) && amktiaoHook.isInit.value,
 	},
 	{
 		title: '小米超级岛',

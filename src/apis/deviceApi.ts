@@ -1431,6 +1431,67 @@ export const removeIsAmktiaoPenEnable = (): Promise<string> => {
 	);
 };
 
+export const getCurrentLiuqinPenEnable = (): Promise<string> => {
+	const shellCommon = `grep 'is_amktiao_liuqin_pen_enable=' /data/adb/Hyper_MagicWindow/config.prop | awk -F'=' '{print $2}'`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`0`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const putCurrentLiuqinPenEnable = (mode: PenEnable): Promise<string> => {
+  const xiaomi_pen = '/data/adb/modules/Hyper_MagicWindow/common/utils/xiaomi_pen';
+	const shellCommon = `xiaomi_pen ${mode}`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`success`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const addIsAmktiaoLiuqinPenEnable = (): Promise<string> => {
+	const shellCommon = `grep -q '^is_amktiao_liuqin_pen_enable=' /data/adb/Hyper_MagicWindow/config.prop || (source ${toolsFunc} && add_lines "is_amktiao_liuqin_pen_enable=true" /data/adb/Hyper_MagicWindow/config.prop && echo "Command executed successfully." || echo "Command failed.");`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`Command executed successfully.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : stdout === 'Command executed successfully.' ? resolve(stdout) : reject(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const removeIsAmktiaoLiuqinPenEnable = (): Promise<string> => {
+	const shellCommon = `sed -i '/^is_amktiao_liuqin_pen_enable=/d' //data/adb/Hyper_MagicWindow/config.prop && echo "Remove is_amktiao_pen_enable successfully." || echo "Remove is_amktiao_liuqin_pen_enable failed."`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`Remove is_amktiao_liuqin_pen_enable successfully.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
 export const getCurrentKeyboardMode = (): Promise<string> => {
 	const shellCommon = `cat /sys/touchpanel/keyboard | head -n 1`;
 	return handlePromiseWithLogging(

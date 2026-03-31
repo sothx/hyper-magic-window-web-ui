@@ -18,6 +18,12 @@ export interface KeyboardModeOptions {
 	key: 0 | 1 | 2;
 }
 
+export interface PenEnableOptions {
+	label: string;
+	type: string;
+	key: 0 | 1;
+}
+
 export type PenUpdate = 0 | 1;
 
 export type PenEnable = 0 | 1;
@@ -49,6 +55,8 @@ export function useAmktiao() {
 	const currentPenUpdate = ref<PenUpdate>(0);
 
 	const currentPenEnable = ref<PenEnable>(0);
+
+	const currentLiuqinPenEnable = ref<PenEnable>(0);
 
 	const currentKeyboardMode = ref<KeyboardMode>(0);
 
@@ -86,6 +94,25 @@ export function useAmktiao() {
 
 	const currentKeyboardModeSelect = ref<KeyboardModeOptions>({
 		label: '关闭键盘',
+		type: 'error',
+		key: 0,
+	});
+
+	const liuqinPenEnableOptions = ref<PenEnableOptions[]>([
+		{
+			label: '禁用第三方触控笔',
+			type: 'error',
+			key: 0,
+		},
+		{
+			label: '启用第三方触控笔',
+			type: 'success',
+			key: 1,
+		},
+	]);
+
+	const currentLiuqinPenEnableSelect = ref<PenEnableOptions>({
+		label: '禁用第三方触控笔',
 		type: 'error',
 		key: 0,
 	});
@@ -257,7 +284,9 @@ export function useAmktiao() {
 									type: 'error',
 									preset: 'dialog',
 									content: () => (
-										<p>检测到您目前的屏幕状态并非亮屏状态，请手动关闭屏幕再点亮屏幕即可更新固件，详细请查看日志~</p>
+										<p>
+											检测到您目前的屏幕状态并非亮屏状态，请手动关闭屏幕再点亮屏幕即可更新固件，详细请查看日志~
+										</p>
 									),
 									positiveText: '确定',
 								});
@@ -329,7 +358,9 @@ export function useAmktiao() {
 									type: 'error',
 									preset: 'dialog',
 									content: () => (
-										<p>检测到您目前的屏幕状态并非亮屏状态，请手动关闭屏幕再点亮屏幕即可更新固件，详细请查看日志~</p>
+										<p>
+											检测到您目前的屏幕状态并非亮屏状态，请手动关闭屏幕再点亮屏幕即可更新固件，详细请查看日志~
+										</p>
 									),
 									positiveText: '确定',
 								});
@@ -383,7 +414,9 @@ export function useAmktiao() {
 									type: 'error',
 									preset: 'dialog',
 									content: () => (
-										<p>获取屏幕信息失败，请手动关闭屏幕再点亮屏幕即可更新触控驱动，详细请查看日志~</p>
+										<p>
+											获取屏幕信息失败，请手动关闭屏幕再点亮屏幕即可更新触控驱动，详细请查看日志~
+										</p>
 									),
 									positiveText: '确定',
 								});
@@ -407,9 +440,7 @@ export function useAmktiao() {
 									title: '切换成功',
 									type: 'success',
 									preset: 'dialog',
-									content: () => (
-										<p>已经为您关闭屏幕并重新点亮屏幕，请查看触控驱动是否已成功切换~</p>
-									),
+									content: () => <p>已经为您关闭屏幕并重新点亮屏幕，请查看触控驱动是否已成功切换~</p>,
 									positiveText: '确定',
 								});
 							} else {
@@ -418,7 +449,9 @@ export function useAmktiao() {
 									type: 'error',
 									preset: 'dialog',
 									content: () => (
-										<p>检测到您目前的屏幕状态并非亮屏状态，请手动关闭屏幕再点亮屏幕即可更新触控驱动，详细请查看日志~</p>
+										<p>
+											检测到您目前的屏幕状态并非亮屏状态，请手动关闭屏幕再点亮屏幕即可更新触控驱动，详细请查看日志~
+										</p>
 									),
 									positiveText: '确定',
 								});
@@ -455,7 +488,9 @@ export function useAmktiao() {
 									type: 'error',
 									preset: 'dialog',
 									content: () => (
-										<p>获取屏幕信息失败，请手动关闭屏幕再点亮屏幕即可更新触控驱动，详细请查看日志~</p>
+										<p>
+											获取屏幕信息失败，请手动关闭屏幕再点亮屏幕即可更新触控驱动，详细请查看日志~
+										</p>
 									),
 									positiveText: '确定',
 								});
@@ -479,9 +514,7 @@ export function useAmktiao() {
 									title: '切换成功',
 									type: 'success',
 									preset: 'dialog',
-									content: () => (
-										<p>已经为您关闭屏幕并重新点亮屏幕，请查看触控驱动是否已成功切换~</p>
-									),
+									content: () => <p>已经为您关闭屏幕并重新点亮屏幕，请查看触控驱动是否已成功切换~</p>,
 									positiveText: '确定',
 								});
 							} else {
@@ -490,7 +523,9 @@ export function useAmktiao() {
 									type: 'error',
 									preset: 'dialog',
 									content: () => (
-										<p>检测到您目前的屏幕状态并非亮屏状态，请手动关闭屏幕再点亮屏幕即可更新触控驱动，详细请查看日志~</p>
+										<p>
+											检测到您目前的屏幕状态并非亮屏状态，请手动关闭屏幕再点亮屏幕即可更新触控驱动，详细请查看日志~
+										</p>
 									),
 									positiveText: '确定',
 								});
@@ -504,9 +539,7 @@ export function useAmktiao() {
 	};
 
 	const changeGameMode = async (value: boolean) => {
-		const [putCurrentGameModeErr, putCurrentGameModeRes] = await $to(
-			deviceApi.putCurrentGameMode(value ? 1 : 0),
-		);
+		const [putCurrentGameModeErr, putCurrentGameModeRes] = await $to(deviceApi.putCurrentGameMode(value ? 1 : 0));
 		if (putCurrentGameModeErr) {
 			modal.create({
 				title: '操作失败',
@@ -517,9 +550,7 @@ export function useAmktiao() {
 			});
 		} else {
 			if (value) {
-				const [addIsAmktiaoGameModeErr, addIsAmktiaoGameModeRes] = await $to(
-					deviceApi.addIsAmktiaoGameMode(),
-				);
+				const [addIsAmktiaoGameModeErr, addIsAmktiaoGameModeRes] = await $to(deviceApi.addIsAmktiaoGameMode());
 				if (addIsAmktiaoGameModeErr) {
 					modal.create({
 						title: '操作失败',
@@ -544,7 +575,9 @@ export function useAmktiao() {
 									type: 'error',
 									preset: 'dialog',
 									content: () => (
-										<p>获取屏幕信息失败，请手动关闭屏幕再点亮屏幕即可切换游戏模式，详细请查看日志~</p>
+										<p>
+											获取屏幕信息失败，请手动关闭屏幕再点亮屏幕即可切换游戏模式，详细请查看日志~
+										</p>
 									),
 									positiveText: '确定',
 								});
@@ -568,9 +601,7 @@ export function useAmktiao() {
 									title: '切换成功',
 									type: 'success',
 									preset: 'dialog',
-									content: () => (
-										<p>已经为您关闭屏幕并重新点亮屏幕，请查看游戏模式是否已成功切换~</p>
-									),
+									content: () => <p>已经为您关闭屏幕并重新点亮屏幕，请查看游戏模式是否已成功切换~</p>,
 									positiveText: '确定',
 								});
 							} else {
@@ -579,7 +610,9 @@ export function useAmktiao() {
 									type: 'error',
 									preset: 'dialog',
 									content: () => (
-										<p>检测到您目前的屏幕状态并非亮屏状态，请手动关闭屏幕再点亮屏幕即可更新游戏模式，详细请查看日志~</p>
+										<p>
+											检测到您目前的屏幕状态并非亮屏状态，请手动关闭屏幕再点亮屏幕即可更新游戏模式，详细请查看日志~
+										</p>
 									),
 									positiveText: '确定',
 								});
@@ -616,7 +649,9 @@ export function useAmktiao() {
 									type: 'error',
 									preset: 'dialog',
 									content: () => (
-										<p>获取屏幕信息失败，请手动关闭屏幕再点亮屏幕即可更新游戏模式，详细请查看日志~</p>
+										<p>
+											获取屏幕信息失败，请手动关闭屏幕再点亮屏幕即可更新游戏模式，详细请查看日志~
+										</p>
 									),
 									positiveText: '确定',
 								});
@@ -640,9 +675,7 @@ export function useAmktiao() {
 									title: '切换成功',
 									type: 'success',
 									preset: 'dialog',
-									content: () => (
-										<p>已经为您关闭屏幕并重新点亮屏幕，请查看游戏模式是否已成功切换~</p>
-									),
+									content: () => <p>已经为您关闭屏幕并重新点亮屏幕，请查看游戏模式是否已成功切换~</p>,
 									positiveText: '确定',
 								});
 							} else {
@@ -651,7 +684,9 @@ export function useAmktiao() {
 									type: 'error',
 									preset: 'dialog',
 									content: () => (
-										<p>检测到您目前的屏幕状态并非亮屏状态，请手动关闭屏幕再点亮屏幕即可更新游戏模式，详细请查看日志~</p>
+										<p>
+											检测到您目前的屏幕状态并非亮屏状态，请手动关闭屏幕再点亮屏幕即可更新游戏模式，详细请查看日志~
+										</p>
 									),
 									positiveText: '确定',
 								});
@@ -665,148 +700,172 @@ export function useAmktiao() {
 	};
 
 	const changePenUpdateAutoTaskMode = async (value: boolean) => {
-			if (value) {
-				const [addIsAmktiaoPenUpdateAutoTaskErr, addIsAmktiaoPenUpdateAutoTaskRes] = await $to(
-					deviceApi.addIsAmktiaoPenUpdateAutoTask(),
-				);
-				if (addIsAmktiaoPenUpdateAutoTaskErr) {
-					modal.create({
-						title: '操作失败',
-						type: 'error',
-						preset: 'dialog',
-						content: () => <p>修改失败，详情请查看日志记录~</p>,
-						positiveText: '确定',
-					});
-				} else {
-					modal.create({
-						title: '操作成功',
-						type: 'success',
-						preset: 'dialog',
-						content: () => <p>您已启用「手写笔驱动开机自优化」，开启后每次开机首次解锁屏幕后，模块会尝试重新关闭屏幕再点亮一次，以便「二代笔驱动」立即生效~</p>,
-						positiveText: '确定',
-					});
-					currentPenUpdateAutoTask.value = value;
-				}
+		if (value) {
+			const [addIsAmktiaoPenUpdateAutoTaskErr, addIsAmktiaoPenUpdateAutoTaskRes] = await $to(
+				deviceApi.addIsAmktiaoPenUpdateAutoTask(),
+			);
+			if (addIsAmktiaoPenUpdateAutoTaskErr) {
+				modal.create({
+					title: '操作失败',
+					type: 'error',
+					preset: 'dialog',
+					content: () => <p>修改失败，详情请查看日志记录~</p>,
+					positiveText: '确定',
+				});
 			} else {
-				const [removeIsAmktiaoPenUpdateAutoTaskErr, removeIsAmktiaoPenUpdateAutoTaskRes] = await $to(
-					deviceApi.removeIsAmktiaoPenUpdateAutoTask(),
-				);
-				if (removeIsAmktiaoPenUpdateAutoTaskErr) {
-					modal.create({
-						title: '操作失败',
-						type: 'error',
-						preset: 'dialog',
-						content: () => <p>修改失败，详情请查看日志记录~</p>,
-						positiveText: '确定',
-					});
-				} else {
-					modal.create({
-						title: '操作成功',
-						type: 'success',
-						preset: 'dialog',
-						content: () => <p>您已关闭「手写笔驱动开机自优化」，每次开机后，您需要手动关闭并重新点亮屏幕，才能使「二代笔驱动」立即生效~</p>,
-						positiveText: '确定',
-					});
-					currentPenUpdateAutoTask.value = value;
-				}
+				modal.create({
+					title: '操作成功',
+					type: 'success',
+					preset: 'dialog',
+					content: () => (
+						<p>
+							您已启用「手写笔驱动开机自优化」，开启后每次开机首次解锁屏幕后，模块会尝试重新关闭屏幕再点亮一次，以便「二代笔驱动」立即生效~
+						</p>
+					),
+					positiveText: '确定',
+				});
+				currentPenUpdateAutoTask.value = value;
 			}
-	}
+		} else {
+			const [removeIsAmktiaoPenUpdateAutoTaskErr, removeIsAmktiaoPenUpdateAutoTaskRes] = await $to(
+				deviceApi.removeIsAmktiaoPenUpdateAutoTask(),
+			);
+			if (removeIsAmktiaoPenUpdateAutoTaskErr) {
+				modal.create({
+					title: '操作失败',
+					type: 'error',
+					preset: 'dialog',
+					content: () => <p>修改失败，详情请查看日志记录~</p>,
+					positiveText: '确定',
+				});
+			} else {
+				modal.create({
+					title: '操作成功',
+					type: 'success',
+					preset: 'dialog',
+					content: () => (
+						<p>
+							您已关闭「手写笔驱动开机自优化」，每次开机后，您需要手动关闭并重新点亮屏幕，才能使「二代笔驱动」立即生效~
+						</p>
+					),
+					positiveText: '确定',
+				});
+				currentPenUpdateAutoTask.value = value;
+			}
+		}
+	};
 
 	const changeTpFirewareModeAutoTask = async (value: boolean) => {
-			if (value) {
-				const [addIsAmktiaoTpFirmwareAutoTaskErr, addIsAmktiaoTpFirmwareAutoTaskRes] = await $to(
-					deviceApi.addIsAmktiaoTpFirmwareAutoTask(),
-				);
-				if (addIsAmktiaoTpFirmwareAutoTaskErr) {
-					modal.create({
-						title: '操作失败',
-						type: 'error',
-						preset: 'dialog',
-						content: () => <p>修改失败，详情请查看日志记录~</p>,
-						positiveText: '确定',
-					});
-				} else {
-					modal.create({
-						title: '操作成功',
-						type: 'success',
-						preset: 'dialog',
-						content: () => <p>您已启用「老版触控驱动开机自优化」，开启后每次开机首次解锁屏幕后，模块会尝试重新关闭屏幕再点亮一次，以便「老版触控驱动」立即生效~</p>,
-						positiveText: '确定',
-					});
-					currentTpFirmwareAutoTask.value = value;
-				}
+		if (value) {
+			const [addIsAmktiaoTpFirmwareAutoTaskErr, addIsAmktiaoTpFirmwareAutoTaskRes] = await $to(
+				deviceApi.addIsAmktiaoTpFirmwareAutoTask(),
+			);
+			if (addIsAmktiaoTpFirmwareAutoTaskErr) {
+				modal.create({
+					title: '操作失败',
+					type: 'error',
+					preset: 'dialog',
+					content: () => <p>修改失败，详情请查看日志记录~</p>,
+					positiveText: '确定',
+				});
 			} else {
-				const [removeIsAmktiaoTpFirmwareAutoTaskErr, removeIsAmktiaoTpFirmwareAutoTaskRes] = await $to(
-					deviceApi.removeIsAmktiaoTpFirmwareAutoTask(),
-				);
-				if (removeIsAmktiaoTpFirmwareAutoTaskErr) {
-					modal.create({
-						title: '操作失败',
-						type: 'error',
-						preset: 'dialog',
-						content: () => <p>修改失败，详情请查看日志记录~</p>,
-						positiveText: '确定',
-					});
-				} else {
-					modal.create({
-						title: '操作成功',
-						type: 'success',
-						preset: 'dialog',
-						content: () => <p>您已关闭「老版触控驱动开机自优化」，每次开机后，您需要手动关闭并重新点亮屏幕，才能使「老版触控驱动」立即生效~</p>,
-						positiveText: '确定',
-					});
-					currentTpFirmwareAutoTask.value = value;
-				}
+				modal.create({
+					title: '操作成功',
+					type: 'success',
+					preset: 'dialog',
+					content: () => (
+						<p>
+							您已启用「老版触控驱动开机自优化」，开启后每次开机首次解锁屏幕后，模块会尝试重新关闭屏幕再点亮一次，以便「老版触控驱动」立即生效~
+						</p>
+					),
+					positiveText: '确定',
+				});
+				currentTpFirmwareAutoTask.value = value;
 			}
-	}
+		} else {
+			const [removeIsAmktiaoTpFirmwareAutoTaskErr, removeIsAmktiaoTpFirmwareAutoTaskRes] = await $to(
+				deviceApi.removeIsAmktiaoTpFirmwareAutoTask(),
+			);
+			if (removeIsAmktiaoTpFirmwareAutoTaskErr) {
+				modal.create({
+					title: '操作失败',
+					type: 'error',
+					preset: 'dialog',
+					content: () => <p>修改失败，详情请查看日志记录~</p>,
+					positiveText: '确定',
+				});
+			} else {
+				modal.create({
+					title: '操作成功',
+					type: 'success',
+					preset: 'dialog',
+					content: () => (
+						<p>
+							您已关闭「老版触控驱动开机自优化」，每次开机后，您需要手动关闭并重新点亮屏幕，才能使「老版触控驱动」立即生效~
+						</p>
+					),
+					positiveText: '确定',
+				});
+				currentTpFirmwareAutoTask.value = value;
+			}
+		}
+	};
 
 	const changeGameModeAutoTask = async (value: boolean) => {
-			if (value) {
-				const [addIsAmktiaoGameModeAutoTaskErr, addIsAmktiaoGameModeAutoTaskRes] = await $to(
-					deviceApi.addIsAmktiaoGameModeAutoTask(),
-				);
-				if (addIsAmktiaoGameModeAutoTaskErr) {
-					modal.create({
-						title: '操作失败',
-						type: 'error',
-						preset: 'dialog',
-						content: () => <p>修改失败，详情请查看日志记录~</p>,
-						positiveText: '确定',
-					});
-				} else {
-					modal.create({
-						title: '操作成功',
-						type: 'success',
-						preset: 'dialog',
-						content: () => <p>您已启用「游戏模式开机自优化」，开启后每次开机首次解锁屏幕后，模块会尝试重新关闭屏幕再点亮一次，以便「游戏模式」立即生效~</p>,
-						positiveText: '确定',
-					});
-					currentGameModeAutoTask.value = value;
-				}
+		if (value) {
+			const [addIsAmktiaoGameModeAutoTaskErr, addIsAmktiaoGameModeAutoTaskRes] = await $to(
+				deviceApi.addIsAmktiaoGameModeAutoTask(),
+			);
+			if (addIsAmktiaoGameModeAutoTaskErr) {
+				modal.create({
+					title: '操作失败',
+					type: 'error',
+					preset: 'dialog',
+					content: () => <p>修改失败，详情请查看日志记录~</p>,
+					positiveText: '确定',
+				});
 			} else {
-				const [removeIsAmktiaoGameModeAutoTaskErr, removeIsAmktiaoGameModeAutoTaskRes] = await $to(
-					deviceApi.removeIsAmktiaoGameModeAutoTask(),
-				);
-				if (removeIsAmktiaoGameModeAutoTaskErr) {
-					modal.create({
-						title: '操作失败',
-						type: 'error',
-						preset: 'dialog',
-						content: () => <p>修改失败，详情请查看日志记录~</p>,
-						positiveText: '确定',
-					});
-				} else {
-					modal.create({
-						title: '操作成功',
-						type: 'success',
-						preset: 'dialog',
-						content: () => <p>您已关闭「游戏模式开机自优化」，每次开机后，您需要手动关闭并重新点亮屏幕，才能使「游戏模式」立即生效~</p>,
-						positiveText: '确定',
-					});
-					currentGameModeAutoTask.value = value;
-				}
+				modal.create({
+					title: '操作成功',
+					type: 'success',
+					preset: 'dialog',
+					content: () => (
+						<p>
+							您已启用「游戏模式开机自优化」，开启后每次开机首次解锁屏幕后，模块会尝试重新关闭屏幕再点亮一次，以便「游戏模式」立即生效~
+						</p>
+					),
+					positiveText: '确定',
+				});
+				currentGameModeAutoTask.value = value;
 			}
-	}
+		} else {
+			const [removeIsAmktiaoGameModeAutoTaskErr, removeIsAmktiaoGameModeAutoTaskRes] = await $to(
+				deviceApi.removeIsAmktiaoGameModeAutoTask(),
+			);
+			if (removeIsAmktiaoGameModeAutoTaskErr) {
+				modal.create({
+					title: '操作失败',
+					type: 'error',
+					preset: 'dialog',
+					content: () => <p>修改失败，详情请查看日志记录~</p>,
+					positiveText: '确定',
+				});
+			} else {
+				modal.create({
+					title: '操作成功',
+					type: 'success',
+					preset: 'dialog',
+					content: () => (
+						<p>
+							您已关闭「游戏模式开机自优化」，每次开机后，您需要手动关闭并重新点亮屏幕，才能使「游戏模式」立即生效~
+						</p>
+					),
+					positiveText: '确定',
+				});
+				currentGameModeAutoTask.value = value;
+			}
+		}
+	};
 
 	const changePenEnableMode = async (value: boolean) => {
 		const [putCurrentPenEnableErr, putCurrentPenEnableRes] = await $to(
@@ -855,6 +914,55 @@ export function useAmktiao() {
 		}
 	};
 
+	const changeLiuqinPenEnableMode = async (value: boolean) => {
+		const [putCurrentLiuqinPenEnableErr, putCurrentLiuqinPenEnableRes] = await $to(
+			deviceApi.putCurrentLiuqinPenEnable(value ? 1 : 0),
+		);
+		if (putCurrentLiuqinPenEnableErr) {
+			modal.create({
+				title: '操作失败',
+				type: 'error',
+				preset: 'dialog',
+				content: () => <p>修改失败，详情请查看日志记录~</p>,
+				positiveText: '确定',
+			});
+		} else {
+			if (value) {
+				const [addIsAmktiaoLiuqinPenEnableErr, addIsAmktiaoLiuqinPenEnableRes] = await $to(
+					deviceApi.addIsAmktiaoLiuqinPenEnable(),
+				);
+				if (addIsAmktiaoLiuqinPenEnableErr) {
+					modal.create({
+						title: '操作失败',
+						type: 'error',
+						preset: 'dialog',
+						content: () => <p>修改失败，详情请查看日志记录~</p>,
+						positiveText: '确定',
+					});
+				} else {
+					currentLiuqinPenEnable.value = 1;
+					currentLiuqinPenEnableSelect.value = liuqinPenEnableOptions.value[currentLiuqinPenEnable.value];
+				}
+			} else {
+				const [removeIsAmktiaoLiuqinPenEnableErr, removeIsAmktiaoLiuqinPenEnableRes] = await $to(
+					deviceApi.removeIsAmktiaoLiuqinPenEnable(),
+				);
+				if (removeIsAmktiaoLiuqinPenEnableErr) {
+					modal.create({
+						title: '操作失败',
+						type: 'error',
+						preset: 'dialog',
+						content: () => <p>修改失败，详情请查看日志记录~</p>,
+						positiveText: '确定',
+					});
+				} else {
+					currentLiuqinPenEnable.value = 0;
+					currentLiuqinPenEnableSelect.value = liuqinPenEnableOptions.value[currentLiuqinPenEnable.value];
+				}
+			}
+		}
+	};
+
 	const fetchData = async () => {
 		const [, getHasPenUpdateControlRes] = await $to<string, string>(deviceApi.getHasPenUpdateControl());
 		if (getHasPenUpdateControlRes) {
@@ -872,7 +980,7 @@ export function useAmktiao() {
 		if (getHasTpFirmwareControlRes) {
 			hasTpFirmwareControl.value = true;
 		}
-		const [,getHasGameModeControlRes] = await $to<string, string>(deviceApi.getHasGameModeControl());
+		const [, getHasGameModeControlRes] = await $to<string, string>(deviceApi.getHasGameModeControl());
 		if (getHasGameModeControlRes) {
 			hasGameModeControl.value = true;
 		}
@@ -884,7 +992,9 @@ export function useAmktiao() {
 				currentTpFirmware.value = 1;
 			}
 
-			const [, getIsAmktiaoTpFirmwareAutoTaskRes] = await $to<string, string>(deviceApi.getIsAmktiaoTpFirmwareAutoTask());
+			const [, getIsAmktiaoTpFirmwareAutoTaskRes] = await $to<string, string>(
+				deviceApi.getIsAmktiaoTpFirmwareAutoTask(),
+			);
 			if (getIsAmktiaoTpFirmwareAutoTaskRes && String(getIsAmktiaoTpFirmwareAutoTaskRes) === 'true') {
 				currentTpFirmwareAutoTask.value = true;
 			} else {
@@ -899,7 +1009,9 @@ export function useAmktiao() {
 				currentPenUpdate.value = 1;
 			}
 
-			const [, getIsAmktiaoPenUpdateAutoTaskRes] = await $to<string, string>(deviceApi.getIsAmktiaoPenUpdateAutoTask());
+			const [, getIsAmktiaoPenUpdateAutoTaskRes] = await $to<string, string>(
+				deviceApi.getIsAmktiaoPenUpdateAutoTask(),
+			);
 			if (getIsAmktiaoPenUpdateAutoTaskRes && String(getIsAmktiaoPenUpdateAutoTaskRes) === 'true') {
 				currentPenUpdateAutoTask.value = true;
 			} else {
@@ -912,6 +1024,12 @@ export function useAmktiao() {
 			if (Number(getCurrentPenEnableResolve)) {
 				currentPenEnable.value = 1;
 			}
+		}
+		// 6 Pro 手写笔控制
+		const [, getCurrentLiuqinPenEnableResolve] = await $to<string, string>(deviceApi.getCurrentLiuqinPenEnable());
+		if (Number(getCurrentLiuqinPenEnableResolve)) {
+			currentLiuqinPenEnable.value = 1;
+			currentLiuqinPenEnableSelect.value = liuqinPenEnableOptions.value[currentLiuqinPenEnable.value];
 		}
 		// 移植包键盘控制
 		if (hasKeyboardControl.value) {
@@ -945,14 +1063,18 @@ export function useAmktiao() {
 		changeGameModeAutoTask,
 		currentPenUpdate,
 		currentPenEnable,
+		currentLiuqinPenEnable,
 		currentPenUpdateAutoTask,
 		currentKeyboardMode,
+		currentLiuqinPenEnableSelect,
+		liuqinPenEnableOptions,
 		keyboardModeOptions,
 		currentKeyboardModeSelect,
 		changeKeyboardMode,
 		changePenUpdateMode,
 		changePenUpdateAutoTaskMode,
 		changePenEnableMode,
+		changeLiuqinPenEnableMode,
 		changeTpFirewareMode,
 		changeTpFirewareModeAutoTask,
 		currentTpFirmware,
