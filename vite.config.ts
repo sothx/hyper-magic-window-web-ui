@@ -22,7 +22,7 @@ export default defineConfig(({ mode }) => ({
 	plugins: [
 		vue(),
 		vueJsx(),
-		mode === 'development' ? vueDevTools() : null,
+		vueDevTools()
 		{
 			name: 'run-powershell-command',
 			configureServer(server) {
@@ -93,55 +93,17 @@ export default defineConfig(({ mode }) => ({
 		minify: 'terser',
 		rollupOptions: {
 			output: {
-				manualChunks(id) {
-					const normalizedId = id.replace(/\\/g, '/');
-
-					if (normalizedId.includes('node_modules/vue') || normalizedId.includes('node_modules/@vue')) {
-						return 'vendor-vue';
-					}
-					if (normalizedId.includes('node_modules/naive-ui/es')) {
-						if (normalizedId.includes('/_internal/')) {
-							return 'vendor-naive-internal';
-						}
-						if (normalizedId.includes('/data-table/')) {
-							return 'vendor-naive-data-table';
-						}
-						if (normalizedId.includes('/input/') || normalizedId.includes('/input-number/')) {
-							return 'vendor-naive-input';
-						}
-						if (normalizedId.includes('/tabs/') || normalizedId.includes('/select/')) {
-							return 'vendor-naive-form';
-						}
-						if (
-							normalizedId.includes('/dialog/') ||
-							normalizedId.includes('/modal/') ||
-							normalizedId.includes('/message/') ||
-							normalizedId.includes('/notification/') ||
-							normalizedId.includes('/drawer/')
-						) {
-							return 'vendor-naive-feedback';
-						}
-						return 'vendor-naive-core';
-					}
-					if (normalizedId.includes('node_modules/pinia')) {
-						return 'vendor-pinia';
-					}
-					if (normalizedId.includes('node_modules/vue-router')) {
-						return 'vendor-router';
-					}
-					if (normalizedId.includes('node_modules/lodash')) {
-						return 'vendor-lodash';
-					}
-					if (normalizedId.includes('node_modules/pako')) {
+        manualChunks(id) {
+          if (id.includes('pako')) { 
 						return 'pako';
 					}
-					if (normalizedId.includes('iconfont')) {
+					if (id.includes('iconfont')) {
 						return 'iconfont';
 					}
-					if (normalizedId.includes('hooks')) {
+					if (id.includes('hooks')) {
 						return 'hooks';
 					}
-					if (normalizedId.includes('apis')) {
+					if (id.includes('apis')) {
 						return 'apis';
 					}
 				},
