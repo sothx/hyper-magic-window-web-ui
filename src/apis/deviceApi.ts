@@ -1448,7 +1448,7 @@ export const getCurrentLiuqinPenEnable = (): Promise<string> => {
 
 export const putCurrentLiuqinPenEnable = (mode: PenEnable): Promise<string> => {
   const xiaomi_pen = '/data/adb/modules/Hyper_MagicWindow/common/utils/xiaomi_pen';
-	const shellCommon = `xiaomi_pen ${mode}`;
+	const shellCommon = `${xiaomi_pen} ${mode}`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
 			if (import.meta.env.MODE === 'development') {
