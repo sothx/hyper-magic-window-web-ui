@@ -1027,7 +1027,7 @@ export function useAmktiao() {
 		}
 		// 6 Pro 手写笔控制
 		const [, getCurrentLiuqinPenEnableResolve] = await $to<string, string>(deviceApi.getCurrentLiuqinPenEnable());
-		if (Number(getCurrentLiuqinPenEnableResolve)) {
+		if (getCurrentLiuqinPenEnableResolve === 'true') {
 			currentLiuqinPenEnable.value = 1;
 			currentLiuqinPenEnableSelect.value = liuqinPenEnableOptions.value[currentLiuqinPenEnable.value];
 		}
