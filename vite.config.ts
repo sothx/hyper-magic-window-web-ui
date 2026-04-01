@@ -22,7 +22,7 @@ export default defineConfig(({ mode }) => ({
 	plugins: [
 		vue(),
 		vueJsx(),
-		vueDevTools()
+		vueDevTools(),
 		{
 			name: 'run-powershell-command',
 			configureServer(server) {
