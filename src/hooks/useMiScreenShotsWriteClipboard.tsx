@@ -109,7 +109,7 @@ export function useMiScreenShotsWriteClipboard() {
 										class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
 										开机自配置
 									</span>{' '}
-									后，每次开机30秒后会自动启用「截图自动添加至剪贴板」，由于该功能已经被小米废弃，小米会通过「手机管家/平板管家」强制覆写为「关闭」状态，如果强制结束「手机管家/平板管家」的后台，会导致「截图自动添加至剪贴板」再次被关闭，需要手动重新启用~
+									后，每次开机后每分钟会自动检测并启用「截图自动添加至剪贴板」~
 								</p>
 							)}
 							{!status && (
@@ -240,13 +240,23 @@ export function useMiScreenShotsWriteClipboard() {
 
 	const fetchData = async () => {
 		// MiScreenShotsWriteClipboardEnable
-		const [, getMiScreenShotsWriteClipboardEnableRes] = await $to<string, string>(deviceApi.getMiScreenShotsWriteClipboardEnable());
-		cacheHelper.setCache('MiScreenShotsWriteClipboardEnable', Number(getMiScreenShotsWriteClipboardEnableRes) === 1 ? 1 : 0);
+		const [, getMiScreenShotsWriteClipboardEnableRes] = await $to<string, string>(
+			deviceApi.getMiScreenShotsWriteClipboardEnable(),
+		);
+		cacheHelper.setCache(
+			'MiScreenShotsWriteClipboardEnable',
+			Number(getMiScreenShotsWriteClipboardEnableRes) === 1 ? 1 : 0,
+		);
 
 		// MiScreenShotsWriteClipboardAutoEnable
 		if (cacheHelper.getCache<boolean>('MiScreenShotsWriteClipboardAutoEnable') === null) {
-			const [, getIsAutoEnableMiScreenShotsWriteClipboardRes] = await $to<string, string>(deviceApi.getIsAutoEnableMiScreenShotsWriteClipboard());
-			cacheHelper.setCache('MiScreenShotsWriteClipboardAutoEnable', String(getIsAutoEnableMiScreenShotsWriteClipboardRes) === 'true');
+			const [, getIsAutoEnableMiScreenShotsWriteClipboardRes] = await $to<string, string>(
+				deviceApi.getIsAutoEnableMiScreenShotsWriteClipboard(),
+			);
+			cacheHelper.setCache(
+				'MiScreenShotsWriteClipboardAutoEnable',
+				String(getIsAutoEnableMiScreenShotsWriteClipboardRes) === 'true',
+			);
 		}
 
 		isInit.value = true;
