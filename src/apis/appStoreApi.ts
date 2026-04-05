@@ -1,37 +1,28 @@
 import { exec, spawn, fullScreen, toast, moduleInfo, type ExecResults } from '@/utils/kernelsu/index.js';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import handlePromiseWithLogging from '@/utils/handlePromiseWithLogging';
 import $to from 'await-to-js';
 import * as deviceApi from '@/apis/deviceApi';
-import { useDeviceStore, type RemoteDownloadAppInfo } from '@/stores/device';
+import {type RemoteDownloadAppInfo } from '@/stores/appStore';
+import { useDeviceStore } from '@/stores/device';
 import { useLogsStore } from '@/stores/logs';
 
 
-
-export const getRemoteDownloadAppUrlMap = async (options?: { timeout?: number; }): Promise<Record<string, RemoteDownloadAppInfo>> => {
+export const getRemoteDownloadAppUrlMap = async (
+  options?: { timeout?: number }
+): Promise<Record<string, RemoteDownloadAppInfo>> => {
+  // 默认超时 8 秒
   const timeout = options?.timeout ?? 8000;
+  const shellCommon = `curl "https://hyper-magic-window-module-update.sothx.com/apis/remoteDownloadAppUrlMap.json?_t=$(date +%s)"`;
   return new Promise(async (resolve, reject) => {
+    // 开发环境：本地 JSON
     if (import.meta.env.MODE === 'development') {
-      const response = await axios.get('/data/custom/remoteDownloadAppUrlMap.json');
-      resolve(response.data ?? {});
+      const res = await axios.get('/data/custom/remoteDownloadAppUrlMap.json', { timeout });
+      resolve(res.data ?? {});
     } else {
-      const response = await axios.get<Record<string, RemoteDownloadAppInfo>>(
-        'https://github.com/sothx/mipad-magic-window/apis/remoteDownloadAppUrlMap.json',
-        {
-          timeout,
-          withCredentials: false,
-          headers: {
-            'Cache-Control': 'no-cache, no-store, must-revalidate',
-            Pragma: 'no-cache',
-            Expires: '0',
-          },
-          params: {
-            _t: Date.now(),
-          },
-        }
-      );
-      const remoteMap = response.data ?? {};
-      resolve(remoteMap);
+      const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+      errno ? reject(stderr) : resolve(JSON.parse(stdout));
+      console.log('appupdatelist',JSON.parse(stdout))
     }
   })
-}
+};

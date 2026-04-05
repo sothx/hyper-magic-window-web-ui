@@ -32,11 +32,6 @@ export interface UpdateInfo {
 	changelog: string;
 }
 
-export interface RemoteDownloadAppInfo {
-	url: string;
-	versionNum: number;
-}
-
 export interface ROOTManagerInfo {
 	KSU: boolean;
 	KSU_VER: string;
@@ -104,7 +99,6 @@ export const useDeviceStore = defineStore(
 		const currentRootManager = ref<ROOT_MANAGER_TYPE>('Magisk');
 		const hasNeedUpdateModule = ref<boolean>(false);
 		const displayModeList = ref<DisplayModeItem[]>([]);
-		const remoteDownloadAppUrlMap = ref<Record<string, RemoteDownloadAppInfo>>({});
 		const latestDiscoveredAppVersionNum = ref<number>(0);
 		const isDisabledOS2SystemAppOptimize = ref<boolean>(false);
 		const isDisabledOS2InstallModuleTips = ref<boolean>(false);
@@ -637,7 +631,6 @@ export const useDeviceStore = defineStore(
 			changeLogMsg,
 			lastVisitedPath,
 			isInit,
-			remoteDownloadAppUrlMap,
 			latestDiscoveredAppVersionNum,
 			isInstalledXiaomiPadSystemPatchAdditionalModule,
 			canShowApplicationIcon,
