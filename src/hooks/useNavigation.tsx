@@ -1,6 +1,6 @@
-import { computed, reactive, ref } from 'vue';
+import { reactive, computed } from 'vue';
 import { useDeviceStore } from '@/stores/device';
-import { createDiscreteApi, darkTheme, lightTheme, useModal, type ConfigProviderProps } from 'naive-ui'; // 假设你用的是 Naive UI 的 modal
+
 import type { NavigationItem } from '@/components/Sidebar/Sidebar.vue';
 import { useGameBoosterStore } from '../stores/gameBooster';
 import { useDisplayModeRecord } from './useDisplayModeRecord';
@@ -8,14 +8,7 @@ import { useDisplayModeRecord } from './useDisplayModeRecord';
 export function useNavigation() {
 	const deviceStore = useDeviceStore();
 	const gameBoosterStore = useGameBoosterStore();
-	const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
-		theme: deviceStore.isDarkMode ? darkTheme : lightTheme,
-	}));
-	const { message, modal } = createDiscreteApi(['message', 'modal'], {
-		configProviderProps: configProviderPropsRef,
-	});
 	const displayModeRecordHook = useDisplayModeRecord();
-	const loading = ref(false);
 
 	const padSidebarList = reactive<NavigationItem[]>([
 		{
@@ -59,9 +52,11 @@ export function useNavigation() {
 			),
 		},
 		{
-			name: () => <>应用管理增强<n-badge
-						offset={[25, 2]}
-						value='开发中'></n-badge></>,
+			name: () => (
+				<>
+					应用管理增强<n-badge offset={[25, 2]} value='开发中'></n-badge>
+				</>
+			),
 			routeName: 'app-management',
 			href: '/app-management',
 			icon: () => (
@@ -107,7 +102,17 @@ export function useNavigation() {
 			),
 		},
 		{
-			name: () => <>精选应用</>,
+			name: () => (
+				<>
+					精选应用
+					<n-badge
+						show={
+							deviceStore.latestDiscoveredAppVersionNum > deviceStore.skipConfirm.needUpdateAppVersionNum
+						}
+						offset={[30, 2]}
+						value='发现新版本'></n-badge>
+				</>
+			),
 			routeName: 'appStore',
 			href: '/appStore',
 			icon: () => (
@@ -115,6 +120,12 @@ export function useNavigation() {
 					<use xlinkHref='#icon-linggan'></use>
 				</svg>
 			),
+			click: () => {
+				deviceStore.skipConfirm.needUpdateAppVersionNum = Math.max(
+					deviceStore.skipConfirm.needUpdateAppVersionNum,
+					deviceStore.latestDiscoveredAppVersionNum,
+				);
+			},
 		},
 		{
 			name: () => <>日志记录</>,
@@ -151,7 +162,7 @@ export function useNavigation() {
 					<use xlinkHref='#icon-gengxin'></use>
 				</svg>
 			),
-			click: (item,index) => {
+			click: (item, index) => {
 				if (deviceStore.moduleUpdateInfo) {
 					deviceStore.skipConfirm.needUpdateModuleVer = deviceStore.moduleUpdateInfo.versionCode;
 				}
@@ -201,9 +212,11 @@ export function useNavigation() {
 			),
 		},
 		{
-			name: () => <>应用管理增强<n-badge
-						offset={[25, 2]}
-						value='开发中'></n-badge></>,
+			name: () => (
+				<>
+					应用管理增强<n-badge offset={[25, 2]} value='开发中'></n-badge>
+				</>
+			),
 			routeName: 'app-management',
 			href: '/app-management',
 			icon: () => (
@@ -249,7 +262,17 @@ export function useNavigation() {
 			),
 		},
 		{
-			name: () => <>精选应用</>,
+			name: () => (
+				<>
+					精选应用
+					<n-badge
+						show={
+							deviceStore.latestDiscoveredAppVersionNum > deviceStore.skipConfirm.needUpdateAppVersionNum
+						}
+						offset={[30, 2]}
+						value='发现新版本'></n-badge>
+				</>
+			),
 			routeName: 'appStore',
 			href: '/appStore',
 			icon: () => (
@@ -257,6 +280,12 @@ export function useNavigation() {
 					<use xlinkHref='#icon-linggan'></use>
 				</svg>
 			),
+			click: () => {
+				deviceStore.skipConfirm.needUpdateAppVersionNum = Math.max(
+					deviceStore.skipConfirm.needUpdateAppVersionNum,
+					deviceStore.latestDiscoveredAppVersionNum,
+				);
+			},
 		},
 		{
 			name: () => <>日志记录</>,
@@ -313,9 +342,11 @@ export function useNavigation() {
 			),
 		},
 		{
-			name: () => <>应用管理增强<n-badge
-						offset={[25, 2]}
-						value='开发中'></n-badge></>,
+			name: () => (
+				<>
+					应用管理增强<n-badge offset={[25, 2]} value='开发中'></n-badge>
+				</>
+			),
 			routeName: 'app-management',
 			href: '/app-management',
 			icon: () => (
@@ -368,7 +399,17 @@ export function useNavigation() {
 			),
 		},
 		{
-			name: () => <>精选应用</>,
+			name: () => (
+				<>
+					精选应用
+					<n-badge
+						show={
+							deviceStore.latestDiscoveredAppVersionNum > deviceStore.skipConfirm.needUpdateAppVersionNum
+						}
+						offset={[30, 2]}
+						value='发现新版本'></n-badge>
+				</>
+			),
 			routeName: 'appStore',
 			href: '/appStore',
 			icon: () => (
@@ -376,6 +417,12 @@ export function useNavigation() {
 					<use xlinkHref='#icon-linggan'></use>
 				</svg>
 			),
+			click: () => {
+				deviceStore.skipConfirm.needUpdateAppVersionNum = Math.max(
+					deviceStore.skipConfirm.needUpdateAppVersionNum,
+					deviceStore.latestDiscoveredAppVersionNum,
+				);
+			},
 		},
 		{
 			name: () => <>日志记录</>,

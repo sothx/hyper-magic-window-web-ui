@@ -1,17 +1,18 @@
-import { ref, reactive, computed, watchEffect } from 'vue';
+import { ref, reactive, computed } from 'vue';
 import { defineStore } from 'pinia';
 import $to from 'await-to-js';
 import * as deviceApi from '@/apis/deviceApi';
 import type { ErrorLogging } from '@/types/ErrorLogging';
-import { useAmktiao, type KeyboardMode, type KeyboardModeOptions } from '@/hooks/useAmktiao';
+
 import { parsePropContent, canUsePackageInfo, parsePackageListShell } from '@/utils/common';
 import { transformValues } from '@/utils/xmlFormat';
 import type { DisplayModeItem } from '@/hooks/useDisplayModeRecord';
 import type { RouteRecordNameGeneric } from 'vue-router';
-import { listPackages } from '@/utils/kernelsu/index.js';
-import { useEmbeddedStore } from './embedded';
+
+
 import type PackageInfoItem from '@/types/PackageInfoItem';
 import { keyBy } from 'lodash-es';
+import axios from 'axios';
 
 export interface ModuleProp {
 	id: string;
@@ -30,6 +31,11 @@ export interface UpdateInfo {
 	versionCode: number;
 	zipUrl: string;
 	changelog: string;
+}
+
+export interface RemoteDownloadAppInfo {
+	url: string;
+	versionNum: number;
 }
 
 export interface ROOTManagerInfo {
@@ -99,7 +105,8 @@ export const useDeviceStore = defineStore(
 		const currentRootManager = ref<ROOT_MANAGER_TYPE>('Magisk');
 		const hasNeedUpdateModule = ref<boolean>(false);
 		const displayModeList = ref<DisplayModeItem[]>([]);
-		const remoteDownloadAppUrlMap = ref<Record<string, string>>({});
+		const remoteDownloadAppUrlMap = ref<Record<string, RemoteDownloadAppInfo>>({});
+		const latestDiscoveredAppVersionNum = ref<number>(0);
 		const isDisabledOS2SystemAppOptimize = ref<boolean>(false);
 		const isDisabledOS2InstallModuleTips = ref<boolean>(false);
 		const lastVisitedPath = ref<RouteRecordNameGeneric>();
@@ -149,6 +156,7 @@ export const useDeviceStore = defineStore(
 			needUpdateKsuWebUIApk: false,
 			needReloadSystemModuleVer: false,
 			needUpdateModuleVer: 0,
+			needUpdateAppVersionNum: 0,
 		});
 		const showThirdPartySetting = reactive({
 			amktiaoROMInterface: false,
@@ -582,6 +590,42 @@ export const useDeviceStore = defineStore(
 			isInit.value = true;
 		}
 
+		async function syncRemoteDownloadAppUrlMap(options?: { timeout?: number; silent?: boolean }) {
+			const timeout = options?.timeout ?? 8000;
+			const silent = options?.silent ?? false;
+			try {
+				const response = await axios.get<Record<string, RemoteDownloadAppInfo>>(
+					'https://github.com/sothx/mipad-magic-window/apis/remoteDownloadAppUrlMap.json',
+					{
+						timeout,
+						withCredentials: false,
+						headers: {
+							'Cache-Control': 'no-cache, no-store, must-revalidate',
+							Pragma: 'no-cache',
+							Expires: '0',
+						},
+						params: {
+							_t: Date.now(),
+						},
+					}
+				);
+				const remoteMap = response.data ?? {};
+				remoteDownloadAppUrlMap.value = remoteMap;
+				const latestVersion = Object.values(remoteMap).reduce((maxVersion, current) => {
+					return current?.versionNum && current.versionNum > maxVersion ? current.versionNum : maxVersion;
+				}, 0);
+				if (latestVersion > latestDiscoveredAppVersionNum.value) {
+					latestDiscoveredAppVersionNum.value = latestVersion;
+				}
+				return remoteMap;
+			} catch (error) {
+				if (!silent) {
+					throw error;
+				}
+				return remoteDownloadAppUrlMap.value;
+			}
+		}
+
 		return {
 			deviceCharacteristics,
 			isNeedShowErrorModal,
@@ -632,6 +676,8 @@ export const useDeviceStore = defineStore(
 			lastVisitedPath,
 			isInit,
 			remoteDownloadAppUrlMap,
+			latestDiscoveredAppVersionNum,
+			syncRemoteDownloadAppUrlMap,
 			isInstalledXiaomiPadSystemPatchAdditionalModule,
 			canShowApplicationIcon,
 			canUsePackageInfo,

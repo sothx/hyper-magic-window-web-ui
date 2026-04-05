@@ -2,7 +2,7 @@
 import { useDeviceStore } from '@/stores/device';
 import * as deviceApi from '@/apis/deviceApi';
 import PinyinMatch from 'pinyin-match';
-import { computed, ref, type CSSProperties } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { RenderJsx } from '@/components/RenderJSX';
 import { createDiscreteApi, darkTheme, lightTheme, NInput, type ConfigProviderProps } from 'naive-ui';
 import type { JSX } from 'vue/jsx-runtime';
@@ -13,11 +13,27 @@ const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
 	theme: deviceStore.isDarkMode ? darkTheme : lightTheme,
 }));
 const searchKeyword = ref('');
+const isRefreshingDownloadUrl = ref(false);
+const appStoreSeenVersionAtEnter = ref(0);
 type SearchKeyWordInputInstance = InstanceType<typeof NInput>;
 const { message, modal, notification } = createDiscreteApi(['message', 'modal', 'notification'], {
 	configProviderProps: configProviderPropsRef,
 });
 const searchKeyWordInput = ref<SearchKeyWordInputInstance | null>(null);
+const getRequestErrorMessage = (error: unknown) => {
+	if (axios.isAxiosError(error)) {
+		if (error.code === 'ECONNABORTED') {
+			return '请求超时，8秒内未收到服务器返回结果';
+		}
+		if (error.response) {
+			return `服务器返回异常状态：${error.response.status}`;
+		}
+		if (error.message) {
+			return error.message;
+		}
+	}
+	return error instanceof Error ? error.message : '未知错误';
+};
 const getAppDownload = async (title: string, url: string, type: 'system' | 'revision' | 'original' | 'magisk') => {
 	modal.create({
 		title: `获取${title}`,
@@ -58,6 +74,68 @@ export interface AppInfo {
 	tag: 'system' | 'revision' | 'original' | 'magisk';
 	isShow?: () => boolean; // 可选，返回是否显示
 }
+
+const getRemoteInfoByPackageName = (packageName?: string) => {
+	if (!packageName) {
+		return undefined;
+	}
+	return deviceStore.remoteDownloadAppUrlMap[packageName];
+};
+
+const getResolvedAppUrl = (app: AppInfo) => {
+	return getRemoteInfoByPackageName(app.packageName)?.url ?? app.url;
+};
+
+const getAppCurrentVersionNum = (app: AppInfo) => {
+	return getRemoteInfoByPackageName(app.packageName)?.versionNum ?? app.versionNum;
+};
+
+const hasUpdatedVersion = (app: AppInfo) => {
+	const remoteInfo = getRemoteInfoByPackageName(app.packageName);
+	return Boolean(remoteInfo && remoteInfo.versionNum > app.versionNum);
+};
+
+const shouldShowUpdateBadge = (app: AppInfo) => {
+	const currentVersionNum = getAppCurrentVersionNum(app);
+	return hasUpdatedVersion(app) && currentVersionNum > appStoreSeenVersionAtEnter.value;
+};
+
+const getVersionLabel = (app: AppInfo) => {
+	return `版本号：${getAppCurrentVersionNum(app)}`;
+};
+
+const refreshRemoteDownloadAppMap = async (options?: { manual?: boolean }) => {
+	const manual = options?.manual ?? false;
+	if (manual) {
+		isRefreshingDownloadUrl.value = true;
+	}
+	try {
+		await deviceStore.syncRemoteDownloadAppUrlMap({
+			timeout: 8000,
+			silent: !manual,
+		});
+		deviceStore.skipConfirm.needUpdateAppVersionNum = Math.max(
+			deviceStore.skipConfirm.needUpdateAppVersionNum,
+			deviceStore.latestDiscoveredAppVersionNum,
+		);
+		if (manual) {
+			message.success('下载地址已刷新');
+		}
+	} catch (error) {
+		if (manual) {
+			const errorMessage = getRequestErrorMessage(error);
+			notification.error({
+				title: '更新下载地址失败',
+				content: errorMessage,
+				duration: 8000,
+			});
+		}
+	} finally {
+		if (manual) {
+			isRefreshingDownloadUrl.value = false;
+		}
+	}
+};
 
 const appList: AppInfo[] = [
 	{
@@ -867,44 +945,48 @@ const appList: AppInfo[] = [
 	},
 ];
 
-const mergeAppList = computed(() => {
-	return appList.map((item) => {
-		if (item.packageName && deviceStore.remoteDownloadAppUrlMap[item.packageName]) {
-			item.url = deviceStore.remoteDownloadAppUrlMap[item.packageName]
+const sortedAppList = computed(() => {
+	return [...appList].sort((left, right) => {
+		const leftHasUpdate = hasUpdatedVersion(left);
+		const rightHasUpdate = hasUpdatedVersion(right);
+		if (leftHasUpdate !== rightHasUpdate) {
+			return leftHasUpdate ? -1 : 1;
 		}
-		return item;
+		return getAppCurrentVersionNum(right) - getAppCurrentVersionNum(left);
 	});
-})
+});
 
-const getRemoteDownloadAppMap = () => {
-	axios.get('https://hyper-magic-window-module-update.sothx.com/apis/remoteDownloadAppUrlMap.json', {
-		withCredentials: false,
-		headers: {
-			'Cache-Control': 'no-cache',
-			'Pragma': 'no-cache',
-			'Expires': '0'
-		}
-	}).then((res) => {
-		// github pages不支持跨域访问，web ui里面应该没影响
-		console.log(res.data,'resdata')
-	});
-}
+const getRemoteDownloadAppMap = async () => {
+	await refreshRemoteDownloadAppMap({ manual: true });
+};
 
 const filteredAppList = computed(() => {
 	const keyword = searchKeyword.value.trim().toLowerCase();
-	return mergeAppList.value.filter(item => {
+	return sortedAppList.value.filter((item) => {
 		const showFlag = item.isShow ? item.isShow() : true;
 		if (!showFlag) return false;
 		if (!keyword) return true;
 
 		const titleStr = item.title?.toLowerCase?.() ?? '';
-
-		// 支持普通 includes 和拼音匹配
-		return (
-			titleStr.includes(keyword) ||
-			(PinyinMatch.match(titleStr, keyword) !== false)
-		);
+		return titleStr.includes(keyword) || PinyinMatch.match(titleStr, keyword) !== false;
 	});
+});
+
+const hasUnreadUpdatedApps = computed(() => {
+	return deviceStore.latestDiscoveredAppVersionNum > deviceStore.skipConfirm.needUpdateAppVersionNum;
+});
+
+const markCurrentAppUpdatesAsRead = () => {
+	deviceStore.skipConfirm.needUpdateAppVersionNum = Math.max(
+		deviceStore.skipConfirm.needUpdateAppVersionNum,
+		deviceStore.latestDiscoveredAppVersionNum,
+	);
+};
+
+onMounted(() => {
+	appStoreSeenVersionAtEnter.value = deviceStore.skipConfirm.needUpdateAppVersionNum;
+	markCurrentAppUpdatesAsRead();
+	void refreshRemoteDownloadAppMap();
 });
 </script>
 <template>
@@ -947,14 +1029,20 @@ const filteredAppList = computed(() => {
 
 			<n-card size="small" class="mt-5">
 				<div class="flex flex-wrap">
-					<n-button @click="getRemoteDownloadAppMap()" class="mb-3 mr-3" type="success">
-						<template #icon>
-							<n-icon>
-								<ArrowPathIcon />
-							</n-icon>
-						</template>
-						更新下载地址(未上线)
-					</n-button>
+					<n-badge :show="hasUnreadUpdatedApps" value="发现新版本" :offset="[24, 8]">
+						<n-button
+							@click="getRemoteDownloadAppMap()"
+							:loading="isRefreshingDownloadUrl"
+							class="mb-3 mr-3"
+							type="success">
+							<template #icon>
+								<n-icon>
+									<ArrowPathIcon />
+								</n-icon>
+							</template>
+							更新下载地址
+						</n-button>
+					</n-badge>
 					<!-- <n-button class="mb-3 mr-3" color="#69b2b6">
 						<template #icon>
 							<n-icon>
@@ -1010,17 +1098,23 @@ const filteredAppList = computed(() => {
 			<div class="mt-6 border-gray-100">
 				<dl class="mb-5 divide-gray-100">
 					<div v-for="app in filteredAppList" :key="app.title" class="mt-5 flex px-4 sm:grid sm:px-0">
-						<n-alert class="w-full" :title="app.title" :type="app.type">
+						<n-alert class="w-full" :type="app.type">
 							<template #icon>
 								<img :src="app.image" />
 							</template>
+							<template #header>
+								<n-badge :show="shouldShowUpdateBadge(app)" value="发现新版本" :offset="[36, 0]">
+									<span>{{ app.title }}</span>
+								</n-badge>
+							</template>
 							<RenderJsx v-if="app.description" :content="app.description && app.description()" />
+							<p class="mt-2 text-sm opacity-80">{{ getVersionLabel(app) }}</p>
 							<n-button
 								class="mt-2"
 								strong
 								secondary
 								:type="app.type"
-								@click="() => getAppDownload(app.title, app.url, app.tag)">
+								@click="() => getAppDownload(app.title, getResolvedAppUrl(app), app.tag)">
 								获取{{ app.title }}
 							</n-button>
 						</n-alert>
