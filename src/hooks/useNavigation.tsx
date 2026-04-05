@@ -102,17 +102,7 @@ export function useNavigation() {
 			),
 		},
 		{
-			name: () => (
-				<>
-					精选应用
-					<n-badge
-						show={
-							deviceStore.latestDiscoveredAppVersionNum > deviceStore.skipConfirm.needUpdateAppVersionNum
-						}
-						offset={[30, 2]}
-						value='发现新版本'></n-badge>
-				</>
-			),
+			name: () => <>精选应用</>,
 			routeName: 'appStore',
 			href: '/appStore',
 			icon: () => (
@@ -120,12 +110,7 @@ export function useNavigation() {
 					<use xlinkHref='#icon-linggan'></use>
 				</svg>
 			),
-			click: () => {
-				deviceStore.skipConfirm.needUpdateAppVersionNum = Math.max(
-					deviceStore.skipConfirm.needUpdateAppVersionNum,
-					deviceStore.latestDiscoveredAppVersionNum,
-				);
-			},
+			click: () => {},
 		},
 		{
 			name: () => <>日志记录</>,
@@ -262,17 +247,7 @@ export function useNavigation() {
 			),
 		},
 		{
-			name: () => (
-				<>
-					精选应用
-					<n-badge
-						show={
-							deviceStore.latestDiscoveredAppVersionNum > deviceStore.skipConfirm.needUpdateAppVersionNum
-						}
-						offset={[30, 2]}
-						value='发现新版本'></n-badge>
-				</>
-			),
+			name: () => <>精选应用</>,
 			routeName: 'appStore',
 			href: '/appStore',
 			icon: () => (
@@ -280,12 +255,7 @@ export function useNavigation() {
 					<use xlinkHref='#icon-linggan'></use>
 				</svg>
 			),
-			click: () => {
-				deviceStore.skipConfirm.needUpdateAppVersionNum = Math.max(
-					deviceStore.skipConfirm.needUpdateAppVersionNum,
-					deviceStore.latestDiscoveredAppVersionNum,
-				);
-			},
+			click: () => {},
 		},
 		{
 			name: () => <>日志记录</>,
@@ -399,17 +369,7 @@ export function useNavigation() {
 			),
 		},
 		{
-			name: () => (
-				<>
-					精选应用
-					<n-badge
-						show={
-							deviceStore.latestDiscoveredAppVersionNum > deviceStore.skipConfirm.needUpdateAppVersionNum
-						}
-						offset={[30, 2]}
-						value='发现新版本'></n-badge>
-				</>
-			),
+			name: () => <>精选应用</>,
 			routeName: 'appStore',
 			href: '/appStore',
 			icon: () => (
@@ -417,12 +377,7 @@ export function useNavigation() {
 					<use xlinkHref='#icon-linggan'></use>
 				</svg>
 			),
-			click: () => {
-				deviceStore.skipConfirm.needUpdateAppVersionNum = Math.max(
-					deviceStore.skipConfirm.needUpdateAppVersionNum,
-					deviceStore.latestDiscoveredAppVersionNum,
-				);
-			},
+			click: () => {},
 		},
 		{
 			name: () => <>日志记录</>,
