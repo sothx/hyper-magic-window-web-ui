@@ -884,11 +884,8 @@ export const useAppStore = defineStore(
 		};
 		async function syncRemoteDownloadAppUrlMap(options?: { timeout?: number; silent?: boolean }) {
 			const silent = options?.silent ?? false;
-			const timeout = options?.timeout ?? 8000;
 			try {
-				const remoteMap = await appStoreApi.getRemoteDownloadAppUrlMap({
-					timeout,
-				});
+				const remoteMap = await appStoreApi.getRemoteDownloadAppUrlMap();
 				const isEqualRemoteMap = isEqual(remoteMap, remoteDownloadAppUrlMap.value);
 				if (!isEqualRemoteMap) {
 					remoteDownloadAppUrlMap.value = remoteMap;

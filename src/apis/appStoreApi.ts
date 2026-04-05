@@ -9,16 +9,13 @@ import { useLogsStore } from '@/stores/logs';
 import { isPlainObject } from '$/@types/lodash-es';
 
 
-export const getRemoteDownloadAppUrlMap = async (
-  options?: { timeout?: number }
-): Promise<Record<string, RemoteDownloadAppInfo>> => {
+export const getRemoteDownloadAppUrlMap = async (): Promise<Record<string, RemoteDownloadAppInfo>> => {
   // 默认超时 8 秒
-  const timeout = options?.timeout ?? 8000;
   const shellCommon = `curl "https://hyper-magic-window-module-update.sothx.com/apis/remoteDownloadAppUrlMap.json?_t=$(date +%s)"`;
   return new Promise(async (resolve, reject) => {
     // 开发环境：本地 JSON
     if (import.meta.env.MODE === 'development') {
-      const res = await axios.get('/data/custom/remoteDownloadAppUrlMap.json', { timeout });
+      const res = await axios.get('/data/custom/remoteDownloadAppUrlMap.json');
       resolve(res.data ?? {});
     } else {
       const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
