@@ -6,6 +6,7 @@ import * as deviceApi from '@/apis/deviceApi';
 import {type RemoteDownloadAppInfo } from '@/stores/appStore';
 import { useDeviceStore } from '@/stores/device';
 import { useLogsStore } from '@/stores/logs';
+import { isPlainObject } from '$/@types/lodash-es';
 
 
 export const getRemoteDownloadAppUrlMap = async (
@@ -21,8 +22,8 @@ export const getRemoteDownloadAppUrlMap = async (
       resolve(res.data ?? {});
     } else {
       const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
-      errno ? reject(stderr) : resolve(JSON.parse(stdout));
-      console.log('appupdatelist',JSON.parse(stdout))
+      const JsonData = JSON.parse(stdout);
+      errno ? reject(stderr) : isPlainObject(JsonData) ? resolve(JsonData) : reject(new Error('返回的内容不是对象'))
     }
   })
 };
