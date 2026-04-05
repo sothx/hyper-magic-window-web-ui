@@ -3,7 +3,6 @@ import { defineStore } from 'pinia';
 import $to from 'await-to-js';
 import * as deviceApi from '@/apis/deviceApi';
 import type { ErrorLogging } from '@/types/ErrorLogging';
-
 import { parsePropContent, canUsePackageInfo, parsePackageListShell } from '@/utils/common';
 import { transformValues } from '@/utils/xmlFormat';
 import type { DisplayModeItem } from '@/hooks/useDisplayModeRecord';
@@ -155,8 +154,7 @@ export const useDeviceStore = defineStore(
 			patchModeAlert: false,
 			needUpdateKsuWebUIApk: false,
 			needReloadSystemModuleVer: false,
-			needUpdateModuleVer: 0,
-			needUpdateAppVersionNum: 0,
+			needUpdateModuleVer: 0
 		});
 		const showThirdPartySetting = reactive({
 			amktiaoROMInterface: false,
@@ -590,42 +588,6 @@ export const useDeviceStore = defineStore(
 			isInit.value = true;
 		}
 
-		async function syncRemoteDownloadAppUrlMap(options?: { timeout?: number; silent?: boolean }) {
-			const timeout = options?.timeout ?? 8000;
-			const silent = options?.silent ?? false;
-			try {
-				const response = await axios.get<Record<string, RemoteDownloadAppInfo>>(
-					'https://github.com/sothx/mipad-magic-window/apis/remoteDownloadAppUrlMap.json',
-					{
-						timeout,
-						withCredentials: false,
-						headers: {
-							'Cache-Control': 'no-cache, no-store, must-revalidate',
-							Pragma: 'no-cache',
-							Expires: '0',
-						},
-						params: {
-							_t: Date.now(),
-						},
-					}
-				);
-				const remoteMap = response.data ?? {};
-				remoteDownloadAppUrlMap.value = remoteMap;
-				const latestVersion = Object.values(remoteMap).reduce((maxVersion, current) => {
-					return current?.versionNum && current.versionNum > maxVersion ? current.versionNum : maxVersion;
-				}, 0);
-				if (latestVersion > latestDiscoveredAppVersionNum.value) {
-					latestDiscoveredAppVersionNum.value = latestVersion;
-				}
-				return remoteMap;
-			} catch (error) {
-				if (!silent) {
-					throw error;
-				}
-				return remoteDownloadAppUrlMap.value;
-			}
-		}
-
 		return {
 			deviceCharacteristics,
 			isNeedShowErrorModal,
@@ -677,7 +639,6 @@ export const useDeviceStore = defineStore(
 			isInit,
 			remoteDownloadAppUrlMap,
 			latestDiscoveredAppVersionNum,
-			syncRemoteDownloadAppUrlMap,
 			isInstalledXiaomiPadSystemPatchAdditionalModule,
 			canShowApplicationIcon,
 			canUsePackageInfo,
