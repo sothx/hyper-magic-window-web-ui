@@ -203,7 +203,7 @@ export interface EnhanceItemInfo {
 	isShow?: () => boolean;
 }
 const enhanceList: EnhanceItemInfo[] = [
-		{
+	{
 		title: '游戏模式（水龙）',
 		titleSlot: () => (
 			<>
@@ -264,7 +264,7 @@ const enhanceList: EnhanceItemInfo[] = [
 		),
 		isShow: () => amktiaoHook.hasGameModeControl.value && ['tablet'].includes(deviceStore.deviceType),
 	},
-		{
+	{
 		title: '触控驱动管理（水龙）',
 		titleSlot: () => (
 			<>
@@ -474,20 +474,18 @@ const enhanceList: EnhanceItemInfo[] = [
 			</>
 		),
 		isShow: () => amktiaoHook.hasKeyboardControl.value && ['tablet'].includes(deviceStore.deviceType),
-  },
-  	{
-      title: '第三方触控笔管理（水龙）',
-    	titleSlot: () => (
+	},
+	{
+		title: '第三方触控笔管理（水龙）',
+		titleSlot: () => (
 			<>
-				{(
+				{
 					<div class='mt-2'>
-						<n-tag
-              bordered={false}
-							type='error'>
+						<n-tag bordered={false} type='error'>
 							小米平板 6 Pro 机型专属
 						</n-tag>
 					</div>
-				)}
+				}
 			</>
 		),
 		content: () => (
@@ -542,50 +540,69 @@ const enhanceList: EnhanceItemInfo[] = [
 				</n-alert>
 			</>
 		),
-		isShow: () => Boolean(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 3) && ['tablet'].includes(deviceStore.deviceType),
+		isShow: () =>
+			Boolean(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 3) &&
+			['tablet'].includes(deviceStore.deviceType),
 	},
 	{
 		title: '截图自动添加至剪贴板',
-		content: () => (
-			<>
-				{!miScreenShotsWriteClipboard.isInit.value ? (
-					<n-skeleton width={65} sharp={false} round size='small' />
-				) : (
-					<n-switch
-						railStyle={railStyle}
-						value={miScreenShotsWriteClipboard.isEnable.value ? true : false}
-						loading={deviceStore.loading || miScreenShotsWriteClipboard.loading.value}
-						onUpdate:value={(value: boolean) => miScreenShotsWriteClipboard.changeEnableMode(value)}>
-						{{
-							checked: () => <>已启用</>,
-							unchecked: () => <>未启用</>,
-						}}
-					</n-switch>
-        )}
-				{miScreenShotsWriteClipboard.isEnable.value && (
-					<n-alert class='mt-5' type='info' show-icon={false} bordered={false}>
-						<div>
-							<p>
-								由于小米已经废弃了该功能，模块提供「开机自配置」来解决这个问题，开启后每次开机后每分钟会自动检测并自动启用「截图自动添加至剪贴板」。
-              </p>
-							<n-switch
-								onUpdateValue={(value: boolean) =>
-									miScreenShotsWriteClipboard.changeIsAutoEnableMode(value)
-								}
-								railStyle={railStyle}
-								class='mt-5'
-								value={!!miScreenShotsWriteClipboard.isAutoEnable.value}
-								loading={deviceStore.loading}>
-								{{
-									checked: () => '已启用开机自配置',
-									unchecked: () => '未启用开机自配置',
-								}}
-							</n-switch>
-						</div>
-					</n-alert>
-				)}
-			</>
-		),
+		content: () => {
+			const isShowProcessLoading =
+				miScreenShotsWriteClipboard.isAutoEnable.value &&
+				miScreenShotsWriteClipboard.hasProcess.value &&
+				!miScreenShotsWriteClipboard.isEnable.value;
+			return (
+				<>
+					{!miScreenShotsWriteClipboard.isInit.value ? (
+						<n-skeleton width={65} sharp={false} round size='small' />
+					) : (
+						<n-switch
+							railStyle={railStyle}
+							value={miScreenShotsWriteClipboard.isEnable.value ? true : false}
+							loading={
+								deviceStore.loading || miScreenShotsWriteClipboard.loading.value || isShowProcessLoading
+							}
+							onUpdate:value={(value: boolean) => miScreenShotsWriteClipboard.changeEnableMode(value)}>
+							{{
+								checked: () => <>已启用</>,
+								unchecked: () => <>未启用</>,
+							}}
+						</n-switch>
+					)}
+					{isShowProcessLoading && (
+						<n-alert class='mt-5' type='success' show-icon={false} bordered={false}>
+							<div>
+								<p>
+									您已启用「开机自配置」，模块正在尝试自动启用「截图自动添加至剪贴板」，您可以等待1分钟后再进入界面查看最新状态。
+								</p>
+							</div>
+						</n-alert>
+					)}
+					{miScreenShotsWriteClipboard.isEnable.value && (
+						<n-alert class='mt-5' type='info' show-icon={false} bordered={false}>
+							<div>
+								<p>
+									由于小米已经废弃了该功能，模块提供「开机自配置」来解决这个问题，开启后每次开机后每分钟会自动检测并自动启用「截图自动添加至剪贴板」。
+								</p>
+								<n-switch
+									onUpdateValue={(value: boolean) =>
+										miScreenShotsWriteClipboard.changeIsAutoEnableMode(value)
+									}
+									railStyle={railStyle}
+									class='mt-5'
+									value={!!miScreenShotsWriteClipboard.isAutoEnable.value}
+									loading={deviceStore.loading}>
+									{{
+										checked: () => '已启用开机自配置',
+										unchecked: () => '未启用开机自配置',
+									}}
+								</n-switch>
+							</div>
+						</n-alert>
+					)}
+				</>
+			);
+		},
 		isShow: () => Boolean(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 1),
 	},
 	{
@@ -765,13 +782,11 @@ const enhanceList: EnhanceItemInfo[] = [
 									min={4}
 									max={8}
 									disabled={
-										!projectTrebleMaxFreeformCountHook.isEditMiuiDesktopModeMaxFreeformCount
-											.value
+										!projectTrebleMaxFreeformCountHook.isEditMiuiDesktopModeMaxFreeformCount.value
 									}
 									step={1}
 									value={
-										projectTrebleMaxFreeformCountHook.currentMiuiDesktopModeMaxFreeformCount
-											.value
+										projectTrebleMaxFreeformCountHook.currentMiuiDesktopModeMaxFreeformCount.value
 									}
 									onUpdateValue={(value: number) => {
 										projectTrebleMaxFreeformCountHook.currentMiuiDesktopModeMaxFreeformCount.value =
@@ -783,8 +798,7 @@ const enhanceList: EnhanceItemInfo[] = [
 									class='pt-3'
 									readonly
 									value={
-										projectTrebleMaxFreeformCountHook.currentMiuiDesktopModeMaxFreeformCount
-											.value
+										projectTrebleMaxFreeformCountHook.currentMiuiDesktopModeMaxFreeformCount.value
 									}
 									placeholder='请输入工作台小窗数量上限'
 									min={4}
@@ -817,10 +831,7 @@ const enhanceList: EnhanceItemInfo[] = [
 								<div class='mb-5'>
 									<n-tag type='info'>
 										当前工作台小窗数量上限 :{' '}
-										{
-											projectTrebleMaxFreeformCountHook.currentMiuiDesktopModeMaxFreeformCount
-												.value
-										}
+										{projectTrebleMaxFreeformCountHook.currentMiuiDesktopModeMaxFreeformCount.value}
 									</n-tag>
 								</div>
 								<n-button
@@ -904,8 +915,8 @@ const enhanceList: EnhanceItemInfo[] = [
 									onClick={() =>
 										projectTrebleMaxFreeformCountHook.changeMaxFreeformCount(
 											'DefaultDesktopMode',
-											projectTrebleMaxFreeformCountHook
-												.currentDefaultDesktopModeMaxFreeformCount.value,
+											projectTrebleMaxFreeformCountHook.currentDefaultDesktopModeMaxFreeformCount
+												.value,
 										)
 									}>
 									{{
@@ -919,8 +930,8 @@ const enhanceList: EnhanceItemInfo[] = [
 									<n-tag type='info'>
 										当前默认桌面小窗数量上限 :{' '}
 										{
-											projectTrebleMaxFreeformCountHook
-												.currentDefaultDesktopModeMaxFreeformCount.value
+											projectTrebleMaxFreeformCountHook.currentDefaultDesktopModeMaxFreeformCount
+												.value
 										}
 									</n-tag>
 								</div>
@@ -947,8 +958,8 @@ const enhanceList: EnhanceItemInfo[] = [
 		isShow: () =>
 			['tablet'].includes(deviceStore.deviceType) &&
 			projectTrebleMaxFreeformCountHook.isSupportMiuiDesktopModeMaxFreeformCount.value,
-  },
-  	{
+	},
+	{
 		title: (titleText: string) => (
 			<>{`${titleText}${deviceStore.isInstalledXiaomiPadSystemPatchAdditionalModule ? `（附加模块）` : `（移植包）`}`}</>
 		),
@@ -969,13 +980,11 @@ const enhanceList: EnhanceItemInfo[] = [
 									min={1}
 									max={6}
 									disabled={
-										!projectTrebleMaxFreeformCountHook.isEditSplitScreenModeMaxFreeformCount
-											.value
+										!projectTrebleMaxFreeformCountHook.isEditSplitScreenModeMaxFreeformCount.value
 									}
 									step={1}
 									value={
-										projectTrebleMaxFreeformCountHook.currentSplitScreenModeMaxFreeformCount
-											.value
+										projectTrebleMaxFreeformCountHook.currentSplitScreenModeMaxFreeformCount.value
 									}
 									onUpdateValue={(value: number) => {
 										projectTrebleMaxFreeformCountHook.currentSplitScreenModeMaxFreeformCount.value =
@@ -987,8 +996,7 @@ const enhanceList: EnhanceItemInfo[] = [
 									class='pt-3'
 									readonly
 									value={
-										projectTrebleMaxFreeformCountHook.currentSplitScreenModeMaxFreeformCount
-											.value
+										projectTrebleMaxFreeformCountHook.currentSplitScreenModeMaxFreeformCount.value
 									}
 									placeholder='请输入分屏模式小窗数量上限'
 									min={1}
@@ -1007,8 +1015,8 @@ const enhanceList: EnhanceItemInfo[] = [
 									onClick={() =>
 										projectTrebleMaxFreeformCountHook.changeMaxFreeformCount(
 											'SplitScreenMode',
-											projectTrebleMaxFreeformCountHook
-												.currentSplitScreenModeMaxFreeformCount.value,
+											projectTrebleMaxFreeformCountHook.currentSplitScreenModeMaxFreeformCount
+												.value,
 										)
 									}>
 									{{
@@ -1021,10 +1029,7 @@ const enhanceList: EnhanceItemInfo[] = [
 								<div class='mb-5 flex'>
 									<n-tag type='info'>
 										当前分屏模式小窗数量上限 :{' '}
-										{
-											projectTrebleMaxFreeformCountHook
-												.currentSplitScreenModeMaxFreeformCount.value
-										}
+										{projectTrebleMaxFreeformCountHook.currentSplitScreenModeMaxFreeformCount.value}
 									</n-tag>
 								</div>
 								<n-button
@@ -2396,10 +2401,7 @@ const filteredEnhanceList = computed(() => {
 			item.titleText?.toLowerCase() ?? (typeof item.title === 'string' ? item.title.toLowerCase() : '');
 
 		// 支持普通 includes 和 拼音匹配
-		return (
-			titleStr.includes(keyword) ||
-			(PinyinMatch.match(titleStr, keyword) !== false)
-		);
+		return titleStr.includes(keyword) || PinyinMatch.match(titleStr, keyword) !== false;
 	});
 });
 </script>

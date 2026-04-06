@@ -25,13 +25,15 @@ export function useMiScreenShotsWriteClipboard() {
 		configProviderProps: configProviderPropsRef,
 	});
 
-	const isEnable = computed(() => cacheHelper.getCache<number>('MiScreenShotsWriteClipboardEnable') === 1);
+	const isEnable = ref<boolean>(false);
 
-	const isAutoEnable = computed(() => !!cacheHelper.getCache<boolean>('MiScreenShotsWriteClipboardAutoEnable'));
+	const isAutoEnable = ref<boolean>(false);
 
 	const loading = ref<boolean>(true);
 
 	const isInit = ref<boolean>(false);
+
+	const hasProcess = ref<boolean>(false);
 
 	const changeEnableMode = async (mode: boolean) => {
 		const [negativeRes, positiveRes] = await $to(
@@ -243,21 +245,27 @@ export function useMiScreenShotsWriteClipboard() {
 		const [, getMiScreenShotsWriteClipboardEnableRes] = await $to<string, string>(
 			deviceApi.getMiScreenShotsWriteClipboardEnable(),
 		);
-		cacheHelper.setCache(
-			'MiScreenShotsWriteClipboardEnable',
-			Number(getMiScreenShotsWriteClipboardEnableRes) === 1 ? 1 : 0,
-		);
+
+		if (Number(getMiScreenShotsWriteClipboardEnableRes) === 1) {
+			isEnable.value = true;
+		}
 
 		// MiScreenShotsWriteClipboardAutoEnable
-		if (cacheHelper.getCache<boolean>('MiScreenShotsWriteClipboardAutoEnable') === null) {
-			const [, getIsAutoEnableMiScreenShotsWriteClipboardRes] = await $to<string, string>(
-				deviceApi.getIsAutoEnableMiScreenShotsWriteClipboard(),
+		const [, getIsAutoEnableMiScreenShotsWriteClipboardRes] = await $to<string, string>(
+			deviceApi.getIsAutoEnableMiScreenShotsWriteClipboard(),
+		);
+		if (getIsAutoEnableMiScreenShotsWriteClipboardRes === 'true') {
+			isAutoEnable.value = true;
+			const [, getMiScreenShotsWriteClipboardProcessRes] = await $to<number, string>(
+				deviceApi.getMiScreenShotsWriteClipboardProcess(),
 			);
-			cacheHelper.setCache(
-				'MiScreenShotsWriteClipboardAutoEnable',
-				String(getIsAutoEnableMiScreenShotsWriteClipboardRes) === 'true',
-			);
+
+			if (getMiScreenShotsWriteClipboardProcessRes) {
+				hasProcess.value = true;
+			}
 		}
+
+		console.log(isAutoEnable.value, hasProcess.value, isEnable.value, 'ccc');
 
 		isInit.value = true;
 		loading.value = false;
@@ -272,6 +280,7 @@ export function useMiScreenShotsWriteClipboard() {
 	return {
 		isEnable,
 		isAutoEnable,
+		hasProcess,
 		changeEnableMode,
 		changeIsAutoEnableMode,
 		isInit,

@@ -7,6 +7,7 @@ import type { GameMode, KeyboardMode, PenEnable, PenUpdate, TpFirmware } from '@
 import type { DisplayModeItem } from '@/hooks/useDisplayModeRecord';
 import type { miuiCursorStyleType } from '@/hooks/useMiuiCursorStyle';
 import type PackageInfoItem from '@/types/PackageInfoItem';
+import { isNumber } from 'lodash-es';
 const toolsFunc = `/data/adb/modules/Hyper_MagicWindow/common/utils/tools_functions.sh`;
 
 export interface SmartFocusIOResult extends ExecResults {
@@ -4359,6 +4360,21 @@ export const putCurrentSplitScreenModeMaxFreeformCount = (countNum: number): Pro
 			} else {
 				const { errno, stdout, stderr }: ExecResults = (await exec(shellCommon)) as ExecResults;
 				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const getMiScreenShotsWriteClipboardProcess = (): Promise<number> => {
+	const shellCommon = `pgrep -f 'auto_enable_mi_screen_shots_write_clipboard.d' | grep -v $$`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(7789);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = (await exec(shellCommon)) as ExecResults;
+				errno ? reject(stderr) : isNumber(Number(stdout)) ? resolve(Number(stdout)) : reject(new Error('不存在进程id'));
 			}
 		}),
 		shellCommon,
