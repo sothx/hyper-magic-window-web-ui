@@ -1,6 +1,5 @@
 import { ref, computed, onMounted, nextTick, h } from 'vue';
 import { useDeviceStore } from '@/stores/device';
-import * as cacheHelper from '@/utils/cacheHelper';
 import $to from 'await-to-js';
 import { RenderJsx } from '@/components/RenderJSX';
 import {
@@ -14,7 +13,6 @@ import {
 	type NInput,
 } from 'naive-ui';
 import * as deviceApi from '@/apis/deviceApi';
-import { useCacheStore } from '@/stores/cache';
 export function useMiScreenShotsWriteClipboard() {
 	const deviceStore = useDeviceStore();
 	const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
@@ -74,7 +72,7 @@ export function useMiScreenShotsWriteClipboard() {
 			deviceApi
 				.changeMiScreenShotsWriteClipboardEnable(mode ? 1 : 0)
 				.then(res => {
-					cacheHelper.setCache('MiScreenShotsWriteClipboardEnable', mode ? 1 : 0);
+					isEnable.value = true;
 					modal.create({
 						title: '操作成功',
 						type: 'success',
