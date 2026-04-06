@@ -6,7 +6,7 @@ import * as deviceApi from '@/apis/deviceApi';
 import {type RemoteDownloadAppInfo } from '@/stores/appStore';
 import { useDeviceStore } from '@/stores/device';
 import { useLogsStore } from '@/stores/logs';
-import { isPlainObject } from '$/@types/lodash-es';
+import { isPlainObject } from 'lodash-es'
 
 
 export const getRemoteDownloadAppUrlMap = async (

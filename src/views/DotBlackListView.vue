@@ -48,7 +48,6 @@ import { findBase64InString, getAppLabelToPackageInfo, renderApplicationName } f
 import { arrayBufferToBase64, base64ToArrayBuffer } from '@/utils/format';
 import pako from 'pako';
 import type DotBlackListMergeItem from '@/types/DotBlackListMergeItem';
-import { values } from '$/@types/lodash-es';
 import { usePadSystemPatchAdditionalModule } from '@/hooks/usePadSystemPatchAdditionalModule';
 type SearchKeyWordInputInstance = InstanceType<typeof NInput>;
 type DotBlackListAppDrawerInstance = InstanceType<typeof DotBlackListAppDrawer>;

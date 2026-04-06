@@ -561,13 +561,13 @@ const enhanceList: EnhanceItemInfo[] = [
 							unchecked: () => <>未启用</>,
 						}}
 					</n-switch>
-				)}
+        )}
 				{miScreenShotsWriteClipboard.isEnable.value && (
 					<n-alert class='mt-5' type='info' show-icon={false} bordered={false}>
 						<div>
 							<p>
 								由于小米已经废弃了该功能，模块提供「开机自配置」来解决这个问题，开启后每次开机后每分钟会自动检测并自动启用「截图自动添加至剪贴板」。
-							</p>
+              </p>
 							<n-switch
 								onUpdateValue={(value: boolean) =>
 									miScreenShotsWriteClipboard.changeIsAutoEnableMode(value)
