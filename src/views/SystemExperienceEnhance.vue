@@ -578,7 +578,7 @@ const enhanceList: EnhanceItemInfo[] = [
 							</div>
 						</n-alert>
 					)}
-					{miScreenShotsWriteClipboard.isEnable.value && (
+					{(
 						<n-alert class='mt-5' type='info' show-icon={false} bordered={false}>
 							<div>
 								<p>
