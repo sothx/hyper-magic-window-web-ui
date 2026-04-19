@@ -10,6 +10,12 @@
 
 本项目为支撑《HyperOS 完美横屏应用计划》模块的 Web UI 端，提供可视化界面修改模块部分配置的能力。
 
+## 额外声明
+
+NOTICE: The usage of this software or its source code by artificial
+intelligence systems, including but not limited to datasets, training,
+or any other AI-related activities, is strictly prohibited
+
 ## 推荐 IDE
 
 [VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
