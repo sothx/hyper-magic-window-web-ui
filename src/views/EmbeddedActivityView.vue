@@ -405,6 +405,13 @@ const pagination = reactive({
 	},
 });
 
+watch(
+  () => embeddedStore.searchKeyWord,
+  () => {
+    pagination.page = 1 // 只要搜索词变了，立刻回到第1页
+  }
+)
+
 const hotReloadApplicationData = async () => {
 	hotReloadLoading.value = true;
 	await reloadPage();

@@ -72,7 +72,7 @@ export function useMiScreenShotsWriteClipboard() {
 			deviceApi
 				.changeMiScreenShotsWriteClipboardEnable(mode ? 1 : 0)
 				.then(res => {
-					isEnable.value = true;
+					isEnable.value = mode;
 					modal.create({
 						title: '操作成功',
 						type: 'success',

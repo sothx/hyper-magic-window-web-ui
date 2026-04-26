@@ -770,6 +770,16 @@ const pagination = reactive({
 	},
 });
 
+watch(
+  // 👇 同时监听两个值，数组形式
+  () => [autoUIStore.searchKeyWord, autoUI2Store.searchKeyWord],
+  () => {
+    pagination.page = 1
+  },
+  // 加上这个，性能一样，更稳定
+  { flush: 'sync' }
+)
+
 const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean }) => {
 	const style: CSSProperties = {};
 	if (checked) {

@@ -543,6 +543,13 @@ const pagination = reactive({
 	},
 });
 
+watch(
+  () => autoUIStore.searchKeyWord,
+  () => {
+    pagination.page = 1 // 只要搜索词变了，立刻回到第1页
+  }
+)
+
 const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean }) => {
 	const style: CSSProperties = {};
 	if (checked) {
