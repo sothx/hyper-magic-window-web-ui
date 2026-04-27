@@ -1,4 +1,12 @@
-import { exec, spawn, fullScreen, toast, getPackagesInfo, type ExecResults, listPackages } from '@/utils/kernelsu/index.js';
+import {
+	exec,
+	spawn,
+	fullScreen,
+	toast,
+	getPackagesInfo,
+	type ExecResults,
+	listPackages,
+} from '@/utils/kernelsu/index.js';
 import axios from 'axios';
 import handlePromiseWithLogging from '@/utils/handlePromiseWithLogging';
 import $to from 'await-to-js';
@@ -851,6 +859,23 @@ export const clearJoyose = (): Promise<string> => {
 	);
 };
 
+export const clearGPUCache = (): Promise<string> => {
+	const GPUCacheClean = '/data/adb/modules/Hyper_MagicWindow/common/utils/GPUCacheClear.sh';
+	const shellCommon = `source ${GPUCacheClean}`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`success`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno
+					? reject(stderr) : resolve(stdout)
+			}
+		}),
+		shellCommon,
+	);
+};
+
 export const setPointerSpeed = (value: number): Promise<string> => {
 	const shellCommon = `settings put system pointer_speed ${value}`;
 	return handlePromiseWithLogging(
@@ -1448,7 +1473,7 @@ export const getCurrentLiuqinPenEnable = (): Promise<string> => {
 };
 
 export const putCurrentLiuqinPenEnable = (mode: PenEnable): Promise<string> => {
-  const xiaomi_pen = '/data/adb/modules/Hyper_MagicWindow/common/utils/xiaomi_pen';
+	const xiaomi_pen = '/data/adb/modules/Hyper_MagicWindow/common/utils/xiaomi_pen';
 	const shellCommon = `${xiaomi_pen} ${mode}`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
@@ -4374,7 +4399,11 @@ export const getMiScreenShotsWriteClipboardProcess = (): Promise<number> => {
 				resolve(7789);
 			} else {
 				const { errno, stdout, stderr }: ExecResults = (await exec(shellCommon)) as ExecResults;
-				errno ? reject(stderr) : isNumber(Number(stdout)) ? resolve(Number(stdout)) : reject(new Error('不存在进程id'));
+				errno
+					? reject(stderr)
+					: isNumber(Number(stdout))
+						? resolve(Number(stdout))
+						: reject(new Error('不存在进程id'));
 			}
 		}),
 		shellCommon,

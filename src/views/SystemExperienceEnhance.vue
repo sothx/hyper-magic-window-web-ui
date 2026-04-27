@@ -51,6 +51,7 @@ import { useProjectTrebleMaxFreeformCount } from '@/hooks/useProjectTrebleMaxFre
 import { useDisabledFreeformBottomCaption } from '@/hooks/useDisabledFreeformBottomCaption';
 import { useImmersedFreeformBottomCaption } from '@/hooks/useImmerseFreeformBottomCaption';
 import { usePadSystemPatchAdditionalModule } from '@/hooks/usePadSystemPatchAdditionalModule';
+import { useGPUCahce } from '../hooks/useGPUCahce';
 const deviceStore = useDeviceStore();
 const searchKeyword = ref('');
 const hideGestureLineHook = useHideGestureLine();
@@ -80,6 +81,7 @@ const padSystemPatchAdditionalModuleHook = usePadSystemPatchAdditionalModule();
 const miScreenShotsWriteClipboard = useMiScreenShotsWriteClipboard();
 const fboHook = useFbo();
 const joyoseHook = useJoyose();
+const GPUCahceHook = useGPUCahce();
 // const initHooks = () => {
 // 	fboHook.value = useFbo();
 // }
@@ -516,7 +518,8 @@ const enhanceList: EnhanceItemInfo[] = [
 			</>
 		),
 		isShow: () => ['tablet'].includes(deviceStore.deviceType) && amktiaoHook.isInit.value,
-	},
+  },
+  
 	{
 		title: '小米超级岛',
 		content: () => (
@@ -2129,6 +2132,30 @@ const enhanceList: EnhanceItemInfo[] = [
 						网络环境下，否则无法正常获取云控数据。
 					</p>
 					<p>(如仍然无法获取到新的 Joyose 云控数据，请尝试重启设备)</p>
+				</n-alert>
+			</>
+		),
+  },
+  {
+		title: 'GPU驱动缓存清理',
+		content: () => (
+			<>
+				<n-button
+					size='small'
+					type='error'
+					secondary
+					loading={deviceStore.loading}
+					onClick={() => GPUCahceHook.clearCacheData()}>
+					{{
+						icon: () => <CircleStackIcon />,
+						default: () => '清理GPU驱动缓存',
+					}}
+				</n-button>
+
+				<n-alert class='mt-5' type='error' show-icon={false} bordered={false}>
+					<p>
+						通常用于在安装GPU驱动之前，清理GPU驱动的缓存，避免潜在的问题
+					</p>
 				</n-alert>
 			</>
 		),
