@@ -191,14 +191,14 @@ export const embeddedPerceptionApplications: Record<string, EmbeddedPerceptionAp
 								skipSelfAdaptive: true,
 								splitRatio: deviceStore.deviceType === 'tablet' ? 0.3 : 0.5,
 								splitPairRule:
-									'com.coolapk.market.view.main.MainActivity:*,com.coolapk.market.view.userv9.UserSpaceV9Activity:*,com.coolapk.market.view.node.DynamicNodePageActivity:*,com.coolapk.market.view.search.SuperSearchResultActivity:*,com.coolapk.market.view.base.SimpleAlphaActivity:*,com.coolapk.market.view.feed.FeedDetailActivityV8:*,com.coolapk.market.view.appmanager.UpgradeManagerActivity:*,com.coolapk.market.view.feedv8.multiSubmit.MultiSubmitActivity:*,com.coolapk.market.view.appmanager.AppManagerActivity:*,com.coolapk.market.view.user.UserFeedListActivity:*,com.coolapk.market.view.contact.FriendListActivity:*,com.coolapk.market.view.contact.FansListActivity:*,com.coolapk.market.view.user.UserFollowAppActivity:*,com.coolapk.market.view.album.UserAlbumListActivity:*,com.coolapk.market.view.user.MyDigitTabListActivit:*,com.coolapk.market.view.goods.MyGoodsTabListActivity:*,com.coolapk.market.view.user.UserPictureListActivity:*,com.coolapk.market.view.dyhv8.DyhListActivity:*,com.coolapk.market.view.backupList.BackupListActivity:*,com.coolapk.market.view.message.ChattingActivity:*,com.coolapk.market.view.feed.FeedReplyDetailActivity:*,com.coolapk.market.view.feedv8.SubmitFeedV8Activity:*,com.coolapk.market.view.notification.NotificationActivity:*,com.coolapk.market.view.feed.ReplyActivity:*',
+									'com.coolapk.market.view.main.MainActivity:*,com.coolapk.market.view.userv9.UserSpaceV9Activity:*,com.coolapk.market.view.node.DynamicNodePageActivity:*,com.coolapk.market.view.search.SuperSearchResultActivity:*,com.coolapk.market.view.base.SimpleAlphaActivity:*,com.coolapk.market.view.feed.FeedDetailActivityV8:*,com.coolapk.market.view.appmanager.UpgradeManagerActivity:*,com.coolapk.market.view.feedv8.multiSubmit.MultiSubmitActivity:*,com.coolapk.market.view.appmanager.AppManagerActivity:*,com.coolapk.market.view.user.UserFeedListActivity:*,com.coolapk.market.view.contact.FriendListActivity:*,com.coolapk.market.view.contact.FansListActivity:*,com.coolapk.market.view.user.UserFollowAppActivity:*,com.coolapk.market.view.album.UserAlbumListActivity:*,com.coolapk.market.view.user.MyDigitTabListActivit:*,com.coolapk.market.view.goods.MyGoodsTabListActivity:*,com.coolapk.market.view.user.UserPictureListActivity:*,com.coolapk.market.view.dyhv8.DyhListActivity:*,com.coolapk.market.view.backupList.BackupListActivity:*,com.coolapk.market.view.message.ChattingActivity:*,com.coolapk.market.view.feedv8.SubmitFeedV8Activity:*,com.coolapk.market.view.notification.NotificationActivity:*',
 								activityRule:
 									'com.coolapk.market.view.main.MainActivity,com.coolapk.market.view.wallpaper.coolpic.CoolPicDetailActivity,com.coolapk.market.view.appmanager.UpgradeManagerActivity,com.coolapk.market.view.feedv8.multiSubmit.MultiSubmitActivity,com.coolapk.market.view.feed.ReplyActivity,com.coolapk.market.view.splash.SplashActivity,com.coolapk.market.view.splash.FullScreenAdActivity,com.coolapk.market.view.video.VideoDetailListActivity,com.coolapk.market.view.feedv8.FeedEntranceV8Activity,com.coolapk.market.view.photo.QRCodeActivity,com.coolapk.market.view.feedv8.SubmitFeedV8Activity,com.coolapk.market.view.feedv8.QuestionTitleActivity,com.coolapk.market.view.goodsList.CreateFunThingsActivity,com.coolapk.market.view.permission.PrivacyActivity,com.coolapk.market.view.webview.LoginActivity,com.coolapk.market.view.live.LiveActivity,com.coolapk.market.view.message.ChattingActivity,com.coolapk.market.view.feed.FeedReplyDetailActivity,com.coolapk.market.view.feed.ForwardEntityActivity',
 								transitionRules:
 									'com.coolapk.market.view.main.MainActivity,com.coolapk.market.view.feedv8.multiSubmit.MultiSubmitActivity,com.coolapk.market.view.feedv8.SubmitFeedV8Activity,com.coolapk.market.view.message.ChattingActivity,com.coolapk.market.view.feed.ReplyActivity,com.coolapk.market.view.feed.FeedReplyDetailActivity',
 								isShowDivider: true,
 								supportFullSize: true,
-								flags: 'reusePreContainer:com.coolapk.market.view.photo.PhotoViewActivity,com.coolapk.market.view.collectionList.CollectionSelectActivity,com.coolapk.market.view.feedv8.entrance.FeedEntranceV16Activity;',
+								flags: 'reusePreContainer:com.coolapk.market.view.photo.PhotoViewActivity,com.coolapk.market.view.photo.PhotoViewV16Activity,com.coolapk.market.view.collectionList.CollectionSelectActivity,com.coolapk.market.view.feed.ReplyActivity,com.coolapk.market.view.feed.FeedReplyDetailActivity,com.coolapk.market.view.feedv8.entrance.FeedEntranceV16Activity;',
 								...(deviceStore.deviceType === 'tablet'
 									? {
 											splitMinWidth: 900,
@@ -742,13 +742,15 @@ export const embeddedPerceptionApplications: Record<string, EmbeddedPerceptionAp
 					return (
 						<div>
 							<p>
-							{' '}
+								{' '}
 								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
 									{renderApplicationName(row.name, row.applicationName)}
-								</span>{' '}已自适配 Android 原生的平行视界，您可以前往{' '}
+								</span>{' '}
+								已自适配 Android 原生的平行视界，您可以前往{' '}
 								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
 									{renderApplicationName(row.name, row.applicationName)}
-								</span>{' '}的{' '}
+								</span>{' '}
+								的{' '}
 								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
 									系统设置
 								</span>{' '}
@@ -763,14 +765,15 @@ export const embeddedPerceptionApplications: Record<string, EmbeddedPerceptionAp
 								还是{' '}
 								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
 									平行窗口
-								</span>{' '}~
+								</span>{' '}
+								~
 							</p>
 						</div>
 					);
 				},
-				positiveText: '确定'
+				positiveText: '确定',
 			});
-		}
+		},
 	},
 	'com.douban.frodo': {
 		isShow() {
@@ -801,13 +804,15 @@ export const embeddedPerceptionApplications: Record<string, EmbeddedPerceptionAp
 					return (
 						<div>
 							<p>
-							{' '}
+								{' '}
 								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
 									{renderApplicationName(row.name, row.applicationName)}
-								</span>{' '}已自适配 Android 原生的平行视界，您可以前往{' '}
+								</span>{' '}
+								已自适配 Android 原生的平行视界，您可以前往{' '}
 								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
 									{renderApplicationName(row.name, row.applicationName)}
-								</span>{' '}的{' '}
+								</span>{' '}
+								的{' '}
 								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
 									设置
 								</span>{' '}
@@ -822,13 +827,14 @@ export const embeddedPerceptionApplications: Record<string, EmbeddedPerceptionAp
 								还是{' '}
 								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
 									平行窗口
-								</span>{' '}~
+								</span>{' '}
+								~
 							</p>
 						</div>
 					);
 				},
-				positiveText: '确定'
+				positiveText: '确定',
 			});
-		}
-	}
+		},
+	},
 };
