@@ -120,7 +120,7 @@ export function useOldProjectTrebleCvwFull() {
 		);
 		if (positiveRes) {
 			deviceApi
-				.changeProjectTrebleSupoortCvwFullForSettings(mode ? 1 : 0)
+				.changeProjectTrebleSupportCvwFullForSettings(mode ? 1 : 0)
 				.then(res => {
 					isEnable.value = mode;
 					modal.create({
@@ -195,10 +195,10 @@ export function useOldProjectTrebleCvwFull() {
 			} else {
 				isEnable.value = false;
 			}
-			const [, getProjectTrebleSupoortCvwFullForPropRes] = await $to<string, string>(
-				deviceApi.getProjectTrebleSupoortCvwFullForProp(),
+			const [, getProjectTrebleSupportCvwFullForPropRes] = await $to<string, string>(
+				deviceApi.getProjectTrebleSupportCvwFullForProp(),
 			);
-			if (getProjectTrebleSupoortCvwFullForPropRes && getProjectTrebleSupoortCvwFullForPropRes === 'true') {
+			if (getProjectTrebleSupportCvwFullForPropRes && getProjectTrebleSupportCvwFullForPropRes === 'true') {
 				isSupportProp.value = true;
 			} else {
 				isSupportProp.value = false;

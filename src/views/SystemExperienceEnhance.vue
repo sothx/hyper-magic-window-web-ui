@@ -52,6 +52,7 @@ import { useDisabledFreeformBottomCaption } from '@/hooks/useDisabledFreeformBot
 import { useImmersedFreeformBottomCaption } from '@/hooks/useImmerseFreeformBottomCaption';
 import { usePadSystemPatchAdditionalModule } from '@/hooks/usePadSystemPatchAdditionalModule';
 import { useGPUCahce } from '../hooks/useGPUCahce';
+import { useXiaomiWinPlay } from '@/hooks/useXiaomiWinplay';
 const deviceStore = useDeviceStore();
 const searchKeyword = ref('');
 const hideGestureLineHook = useHideGestureLine();
@@ -69,6 +70,7 @@ const videoWallpaperLoopHook = useVideoWallpaperLoop();
 const useDisabledOS2SystemPreStartHook = useDisabledOS2SystemPreStart();
 const useDisabledDeepSleepEnableHook = useDisabledDeepSleepEnable();
 const projectTrebleVerticalScreenSplitHook = useProjectTrebleVerticalScreenSplit();
+const xiaomiWinplayHook = useXiaomiWinPlay();
 const oldProjectTrebleCvwFullHook = useOldProjectTrebleCvwFull();
 const projectTrebleCvwFullHook = useProjectTrebleCvwFull();
 const freeformBlackListHook = useFreeformBlackList();
@@ -205,6 +207,40 @@ export interface EnhanceItemInfo {
 	isShow?: () => boolean;
 }
 const enhanceList: EnhanceItemInfo[] = [
+  	{
+		title: (titleText: string) => (
+			<>{`${titleText}${xiaomiWinplayHook.isSupportProjectTreble.value ? `（移植包）` : ``}`}</>
+		),
+		titleText: 'PC游戏引擎',
+		content: () => (
+			<>
+				<div>
+					<n-button
+						size='small'
+						type='info'
+						secondary
+						loading={deviceStore.loading}
+						onClick={() => deviceApi.openGameEngineLauncherActivity()}>
+						{{
+							icon: () => <img src='/images/icons/win_play_mobile.webp' />,
+							default: () => <>启动 PC游戏引擎</>,
+						}}
+					</n-button>
+				</div>
+				<n-alert class='mt-5' type='info' show-icon={false} bordered={false}>
+					<p>「PC游戏引擎」是为小米平板和手机量身定做的「游戏虚拟机」，可以运行市面上常见的 Windows 游戏。</p>
+					<p>目前仅部分支持部分机型和移植包，不支持该功能的机型即使自行安装apk也无法使用。</p>
+				</n-alert>
+			</>
+		),
+		isShow: () =>
+			Boolean(
+				deviceStore.MIOSVersion &&
+					deviceStore.MIOSVersion >= 3 &&
+        deviceStore.androidTargetSdk >= 36 &&
+        xiaomiWinplayHook.XiaomiWinPlayIsInstalled.value
+			),
+	},
 	{
 		title: '游戏模式（水龙）',
 		titleSlot: () => (
@@ -1508,8 +1544,8 @@ const enhanceList: EnhanceItemInfo[] = [
 				</div>
 				<n-alert class='mt-5' type='info' show-icon={false} bordered={false}>
 					<p>「WinPlay Mobile」是为小米平板量身定做的「游戏虚拟机」，可以运行市面上常见的 Windows 游戏。</p>
-					<p>目前尚处于测试阶段，暂时仅支持小米平板6S Pro ~</p>
-					<p>该功能依赖「AI百宝箱」和「WAE Display」，请确保已经安装这两个系统应用。</p>
+					<p>OS2起支持 小米平板6S Pro， OS3起支持小米平板6 Pro 和小米平板6 Max ~</p>
+					<p>该功能依赖「AI百宝箱」和「WAE Display」，请确保已经安装这两个系统应用，可以自行前往「精选应用」下载~</p>
 				</n-alert>
 			</>
 		),
@@ -1517,7 +1553,7 @@ const enhanceList: EnhanceItemInfo[] = [
 			Boolean(
 				deviceStore.MIOSVersion &&
 					deviceStore.MIOSVersion >= 2 &&
-					deviceStore.androidTargetSdk >= 35 &&
+					deviceStore.androidTargetSdk === 35 &&
 					deviceStore.deviceType === 'tablet',
 			),
 	},

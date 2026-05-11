@@ -131,12 +131,12 @@ export function useProjectTrebleDisableResizeBlackList() {
 	};
 
 	const fetchData = async () => {
-		const [, getProjectTrebleSupoortDisableResizeBlackListForSettingsRes] = await $to<string, string>(
-			deviceApi.getProjectTrebleSupoortDisableResizeBlackListForSettings(),
+		const [, getProjectTrebleSupportDisableResizeBlackListForSettingsRes] = await $to<string, string>(
+			deviceApi.getProjectTrebleSupportDisableResizeBlackListForSettings(),
 		);
 		if (
-			getProjectTrebleSupoortDisableResizeBlackListForSettingsRes &&
-			Number(getProjectTrebleSupoortDisableResizeBlackListForSettingsRes) === 1
+			getProjectTrebleSupportDisableResizeBlackListForSettingsRes &&
+			Number(getProjectTrebleSupportDisableResizeBlackListForSettingsRes) === 1
 		) {
 			isEnable.value = true;
 		} else {
@@ -153,12 +153,12 @@ export function useProjectTrebleDisableResizeBlackList() {
 		} else {
 			currentVerison.value = 1;
 		}
-		const [, getProjectTrebleSupoortDisableResizeBlackListForPropRes] = await $to<string, string>(
-			deviceApi.getProjectTrebleSupoortDisableResizeBlackListForProp(),
+		const [, getProjectTrebleSupportDisableResizeBlackListForPropRes] = await $to<string, string>(
+			deviceApi.getProjectTrebleSupportDisableResizeBlackListForProp(),
 		);
 		if (
-			getProjectTrebleSupoortDisableResizeBlackListForPropRes &&
-			getProjectTrebleSupoortDisableResizeBlackListForPropRes === 'true'
+			getProjectTrebleSupportDisableResizeBlackListForPropRes &&
+			getProjectTrebleSupportDisableResizeBlackListForPropRes === 'true'
 		) {
 			isSupportProp.value = true;
 		} else {

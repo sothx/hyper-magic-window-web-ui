@@ -3341,7 +3341,7 @@ export const getDisableIdleFpsThreshold = (): Promise<string> => {
 	);
 };
 
-export const getProjectTrebleSupoortMagicWindowFix = (): Promise<string> => {
+export const getProjectTrebleSupportMagicWindowFix = (): Promise<string> => {
 	const shellCommon = `getprop ro.config.sothx_project_treble_support_magic_window_fix`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
@@ -3371,7 +3371,22 @@ export const getSplitScreenPlusIsEnabled = (): Promise<string> => {
 	);
 };
 
-export const getProjectTrebleSupoortVerticalScreenSplitForSettings = (): Promise<string> => {
+export const getXiaomiWinPlayIsInstalled = (): Promise<string> => {
+	const shellCommon = `pm list packages com.xiaomi.winplay | grep -q com.xiaomi.winplay && echo installed || echo not_installed`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve('installed');
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : stdout === 'installed' ? resolve(stdout) : reject(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const getProjectTrebleSupportVerticalScreenSplitForSettings = (): Promise<string> => {
 	const shellCommon = `settings get system sothx_project_treble_vertical_screen_split_enable`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
@@ -3401,7 +3416,37 @@ export const changeProjectTrebleVerticalScreenSplitEnableForSettings = (mode: 1 
 	);
 };
 
-export const getProjectTrebleSupoortVerticalScreenSplitForProp = (): Promise<string> => {
+export const getProjectTrebleSupportWinPlayForProp = (): Promise<string> => {
+	const shellCommon = `getprop ro.config.sothx_project_treble_support_winplay`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve('true');
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const getProjectTrebleWinplayVersion = (): Promise<string> => {
+	const shellCommon = `getprop ro.config.sothx_project_treble_winplay_version`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve('1');
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const getProjectTrebleSupportVerticalScreenSplitForProp = (): Promise<string> => {
 	const shellCommon = `getprop ro.config.sothx_project_treble_support_vertical_screen_split`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
@@ -3476,7 +3521,7 @@ export const getProjectTrebleSupportCvwFullForSettings = (): Promise<string> => 
 	);
 };
 
-export const changeProjectTrebleSupoortCvwFullForSettings = (mode: 1 | 0): Promise<string> => {
+export const changeProjectTrebleSupportCvwFullForSettings = (mode: 1 | 0): Promise<string> => {
 	const shellCommon = `settings put system sothx_project_treble_cvw_full_enable ${mode}`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
@@ -3491,7 +3536,7 @@ export const changeProjectTrebleSupoortCvwFullForSettings = (mode: 1 | 0): Promi
 	);
 };
 
-export const getProjectTrebleSupoortCvwFullForProp = (): Promise<string> => {
+export const getProjectTrebleSupportCvwFullForProp = (): Promise<string> => {
 	const shellCommon = `getprop ro.config.sothx_project_treble_support_cvw_full`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
@@ -3551,7 +3596,7 @@ export const changeEnableDebugModeForFreeFormBlackList = (mode: 1 | 0): Promise<
 	);
 };
 
-export const getProjectTrebleSupoortDisableResizeBlackListForSettings = (): Promise<string> => {
+export const getProjectTrebleSupportDisableResizeBlackListForSettings = (): Promise<string> => {
 	const shellCommon = `settings get system sothx_project_treble_disable_resize_black_list_enable`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
@@ -3581,7 +3626,7 @@ export const changeProjectTrebleSupportDisableResizeBlackListForSettings = (mode
 	);
 };
 
-export const getProjectTrebleSupoortDisableResizeBlackListForProp = (): Promise<string> => {
+export const getProjectTrebleSupportDisableResizeBlackListForProp = (): Promise<string> => {
 	const shellCommon = `getprop ro.config.sothx_project_treble_support_disable_resize_black_list`;
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {

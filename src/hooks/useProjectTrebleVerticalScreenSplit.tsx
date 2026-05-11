@@ -365,12 +365,12 @@ export function useProjectTrebleVerticalScreenSplit() {
 		} else {
 			splitScreenPlusIsInstalled.value = false;
 		}
-		const [, getProjectTrebleSupoortVerticalScreenSplitForSettingsRes] = await $to<string, string>(
-			deviceApi.getProjectTrebleSupoortVerticalScreenSplitForSettings(),
+		const [, getProjectTrebleSupportVerticalScreenSplitForSettingsRes] = await $to<string, string>(
+			deviceApi.getProjectTrebleSupportVerticalScreenSplitForSettings(),
 		);
 		if (
-			getProjectTrebleSupoortVerticalScreenSplitForSettingsRes &&
-			Number(getProjectTrebleSupoortVerticalScreenSplitForSettingsRes) === 1
+			getProjectTrebleSupportVerticalScreenSplitForSettingsRes &&
+			Number(getProjectTrebleSupportVerticalScreenSplitForSettingsRes) === 1
 		) {
 			isEnableSettings.value = true;
 		} else {
@@ -387,10 +387,10 @@ export function useProjectTrebleVerticalScreenSplit() {
 		} else {
 			currentVerison.value = 2;
 		}
-		const [, getProjectTrebleSupoortVerticalScreenSplitRes] = await $to<string, string>(
-			deviceApi.getProjectTrebleSupoortVerticalScreenSplitForProp(),
+		const [, getProjectTrebleSupportVerticalScreenSplitRes] = await $to<string, string>(
+			deviceApi.getProjectTrebleSupportVerticalScreenSplitForProp(),
 		);
-		if (getProjectTrebleSupoortVerticalScreenSplitRes && getProjectTrebleSupoortVerticalScreenSplitRes === 'true') {
+		if (getProjectTrebleSupportVerticalScreenSplitRes && getProjectTrebleSupportVerticalScreenSplitRes === 'true') {
 			isSupportProp.value = true;
 		} else {
 			isSupportProp.value = false;

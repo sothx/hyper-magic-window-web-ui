@@ -35,11 +35,11 @@ export function useProjectTrebleCvwFull() {
 
 	const isInit = ref<boolean>(false);
 
-	type DesktopModeType  = 'DefaultDesktopMode' | 'MiuiDesktopMode'
+	type DesktopModeType = 'DefaultDesktopMode' | 'MiuiDesktopMode';
 
-    const isSupport = computed(() => {
-        return isProjectTrebleSupport.value && currentVerison.value >= 2;
-    })
+	const isSupport = computed(() => {
+		return isProjectTrebleSupport.value && currentVerison.value >= 2;
+	});
 
 	const changeEnableMode = async (switchMode: boolean, desktopMode: DesktopModeType) => {
 		const [negativeRes, positiveRes] = await $to(
@@ -55,7 +55,7 @@ export function useProjectTrebleCvwFull() {
 									{switchMode ? '启用' : '禁用'}{' '}
 									<span
 										class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
-										{ desktopMode === 'DefaultDesktopMode' ? '普通桌面无极小窗' : '工作台无极小窗' }
+										{desktopMode === 'DefaultDesktopMode' ? '普通桌面无极小窗' : '工作台无极小窗'}
 									</span>{' '}
 									后，
 									{switchMode
@@ -85,7 +85,10 @@ export function useProjectTrebleCvwFull() {
 			}),
 		);
 		if (positiveRes) {
-			const currentApi = desktopMode === 'DefaultDesktopMode' ? deviceApi.changeProjectTrebleCvwFullDefaultDesktopEnable : deviceApi.changeProjectTrebleCvwFullGlobalEnable
+			const currentApi =
+				desktopMode === 'DefaultDesktopMode'
+					? deviceApi.changeProjectTrebleCvwFullDefaultDesktopEnable
+					: deviceApi.changeProjectTrebleCvwFullGlobalEnable;
 			currentApi(switchMode ? 1 : 0)
 				.then(res => {
 					if (desktopMode === 'DefaultDesktopMode') {
@@ -99,7 +102,9 @@ export function useProjectTrebleCvwFull() {
 						preset: 'dialog',
 						content: () => (
 							<p>
-								好耶w，已经成功{switchMode ? '启用' : '禁用'}${desktopMode === 'DefaultDesktopMode' ? '普通桌面' : '工作台'}模式下的无极小窗~实际生效还需要重启{' '}
+								好耶w，已经成功{switchMode ? '启用' : '禁用'}$
+								{desktopMode === 'DefaultDesktopMode' ? '普通桌面' : '工作台'}
+								模式下的无极小窗~实际生效还需要重启{' '}
 								<span class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
 									系统界面
 								</span>{' '}
@@ -154,10 +159,10 @@ export function useProjectTrebleCvwFull() {
 			currentVerison.value = 1;
 		}
 		if (currentVerison.value >= 2) {
-            const [, getProjectTrebleSupoortCvwFullForPropRes] = await $to<string, string>(
-				deviceApi.getProjectTrebleSupoortCvwFullForProp(),
+			const [, getProjectTrebleSupportCvwFullForPropRes] = await $to<string, string>(
+				deviceApi.getProjectTrebleSupportCvwFullForProp(),
 			);
-            if (getProjectTrebleSupoortCvwFullForPropRes && getProjectTrebleSupoortCvwFullForPropRes === 'true') {
+			if (getProjectTrebleSupportCvwFullForPropRes && getProjectTrebleSupportCvwFullForPropRes === 'true') {
 				isProjectTrebleSupport.value = true;
 			} else {
 				isProjectTrebleSupport.value = false;
@@ -173,7 +178,7 @@ export function useProjectTrebleCvwFull() {
 			} else {
 				isGlobalEnable.value = false;
 			}
-            const [, getProjectTrebleCvwFullDefaultDesktopEnableRes] = await $to<string, string>(
+			const [, getProjectTrebleCvwFullDefaultDesktopEnableRes] = await $to<string, string>(
 				deviceApi.getProjectTrebleCvwFullDefaultDesktopEnable(),
 			);
 			if (
@@ -199,7 +204,7 @@ export function useProjectTrebleCvwFull() {
 		currentVerison,
 		isSupport,
 		isGlobalEnable,
-        isDefaultDesktopEnable,
+		isDefaultDesktopEnable,
 		changeEnableMode,
 		isInit,
 		loading,

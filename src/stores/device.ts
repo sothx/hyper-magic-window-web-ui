@@ -491,10 +491,10 @@ export const useDeviceStore = defineStore(
 				miuiCompatEnable.value = true;
 			}
 			// 移植包是否兼容应用横屏布局服务异常修复
-			const [, getProjectTrebleSupoortMagicWindowFixRes] = await $to<string, string>(
-				deviceApi.getProjectTrebleSupoortMagicWindowFix(),
+			const [, getProjectTrebleSupportMagicWindowFixRes] = await $to<string, string>(
+				deviceApi.getProjectTrebleSupportMagicWindowFix(),
 			);
-			if (getProjectTrebleSupoortMagicWindowFixRes && getProjectTrebleSupoortMagicWindowFixRes === 'true') {
+			if (getProjectTrebleSupportMagicWindowFixRes && getProjectTrebleSupportMagicWindowFixRes === 'true') {
 				projectTrebleSupportMagicWindowFix.value = true;
 			}
 			// const [, getMiuiAppCompatEnableRes] = await $to(deviceApi.getMiuiAppCompatEnable());
