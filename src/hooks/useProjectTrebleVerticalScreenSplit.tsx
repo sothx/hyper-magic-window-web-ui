@@ -82,7 +82,7 @@ export function useProjectTrebleVerticalScreenSplit() {
 					<div class='my-8'>
 						{NButtonTemplate &&
 							NButtonTemplate('通过 移动网盘 下载', 'info', () => {
-								navigator.clipboard.writeText(`https://yun.139.com/shareweb/#/w/i/2qieog1Xypz11`);
+								navigator.clipboard.writeText(`https://yun.139.com/shareweb/#/w/i/2v3EzdcAAyc5b`);
 								deviceApi.openChinaMobileMCloud();
 							})}
 					</div>

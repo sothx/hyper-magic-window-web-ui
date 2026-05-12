@@ -2177,6 +2177,21 @@ export const openGameEngineLauncherActivity = (): Promise<string> => {
 	);
 };
 
+export const openXiaomiWinplayLauncherActivity = (): Promise<string> => {
+	const shellCommon = `am start -n com.xiaomi.winplay/com.xiaomi.winplay.PrepareActivity -d winplay://opensteam?appid=0`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`am start command executed successfully.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
 export const getHasGameBoosterDataBase = (): Promise<string> => {
 	const shellCommon = `ls /data/data/com.miui.securitycenter/databases/gamebooster.db &>/dev/null && echo "exists" || echo "not exists"`;
 	return handlePromiseWithLogging(
@@ -2969,7 +2984,7 @@ export const getModuleUpdateMsg = async (url: string): Promise<ModuleUpdateInfo>
 				versionCode: 999999,
 				zipUrl: 'https://github.com/sothx/mipad-magic-window/releases/download/2.12.23/pad-ext-2.12.23.zip',
 				changelog: 'https://hyper-magic-window-module-update.sothx.com/release/V10/changelog.md',
-				chinaMobileMCloudUrl: 'https://yun.139.com/shareweb/#/w/i/2qieog1Xypz11',
+				chinaMobileMCloudUrl: 'https://yun.139.com/shareweb/#/w/i/2v3EzdcAAyc5b',
 			});
 		} else {
 			const [getUpdateMsgErr, getUpdateMsgRes] = await $to(axios.get(url));
@@ -2989,7 +3004,7 @@ export const getModuleChangelog = async (url: string): Promise<string> => {
 
 为了确保模块的稳定性，Github推送的版本通常会晚几个版本，如需获取最新版本可以前往网盘获取：
 
-链接: [https://yun.139.com/shareweb/#/w/i/2qieog1Xypz11](https://yun.139.com/shareweb/#/w/i/2qieog1Xypz11)
+链接: [https://yun.139.com/shareweb/#/w/i/2v3EzdcAAyc5b](https://yun.139.com/shareweb/#/w/i/2v3EzdcAAyc5b)
 
 
 本次更新内容:
