@@ -201,6 +201,36 @@ export const removeIsPatchMode = (): Promise<string> => {
 	);
 };
 
+export const getHasWinplayConf = (): Promise<string> => {
+	const shellCommon = `ls /data/user/0/com.xiaomi.winplay/files/cloud/winplay.conf &>/dev/null && echo "exists" || echo "not exists"`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`exists`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : stdout === 'exists' ? resolve(stdout) : reject(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const hasWinPlayWhiteListConfig = (): Promise<string> => {
+  const shellCommon = `grep -q "^whitelist:" /data/user/0/com.xiaomi.winplay/files/cloud/winplay.conf && echo "Winplay whitelist configuration exists." || echo "Winplay whitelist configuration does not exist."`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`Winplay whitelist configuration exists.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
 export const removeWinplayWhiteListConfig = (): Promise<string> => {
 	const shellCommon = `sed -i '/^whitelist=/d' //data/user/0/com.xiaomi.winplay/files/cloud/winplay.conf && echo "Remove whitelist successfully." || echo "Remove whitelist failed."`;
 	return handlePromiseWithLogging(

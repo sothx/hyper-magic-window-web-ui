@@ -41,9 +41,15 @@ export function useXiaomiWinPlay() {
 
 	const XiaomiWinPlayIsInstalled = ref<boolean>(false);
 
+	const hasWinPlayConf = ref<boolean>(false);
+
+	const hasWinPlayWhiteListConfig = ref<boolean>(false);
+
 	const loading = ref<boolean>(true);
 
 	const isInit = ref<boolean>(false);
+
+	const openWinPlay = async () => {};
 
 	const fetchData = async () => {
 		const [, getXiaomiWinPlayIsInstalledRes] = await $to<string, string>(deviceApi.getXiaomiWinPlayIsInstalled());
@@ -52,6 +58,28 @@ export function useXiaomiWinPlay() {
 		} else {
 			XiaomiWinPlayIsInstalled.value = false;
 		}
+		// 如果WinPlay已安装，检测是否存在配置文件,记录保存值
+		if (XiaomiWinPlayIsInstalled.value) {
+			const [, getHasWinplayConfRes] = await $to<string, string>(deviceApi.getHasWinplayConf());
+			if (getHasWinplayConfRes && getHasWinplayConfRes === 'exists') {
+				hasWinPlayConf.value = true;
+			} else {
+				hasWinPlayConf.value = false;
+			}
+		}
+		// 如果WinPlay配置文件存在，判断是否存在白名单配置
+		if (hasWinPlayConf.value) {
+			const [, hasWinPlayWhiteListConfigRes] = await $to<string, string>(deviceApi.hasWinPlayWhiteListConfig());
+			if (
+				hasWinPlayWhiteListConfigRes &&
+				hasWinPlayWhiteListConfigRes === '"Winplay whitelist configuration exists.'
+			) {
+				hasWinPlayWhiteListConfig.value = true;
+			} else {
+				hasWinPlayWhiteListConfig.value = false;
+			}
+		}
+		// 移植包适配Winplay版本号记录
 		const [, getProjectTrebleWinplayVersionRes] = await $to<string, string>(
 			deviceApi.getProjectTrebleWinplayVersion(),
 		);
@@ -80,6 +108,9 @@ export function useXiaomiWinPlay() {
 
 	return {
 		XiaomiWinPlayIsInstalled,
+		openWinPlay,
+		hasWinPlayConf,
+		hasWinPlayWhiteListConfig,
 		isSupportProjectTreble,
 		ProjectTrebleCurrentVerison,
 		isInit,
