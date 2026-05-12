@@ -201,6 +201,21 @@ export const removeIsPatchMode = (): Promise<string> => {
 	);
 };
 
+export const removeWinplayWhiteListConfig = (): Promise<string> => {
+	const shellCommon = `sed -i '/^whitelist=/d' //data/user/0/com.xiaomi.winplay/files/cloud/winplay.conf && echo "Remove whitelist successfully." || echo "Remove whitelist failed."`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`Remove whitelist successfully.`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
 export const getIsPatchMode = (): Promise<string> => {
 	const shellCommon = `grep 'is_patch_mode=' /data/adb/Hyper_MagicWindow/config.prop | awk -F'=' '{print $2}'`;
 	return handlePromiseWithLogging(

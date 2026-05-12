@@ -220,7 +220,9 @@ const enhanceList: EnhanceItemInfo[] = [
 						type='info'
 						secondary
 						loading={deviceStore.loading}
-						onClick={() => deviceApi.openGameEngineLauncherActivity()}>
+            onClick={() => {
+              message.error('未上线，请等待后续更新')
+            }}>
 						{{
 							icon: () => <img src='/images/icons/win_play_mobile.webp' />,
 							default: () => <>启动 PC游戏引擎</>,
