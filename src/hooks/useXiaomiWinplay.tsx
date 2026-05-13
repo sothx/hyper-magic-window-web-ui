@@ -183,7 +183,7 @@ export function useXiaomiWinPlay() {
 			deviceApi
 				.copyXiaomiWinPlayCloudConfig()
 				.then(res => {
-					hasWinPlayWhiteListConfig.value = true;
+					hasWinPlayConf.value = true;
 					modal.create({
 						title: '操作成功',
 						type: 'success',
@@ -276,7 +276,7 @@ export function useXiaomiWinPlay() {
 			const [, hasWinPlayWhiteListConfigRes] = await $to<string, string>(deviceApi.hasWinPlayWhiteListConfig());
 			if (
 				hasWinPlayWhiteListConfigRes &&
-				hasWinPlayWhiteListConfigRes === '"Winplay whitelist configuration exists.'
+				hasWinPlayWhiteListConfigRes === 'Winplay whitelist configuration exists.'
 			) {
 				hasWinPlayWhiteListConfig.value = true;
 			} else {
