@@ -3447,7 +3447,7 @@ export const getXiaomiWinPlayIsInstalled = (): Promise<string> => {
 };
 
 export const copyXiaomiWinPlayCloudConfig = (): Promise<string> => {
-  const winplayCloudConfig = `/data/adb/modules/Hyper_MagicWindow/source/winplay/*`
+  const winplayCloudConfig = `/data/adb/modules/Hyper_MagicWindow/common/source/winplay/*`
   const winplayDataFiles = `/data/user/0/com.xiaomi.winplay/files/`
   const shellCommon = `
     mkdir -p ${winplayDataFiles} && \
