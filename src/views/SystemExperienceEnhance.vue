@@ -221,7 +221,7 @@ const enhanceList: EnhanceItemInfo[] = [
 						secondary
 						loading={deviceStore.loading}
             onClick={() => {
-              message.error('未上线，请等待后续更新')
+              xiaomiWinplayHook.openWinPlay();
             }}>
 						{{
 							icon: () => <img src='/images/icons/win_play_mobile.webp' />,

@@ -3446,6 +3446,27 @@ export const getXiaomiWinPlayIsInstalled = (): Promise<string> => {
 	);
 };
 
+export const copyXiaomiWinPlayCloudConfig = (): Promise<string> => {
+  const winplayCloudConfig = `/data/adb/modules/Hyper_MagicWindow/source/winplay/*`
+  const winplayDataFiles = `/data/user/0/com.xiaomi.winplay/files/`
+  const shellCommon = `
+    mkdir -p ${winplayDataFiles} && \
+    cp -rf ${winplayCloudConfig} ${winplayDataFiles} && \
+    chmod -R 755 ${winplayDataFiles} || 'success'
+  `
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve('success');
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : stdout === 'success' ? resolve(stdout) : reject(stdout);
+			}
+		}),
+		shellCommon,
+	);
+};
+
 export const getProjectTrebleSupportVerticalScreenSplitForSettings = (): Promise<string> => {
 	const shellCommon = `settings get system sothx_project_treble_vertical_screen_split_enable`;
 	return handlePromiseWithLogging(
