@@ -242,6 +242,38 @@ const enhanceList: EnhanceItemInfo[] = [
         deviceStore.androidTargetSdk >= 36 &&
         xiaomiWinplayHook.XiaomiWinPlayIsInstalled.value
 			),
+  },
+  	{
+		title: 'WinPlay Mobile',
+		content: () => (
+			<>
+				<div>
+					<n-button
+						size='small'
+						type='info'
+						secondary
+						loading={deviceStore.loading}
+						onClick={() => deviceApi.openGameEngineLauncherActivity()}>
+						{{
+							icon: () => <img src='/images/icons/win_play_mobile.webp' />,
+							default: () => <>WinPlay Mobile</>,
+						}}
+					</n-button>
+				</div>
+				<n-alert class='mt-5' type='info' show-icon={false} bordered={false}>
+					<p>「WinPlay Mobile」是为小米平板量身定做的「游戏虚拟机」，可以运行市面上常见的 Windows 游戏。</p>
+					<p> Hyper OS2起支持 小米平板6S Pro， 基于Android 15的 HyperHyper OS3支持小米平板6 Pro 和小米平板6 Max ~</p>
+					<p>该功能依赖「AI百宝箱」和「WAE Display」，请确保已经安装这两个系统应用，可以自行前往「精选应用」下载~</p>
+				</n-alert>
+			</>
+		),
+		isShow: () =>
+			Boolean(
+				deviceStore.MIOSVersion &&
+					deviceStore.MIOSVersion >= 2 &&
+					deviceStore.androidTargetSdk === 35 &&
+					deviceStore.deviceType === 'tablet',
+			),
 	},
 	{
 		title: '游戏模式（水龙）',
@@ -1526,38 +1558,6 @@ const enhanceList: EnhanceItemInfo[] = [
 				)}
 			</>
 		),
-	},
-	{
-		title: 'WinPlay Mobile',
-		content: () => (
-			<>
-				<div>
-					<n-button
-						size='small'
-						type='info'
-						secondary
-						loading={deviceStore.loading}
-						onClick={() => deviceApi.openGameEngineLauncherActivity()}>
-						{{
-							icon: () => <img src='/images/icons/win_play_mobile.webp' />,
-							default: () => <>WinPlay Mobile</>,
-						}}
-					</n-button>
-				</div>
-				<n-alert class='mt-5' type='info' show-icon={false} bordered={false}>
-					<p>「WinPlay Mobile」是为小米平板量身定做的「游戏虚拟机」，可以运行市面上常见的 Windows 游戏。</p>
-					<p>OS2起支持 小米平板6S Pro， OS3起支持小米平板6 Pro 和小米平板6 Max ~</p>
-					<p>该功能依赖「AI百宝箱」和「WAE Display」，请确保已经安装这两个系统应用，可以自行前往「精选应用」下载~</p>
-				</n-alert>
-			</>
-		),
-		isShow: () =>
-			Boolean(
-				deviceStore.MIOSVersion &&
-					deviceStore.MIOSVersion >= 2 &&
-					deviceStore.androidTargetSdk === 35 &&
-					deviceStore.deviceType === 'tablet',
-			),
 	},
 	{
 		title: '强制屏幕最低亮度',
