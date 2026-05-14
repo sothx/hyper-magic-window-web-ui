@@ -1,4 +1,3 @@
-export type DxvkMiConfigJson = Record<string, Record<string, string>>;
 
 export function jsonToConf(data: any[]): string {
   return data
