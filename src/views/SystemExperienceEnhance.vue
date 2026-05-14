@@ -207,7 +207,7 @@ export interface EnhanceItemInfo {
 	isShow?: () => boolean;
 }
 const enhanceList: EnhanceItemInfo[] = [
-  	{
+	{
 		title: (titleText: string) => (
 			<>{`${titleText}${xiaomiWinplayHook.isSupportProjectTreble.value ? `（移植包）` : ``}`}</>
 		),
@@ -220,9 +220,9 @@ const enhanceList: EnhanceItemInfo[] = [
 						type='info'
 						secondary
 						loading={deviceStore.loading}
-            onClick={() => {
-              xiaomiWinplayHook.openWinPlay();
-            }}>
+						onClick={() => {
+							xiaomiWinplayHook.openWinPlay();
+						}}>
 						{{
 							icon: () => <img src='/images/icons/win_play_mobile.webp' />,
 							default: () => <>启动 PC游戏引擎</>,
@@ -231,7 +231,41 @@ const enhanceList: EnhanceItemInfo[] = [
 				</div>
 				<n-alert class='mt-5' type='info' show-icon={false} bordered={false}>
 					<p>「PC游戏引擎」是为小米平板和手机量身定做的「游戏虚拟机」，可以运行市面上常见的 Windows 游戏。</p>
-					<p>目前仅部分支持部分机型和移植包，不支持该功能的机型即使自行安装apk也无法使用。</p>
+					<p>该功能受小米云控管理，为确保使用稳定性，建议「禁用云控管理」</p>
+				</n-alert>
+				<n-alert class='mt-5' type='success' show-icon={false} bordered={false}>
+					<p>
+						「PC游戏引擎」受小米云控配置管理，为确保清除游戏白名单的使用稳定性，建议「禁用云控管理」，之后您也可以随时恢复「云控管理」，恢复后每次启动「PC游戏引擎」将会重新尝试获取最新云控配置。
+					</p>
+					<n-switch
+						class='mt-2'
+						onUpdateValue={(value: boolean) => amktiaoHook.changeGameMode(value)}
+						railStyle={railStyle}
+						disabled={!deviceStore.showThirdPartySetting.amktiaoROMInterface}
+						value={amktiaoHook.currentGameMode.value ? true : false}
+						loading={deviceStore.loading}>
+						{{
+							checked: () => '已禁用云控管理',
+							unchecked: () => '未禁用云控管理',
+						}}
+					</n-switch>
+				</n-alert>
+				<n-alert class='mt-5' type='info' show-icon={false} bordered={false}>
+					<p>您可以随时从这里编辑「PC游戏引擎」的「云控配置」，对白名单外的游戏添加配置优化参数。</p>
+					<n-button
+						size='small'
+            type='info'
+            class="mt-2"
+						secondary
+						loading={deviceStore.loading}
+						onClick={() => {
+							xiaomiWinplayHook.openWinPlay();
+						}}>
+						{{
+							icon: () => <img src='/images/icons/win_play_mobile.webp' />,
+							default: () => <>编辑 PC游戏引擎 云控配置</>,
+						}}
+					</n-button>
 				</n-alert>
 			</>
 		),
@@ -239,11 +273,11 @@ const enhanceList: EnhanceItemInfo[] = [
 			Boolean(
 				deviceStore.MIOSVersion &&
 					deviceStore.MIOSVersion >= 3 &&
-        deviceStore.androidTargetSdk >= 36 &&
-        xiaomiWinplayHook.XiaomiWinPlayIsInstalled.value
+					deviceStore.androidTargetSdk >= 36 &&
+					xiaomiWinplayHook.XiaomiWinPlayIsInstalled.value,
 			),
-  },
-  	{
+	},
+	{
 		title: 'WinPlay Mobile',
 		content: () => (
 			<>
@@ -262,8 +296,15 @@ const enhanceList: EnhanceItemInfo[] = [
 				</div>
 				<n-alert class='mt-5' type='info' show-icon={false} bordered={false}>
 					<p>「WinPlay Mobile」是为小米平板量身定做的「游戏虚拟机」，可以运行市面上常见的 Windows 游戏。</p>
-					<p> Hyper OS2起支持 小米平板6S Pro， 基于Android 15的 HyperHyper OS3支持小米平板6 Pro 和小米平板6 Max ~</p>
-					<p>该功能依赖「AI百宝箱」和「WAE Display」，请确保已经安装这两个系统应用，可以自行前往「精选应用」下载~</p>
+					<p>
+						{' '}
+						Hyper OS2起支持 小米平板6S Pro， 基于Android 15的 HyperHyper OS3支持小米平板6 Pro 和小米平板6
+						Max ~
+					</p>
+					<p>
+						该功能依赖「AI百宝箱」和「WAE
+						Display」，请确保已经安装这两个系统应用，可以自行前往「精选应用」下载~
+					</p>
 				</n-alert>
 			</>
 		),
@@ -588,8 +629,8 @@ const enhanceList: EnhanceItemInfo[] = [
 			</>
 		),
 		isShow: () => ['tablet'].includes(deviceStore.deviceType) && amktiaoHook.isInit.value,
-  },
-  
+	},
+
 	{
 		title: '小米超级岛',
 		content: () => (
@@ -651,7 +692,7 @@ const enhanceList: EnhanceItemInfo[] = [
 							</div>
 						</n-alert>
 					)}
-					{(
+					{
 						<n-alert class='mt-5' type='info' show-icon={false} bordered={false}>
 							<div>
 								<p>
@@ -672,7 +713,7 @@ const enhanceList: EnhanceItemInfo[] = [
 								</n-switch>
 							</div>
 						</n-alert>
-					)}
+					}
 				</>
 			);
 		},
@@ -2173,8 +2214,8 @@ const enhanceList: EnhanceItemInfo[] = [
 				</n-alert>
 			</>
 		),
-  },
-  {
+	},
+	{
 		title: 'GPU驱动缓存清理',
 		content: () => (
 			<>
@@ -2191,9 +2232,7 @@ const enhanceList: EnhanceItemInfo[] = [
 				</n-button>
 
 				<n-alert class='mt-5' type='error' show-icon={false} bordered={false}>
-					<p>
-						通常用于在安装GPU驱动之前，清理GPU驱动的缓存，避免潜在的问题
-					</p>
+					<p>通常用于在安装GPU驱动之前，清理GPU驱动的缓存，避免潜在的问题</p>
 				</n-alert>
 			</>
 		),

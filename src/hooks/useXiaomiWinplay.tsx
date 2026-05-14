@@ -47,17 +47,17 @@ export function useXiaomiWinPlay() {
 
 	const loading = ref<boolean>(true);
 
+	const isLockWinPlayConfig = ref<boolean>(false);
+
 	const isInit = ref<boolean>(false);
 
 	const openWinPlay = async () => {
-		// 只要不是移植包，每次点击都应该检测一下云控配置是否存在
-		if (!isSupportProjectTreble.value) {
-			const [, getHasWinplayConfRes] = await $to<string, string>(deviceApi.getHasWinplayConf());
-			if (getHasWinplayConfRes && getHasWinplayConfRes === 'exists') {
-				hasWinPlayConf.value = true;
-			} else {
-				hasWinPlayConf.value = false;
-			}
+		// 每次点击都应该检测一下云控配置是否存在
+		const [, getHasWinplayConfRes] = await $to<string, string>(deviceApi.getHasWinplayConf());
+		if (getHasWinplayConfRes && getHasWinplayConfRes === 'exists') {
+			hasWinPlayConf.value = true;
+		} else {
+			hasWinPlayConf.value = false;
 		}
 		// WinPlay未被初始化
 		if (!hasWinPlayConf.value) {
@@ -271,8 +271,9 @@ export function useXiaomiWinPlay() {
 				hasWinPlayConf.value = false;
 			}
 		}
-		// 如果WinPlay配置文件存在，判断是否存在白名单配置
+		// 如果WinPlay配置文件存在
 		if (hasWinPlayConf.value) {
+			// 判断是否存在白名单配置
 			const [, hasWinPlayWhiteListConfigRes] = await $to<string, string>(deviceApi.hasWinPlayWhiteListConfig());
 			if (
 				hasWinPlayWhiteListConfigRes &&
@@ -281,6 +282,13 @@ export function useXiaomiWinPlay() {
 				hasWinPlayWhiteListConfig.value = true;
 			} else {
 				hasWinPlayWhiteListConfig.value = false;
+			}
+			// 判断权限情况
+			const [, getWinplayConfAuth] = await $to<string, string>(deviceApi.getWinplayConfAuth());
+			if (getWinplayConfAuth && getWinplayConfAuth === '444') {
+				isLockWinPlayConfig.value = true;
+			} else {
+				isLockWinPlayConfig.value = false;
 			}
 		}
 		// 移植包适配Winplay版本号记录

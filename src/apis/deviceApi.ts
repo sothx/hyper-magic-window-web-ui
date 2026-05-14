@@ -216,6 +216,52 @@ export const getHasWinplayConf = (): Promise<string> => {
 	);
 };
 
+export const getWinplayConfAuth = (): Promise<string> => {
+	const shellCommon = `stat -c "%a" /data/user/0/com.xiaomi.winplay/files/cloud/winplay.conf`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`444`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout)
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const setWinplayCloudConf = (auth: number): Promise<string> => {
+    const winplayDataCloudFiles = `/data/user/0/com.xiaomi.winplay/files/cloud/`
+	const shellCommon = `chmod -R ${auth} ${winplayDataCloudFiles}`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`success`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout)
+			}
+		}),
+		shellCommon,
+	);
+};
+
+export const setWinplayConfAuth = (): Promise<string> => {
+	const shellCommon = `stat -c "%a" /data/user/0/com.xiaomi.winplay/files/cloud/winplay.conf`;
+	return handlePromiseWithLogging(
+		new Promise(async (resolve, reject) => {
+			if (import.meta.env.MODE === 'development') {
+				resolve(`444`);
+			} else {
+				const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+				errno ? reject(stderr) : resolve(stdout)
+			}
+		}),
+		shellCommon,
+	);
+};
+
 export const hasWinPlayWhiteListConfig = (): Promise<string> => {
   const shellCommon = `grep -q "whitelist:" /data/user/0/com.xiaomi.winplay/files/cloud/winplay.conf && echo "Winplay whitelist configuration exists." || echo "Winplay whitelist configuration does not exist."`;
 	return handlePromiseWithLogging(
@@ -3452,7 +3498,7 @@ export const copyXiaomiWinPlayCloudConfig = (): Promise<string> => {
   const shellCommon = `
     mkdir -p ${winplayDataCloudFiles} && \
     cp -rf ${winplayCloudConfig} ${winplayDataCloudFiles} && \
-    chmod -R 777 ${winplayDataCloudFiles}
+    chmod -R 444 ${winplayDataCloudFiles}
   `
 	return handlePromiseWithLogging(
 		new Promise(async (resolve, reject) => {
