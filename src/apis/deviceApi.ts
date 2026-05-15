@@ -4483,7 +4483,7 @@ export const getMiIslandProp = (): Promise<string> => {
   return handlePromiseWithLogging(
     new Promise(async (resolve, reject) => {
       if (import.meta.env.MODE === 'development') {
-        resolve('true');
+        resolve('false');
       } else {
         const { errno, stdout, stderr }: ExecResults = (await exec(shellCommon)) as unknown as ExecResults;
         errno ? reject(stderr) : resolve(stdout);
@@ -4508,8 +4508,8 @@ export const changeMiIslandProp = (mode: boolean): Promise<string> => {
   );
 };
 
-export const getIsMiIsLandAutoTask = (): Promise<string> => {
-  const shellCommon = `grep 'is_mi_island_auto_task=' /data/adb/Hyper_MagicWindow/config.prop | awk -F'=' '{print $2}'`;
+export const getIsMiIsLandAutoEnableTask = (): Promise<string> => {
+  const shellCommon = `grep 'is_mi_island_auto_enable_task=' /data/adb/Hyper_MagicWindow/config.prop | awk -F'=' '{print $2}'`;
   return handlePromiseWithLogging(
     new Promise(async (resolve, reject) => {
       if (import.meta.env.MODE === 'development') {
@@ -4523,8 +4523,8 @@ export const getIsMiIsLandAutoTask = (): Promise<string> => {
   );
 };
 
-export const addIsMiIsLandAutoTask = (): Promise<string> => {
-  const shellCommon = `grep -q '^is_mi_island_auto_task=' /data/adb/Hyper_MagicWindow/config.prop || (source ${toolsFunc} && add_lines "is_mi_island_auto_task=true" /data/adb/Hyper_MagicWindow/config.prop && echo "Command executed successfully." || echo "Command failed.");`;
+export const addIsMiIsLandAutoEnableTask = (): Promise<string> => {
+  const shellCommon = `grep -q '^is_mi_island_auto_enable_task=' /data/adb/Hyper_MagicWindow/config.prop || (source ${toolsFunc} && add_lines "is_mi_island_auto_enable_task=true" /data/adb/Hyper_MagicWindow/config.prop && echo "Command executed successfully." || echo "Command failed.");`;
   return handlePromiseWithLogging(
     new Promise(async (resolve, reject) => {
       if (import.meta.env.MODE === 'development') {
@@ -4538,15 +4538,60 @@ export const addIsMiIsLandAutoTask = (): Promise<string> => {
   );
 };
 
-export const removeIsMiIsLandAutoTask = (): Promise<string> => {
-  const shellCommon = `sed -i '/^is_mi_island_auto_task=/d' //data/adb/Hyper_MagicWindow/config.prop && echo "Remove is_mi_island_auto_task successfully." || echo "Remove is_mi_island_auto_task failed."`;
+export const removeIsMiIsLandAutoEnableTask = (): Promise<string> => {
+  const shellCommon = `sed -i '/^is_mi_island_auto_enable_task=/d' //data/adb/Hyper_MagicWindow/config.prop && echo "Remove is_mi_island_auto_enable_task successfully." || echo "Remove is_mi_island_auto_enable_task failed."`;
   return handlePromiseWithLogging(
     new Promise(async (resolve, reject) => {
       if (import.meta.env.MODE === 'development') {
-        resolve(`Remove is_mi_island_auto_task successfully.`);
+        resolve(`Remove is_mi_island_auto_enable_task successfully.`);
       } else {
         const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
         errno ? reject(stderr) : resolve(stdout);
+      }
+    }),
+    shellCommon,
+  );
+};
+
+export const removeIsMiIsLandAutoDisableTask = (): Promise<string> => {
+  const shellCommon = `sed -i '/^is_mi_island_auto_disable_task=/d' //data/adb/Hyper_MagicWindow/config.prop && echo "Remove is_mi_island_auto_disable_task successfully." || echo "Remove is_mi_island_auto_disable_task failed."`;
+  return handlePromiseWithLogging(
+    new Promise(async (resolve, reject) => {
+      if (import.meta.env.MODE === 'development') {
+        resolve(`Remove is_mi_island_auto_disable_task successfully.`);
+      } else {
+        const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+        errno ? reject(stderr) : resolve(stdout);
+      }
+    }),
+    shellCommon,
+  );
+};
+
+export const getIsMiIsLandAutoDisableTask = (): Promise<string> => {
+  const shellCommon = `grep 'is_mi_island_auto_disable_task=' /data/adb/Hyper_MagicWindow/config.prop | awk -F'=' '{print $2}'`;
+  return handlePromiseWithLogging(
+    new Promise(async (resolve, reject) => {
+      if (import.meta.env.MODE === 'development') {
+        resolve(`true`);
+      } else {
+        const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+        errno ? reject(stderr) : resolve(stdout);
+      }
+    }),
+    shellCommon,
+  );
+};
+
+export const addIsMiIsLandAutoDisableTask = (): Promise<string> => {
+  const shellCommon = `grep -q '^is_mi_island_auto_disable_task=' /data/adb/Hyper_MagicWindow/config.prop || (source ${toolsFunc} && add_lines "is_mi_island_auto_disable_task=true" /data/adb/Hyper_MagicWindow/config.prop && echo "Command executed successfully." || echo "Command failed.");`;
+  return handlePromiseWithLogging(
+    new Promise(async (resolve, reject) => {
+      if (import.meta.env.MODE === 'development') {
+        resolve(`Command executed successfully.`);
+      } else {
+        const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+        errno ? reject(stderr) : stdout === 'Command executed successfully.' ? resolve(stdout) : reject(stdout);
       }
     }),
     shellCommon,

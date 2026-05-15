@@ -20,7 +20,8 @@ import { useJoyose } from '@/hooks/useJoyose';
 import { useFbo } from '@/hooks/useFbo';
 import { useProjectTrebleVerticalScreenSplit } from '@/hooks/useProjectTrebleVerticalScreenSplit';
 import { useMiScreenShotsWriteClipboard } from '@/hooks/useMiScreenShotsWriteClipboard';
-import { useMiIsLand } from '@/hooks/useMiIsLand';
+import { useMiIsLandEnable } from '@/hooks/useMiIsLandEnable';
+import { useMiIsLandDisable } from '@/hooks/useMiIsLandDisable';
 import {
 	BoltIcon,
 	CpuChipIcon,
@@ -77,7 +78,8 @@ const xiaomiWinplayHook = useXiaomiWinPlay();
 const oldProjectTrebleCvwFullHook = useOldProjectTrebleCvwFull();
 const projectTrebleCvwFullHook = useProjectTrebleCvwFull();
 const freeformBlackListHook = useFreeformBlackList();
-const miIsLandHook = useMiIsLand();
+const miIsLandEnableHook = useMiIsLandEnable();
+const miIsLandDisableHook = useMiIsLandDisable();
 const projectTrebleDisableResizeBlackListHook = useProjectTrebleDisableResizeBlackList();
 const projectTrebleMaxFreeformCountHook = useProjectTrebleMaxFreeformCount();
 const disabledFreeformBottomCaptionHook = useDisabledFreeformBottomCaption();
@@ -709,19 +711,44 @@ const enhanceList: EnhanceItemInfo[] = [
 		),
 		isShow: () => ['tablet'].includes(deviceStore.deviceType) && amktiaoHook.isInit.value,
 	},
-
 	{
-		title: '小米超级岛',
+		title: '禁用小米超级岛',
 		content: () => (
 			<>
-				{!miIsLandHook.isInit.value ? (
+				{!miIsLandDisableHook.isInit.value ? (
 					<n-skeleton width={80} sharp={false} round size='small' />
 				) : (
 					<n-switch
 						railStyle={railStyle}
-						value={miIsLandHook.isEnable.value ? true : false}
-						loading={deviceStore.loading || miIsLandHook.loading.value}
-						onUpdate:value={(value: boolean) => miIsLandHook.changeEnableMode(value)}>
+						value={miIsLandDisableHook.isDisable.value ? true : false}
+						loading={deviceStore.loading || miIsLandDisableHook.loading.value}
+						onUpdate:value={(value: boolean) => miIsLandDisableHook.changeDisableMode(value)}>
+						{{
+							checked: () => <>已禁用</>,
+							unchecked: () => <>未禁用</>,
+						}}
+					</n-switch>
+				)}
+				<n-alert class='mt-5' type='warning' show-icon={false} bordered={false}>
+					禁用后可以关闭「小米超级岛」，让设备恢复「焦点通知」的显示效果~
+				</n-alert>
+			</>
+		),
+		isShow: () =>
+			Boolean(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 3) && deviceStore.androidTargetSdk >= 36,
+	},
+	{
+		title: '启用小米平板超级岛',
+		content: () => (
+			<>
+				{!miIsLandEnableHook.isInit.value ? (
+					<n-skeleton width={80} sharp={false} round size='small' />
+				) : (
+					<n-switch
+						railStyle={railStyle}
+						value={miIsLandEnableHook.isEnable.value ? true : false}
+						loading={deviceStore.loading || miIsLandEnableHook.loading.value}
+						onUpdate:value={(value: boolean) => miIsLandEnableHook.changeEnableMode(value)}>
 						{{
 							checked: () => <>已启用</>,
 							unchecked: () => <>未启用</>,
@@ -735,6 +762,7 @@ const enhanceList: EnhanceItemInfo[] = [
 		),
 		isShow: () =>
 			Boolean(deviceStore.MIOSVersion && deviceStore.MIOSVersion >= 3) &&
+			deviceStore.androidTargetSdk === 35 &&
 			['tablet'].includes(deviceStore.deviceType),
 	},
 	{
