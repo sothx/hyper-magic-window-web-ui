@@ -1,5 +1,6 @@
 <script setup lang="tsx">
 import { useDeviceStore } from '@/stores/device';
+import WinplayConfDrawer from '@/components/WinplayConfDrawer.vue';
 import { computed, h, onMounted, ref, shallowRef, type CSSProperties } from 'vue';
 import { createDiscreteApi, darkTheme, lightTheme, NInput, type ConfigProviderProps } from 'naive-ui';
 import * as deviceApi from '@/apis/deviceApi';
@@ -55,6 +56,8 @@ import { useGPUCahce } from '../hooks/useGPUCahce';
 import { useXiaomiWinPlay } from '@/hooks/useXiaomiWinplay';
 const deviceStore = useDeviceStore();
 const searchKeyword = ref('');
+type WinplayConfDrawerInstance = InstanceType<typeof WinplayConfDrawer>;
+const winplayConfEditor = ref<WinplayConfDrawerInstance | null>(null);
 const hideGestureLineHook = useHideGestureLine();
 const displayModeRecordHook = useDisplayModeRecord();
 const IOSchedulerHook = useIOScheduler();
@@ -230,8 +233,83 @@ const enhanceList: EnhanceItemInfo[] = [
 					</n-button>
 				</div>
 				<n-alert class='mt-5' type='info' show-icon={false} bordered={false}>
-					<p>「PC游戏引擎」是为小米平板和手机量身定做的「游戏虚拟机」，可以运行市面上常见的 Windows 游戏。</p>
-					<p>该功能受小米云控管理，为确保使用稳定性，建议「禁用云控管理」</p>
+          <p>「PC游戏引擎」是为小米平板和手机量身定做的「游戏虚拟机」，可以运行市面上常见的 Windows 游戏。</p>
+          {
+            xiaomiWinplayHook.hasWinPlayConf.value && (
+					<div>
+						<p>您可以随时从这里编辑「PC游戏引擎」的「云控配置」，对白名单外的游戏添加配置优化参数。</p>
+						<n-button
+							size='small'
+							type='info'
+							class='mt-2'
+							secondary
+							loading={deviceStore.loading}
+							onClick={async () => {
+								if (winplayConfEditor.value) {
+									const [, getWinPlayConfigRes] = await $to<string, string>(
+										deviceApi.getWinPlayConfig(),
+									);
+									if (getWinPlayConfigRes) {
+										const [winplayConfEditorResErr, winplayConfEditorRes] = await $to(
+											winplayConfEditor.value.open(getWinPlayConfigRes),
+										);
+										if (winplayConfEditorResErr) {
+											modal.create({
+												title: '发生错误',
+												type: 'error',
+												preset: 'dialog',
+												content: () => <p>云控数据格式不合法，无法进行编辑，请检查云控数据~</p>,
+												positiveText: '确定',
+											});
+										}
+										if (winplayConfEditorRes?.type === 'submit') {
+											const [writeXiaomiWinPlayCloudConfigErr, writeXiaomiWinPlayCloudConfigRes] =
+												await $to(
+													deviceApi.writeXiaomiWinPlayCloudConfig(winplayConfEditorRes.data),
+												);
+											if (writeXiaomiWinPlayCloudConfigErr) {
+												modal.create({
+													title: '发生错误',
+													type: 'error',
+													preset: 'dialog',
+													content: () => <p>写入云控数据发生错误，请查看错误日志~</p>,
+													positiveText: '确定',
+												});
+											} else {
+												modal.create({
+													title: '写入成功',
+													type: 'success',
+													preset: 'dialog',
+													content: () => (
+														<p>
+															好耶w，已经成功写入PC游戏引擎云控游戏云控配置并禁用云控管理，请重新尝试启动PC游戏引擎~
+														</p>
+													),
+													positiveText: '确定',
+												});
+											}
+										}
+										if (winplayConfEditorRes?.type === 'closed') {
+											console.log('关闭弹窗');
+										}
+									} else {
+										modal.create({
+											title: '发生错误',
+											type: 'error',
+											preset: 'dialog',
+											content: () => <p>配置文件不存在，编辑失败~</p>,
+											positiveText: '确定',
+										});
+									}
+								}
+							}}>
+							{{
+								default: () => <>编辑 PC游戏引擎 云控配置</>,
+							}}
+						</n-button>
+					</div>
+            )
+          }
 				</n-alert>
 				{xiaomiWinplayHook.hasWinPlayConf.value && (
 					<n-alert class='mt-5' type='error' show-icon={false} bordered={false}>
@@ -251,23 +329,6 @@ const enhanceList: EnhanceItemInfo[] = [
 						</n-switch>
 					</n-alert>
 				)}
-				{/* <n-alert class='mt-5' type='info' show-icon={false} bordered={false}>
-					<p>您可以随时从这里编辑「PC游戏引擎」的「云控配置」，对白名单外的游戏添加配置优化参数。</p>
-					<n-button
-						size='small'
-						type='info'
-						class='mt-2'
-						secondary
-						loading={deviceStore.loading}
-						onClick={() => {
-							xiaomiWinplayHook.openWinPlay();
-						}}>
-						{{
-							icon: () => <img src='/images/icons/win_play_mobile.webp' />,
-							default: () => <>编辑 PC游戏引擎 云控配置</>,
-						}}
-					</n-button>
-				</n-alert> */}
 			</>
 		),
 		isShow: () =>
@@ -2622,6 +2683,7 @@ const filteredEnhanceList = computed(() => {
 				</dl>
 			</div>
 		</div>
+		<WinplayConfDrawer ref="winplayConfEditor" />
 	</div>
 </template>
 

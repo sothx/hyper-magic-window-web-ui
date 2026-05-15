@@ -274,7 +274,7 @@ ItTakesTwo.exe:DXVK_CONFIG=dxgi.syncInterval=1;dxvk.tearFree=True;dxgi.maxDevice
 Overcooked2.exe:FEX_X87REDUCEDPRECISION=1
 steamwebhelper.exe:DXVK_MI_HACK_DEFRAG_PLUS=1
 hollow_knight.exe:DXVK_CONFIG=dxgi.syncInterval=1;dxvk.tearFree=True;dxgi.maxDeviceMemory=128;dxgi.maxSharedMemory=4096;dxgi.deferSurfaceCreation=True;d3d9.deferSurfaceCreation=True;dxgi.maxFrameRate=60;
-Hollow Knight Silksong.exe:DXVK_CONFIG=dxgi.syncInterval=1;dxvk.tearFree=True;dxgi.maxDeviceMemory=128;dxgi.maxSharedMemory=4096;dxgi.deferSurfaceCreation=True;d3d9.deferSurfaceCreation=True;dxgi.maxFrameRate=60;@DXVK_MI_HACK_IGNORE_FULLSCREEN=1;
+Hollow Knight Silksong.exe:DXVK_CONFIG=dxgi.syncInterval=1;dxvk.tearFree=True;dxgi.maxDeviceMemory=128;dxgi.maxSharedMemory=4096;dxgi.deferSurfaceCreation=True;d3d9.deferSurfaceCreation=True;dxgi.maxFrameRate=60;@DXVK_MI_HACK_IGNORE_FULLSCREEN=1
 Stardew Valley.exe:DXVK_CONFIG=dxgi.syncInterval=1;dxvk.tearFree=True;dxgi.maxDeviceMemory=128;dxgi.maxSharedMemory=4096;dxgi.deferSurfaceCreation=True;d3d9.deferSurfaceCreation=True;dxgi.maxFrameRate=60;`);
       } else {
         const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
@@ -3542,7 +3542,7 @@ export const copyXiaomiWinPlayCloudConfig = async (): Promise<string> => {
   );
 };
 
-export const mergeXiaomiWinPlayCloudConfig = async (content:string): Promise<string> => {
+export const writeXiaomiWinPlayCloudConfig = async (content:string): Promise<string> => {
   const winplayDataCloudFiles = `/data/user/0/com.xiaomi.winplay/files/cloud/`
   const shellCommon = `
     mkdir -p ${winplayDataCloudFiles} && \

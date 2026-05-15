@@ -14,8 +14,6 @@ import {
 	type NInput,
 } from 'naive-ui';
 import * as deviceApi from '@/apis/deviceApi';
-import { spawn } from '@/utils/kernelsu';
-import { getWinPlayConfig } from '../apis/deviceApi';
 export interface KeyboardModeOptions {
 	label: string;
 	type: string;
@@ -269,7 +267,7 @@ export function useXiaomiWinPlay() {
 			try {
 				const mergeWinplayConfig = winplayHelper.jsonToConf(mergeContent);
 				deviceApi
-					.mergeXiaomiWinPlayCloudConfig(mergeWinplayConfig)
+					.writeXiaomiWinPlayCloudConfig(mergeWinplayConfig)
 					.then(res => {
 						hasWinPlayConf.value = true;
 						isLockWinPlayConfig.value = true;
