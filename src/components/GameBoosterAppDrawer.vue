@@ -130,12 +130,8 @@ const handleSelectGameRatio = (key: string, option: GameRatioOptions) => {
 						<p>
 							自定义游戏比例存在使用风险，如果配置了不恰当的自定义游戏比例，可能会触发部分游戏风控导致游戏账号被封！
 						</p>
-						<p>
-							如仍然坚持使用自定义游戏比例，请前往模块设置导入激活口令激活自定义游戏比例：
-						</p>
-						<p>
-							eNqrVnJ39HWNd/L3Dw5xDYp3Dg0O8feND3IM8fRXsiopKk2tBQC2Pwrm
-						</p>
+						<p>如仍然坚持使用自定义游戏比例，请前往模块设置导入激活口令激活自定义游戏比例：</p>
+						<p>eNqrVnJ39HWNd/L3Dw5xDYp3Dg0O8feND3IM8fRXsiopKk2tBQC2Pwrm</p>
 					</div>
 				),
 			});
@@ -228,7 +224,7 @@ defineExpose({
 	<!-- Drawer -->
 	<n-drawer v-model:show="activeDrawer" :width="deviceStore.windowWidth >= 640 ? `450px` : `100%`" placement="right">
 		<n-drawer-content
-			body-content-class="auto-ui-drawer-content"
+			body-content-class="game-booster-app-drawer-content"
 			:scrollbar-props="{
 				trigger: 'none',
 			}"

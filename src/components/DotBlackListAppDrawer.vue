@@ -171,7 +171,7 @@ defineExpose({
 	<!-- Drawer -->
 	<n-drawer v-model:show="activeDrawer" :width="deviceStore.windowWidth >= 640 ? `450px` : `100%`" placement="right">
 		<n-drawer-content
-			body-content-class="auto-ui-drawer-content"
+			body-content-class="dot-black-list-drawer-content"
 			:scrollbar-props="{
 				trigger: 'none',
 			}"

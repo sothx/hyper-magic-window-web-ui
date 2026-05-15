@@ -107,7 +107,6 @@ const handleDrawerSubmit = async () => {
 	// 开启loading
 	drawerSubmitLoading.value = true;
 
-
 	const closeCallback = () => {
 		drawerSubmitLoading.value = false;
 		activeDrawer.value = false; // 关闭drawer
@@ -126,7 +125,6 @@ const handleDrawerSubmit = async () => {
 
 	resolvePromise(result);
 	loadingCallback();
-
 };
 
 const drawerSubmitLoading = ref<boolean>(false);
@@ -143,7 +141,7 @@ defineExpose({
 	<!-- Drawer -->
 	<n-drawer v-model:show="activeDrawer" width="100%" placement="right">
 		<n-drawer-content
-			body-content-class="auto-ui-drawer-content"
+			body-content-class="embedded-placeholder-drawer-content"
 			:scrollbar-props="{
 				trigger: 'none',
 			}"

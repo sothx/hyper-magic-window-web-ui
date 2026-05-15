@@ -4,7 +4,7 @@ import JsonEditorVue from 'json-editor-vue';
 import { Mode } from 'vanilla-jsoneditor';
 import { useDeviceStore } from '@/stores/device';
 import * as winplayHelper from '@/utils/winplayHelper';
-import 'vanilla-jsoneditor/themes/jse-theme-dark.css'
+import 'vanilla-jsoneditor/themes/jse-theme-dark.css';
 import { createDiscreteApi, darkTheme, lightTheme, type ConfigProviderProps } from 'naive-ui';
 
 const deviceStore = useDeviceStore();
@@ -21,9 +21,7 @@ const jsonData = ref<ConfItem[]>([]);
 // ==============================================
 // 🔥 定义返回结果类型（固定 type，data 可选）
 // ==============================================
-export type EditorResult =
-  | { type: 'submit'; data: string }
-  | { type: 'closed' };
+export type EditorResult = { type: 'submit'; data: string } | { type: 'closed' };
 
 // 🔥 定义 Promise 解析函数类型
 type ResolvePromise = (res: EditorResult) => void;
@@ -63,20 +61,20 @@ function open(confText: string): Promise<EditorResult> {
  * submit
  */
 function submit() {
-  try {
-    if (typeof jsonData.value === 'string') {
-      jsonData.value = JSON.parse(jsonData.value);
-    }
+	try {
+		if (typeof jsonData.value === 'string') {
+			jsonData.value = JSON.parse(jsonData.value);
+		}
 		const result = winplayHelper.jsonToConf(jsonData.value);
 
 		active.value = false;
-    // ✅ 类型完全匹配
-    resolvePromise({
-      type: 'submit',
-      data: result
-    });
-  } catch (e: any) {
-    console.error(e);
+		// ✅ 类型完全匹配
+		resolvePromise({
+			type: 'submit',
+			data: result,
+		});
+	} catch (e: any) {
+		console.error(e);
 		modal.create({
 			title: '发生错误',
 			type: 'error',
@@ -92,8 +90,8 @@ function submit() {
  */
 function close() {
 	active.value = false;
-  // ✅ 类型完全匹配
-  resolvePromise({ type: 'closed' });
+	// ✅ 类型完全匹配
+	resolvePromise({ type: 'closed' });
 }
 
 defineExpose({
@@ -105,8 +103,14 @@ defineExpose({
 
 <template>
 	<n-drawer v-model:show="active" width="100%">
-		<n-drawer-content title="编辑云控配置">
-			<JsonEditorVue :class="[deviceStore.isDarkMode ? 'jse-theme-dark' : '']" :mode="Mode.text" v-model="jsonData" />
+		<n-drawer-content title="编辑云控配置" closable>
+			<JsonEditorVue
+				:class="[deviceStore.isDarkMode ? 'jse-theme-dark' : '', 'w-full', 'h-full']"
+				:scrollbar-props="{
+					trigger: 'none',
+				}"
+				:mode="Mode.text"
+				v-model="jsonData" />
 
 			<template #footer>
 				<n-space justify="end">
