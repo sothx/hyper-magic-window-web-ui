@@ -49,6 +49,11 @@
         "device": "myron,annibale,piano",
         "name": "steamwebhelper.exe",
         "DXVK_MI_HACK_DEFRAG_PLUS": "1"
+      },
+      {
+        "device": "myron,annibale,piano",
+        "name": "ThreefoldRecital.exe",
+        "DXVK_CONFIG": "dxgi.syncInterval=1;dxvk.tearFree=True;dxgi.maxDeviceMemory=128;dxgi.maxSharedMemory=4096;dxgi.deferSurfaceCreation=True;d3d9.deferSurfaceCreation=True;dxgi.maxFrameRate=60;"
       }
     ],
     "steam_whitelist_count": 9,
