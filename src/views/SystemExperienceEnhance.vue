@@ -233,85 +233,100 @@ const enhanceList: EnhanceItemInfo[] = [
 					</n-button>
 				</div>
 				<n-alert class='mt-5' type='info' show-icon={false} bordered={false}>
-          <p>「PC游戏引擎」是为小米平板和手机量身定做的「游戏虚拟机」，可以运行市面上常见的 Windows 游戏。</p>
-          {
-            xiaomiWinplayHook.hasWinPlayConf.value && (
-					<div>
-						<p>您可以随时从这里编辑「PC游戏引擎」的「云控配置」，对白名单外的游戏添加配置优化参数。</p>
-						<n-button
-							size='small'
-							type='info'
-							class='mt-2'
-							secondary
-							loading={deviceStore.loading}
-							onClick={async () => {
-								if (winplayConfEditor.value) {
-									const [, getWinPlayConfigRes] = await $to<string, string>(
-										deviceApi.getWinPlayConfig(),
-									);
-									if (getWinPlayConfigRes) {
-										const [winplayConfEditorResErr, winplayConfEditorRes] = await $to(
-											winplayConfEditor.value.open(getWinPlayConfigRes),
+					<p>「PC游戏引擎」是为小米平板和手机量身定做的「游戏虚拟机」，可以运行市面上常见的 Windows 游戏。</p>
+					{xiaomiWinplayHook.hasWinPlayConf.value && (
+						<div>
+							<p>您可以随时从这里编辑「PC游戏引擎」的「云控配置」，对白名单外的游戏添加配置优化参数。</p>
+							<n-button
+								size='small'
+								type='info'
+								class='mt-2'
+								secondary
+								loading={deviceStore.loading}
+								onClick={async () => {
+									if (winplayConfEditor.value) {
+										const [, getWinPlayConfigRes] = await $to<string, string>(
+											deviceApi.getWinPlayConfig(),
 										);
-										if (winplayConfEditorResErr) {
-											modal.create({
-												title: '发生错误',
-												type: 'error',
-												preset: 'dialog',
-												content: () => <p>云控数据格式不合法，无法进行编辑，请检查云控数据~</p>,
-												positiveText: '确定',
-											});
-										}
-										if (winplayConfEditorRes?.type === 'submit') {
-											const [writeXiaomiWinPlayCloudConfigErr] =
-												await $to(
-													deviceApi.writeXiaomiWinPlayCloudConfig(winplayConfEditorRes.data),
-												);
-											if (writeXiaomiWinPlayCloudConfigErr) {
+										if (getWinPlayConfigRes) {
+											// 判断是否存在白名单配置
+											const [, hasWinPlayWhiteListConfigRes] = await $to<string, string>(
+												deviceApi.hasWinPlayWhiteListConfig(),
+											);
+											if (
+												hasWinPlayWhiteListConfigRes &&
+												hasWinPlayWhiteListConfigRes === 'hasWinPlayWhiteListConfig'
+											) {
+												xiaomiWinplayHook.hasWinPlayWhiteListConfig.value = true;
+											} else {
+												xiaomiWinplayHook.hasWinPlayWhiteListConfig.value = false;
+											}
+											if (xiaomiWinplayHook.hasWinPlayWhiteListConfig.value) {
+												xiaomiWinplayHook.removeWinPlayWhiteListConfig('editWinplayConf');
+												return;
+											}
+											const [winplayConfEditorResErr, winplayConfEditorRes] = await $to(
+												winplayConfEditor.value.open(getWinPlayConfigRes),
+											);
+											if (winplayConfEditorResErr) {
 												modal.create({
 													title: '发生错误',
 													type: 'error',
 													preset: 'dialog',
-													content: () => <p>写入云控数据发生错误，请查看错误日志~</p>,
-													positiveText: '确定',
-												});
-                      } else {
-                        xiaomiWinplayHook.hasWinPlayConf.value = true;
-                        xiaomiWinplayHook.isLockWinPlayConfig.value = true;
-												modal.create({
-													title: '写入成功',
-													type: 'success',
-													preset: 'dialog',
 													content: () => (
-														<p>
-															好耶w，已经成功写入PC游戏引擎云控游戏云控配置并禁用云控管理，请重新尝试启动PC游戏引擎~
-														</p>
+														<p>云控数据格式不合法，无法进行编辑，请检查云控数据~</p>
 													),
 													positiveText: '确定',
 												});
 											}
+											if (winplayConfEditorRes?.type === 'submit') {
+												const [writeXiaomiWinPlayCloudConfigErr] = await $to(
+													deviceApi.writeXiaomiWinPlayCloudConfig(winplayConfEditorRes.data),
+												);
+												if (writeXiaomiWinPlayCloudConfigErr) {
+													modal.create({
+														title: '发生错误',
+														type: 'error',
+														preset: 'dialog',
+														content: () => <p>写入云控数据发生错误，请查看错误日志~</p>,
+														positiveText: '确定',
+													});
+												} else {
+													xiaomiWinplayHook.hasWinPlayConf.value = true;
+													xiaomiWinplayHook.isLockWinPlayConfig.value = true;
+													modal.create({
+														title: '写入成功',
+														type: 'success',
+														preset: 'dialog',
+														content: () => (
+															<p>
+																好耶w，已经成功写入PC游戏引擎云控游戏云控配置并禁用云控管理，请重新尝试启动PC游戏引擎~
+															</p>
+														),
+														positiveText: '确定',
+													});
+												}
+											}
+											if (winplayConfEditorRes?.type === 'closed') {
+												console.log('关闭弹窗');
+											}
+										} else {
+											modal.create({
+												title: '发生错误',
+												type: 'error',
+												preset: 'dialog',
+												content: () => <p>配置文件不存在，编辑失败~</p>,
+												positiveText: '确定',
+											});
 										}
-										if (winplayConfEditorRes?.type === 'closed') {
-											console.log('关闭弹窗');
-										}
-									} else {
-										modal.create({
-											title: '发生错误',
-											type: 'error',
-											preset: 'dialog',
-											content: () => <p>配置文件不存在，编辑失败~</p>,
-											positiveText: '确定',
-										});
 									}
-								}
-							}}>
-							{{
-								default: () => <>编辑 PC游戏引擎 云控配置</>,
-							}}
-						</n-button>
-					</div>
-            )
-          }
+								}}>
+								{{
+									default: () => <>编辑 PC游戏引擎 云控配置</>,
+								}}
+							</n-button>
+						</div>
+					)}
 				</n-alert>
 				{xiaomiWinplayHook.hasWinPlayConf.value && (
 					<n-alert class='mt-5' type='error' show-icon={false} bordered={false}>

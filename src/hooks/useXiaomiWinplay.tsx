@@ -186,18 +186,29 @@ export function useXiaomiWinPlay() {
 		}
 	};
 
-	const removeWinPlayWhiteListConfig = async () => {
+	const removeWinPlayWhiteListConfig = async (removeType: 'startWinplay' | 'editWinplayConf' = 'startWinplay') => {
 		const [negativeRes, positiveRes] = await $to(
 			new Promise((resolve, reject) => {
 				modal.create({
 					title: `确定移除白名单配置并禁用云控管理么？`,
 					type: 'info',
 					preset: 'dialog',
-					content: () => (
-						<div>
-							您当前的PC游戏引擎存在游戏白名单配置，仅能访问白名单内的Steam游戏，需要移除白名单配置并禁用云控管理后才能启动PC游戏引擎，确定要移除游戏白名单配置并禁用云控管理吗？
-						</div>
-					),
+					content: () => {
+						if (removeType === 'startWinplay') {
+							return (
+								<div>
+									您当前的PC游戏引擎存在游戏白名单配置，仅能访问白名单内的Steam游戏，需要移除白名单配置并禁用云控管理后才能启动PC游戏引擎，确定要移除游戏白名单配置并禁用云控管理吗？
+								</div>
+							);
+						}
+						if (removeType === 'editWinplayConf') {
+							return (
+								<div>
+									您当前的PC游戏引擎存在游戏白名单配置，仅能访问白名单内的Steam游戏，编辑云控配置需要先移除白名单配置并禁用云控管理，确定要移除游戏白名单配置并禁用云控管理吗？
+								</div>
+							);
+						}
+					},
 					positiveText: `确定`,
 					negativeText: '我再想想',
 					onPositiveClick: () => {
@@ -219,11 +230,24 @@ export function useXiaomiWinPlay() {
 						title: '移除成功',
 						type: 'success',
 						preset: 'dialog',
-						content: () => (
-							<p>
-								好耶w，已经成功移除PC游戏引擎云控游戏白名单列表并禁用云控管理，请重新尝试启动PC游戏引擎~
-							</p>
-						),
+						content: () => {
+							if (removeType === 'startWinplay') {
+								return (
+									<p>
+										好耶w，已经成功移除PC游戏引擎云控游戏白名单列表并禁用云控管理，请重新尝试点击「启动
+										PC游戏引擎」~
+									</p>
+								);
+							}
+							if (removeType === 'editWinplayConf') {
+								return (
+									<p>
+										好耶w，已经成功移除PC游戏引擎云控游戏白名单列表并禁用云控管理，请重新尝试点击「编辑
+										PC游戏引擎 云控配置」~
+									</p>
+								);
+							}
+						},
 						positiveText: '确定',
 					});
 				})
@@ -381,6 +405,7 @@ export function useXiaomiWinPlay() {
 				.then(res => {
 					hasWinPlayConf.value = true;
 					isLockWinPlayConfig.value = true;
+					hasWinPlayWhiteListConfig.value = false;
 					modal.create({
 						title: '操作成功',
 						type: 'success',
@@ -468,6 +493,7 @@ export function useXiaomiWinPlay() {
 		hasWinPlayConf,
 		isLockWinPlayConfig,
 		hasWinPlayWhiteListConfig,
+		removeWinPlayWhiteListConfig,
 		isSupportProjectTreble,
 		ProjectTrebleCurrentVerison,
 		isInit,
