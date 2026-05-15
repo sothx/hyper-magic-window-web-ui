@@ -219,7 +219,7 @@ const enhanceList: EnhanceItemInfo[] = [
 						size='small'
 						type='info'
 						secondary
-						loading={deviceStore.loading}
+						loading={deviceStore.loading && xiaomiWinplayHook.loading.value}
 						onClick={() => {
 							xiaomiWinplayHook.openWinPlay();
 						}}>
@@ -233,29 +233,30 @@ const enhanceList: EnhanceItemInfo[] = [
 					<p>「PC游戏引擎」是为小米平板和手机量身定做的「游戏虚拟机」，可以运行市面上常见的 Windows 游戏。</p>
 					<p>该功能受小米云控管理，为确保使用稳定性，建议「禁用云控管理」</p>
 				</n-alert>
-				<n-alert class='mt-5' type='success' show-icon={false} bordered={false}>
-					<p>
-						「PC游戏引擎」受小米云控配置管理，为确保清除游戏白名单的使用稳定性，建议「禁用云控管理」，之后您也可以随时恢复「云控管理」，恢复后每次启动「PC游戏引擎」将会重新尝试获取最新云控配置。
-					</p>
-					<n-switch
-						class='mt-2'
-						onUpdateValue={(value: boolean) => amktiaoHook.changeGameMode(value)}
-						railStyle={railStyle}
-						disabled={!deviceStore.showThirdPartySetting.amktiaoROMInterface}
-						value={amktiaoHook.currentGameMode.value ? true : false}
-						loading={deviceStore.loading}>
-						{{
-							checked: () => '已禁用云控管理',
-							unchecked: () => '未禁用云控管理',
-						}}
-					</n-switch>
-				</n-alert>
-				<n-alert class='mt-5' type='info' show-icon={false} bordered={false}>
+				{xiaomiWinplayHook.hasWinPlayConf.value && (
+					<n-alert class='mt-5' type='error' show-icon={false} bordered={false}>
+						<p>
+							「PC游戏引擎」受小米云控配置管理，为确保清除游戏白名单的使用稳定性，建议「禁用云控管理」，之后您也可以随时恢复「云控管理」，恢复后每次启动「PC游戏引擎」将会重新尝试获取最新云控配置。
+						</p>
+						<n-switch
+							class='mt-2'
+							onUpdateValue={(value: boolean) => xiaomiWinplayHook.changeCloudAuth(value)}
+							railStyle={railStyle}
+							value={xiaomiWinplayHook.isLockWinPlayConfig.value ? true : false}
+							loading={deviceStore.loading && xiaomiWinplayHook.loading.value}>
+							{{
+								checked: () => '已禁用云控管理',
+								unchecked: () => '未禁用云控管理',
+							}}
+						</n-switch>
+					</n-alert>
+				)}
+				{/* <n-alert class='mt-5' type='info' show-icon={false} bordered={false}>
 					<p>您可以随时从这里编辑「PC游戏引擎」的「云控配置」，对白名单外的游戏添加配置优化参数。</p>
 					<n-button
 						size='small'
-            type='info'
-            class="mt-2"
+						type='info'
+						class='mt-2'
 						secondary
 						loading={deviceStore.loading}
 						onClick={() => {
@@ -266,7 +267,7 @@ const enhanceList: EnhanceItemInfo[] = [
 							default: () => <>编辑 PC游戏引擎 云控配置</>,
 						}}
 					</n-button>
-				</n-alert>
+				</n-alert> */}
 			</>
 		),
 		isShow: () =>

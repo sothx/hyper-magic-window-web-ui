@@ -1,7 +1,8 @@
 import { ref, computed, onMounted, nextTick, h } from 'vue';
 import { useDeviceStore } from '@/stores/device';
 import $to from 'await-to-js';
-import { RenderJsx } from '@/components/RenderJSX';
+import * as winplayHelper from '@/utils/winplayHelper';
+import { differenceBy } from 'lodash-es';
 import {
 	NButton,
 	createDiscreteApi,
@@ -14,6 +15,7 @@ import {
 } from 'naive-ui';
 import * as deviceApi from '@/apis/deviceApi';
 import { spawn } from '@/utils/kernelsu';
+import { getWinPlayConfig } from '../apis/deviceApi';
 export interface KeyboardModeOptions {
 	label: string;
 	type: string;
@@ -61,44 +63,128 @@ export function useXiaomiWinPlay() {
 		}
 		// WinPlay未被初始化
 		if (!hasWinPlayConf.value) {
-			if (isSupportProjectTreble.value) {
-				// 当前是移植包,复制模块云控配置
-				await copyCloudWinPlayConf();
-			} else {
-				// 当前是官包,执行初始化配置
-				await initCloudWinPlayConfig();
-			}
+			await copyCloudWinPlayConfig();
 		} else {
+			const [, hasWinPlayWhiteListConfigRes] = await $to<string, string>(deviceApi.hasWinPlayWhiteListConfig());
+			if (
+				hasWinPlayWhiteListConfigRes &&
+				hasWinPlayWhiteListConfigRes === 'Winplay whitelist configuration exists.'
+			) {
+				hasWinPlayWhiteListConfig.value = true;
+			} else {
+				hasWinPlayWhiteListConfig.value = false;
+			}
 			// WinPlay已被初始化
 			if (hasWinPlayWhiteListConfig.value) {
 				// 存在Winplay游戏白名单，移除白名单配置
 				await removeWinPlayWhiteListConfig();
 			} else {
-				deviceApi
-					.openXiaomiWinplayLauncherActivity()
-					.then(res => {
-						modal.create({
-							title: '启动成功',
-							type: 'success',
-							preset: 'dialog',
-							content: () => (
-								<p>
-									好耶w，已尝试启动PC游戏引擎，请确保网络环境能够正常访问Steam，否则可能无法正常使用~
-								</p>
-							),
-							positiveText: '确定',
-						});
-					})
-					.catch(err => {
-						modal.create({
-							title: '启动失败',
-							type: 'error',
-							preset: 'dialog',
-							content: () => <p>启动失败，详情请查看日志记录~</p>,
-							positiveText: '确定',
-						});
+				const winplaySdkRes = await import('@/assets/winplay_sdk.json');
+				const [, getWinPlayConfigRes] = await $to<string, string>(deviceApi.getWinPlayConfig());
+				if (getWinPlayConfigRes) {
+					try {
+						const currentWinPlayConfig = winplayHelper.confToJson(getWinPlayConfigRes);
+						const addDifference = differenceBy(
+							winplaySdkRes.content.app_profile,
+							currentWinPlayConfig,
+							'name',
+						);
+						const hasNewItems = addDifference.length > 0;
+						if (hasNewItems) {
+							const mergeWinplayConfigJson = [...currentWinPlayConfig, ...addDifference];
+							await mergeCloudWinPlayConfig(mergeWinplayConfigJson);
+						} else {
+							deviceApi
+								.openXiaomiWinplayLauncherActivity()
+								.then(res => {
+									modal.create({
+										title: '启动成功',
+										type: 'success',
+										preset: 'dialog',
+										content: () => (
+											<p>
+												好耶w，已尝试启动PC游戏引擎，请确保网络环境能够正常访问Steam，否则可能无法正常使用~
+											</p>
+										),
+										positiveText: '确定',
+									});
+								})
+								.catch(err => {
+									modal.create({
+										title: '启动失败',
+										type: 'error',
+										preset: 'dialog',
+										content: () => <p>启动失败，详情请查看日志记录~</p>,
+										positiveText: '确定',
+									});
+								});
+						}
+					} catch (err) {
+						await copyCloudWinPlayConfig('parseErr');
+					}
+				} else {
+					modal.create({
+						title: '获取云控配置失败',
+						type: 'error',
+						preset: 'dialog',
+						content: () => <p>获取云控配置失败，详情请查看日志记录~</p>,
+						positiveText: '确定',
 					});
+				}
 			}
+		}
+	};
+
+	const changeCloudAuth = async (isLock: boolean) => {
+		const [negativeRes, positiveRes] = await $to(
+			new Promise((resolve, reject) => {
+				modal.create({
+					title: `确定${isLock ? '禁用' : '恢复'}云控管理么？`,
+					type: 'info',
+					preset: 'dialog',
+					content: () => (
+						<div>
+							{isLock && '禁用云控管理后，将增强清除游戏白名单的使用稳定性，之后您也可以随时恢复云控管理'}
+							{!isLock &&
+								'恢复云控管理后，每次启动「PC游戏引擎」将会重新尝试获取最新云控配置，但是将导致清除游戏白名单不稳定，可能无法正常启动非白名单游戏'}
+							，确定要{isLock ? '禁用' : '恢复'}云控管理吗？
+						</div>
+					),
+					positiveText: `确定`,
+					negativeText: '我再想想',
+					onPositiveClick: () => {
+						resolve('positiveClick');
+					},
+					onNegativeClick: () => {
+						reject('negativeClick');
+					},
+				});
+			}),
+		);
+		if (positiveRes) {
+			deviceApi
+				.setWinplayCloudConf(isLock ? 444 : 777)
+				.then(res => {
+					isLockWinPlayConfig.value = isLock;
+					modal.create({
+						title: `${isLock ? '禁用' : '恢复'}云控管理成功`,
+						type: 'success',
+						preset: 'dialog',
+						content: () => (
+							<p>好耶w，已经成功{isLock ? '禁用' : '恢复'}云控管理，请重新尝试启动PC游戏引擎~</p>
+						),
+						positiveText: '确定',
+					});
+				})
+				.catch(err => {
+					modal.create({
+						title: '移除失败',
+						type: 'error',
+						preset: 'dialog',
+						content: () => <p>写入失败，详情请查看日志记录~</p>,
+						positiveText: '确定',
+					});
+				});
 		}
 	};
 
@@ -106,12 +192,12 @@ export function useXiaomiWinPlay() {
 		const [negativeRes, positiveRes] = await $to(
 			new Promise((resolve, reject) => {
 				modal.create({
-					title: `确定移除游戏白名单配置么？`,
+					title: `确定移除白名单配置并禁用云控管理么？`,
 					type: 'info',
 					preset: 'dialog',
 					content: () => (
 						<div>
-							您当前的PC游戏引擎存在游戏白名单配置，仅能访问白名单内的Steam游戏，需要移除白名单配置后才能启动PC游戏引擎，确定要移除游戏白名单配置吗？
+							您当前的PC游戏引擎存在游戏白名单配置，仅能访问白名单内的Steam游戏，需要移除白名单配置并禁用云控管理后才能启动PC游戏引擎，确定要移除游戏白名单配置并禁用云控管理吗？
 						</div>
 					),
 					positiveText: `确定`,
@@ -130,12 +216,15 @@ export function useXiaomiWinPlay() {
 				.removeWinplayWhiteListConfig()
 				.then(res => {
 					hasWinPlayWhiteListConfig.value = false;
+					isLockWinPlayConfig.value = true;
 					modal.create({
 						title: '移除成功',
 						type: 'success',
 						preset: 'dialog',
 						content: () => (
-							<p>好耶w，已经成功移除PC游戏引擎云控游戏白名单列表，请重新尝试启动PC游戏引擎~</p>
+							<p>
+								好耶w，已经成功移除PC游戏引擎云控游戏白名单列表并禁用云控管理，请重新尝试启动PC游戏引擎~
+							</p>
 						),
 						positiveText: '确定',
 					});
@@ -145,30 +234,139 @@ export function useXiaomiWinPlay() {
 						title: '移除失败',
 						type: 'error',
 						preset: 'dialog',
-						content: () => <p>写入失败，详情请查看日志记录~</p>,
+						content: () => <p>移除失败，详情请查看日志记录~</p>,
 						positiveText: '确定',
 					});
 				});
 		}
 	};
 
-	const copyCloudWinPlayConf = async () => {
+	const mergeCloudWinPlayConfig = async (mergeContent: any[]) => {
+		const [negativeRes, positiveRes] = await $to(
+			new Promise((resolve, reject) => {
+				modal.create({
+					title: `确定合并云控规则么？`,
+					type: 'info',
+					preset: 'dialog',
+					content: () => {
+						return (
+							<div>您的PC游戏引擎存在更新的云控规则，是否合并云控规则并禁用云控管理，确定要继续吗？</div>
+						);
+					},
+					positiveText: `确定合并`,
+					negativeText: '暂不合并',
+					onPositiveClick: () => {
+						resolve('positiveClick');
+					},
+					onNegativeClick: () => {
+						reject('negativeClick');
+					},
+				});
+			}),
+		);
+		if (positiveRes) {
+			// 合并：老数组 + 新增项（新增放最后）
+			try {
+				const mergeWinplayConfig = winplayHelper.jsonToConf(mergeContent);
+				deviceApi
+					.mergeXiaomiWinPlayCloudConfig(mergeWinplayConfig)
+					.then(res => {
+						hasWinPlayConf.value = true;
+						isLockWinPlayConfig.value = true;
+						deviceApi
+							.openXiaomiWinplayLauncherActivity()
+							.then(res => {
+								modal.create({
+									title: '启动成功',
+									type: 'success',
+									preset: 'dialog',
+									content: () => (
+										<p>
+											好耶w，已尝试启动PC游戏引擎，请确保网络环境能够正常访问Steam，否则可能无法正常使用~
+										</p>
+									),
+									positiveText: '确定',
+								});
+							})
+							.catch(err => {
+								modal.create({
+									title: '启动失败',
+									type: 'error',
+									preset: 'dialog',
+									content: () => <p>启动失败，详情请查看日志记录~</p>,
+									positiveText: '确定',
+								});
+							});
+					})
+					.catch(err => {
+						modal.create({
+							title: '写入失败',
+							type: 'error',
+							preset: 'dialog',
+							content: () => <p>写入失败，详情请查看日志记录~</p>,
+							positiveText: '确定',
+						});
+					});
+			} catch (err) {
+				modal.create({
+					title: '合并云控配置失败',
+					type: 'error',
+					preset: 'dialog',
+					content: () => <p>合并云控配置失败，详情请查看日志记录~</p>,
+					positiveText: '确定',
+				});
+			}
+		}
+		if (negativeRes) {
+			deviceApi
+				.openXiaomiWinplayLauncherActivity()
+				.then(res => {
+					modal.create({
+						title: '启动成功',
+						type: 'success',
+						preset: 'dialog',
+						content: () => (
+							<p>好耶w，已尝试启动PC游戏引擎，请确保网络环境能够正常访问Steam，否则可能无法正常使用~</p>
+						),
+						positiveText: '确定',
+					});
+				})
+				.catch(err => {
+					modal.create({
+						title: '启动失败',
+						type: 'error',
+						preset: 'dialog',
+						content: () => <p>启动失败，详情请查看日志记录~</p>,
+						positiveText: '确定',
+					});
+				});
+		}
+	};
+
+	const copyCloudWinPlayConfig = async (copyType: 'init' | 'parseErr' = 'init') => {
 		const [negativeRes, positiveRes] = await $to(
 			new Promise((resolve, reject) => {
 				modal.create({
 					title: `确定写入云控规则么？`,
 					type: 'info',
 					preset: 'dialog',
-					content: () => (
-						<div>
-							{
+					content: () => {
+						if (copyType === 'init') {
+							return (
 								<div>
-									您的移植包已适配PC游戏引擎，即将写入PC游戏引擎的云控规则，请确保网络环境能够正常访问Steam，确定要继续吗？
+									您的PC游戏引擎尚未存在云控规则，即将写入PC游戏引擎的云控规则并禁用云控管理，确定要继续吗？
 								</div>
-							}
-						</div>
-					),
-					positiveText: `确定`,
+							);
+						}
+						if (copyType === 'parseErr') {
+							return (
+								<div>
+									您的PC游戏引擎云控规则解析异常，即将重新写入PC游戏引擎的云控规则并禁用云控管理，确定要继续吗？
+								</div>
+							);
+						}
+					},
+					positiveText: `确定启动`,
 					negativeText: '我再想想',
 					onPositiveClick: () => {
 						resolve('positiveClick');
@@ -184,6 +382,7 @@ export function useXiaomiWinPlay() {
 				.copyXiaomiWinPlayCloudConfig()
 				.then(res => {
 					hasWinPlayConf.value = true;
+					isLockWinPlayConfig.value = true;
 					modal.create({
 						title: '操作成功',
 						type: 'success',
@@ -198,57 +397,6 @@ export function useXiaomiWinPlay() {
 						type: 'error',
 						preset: 'dialog',
 						content: () => <p>写入失败，详情请查看日志记录~</p>,
-						positiveText: '确定',
-					});
-				});
-		}
-	};
-
-	const initCloudWinPlayConfig = async () => {
-		const [negativeRes, positiveRes] = await $to(
-			new Promise((resolve, reject) => {
-				modal.create({
-					title: `确定初始化WinPlay么？`,
-					type: 'info',
-					preset: 'dialog',
-					content: () => (
-						<div>
-							您的PC游戏引擎尚未初始化，第一次启动系统将初始化PC游戏引擎相关容器环境，请确保网络环境能够正常访问Steam，第一次启动由于游戏白名单限制可能无法正常启动成功，但将会完成容器环境的初始化，失败后请结束PC游戏引擎的后台并尝试重新启动，确定要继续么？
-						</div>
-					),
-					positiveText: `确定启动`,
-					negativeText: '我再想想',
-					onPositiveClick: () => {
-						resolve('positiveClick');
-					},
-					onNegativeClick: () => {
-						reject('negativeClick');
-					},
-				});
-			}),
-		);
-		if (positiveRes) {
-			deviceApi
-				.openXiaomiWinplayLauncherActivity()
-				.then(res => {
-					modal.create({
-						title: '启动成功',
-						type: 'success',
-						preset: 'dialog',
-						content: () => (
-							<p>
-								好耶w，已尝试启动PC游戏引擎，请确保网络环境能够正常访问Steam，第一次启动由于游戏白名单限制可能无法正常启动成功，但将会完成容器环境的初始化，失败后请结束PC游戏引擎的后台并尝试重新启动
-							</p>
-						),
-						positiveText: '确定',
-					});
-				})
-				.catch(err => {
-					modal.create({
-						title: '启动失败',
-						type: 'error',
-						preset: 'dialog',
-						content: () => <p>启动失败，详情请查看日志记录~</p>,
 						positiveText: '确定',
 					});
 				});
@@ -275,10 +423,7 @@ export function useXiaomiWinPlay() {
 		if (hasWinPlayConf.value) {
 			// 判断是否存在白名单配置
 			const [, hasWinPlayWhiteListConfigRes] = await $to<string, string>(deviceApi.hasWinPlayWhiteListConfig());
-			if (
-				hasWinPlayWhiteListConfigRes &&
-				hasWinPlayWhiteListConfigRes === 'Winplay whitelist configuration exists.'
-			) {
+			if (hasWinPlayWhiteListConfigRes && hasWinPlayWhiteListConfigRes === 'hasWinPlayWhiteListConfig') {
 				hasWinPlayWhiteListConfig.value = true;
 			} else {
 				hasWinPlayWhiteListConfig.value = false;
@@ -320,8 +465,10 @@ export function useXiaomiWinPlay() {
 
 	return {
 		XiaomiWinPlayIsInstalled,
+		changeCloudAuth,
 		openWinPlay,
 		hasWinPlayConf,
+		isLockWinPlayConfig,
 		hasWinPlayWhiteListConfig,
 		isSupportProjectTreble,
 		ProjectTrebleCurrentVerison,
