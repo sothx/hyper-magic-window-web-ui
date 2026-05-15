@@ -263,7 +263,7 @@ const enhanceList: EnhanceItemInfo[] = [
 											});
 										}
 										if (winplayConfEditorRes?.type === 'submit') {
-											const [writeXiaomiWinPlayCloudConfigErr, writeXiaomiWinPlayCloudConfigRes] =
+											const [writeXiaomiWinPlayCloudConfigErr] =
 												await $to(
 													deviceApi.writeXiaomiWinPlayCloudConfig(winplayConfEditorRes.data),
 												);
@@ -275,7 +275,9 @@ const enhanceList: EnhanceItemInfo[] = [
 													content: () => <p>写入云控数据发生错误，请查看错误日志~</p>,
 													positiveText: '确定',
 												});
-											} else {
+                      } else {
+                        xiaomiWinplayHook.hasWinPlayConf.value = true;
+                        xiaomiWinplayHook.isLockWinPlayConfig.value = true;
 												modal.create({
 													title: '写入成功',
 													type: 'success',
