@@ -101,7 +101,7 @@ export function useXiaomiWinPlay() {
 										preset: 'dialog',
 										content: () => (
 											<p>
-												好耶w，已尝试启动PC游戏引擎，请确保网络环境能够正常访问Steam，否则可能无法正常使用~
+												好耶w，已尝试启动PC游戏引擎~如果无法正常登录Steam，请确保网络环境满足访问Steam的条件
 											</p>
 										),
 										positiveText: '确定',
@@ -304,7 +304,7 @@ export function useXiaomiWinPlay() {
 									preset: 'dialog',
 									content: () => (
 										<p>
-											好耶w，已尝试启动PC游戏引擎，请确保网络环境能够正常访问Steam，否则可能无法正常使用~
+											好耶w，已尝试启动PC游戏引擎~如果无法正常登录Steam，请确保网络环境满足访问Steam的条件
 										</p>
 									),
 									positiveText: '确定',
@@ -348,7 +348,7 @@ export function useXiaomiWinPlay() {
 						type: 'success',
 						preset: 'dialog',
 						content: () => (
-							<p>好耶w，已尝试启动PC游戏引擎，请确保网络环境能够正常访问Steam，否则可能无法正常使用~</p>
+							<p>好耶w，已尝试启动PC游戏引擎~如果无法正常登录Steam，请确保网络环境满足访问Steam的条件</p>
 						),
 						positiveText: '确定',
 					});
