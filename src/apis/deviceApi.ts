@@ -302,8 +302,8 @@ export const hasWinPlayWhiteListConfig = (): Promise<string> => {
 };
 
 export const removeWinplayWhiteListConfig = (): Promise<string> => {
-  const winplayDataCloudFiles = `/data/user/0/com.xiaomi.winplay/files/cloud/`
-  const shellCommon = `sed -i "/^whitelist:/d" ${winplayDataCloudFiles}winplay.conf 2>/dev/null && chmod -R 444 ${winplayDataCloudFiles} 2>/dev/null && echo "Remove whitelist successfully." || echo "Remove whitelist error."`
+  const winplayDataFiles = `/data/user/0/com.xiaomi.winplay/files`
+  const shellCommon = `sed -i "/^whitelist:/d" ${winplayDataFiles}/cloud/winplay.conf 2>/dev/null && chmod 444 ${winplayDataFiles}/cloud/winplay.conf 2>/dev/null && echo "Remove whitelist successfully." || echo "Remove whitelist error."`
   return handlePromiseWithLogging(
     new Promise(async (resolve, reject) => {
       if (import.meta.env.MODE === 'development') {
@@ -3519,15 +3519,16 @@ export const getXiaomiWinPlayIsInstalled = (): Promise<string> => {
 
 export const copyXiaomiWinPlayCloudConfig = async (): Promise<string> => {
   const winplaySdkRes = await import('@/assets/winplay_sdk.json');
-  const winplayDataCloudFiles = `/data/user/0/com.xiaomi.winplay/files/cloud/`
+  const winplayDataFiles = `/data/user/0/com.xiaomi.winplay/files`
   const winplayConfContent = winplayHelper.jsonToConf(winplaySdkRes.content.app_profile);
   const winplayVersionContent = winplaySdkRes.content.version_code;
   console.log(winplayConfContent, 'winplayConfContent')
   const shellCommon = `
-    mkdir -p ${winplayDataCloudFiles} && \
-    echo '${winplayConfContent}' > ${winplayDataCloudFiles}winplay.conf && \
-    echo '${winplayVersionContent}' > ${winplayDataCloudFiles}version && \
-    chmod -R 444 ${winplayDataCloudFiles}
+    mkdir -p ${winplayDataFiles}/cloud/ && \
+    chmod -R 777 ${winplayDataFiles} && \
+    echo '${winplayConfContent}' > ${winplayDataFiles}/cloud/winplay.conf && \
+    echo '${winplayVersionContent}' > ${winplayDataFiles}/cloud/version && \
+    chmod 444 ${winplayDataFiles}/cloud/winplay.conf
   `
   return handlePromiseWithLogging(
     new Promise(async (resolve, reject) => {
@@ -3543,11 +3544,12 @@ export const copyXiaomiWinPlayCloudConfig = async (): Promise<string> => {
 };
 
 export const writeXiaomiWinPlayCloudConfig = async (content:string): Promise<string> => {
-  const winplayDataCloudFiles = `/data/user/0/com.xiaomi.winplay/files/cloud/`
+  const winplayDataFiles = `/data/user/0/com.xiaomi.winplay/files`
   const shellCommon = `
-    mkdir -p ${winplayDataCloudFiles} && \
-    echo '${content}' > ${winplayDataCloudFiles}winplay.conf && \
-    chmod -R 444 ${winplayDataCloudFiles}
+    mkdir -p ${winplayDataFiles}/cloud/ && \
+    chmod -R 777 ${winplayDataFiles}
+    echo '${content}' > ${winplayDataFiles}/cloud/winplay.conf && \
+    chmod 444 ${winplayDataFiles}/cloud/winplay.conf
   `
   return handlePromiseWithLogging(
     new Promise(async (resolve, reject) => {
