@@ -3529,7 +3529,9 @@ export const copyXiaomiWinPlayCloudConfig = async (): Promise<string> => {
     chown -R product_hyperengine:product_hyperengine ${winplayDataFiles} && \
     chmod -R 777 ${winplayDataFiles} && \
     echo '${winplayConfContent}' > ${winplayDataFiles}/cloud/winplay.conf && \
+    chown product_hyperengine:product_hyperengine ${winplayDataFiles}/cloud/winplay.conf && \
     echo '${winplayVersionContent}' > ${winplayDataFiles}/cloud/version && \
+    chown product_hyperengine:product_hyperengine ${winplayDataFiles}/cloud/version && \
     chmod 444 ${winplayDataFiles}/cloud/winplay.conf
   `
   return handlePromiseWithLogging(
@@ -3552,6 +3554,7 @@ export const writeXiaomiWinPlayCloudConfig = async (content:string): Promise<str
     chmod -R product_hyperengine:product_hyperengine ${winplayDataFiles}
     chmod -R 777 ${winplayDataFiles}
     echo '${content}' > ${winplayDataFiles}/cloud/winplay.conf && \
+    chown product_hyperengine:product_hyperengine ${winplayDataFiles}/cloud/winplay.conf && \
     chmod 444 ${winplayDataFiles}/cloud/winplay.conf
   `
   return handlePromiseWithLogging(
