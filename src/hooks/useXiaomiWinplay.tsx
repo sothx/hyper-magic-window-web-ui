@@ -161,7 +161,7 @@ export function useXiaomiWinPlay() {
 		);
 		if (positiveRes) {
 			deviceApi
-				.setWinplayCloudConf(isLock ? 444 : 777)
+				.setWinplayConfAuth(isLock ? 444 : 777)
 				.then(res => {
 					isLockWinPlayConfig.value = isLock;
 					modal.create({
