@@ -161,7 +161,7 @@ export function useXiaomiWinPlay() {
 		);
 		if (positiveRes) {
 			deviceApi
-				.setWinplayConfAuth(isLock ? 444 : 777)
+				.setWinplayConfAuth(isLock ? 400 : 700)
 				.then(res => {
 					isLockWinPlayConfig.value = isLock;
 					modal.create({
@@ -453,7 +453,7 @@ export function useXiaomiWinPlay() {
 			}
 			// 判断权限情况
 			const [, getWinplayConfAuth] = await $to<string, string>(deviceApi.getWinplayConfAuth());
-			if (getWinplayConfAuth && getWinplayConfAuth === '444') {
+			if (getWinplayConfAuth && getWinplayConfAuth === '400') {
 				isLockWinPlayConfig.value = true;
 			} else {
 				isLockWinPlayConfig.value = false;

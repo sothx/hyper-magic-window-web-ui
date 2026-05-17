@@ -222,7 +222,7 @@ export const getWinplayConfAuth = (): Promise<string> => {
   return handlePromiseWithLogging(
     new Promise(async (resolve, reject) => {
       if (import.meta.env.MODE === 'development') {
-        resolve(`444`);
+        resolve(`400`);
       } else {
         const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
         errno ? reject(stderr) : resolve(stdout)
@@ -3527,12 +3527,12 @@ export const copyXiaomiWinPlayCloudConfig = async (): Promise<string> => {
   const shellCommon = `
     mkdir -p ${winplayDataFiles}/cloud/ && \
     chown -R product_hyperengine:product_hyperengine ${winplayDataFiles} && \
-    chmod -R 777 ${winplayDataFiles} && \
+    chmod -R 700 ${winplayDataFiles} && \
     echo '${winplayConfContent}' > ${winplayDataFiles}/cloud/winplay.conf && \
     chown product_hyperengine:product_hyperengine ${winplayDataFiles}/cloud/winplay.conf && \
     echo '${winplayVersionContent}' > ${winplayDataFiles}/cloud/version && \
     chown product_hyperengine:product_hyperengine ${winplayDataFiles}/cloud/version && \
-    chmod 444 ${winplayDataFiles}/cloud/winplay.conf
+    chmod 400 ${winplayDataFiles}/cloud/winplay.conf
   `
   return handlePromiseWithLogging(
     new Promise(async (resolve, reject) => {
@@ -3552,10 +3552,10 @@ export const writeXiaomiWinPlayCloudConfig = async (content:string): Promise<str
   const shellCommon = `
     mkdir -p ${winplayDataFiles}/cloud/ && \
     chmod -R product_hyperengine:product_hyperengine ${winplayDataFiles}
-    chmod -R 777 ${winplayDataFiles}
+    chmod -R 700 ${winplayDataFiles}
     echo '${content}' > ${winplayDataFiles}/cloud/winplay.conf && \
     chown product_hyperengine:product_hyperengine ${winplayDataFiles}/cloud/winplay.conf && \
-    chmod 444 ${winplayDataFiles}/cloud/winplay.conf
+    chmod 400 ${winplayDataFiles}/cloud/winplay.conf
   `
   return handlePromiseWithLogging(
     new Promise(async (resolve, reject) => {
