@@ -18,6 +18,7 @@ import type PackageInfoItem from '@/types/PackageInfoItem';
 import { isNumber } from 'lodash-es';
 import * as winplayHelper from '@/utils/winplayHelper';
 const toolsFunc = `/data/adb/modules/Hyper_MagicWindow/common/utils/tools_functions.sh`;
+const utilsFunc = `/data/adb/modules/Hyper_MagicWindow/util_functions.sh`;
 
 export interface SmartFocusIOResult extends ExecResults {
   stdout: 'on' | 'off';
@@ -1936,7 +1937,7 @@ export const getDisplay0PanelInfo = (): Promise<string> => {
 
 export const setDisplayMode = (displayModeID: number): Promise<string> => {
   const displayModeRecordAutoEnableShellPath =  `/data/adb/modules/Hyper_MagicWindow/common/source/display_mode_record_auto_enable/display_mode_record_auto_enable.sh`
-  const shellCommon = `kill_display_mode_record_auto_enable_shell "${displayModeRecordAutoEnableShellPath}" && nohup "${displayModeRecordAutoEnableShellPath}" "${displayModeID}" >/dev/null 2>&1 &`;
+  const shellCommon = `(source ${utilsFunc} && kill_display_mode_record_auto_enable_shell "${displayModeRecordAutoEnableShellPath}") && (nohup "${displayModeRecordAutoEnableShellPath}" "${displayModeID}" >/dev/null 2>&1 &)`
   return handlePromiseWithLogging(
     new Promise(async (resolve, reject) => {
       if (import.meta.env.MODE === 'development') {
