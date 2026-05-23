@@ -41,8 +41,8 @@ export function useDisplayModeRecord() {
 	const smartPenVVRFps = ref<boolean>(true);
 
 	const isDisabledSysSmartPenOptimize = computed(() => {
-		return !smartPenIdleEnable.value && !smartPenVVRFps.value
-	})
+		return !smartPenIdleEnable.value && !smartPenVVRFps.value;
+	});
 
 	const loading = ref<boolean>(true);
 
@@ -143,7 +143,7 @@ export function useDisplayModeRecord() {
 				}
 			}
 			smartPenIdleEnable.value = value ? false : true;
-			smartPenVVRFps.value = value ? false : true
+			smartPenVVRFps.value = value ? false : true;
 			modal.create({
 				title: '操作成功',
 				type: 'success',
@@ -298,10 +298,10 @@ export function useDisplayModeRecord() {
 			content: () => (
 				<div>
 					应用后设备分辨率将配置为{data.width}x{data.height}，刷新率将配置为{data.fps}
-					Hz，在设备下次重启前将一直维持该配置，该功能可能受触控笔和其他第三方模块影响不一定生效，如需恢复系统设置内的默认分辨率及刷新率配置，请手动重启设备。
+					Hz，在设备下次重启前将一直维持该配置，且每5秒自动轮询应用该配置，该功能可能受其他第三方模块影响不一定生效，如需恢复系统设置内的默认分辨率及刷新率配置，请手动重启设备。
 					{deviceStore.deviceType === 'tablet' && (
 						<span>
-							连接触控笔蓝牙期间，为了确保触控笔正常工作，系统也会强行重置该配置，断开触控笔蓝牙后需要重新配置，
+							请注意小米平板手写笔仅能工作在60hz和120hz，其他刷新率将导致小米平板手写笔无法正常工作，
 						</span>
 					)}
 					确定要继续应用该配置么？
@@ -353,10 +353,10 @@ export function useDisplayModeRecord() {
 				content: () => (
 					<div>
 						应用后设备分辨率将配置为{data.width}x{data.height}，刷新率将配置为{data.fps}
-						Hz，每次设备开机后会自行启动该配置，该功能可能受触控笔和其他第三方模块影响不一定生效，如需恢复系统设置内的默认分辨率及刷新率配置，请移除该配置的开机自启并手动重启设备。
+						Hz，每次设备开机后将每5秒自动轮询启动该配置，该功能可能受其他第三方模块影响不一定生效，如需恢复系统设置内的默认分辨率及刷新率配置，请移除该配置的开机自启并手动重启设备。
 						{deviceStore.deviceType === 'tablet' && (
 							<span>
-								连接触控笔蓝牙期间，为了确保触控笔正常工作，系统也会强行重置该配置，断开触控笔蓝牙后需要重新配置，
+								请注意小米平板手写笔仅能工作在60hz和120hz，其他刷新率将导致小米平板手写笔无法正常工作，
 							</span>
 						)}
 						确定要继续应用该配置的开机自启么？
@@ -445,9 +445,7 @@ export function useDisplayModeRecord() {
 		} else {
 			smartPenIdleEnable.value = true;
 		}
-		const [getSmartPenVVRFpsErr,getSmartPenVVRFpsRes] = await $to<string,string>(
-			deviceApi.getSmartPenVVRFps()
-		)
+		const [getSmartPenVVRFpsErr, getSmartPenVVRFpsRes] = await $to<string, string>(deviceApi.getSmartPenVVRFps());
 		if (getSmartPenVVRFpsRes && getSmartPenVVRFpsRes === 'false') {
 			smartPenVVRFps.value = false;
 		} else {
@@ -462,9 +460,10 @@ export function useDisplayModeRecord() {
 			propIsSupportIdleDefaultFps.value = false;
 		}
 		if (!propIsSupportIdleDefaultFps.value) {
-			const [getVendorIsSupportIdleDefaultFpsErr, getVendorIsSupportIdleDefaultFpsRes] = await $to<string, string>(
-				deviceApi.getVendorIsSupportIdleDefaultFps(),
-			);
+			const [getVendorIsSupportIdleDefaultFpsErr, getVendorIsSupportIdleDefaultFpsRes] = await $to<
+				string,
+				string
+			>(deviceApi.getVendorIsSupportIdleDefaultFps());
 			if (getVendorIsSupportIdleDefaultFpsRes && getVendorIsSupportIdleDefaultFpsRes === 'true') {
 				propIsSupportIdleDefaultFps.value = true;
 			} else {
@@ -501,7 +500,9 @@ export function useDisplayModeRecord() {
 		} else {
 			propDisableIdleFps.value = false;
 		}
-		const [getDisableIdleFpsThresholdErr, getDisableIdleFpsThresholdRes] = await $to<string, string>(deviceApi.getDisableIdleFpsThreshold());
+		const [getDisableIdleFpsThresholdErr, getDisableIdleFpsThresholdRes] = await $to<string, string>(
+			deviceApi.getDisableIdleFpsThreshold(),
+		);
 		if (getDisableIdleFpsThresholdRes && Number(getDisableIdleFpsThresholdRes) > 0) {
 			propDisableIdleFpsThreshold.value = Number(getDisableIdleFpsThresholdRes);
 		} else {

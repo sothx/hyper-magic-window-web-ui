@@ -1935,11 +1935,12 @@ export const getDisplay0PanelInfo = (): Promise<string> => {
 };
 
 export const setDisplayMode = (displayModeID: number): Promise<string> => {
-  const shellCommon = `service call SurfaceFlinger 1035 i32 ${displayModeID}`;
+  const displayModeRecordAutoEnableShellPath =  `/data/adb/modules/Hyper_MagicWindow/common/source/display_mode_record_auto_enable/display_mode_record_auto_enable.sh`
+  const shellCommon = `kill_display_mode_record_auto_enable_shell "${displayModeRecordAutoEnableShellPath}" && nohup "${displayModeRecordAutoEnableShellPath}" "${displayModeID}" >/dev/null 2>&1 &`;
   return handlePromiseWithLogging(
     new Promise(async (resolve, reject) => {
       if (import.meta.env.MODE === 'development') {
-        resolve(`Result: Parcel(NULL)`);
+        resolve(`success`);
       } else {
         const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
         errno ? reject(stderr) : resolve(stdout);
