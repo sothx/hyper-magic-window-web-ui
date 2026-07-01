@@ -230,7 +230,6 @@ const handleTextAreaBlur = (ref: string) => {
 };
 
 const currentAppName = ref<string>('');
-const currentAppNameInputStatus = ref<string>('');
 
 const handleDrawerSubmit = async () => {
 	if (!currentAppName.value) {
@@ -352,7 +351,6 @@ defineExpose({
 				<n-input-group-label size="large">应用包名</n-input-group-label>
 				<n-input
 					size="large"
-					:status="currentAppNameInputStatus"
 					v-model:value="currentAppName"
 					:allow-input="(value: string) => validateFun.validateAndroidPackageName(value)"
 					:readonly="props.type === 'update'"
@@ -398,7 +396,8 @@ defineExpose({
 			<n-card :bordered="false" title="跳过应用布局优化的Activity名称" size="small">
 				<div class="mb-4">
 					<n-tag :bordered="false" type="success">
-						<span class="font-bold"> Activity名称 </span>之间通过<span class="font-bold"> 分号(;) </span>分割
+						<span class="font-bold"> Activity名称 </span>之间通过<span class="font-bold"> 分号(;) </span
+						>分割
 					</n-tag>
 				</div>
 				<n-input-group>

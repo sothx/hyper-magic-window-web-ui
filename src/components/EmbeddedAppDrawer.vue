@@ -1,14 +1,23 @@
 <script setup lang="tsx">
-import { computed, onMounted, reactive, ref, watch, type CSSProperties } from 'vue';
+import { computed, h, onMounted, reactive, ref, watch, type CSSProperties, type VNodeChild } from 'vue';
 import { useDeviceStore } from '@/stores/device';
 import { useEmbeddedStore } from '@/stores/embedded';
 import type EmbeddedMergeRuleItem from '@/types/EmbeddedMergeRuleItem';
-import { createDiscreteApi, darkTheme, lightTheme, type ConfigProviderProps, type NInput } from 'naive-ui';
+import {
+	createDiscreteApi,
+	darkTheme,
+	lightTheme,
+	NTag,
+	type ConfigProviderProps,
+	type NInput,
+	type SelectOption,
+} from 'naive-ui';
 import * as validateFun from '@/utils/validateFun';
 type NInputInstance = InstanceType<typeof NInput>;
 const currentFullRuleRef = ref<NInputInstance | null>(null);
 import { useLogsStore } from '@/stores/logs';
 import $to from 'await-to-js';
+import { options } from '$/axios/index.cjs';
 const props = defineProps<{
 	type: 'add' | 'update';
 	title: string;
@@ -569,7 +578,6 @@ const currentIsSupportSplitMinWidthZeroMode = ref<boolean>(false);
 const currentIsDisabledEmbeddedPlaceholder = ref<boolean>(false);
 
 const currentAppName = ref<string>('');
-const currentAppNameInputStatus = ref<string>('');
 
 const isSupportEmbedded = ref<boolean>(false);
 
@@ -580,6 +588,15 @@ const handleDrawerSubmit = async () => {
 			type: 'error',
 			preset: 'dialog',
 			content: () => <p>噫？应用包名不能为空（敲</p>,
+		});
+		return;
+	}
+	if (!validateFun.validateAndroidPackageName(currentAppName.value)) {
+		modal.create({
+			title: '应用包名不合法',
+			type: 'error',
+			preset: 'dialog',
+			content: () => <p>噫？不是合法的应用包名，请检查（敲</p>,
 		});
 		return;
 	}
@@ -753,12 +770,14 @@ const handleDrawerSubmit = async () => {
 			...((currentSettingMode.value === 'fullScreen' || currentSettingMode.value === 'disabled') && {
 				supportFullSize: currentSupportFullSize.value,
 			}),
-			...(currentSettingMode.value === 'fixedOrientation' && deviceStore.androidTargetSdk <= 35 && {
-				ratio: currentRatio.value,
-			}),
-			...(currentSettingMode.value === 'fixedOrientation' && deviceStore.androidTargetSdk >= 36 && {
-				minAspectRatioCompatChange: currentMinAspectRatioCompatChange.value,
-			}),
+			...(currentSettingMode.value === 'fixedOrientation' &&
+				deviceStore.androidTargetSdk <= 35 && {
+					ratio: currentRatio.value,
+				}),
+			...(currentSettingMode.value === 'fixedOrientation' &&
+				deviceStore.androidTargetSdk >= 36 && {
+					minAspectRatioCompatChange: currentMinAspectRatioCompatChange.value,
+				}),
 			...((currentSettingMode.value === 'fixedOrientation' || currentSettingMode.value === 'disabled') && {
 				foRelaunch: currentFixedOrientationRelaunch.value,
 			}),
@@ -821,6 +840,35 @@ const handleCurrentSupportModes = (value: EmbeddedMergeRuleItem['settingMode'][]
 	// message.info(JSON.stringify(value))
 };
 
+const appNameAutoCompleteOptions = computed(() => {
+	const list = deviceStore.installedAppPackageInfoList;
+	const keyword = currentAppName.value.trim().toLowerCase();
+	let arr = list;
+	if (keyword) {
+		arr = list.filter(item => {
+			if (item.appLabel && item.packageName) {
+				const label = item.appLabel.toLowerCase();
+				const pkg = item.packageName.toLowerCase();
+				return label.includes(keyword) || pkg.includes(keyword);
+			}
+		});
+	}
+	// 覆盖 value 为包名，选中自动填充
+	return arr.map(item => ({
+		label: item.packageName,
+		value: item.appLabel,
+	}));
+});
+
+const appNameAutoCompleteRenderLabel = (option: SelectOption): VNodeChild => {
+	return (
+		<div>
+			<p>{option.value}</p>
+			<p>{option.label}</p>
+		</div>
+	);
+};
+
 defineExpose({
 	openDrawer: embeddedAppDrawer.value.openDrawer, // 传递 openDrawer 方法
 });
@@ -835,11 +883,12 @@ defineExpose({
 		<n-drawer-content :title="props.title" closable>
 			<n-input-group>
 				<n-input-group-label size="large">应用包名</n-input-group-label>
-				<n-input
+				<n-auto-complete
 					size="large"
-					:status="currentAppNameInputStatus"
+					:render-label="appNameAutoCompleteRenderLabel"
+					default-value="packageName"
 					v-model:value="currentAppName"
-					:allow-input="(value: string) => validateFun.validateAndroidPackageName(value)"
+					:options="appNameAutoCompleteOptions"
 					:readonly="props.type === 'update'"
 					placeholder="请输入应用包名" />
 			</n-input-group>

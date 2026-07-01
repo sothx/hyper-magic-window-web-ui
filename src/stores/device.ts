@@ -253,7 +253,8 @@ export const useDeviceStore = defineStore(
 
 					const mergeResult = Array.from(map.values());
 
-					installedAppPackageInfoList.value = mergeResult;
+          installedAppPackageInfoList.value = mergeResult;
+          console.log(installedAppPackageInfoList.value,'installedAppPackageInfoList.value')
 					resolve(mergeResult);
 				} else {
 					reject('获取已安装应用包信息失败');

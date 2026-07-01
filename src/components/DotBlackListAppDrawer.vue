@@ -70,7 +70,6 @@ const resizeDrawerContentFun = (isResize: boolean) => {
 };
 
 const currentAppName = ref<string>('');
-const currentAppNameInputStatus = ref<string>('');
 
 const handleDrawerSubmit = async () => {
 	if (!currentAppName.value) {
@@ -181,7 +180,6 @@ defineExpose({
 				<n-input-group-label size="large">应用包名</n-input-group-label>
 				<n-input
 					size="large"
-					:status="currentAppNameInputStatus"
 					v-model:value="currentAppName"
 					:allow-input="(value: string) => validateFun.validateAndroidPackageName(value)"
 					:readonly="props.type === 'update'"
