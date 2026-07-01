@@ -4686,3 +4686,48 @@ export const getMiScreenShotsWriteClipboardProcess = (): Promise<number> => {
     shellCommon,
   );
 };
+
+export const removeIsDisableDisplayModeDaemonProcess = (): Promise<string> => {
+  const shellCommon = `sed -i '/^is_disable_display_mode_daemon_process=/d' //data/adb/Hyper_MagicWindow/config.prop && echo "Remove is_disable_display_mode_daemon_process successfully." || echo "Remove is_disable_display_mode_daemon_process failed."`;
+  return handlePromiseWithLogging(
+    new Promise(async (resolve, reject) => {
+      if (import.meta.env.MODE === 'development') {
+        resolve(`Remove is_disable_display_mode_daemon_process successfully.`);
+      } else {
+        const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+        errno ? reject(stderr) : resolve(stdout);
+      }
+    }),
+    shellCommon,
+  );
+};
+
+export const getIsDisableDisplayModeDaemonProcess = (): Promise<string> => {
+  const shellCommon = `grep 'is_disable_display_mode_daemon_process=' /data/adb/Hyper_MagicWindow/config.prop | awk -F'=' '{print $2}'`;
+  return handlePromiseWithLogging(
+    new Promise(async (resolve, reject) => {
+      if (import.meta.env.MODE === 'development') {
+        resolve(`false`);
+      } else {
+        const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+        errno ? reject(stderr) : resolve(stdout);
+      }
+    }),
+    shellCommon,
+  );
+};
+
+export const addIsDisableDisplayModeDaemonProcess = (): Promise<string> => {
+  const shellCommon = `grep -q '^is_disable_display_mode_daemon_process=' /data/adb/Hyper_MagicWindow/config.prop || (source ${toolsFunc} && add_lines "is_disable_display_mode_daemon_process=true" /data/adb/Hyper_MagicWindow/config.prop && echo "Command executed successfully." || echo "Command failed.");`;
+  return handlePromiseWithLogging(
+    new Promise(async (resolve, reject) => {
+      if (import.meta.env.MODE === 'development') {
+        resolve(`Command executed successfully.`);
+      } else {
+        const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+        errno ? reject(stderr) : stdout === 'Command executed successfully.' ? resolve(stdout) : reject(stdout);
+      }
+    }),
+    shellCommon,
+  );
+};

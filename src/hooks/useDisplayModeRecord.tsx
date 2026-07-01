@@ -20,6 +20,8 @@ export function useDisplayModeRecord() {
 
 	const propIsSupportIdleDefaultFps = ref<boolean>(false);
 
+	const isEnableDaemonProcess = ref<boolean>(true);
+
 	const isSupportIdleDefaultFps = computed(() => {
 		return (
 			propIsSupportIdleDefaultFps.value &&
@@ -424,7 +426,92 @@ export function useDisplayModeRecord() {
 		}
 	};
 
+	const changeDaemonProcessMode = async (mode: boolean) => {
+		const [negativeRes, positiveRes] = await $to(
+			new Promise((resolve, reject) => {
+				modal.create({
+					title: `想${mode ? '启用' : '禁用'}守护进程吗？`,
+					type: 'info',
+					preset: 'dialog',
+					content: () => (
+						<div>
+							{
+								<div>
+									{mode ? '启用' : '禁用'}{' '}
+									<span
+										class={`font-bold ${deviceStore.isDarkMode ? 'text-teal-400' : 'text-gray-600'}`}>
+										守护进程
+									</span>{' '}
+									后，
+									{mode
+										? '模块将一直维持每秒自动轮询您配置的刷新率和分辨率配置~'
+										: '如果应用的刷新率和分辨率配置被系统行为覆盖，您可能需要重新手动启用~'}
+									确定要继续吗？
+								</div>
+							}
+						</div>
+					),
+					positiveText: `确定${mode ? '启用' : '禁用'}守护进程`,
+					negativeText: '我再想想',
+					onPositiveClick: () => {
+						resolve('positiveClick');
+					},
+					onNegativeClick: () => {
+						reject('negativeClick');
+					},
+				});
+			}),
+		);
+		if (positiveRes) {
+			const [removeIsDisableDisplayModeDaemonProcessErr, removeIsDisableDisplayModeDaemonProcessRes] = await $to(
+				deviceApi.removeIsDisableDisplayModeDaemonProcess(),
+			);
+			if (removeIsDisableDisplayModeDaemonProcessErr) {
+				modal.create({
+					title: '操作失败',
+					type: 'error',
+					preset: 'dialog',
+					content: () => <p>修改失败，详情请查看日志记录~</p>,
+					positiveText: '确定',
+				});
+				return;
+			}
+			if (!mode) {
+				const [addIsDisableDisplayModeDaemonProcessErr, addIsDisableDisplayModeDaemonProcessRes] = await $to(
+					deviceApi.addIsDisableDisplayModeDaemonProcess(),
+				);
+				if (addIsDisableDisplayModeDaemonProcessErr) {
+					modal.create({
+						title: '操作失败',
+						type: 'error',
+						preset: 'dialog',
+						content: () => <p>修改失败，详情请查看日志记录~</p>,
+						positiveText: '确定',
+					});
+					return;
+				}
+			}
+			isEnableDaemonProcess.value = mode;
+			modal.create({
+				title: '操作成功',
+				type: 'success',
+				preset: 'dialog',
+				content: () => <p>好耶w，已经成功{mode ? '启用' : '禁用'}守护进程~</p>,
+				positiveText: '确定',
+			});
+		}
+	};
+
 	const fetchData = async () => {
+		const [getIsDisableDisplayModeDaemonProcessErr, getIsDisableDisplayModeDaemonProcessRes] = await $to<
+			string,
+			string
+		>(deviceApi.getIsDisableDisplayModeDaemonProcess());
+		if (getIsDisableDisplayModeDaemonProcessRes && getIsDisableDisplayModeDaemonProcessRes === 'true') {
+			isEnableDaemonProcess.value = false;
+		} else {
+			isEnableDaemonProcess.value = true;
+		}
 		const [getDisplayModeRecordAutoEnableIDErr, getDisplayModeRecordAutoEnableIDRes] = await $to<string, string>(
 			deviceApi.getDisplayModeRecordAutoEnableID(),
 		);
@@ -437,6 +524,7 @@ export function useDisplayModeRecord() {
 		} else {
 			autoEnableID.value = undefined;
 		}
+		autoEnableID.value = 1;
 		const [getSmartPenIdleEnableErr, getSmartPenIdleEnableRes] = await $to<string, string>(
 			deviceApi.getSmartPenIdleEnable(),
 		);
@@ -524,6 +612,7 @@ export function useDisplayModeRecord() {
 		autoEnableID,
 		supportHDRTypes,
 		formatDisplayModeList,
+		isEnableDaemonProcess,
 		setDisplayMode,
 		selectDisplayMode,
 		selectAutoEnable,
@@ -533,6 +622,7 @@ export function useDisplayModeRecord() {
 		currentIdleDefaultFps,
 		changeIdleDefaultFps,
 		changeDisabledSysSmartPenOptimize,
+		changeDaemonProcessMode,
 		propDisableIdleFps,
 		propDisableIdleFpsThreshold,
 		isDisabledSysSmartPenOptimize,

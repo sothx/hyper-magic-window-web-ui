@@ -2,6 +2,7 @@
 import { useDeviceStore } from '@/stores/device';
 import * as deviceApi from '@/apis/deviceApi';
 import { computed, type CSSProperties } from 'vue';
+import $to from 'await-to-js';
 import { createDiscreteApi, darkTheme, lightTheme, type ConfigProviderProps } from 'naive-ui';
 import { useDisplayModeRecord } from '@/hooks/useDisplayModeRecord';
 import { BoltIcon, CpuChipIcon } from '@heroicons/vue/24/solid';
@@ -15,6 +16,21 @@ const { message, modal, notification } = createDiscreteApi(['message', 'modal', 
 const typeList = ['info', 'error', 'warning', 'success'];
 const getType = (id: number) => typeList[(id - 1) % typeList.length];
 const displayModeRecordHook = useDisplayModeRecord();
+const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean }) => {
+	const style: CSSProperties = {};
+	if (checked) {
+		style.background = '#2080f0';
+		if (focused) {
+			style.boxShadow = '0 0 0 2px #2080f040';
+		}
+	} else {
+		style.background = '#d03050';
+		if (focused) {
+			style.boxShadow = '0 0 0 2px #d0305040';
+		}
+	}
+	return style;
+};
 </script>
 <template>
 	<div class="setting">
@@ -43,6 +59,28 @@ const displayModeRecordHook = useDisplayModeRecord();
 				</p>
 			</div>
 			<n-card size="small" class="mt-5 mb-5">
+				<n-alert class="mt-5 mb-5" :show-icon="false" type="info">
+					<p
+						>为避免系统干扰影响，模块将一直维持每秒自动轮询您配置的刷新率和分辨率配置，您可以手动控制是否需要该守护进程，关闭守护进程后，如果应用的刷新率和分辨率被系统行为覆盖（如游戏工具箱、小米平板触控笔等），则您需要手动重新启用。</p
+					>
+					<div class="mt-3">
+						<n-skeleton
+							v-if="!displayModeRecordHook.isInit.value"
+							:width="160"
+							:sharp="false"
+							round
+							size="small" />
+						<n-switch
+							v-else
+							:rail-style="railStyle"
+							:value="displayModeRecordHook.isEnableDaemonProcess.value"
+							:loading="deviceStore.loading || displayModeRecordHook.loading.value"
+							@update:value="async (value: boolean) => displayModeRecordHook.changeDaemonProcessMode(value)">
+							<template #checked>已启用守护进程</template>
+							<template #unchecked>已禁用守护进程</template>
+						</n-switch>
+					</div>
+				</n-alert>
 				<n-alert v-if="deviceStore.deviceType === 'tablet'" :show-icon="true" type="info">
 					<p>小米平板手写笔仅能在 60hz 和 120hz 的刷新率下正常工作</p>
 				</n-alert>
@@ -115,7 +153,7 @@ const displayModeRecordHook = useDisplayModeRecord();
 									class="ml-2 mt-2"
 									v-if="displayModeRecordHook.isInit.value"
 									strong
-									secondary
+									:secondary="displayModeRecordHook.autoEnableID.value !== Number(item.id)"
 									:type="getType(item.id)"
 									:loading="deviceStore.loading"
 									size="small"
