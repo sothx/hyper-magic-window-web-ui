@@ -300,7 +300,11 @@ export function useDisplayModeRecord() {
 			content: () => (
 				<div>
 					应用后设备分辨率将配置为{data.width}x{data.height}，刷新率将配置为{data.fps}
-					Hz，在设备下次重启前将一直维持每秒自动轮询应用该配置，该功能可能受其他第三方模块影响不一定生效，如需恢复系统设置内的默认分辨率及刷新率配置，请手动重启设备。
+					Hz，
+					{isEnableDaemonProcess.value
+						? '您已开启守护进程，在设备下次重启前将一直维持每秒自动轮询应用该配置'
+						: '在设备下次重启前将维持该配置，但您未启用守护进程，可能会被系统行为覆盖'}
+					，该功能可能受其他第三方模块影响不一定生效，如需恢复系统设置内的默认分辨率及刷新率配置，请手动重启设备。
 					{deviceStore.deviceType === 'tablet' && (
 						<span>
 							请注意小米平板手写笔仅能工作在60hz和120hz，其他刷新率将导致小米平板手写笔无法正常工作，
@@ -312,7 +316,7 @@ export function useDisplayModeRecord() {
 			negativeText: '取消',
 			positiveText: '确定',
 			onPositiveClick() {
-				setDisplayMode(data.id);
+				setDisplayMode(data.id, isEnableDaemonProcess.value);
 			},
 		});
 	};
@@ -355,7 +359,11 @@ export function useDisplayModeRecord() {
 				content: () => (
 					<div>
 						应用后设备分辨率将配置为{data.width}x{data.height}，刷新率将配置为{data.fps}
-						Hz，每次设备开机后将每秒自动轮询启动该配置，该功能可能受其他第三方模块影响不一定生效，如需恢复系统设置内的默认分辨率及刷新率配置，请移除该配置的开机自启并手动重启设备。
+						Hz，
+						{isEnableDaemonProcess.value
+							? '您已开启守护进程，每次设备开机后将每秒自动轮询启动该配置'
+							: '每次设备开机后将启动该配置，但由于您未启用守护进程，可能会被系统行为覆盖'}
+						，该功能可能受其他第三方模块影响不一定生效，如需恢复系统设置内的默认分辨率及刷新率配置，请移除该配置的开机自启并手动重启设备。
 						{deviceStore.deviceType === 'tablet' && (
 							<span>
 								请注意小米平板手写笔仅能工作在60hz和120hz，其他刷新率将导致小米平板手写笔无法正常工作，
@@ -393,15 +401,17 @@ export function useDisplayModeRecord() {
 						});
 						return;
 					}
-					setDisplayMode(data.id);
+					setDisplayMode(data.id, isEnableDaemonProcess.value);
 					autoEnableID.value = data.id;
 				},
 			});
 		}
 	};
 
-	const setDisplayMode = async (displayModeID: number) => {
-		const [setDisplayModeErr, setDisplayModeRes] = await $to(deviceApi.setDisplayMode(displayModeID));
+	const setDisplayMode = async (inputDisplayModeID: number, inputIsEnableDaemonProcess: boolean) => {
+		const [setDisplayModeErr, setDisplayModeRes] = await $to(
+			deviceApi.setDisplayMode(inputDisplayModeID, inputIsEnableDaemonProcess),
+		);
 		if (setDisplayModeErr) {
 			modal.create({
 				title: '操作失败',
@@ -418,7 +428,11 @@ export function useDisplayModeRecord() {
 				preset: 'dialog',
 				content: () => (
 					<p>
-						已成功应用该分辨率及刷新率配置，在设备下次重启前将一直维持每秒自动轮询应用该配置，如需恢复系统设置内的默认分辨率及刷新率配置，请手动重启设备。
+						已成功应用该分辨率及刷新率配置，
+						{isEnableDaemonProcess.value
+							? '您已开启守护进程，在设备下次重启前将一直维持每秒自动轮询应用该配置'
+							: '在设备下次重启前将维持该配置，但您未启用守护进程，可能会被系统行为覆盖'}
+						，如需恢复系统设置内的默认分辨率及刷新率配置，请手动重启设备。
 					</p>
 				),
 				positiveText: '确定',
@@ -524,7 +538,6 @@ export function useDisplayModeRecord() {
 		} else {
 			autoEnableID.value = undefined;
 		}
-		autoEnableID.value = 1;
 		const [getSmartPenIdleEnableErr, getSmartPenIdleEnableRes] = await $to<string, string>(
 			deviceApi.getSmartPenIdleEnable(),
 		);
