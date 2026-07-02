@@ -61,7 +61,7 @@ const railStyle = ({ focused, checked }: { focused: boolean; checked: boolean })
 			<n-card size="small" class="mt-5 mb-5">
 				<n-alert class="mt-5 mb-5" :show-icon="false" type="info">
 					<p
-						>为避免系统干扰影响，模块将一直维持每秒自动轮询您配置的刷新率和分辨率配置，您可以手动控制是否需要该守护进程，关闭守护进程后，如果应用的刷新率和分辨率被系统行为覆盖（如游戏工具箱、小米平板触控笔等），则您需要手动重新启用。</p
+						>为避免系统行为影响，模块将一直维持每秒自动轮询您配置的刷新率和分辨率配置，您可以手动控制是否需要该守护进程，关闭守护进程后，如果应用的刷新率和分辨率被系统行为覆盖（如游戏工具箱、小米平板触控笔等），则您需要手动重新启用。</p
 					>
 					<div class="mt-3">
 						<n-skeleton
