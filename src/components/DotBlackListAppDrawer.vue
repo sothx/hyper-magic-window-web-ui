@@ -1,7 +1,14 @@
 <script setup lang="tsx">
-import { computed, onMounted, reactive, ref, watch, type CSSProperties } from 'vue';
+import { computed, onMounted, reactive, ref, watch, type CSSProperties, type VNodeChild } from 'vue';
 import { useDeviceStore } from '@/stores/device';
-import { createDiscreteApi, darkTheme, lightTheme, type ConfigProviderProps, type NInput } from 'naive-ui';
+import {
+	createDiscreteApi,
+	darkTheme,
+	lightTheme,
+	type ConfigProviderProps,
+	type NInput,
+	type SelectOption,
+} from 'naive-ui';
 import * as validateFun from '@/utils/validateFun';
 import type AutoUIMergeRuleItem from '@/types/AutoUIMergeRuleItem';
 import type AutoUIItem from '@/types/AutoUIItem';
@@ -78,6 +85,15 @@ const handleDrawerSubmit = async () => {
 			type: 'error',
 			preset: 'dialog',
 			content: () => <p>噫？应用包名不能为空（敲</p>,
+		});
+		return;
+	}
+	if (!validateFun.validateAndroidPackageName(currentAppName.value)) {
+		modal.create({
+			title: '应用包名不合法',
+			type: 'error',
+			preset: 'dialog',
+			content: () => <p>噫？不是合法的应用包名，请检查（敲</p>,
 		});
 		return;
 	}
@@ -158,6 +174,35 @@ const handleDrawerSubmit = async () => {
 
 const drawerSubmitLoading = ref<boolean>(false);
 
+const appNameAutoCompleteOptions = computed(() => {
+	const list = deviceStore.installedAppPackageInfoList;
+	const keyword = currentAppName.value.trim().toLowerCase();
+	let arr = list;
+	if (keyword) {
+		arr = list.filter(item => {
+			if (item.appLabel && item.packageName) {
+				const label = item.appLabel.toLowerCase();
+				const pkg = item.packageName.toLowerCase();
+				return label.includes(keyword) || pkg.includes(keyword);
+			}
+		});
+	}
+	// 覆盖 value 为包名，选中自动填充
+	return arr.map(item => ({
+		label: item.packageName,
+		value: item.appLabel,
+	}));
+});
+
+const appNameAutoCompleteRenderLabel = (option: SelectOption): VNodeChild => {
+	return (
+		<div>
+			<p>{option.value}</p>
+			<p>({option.label})</p>
+		</div>
+	);
+};
+
 defineExpose({
 	openDrawer: DotBlackListAppDrawer.value.openDrawer, // 传递 openDrawer 方法
 });
@@ -178,10 +223,12 @@ defineExpose({
 			closable>
 			<n-input-group>
 				<n-input-group-label size="large">应用包名</n-input-group-label>
-				<n-input
+				<n-auto-complete
 					size="large"
+					:render-label="appNameAutoCompleteRenderLabel"
+					default-value="packageName"
 					v-model:value="currentAppName"
-					:allow-input="(value: string) => validateFun.validateAndroidPackageName(value)"
+					:options="appNameAutoCompleteOptions"
 					:readonly="props.type === 'update'"
 					placeholder="请输入应用包名" />
 			</n-input-group>

@@ -864,7 +864,7 @@ const appNameAutoCompleteRenderLabel = (option: SelectOption): VNodeChild => {
 	return (
 		<div>
 			<p>{option.value}</p>
-			<p>{option.label}</p>
+			<p>({option.label})</p>
 		</div>
 	);
 };
