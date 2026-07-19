@@ -3490,6 +3490,21 @@ export const getProjectTrebleSupportMagicWindowFix = (): Promise<string> => {
   );
 };
 
+export const getProjectTrebleSupportAmktiaoXiaomiPen = (): Promise<string> => {
+  const shellCommon = `getprop ro.config.sothx_project_treble_support_amktiao_xiaomi_pen`;
+  return handlePromiseWithLogging(
+    new Promise(async (resolve, reject) => {
+      if (import.meta.env.MODE === 'development') {
+        resolve('false');
+      } else {
+        const { errno, stdout, stderr }: ExecResults = await exec(shellCommon);
+        errno ? reject(stderr) : resolve(stdout);
+      }
+    }),
+    shellCommon,
+  );
+};
+
 export const getSplitScreenPlusIsEnabled = (): Promise<string> => {
   const shellCommon = `pm list packages com.hchen.cherry.splitscreenplus | grep -q com.hchen.cherry.splitscreenplus && echo installed || echo not_installed`;
   return handlePromiseWithLogging(

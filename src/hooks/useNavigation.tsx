@@ -57,6 +57,9 @@ export function useNavigation() {
 					应用管理增强<n-badge offset={[25, 2]} value='开发中'></n-badge>
 				</>
 			),
+			isShow() {
+				return false;
+			},
 			routeName: 'app-management',
 			href: '/app-management',
 			icon: () => (
@@ -202,6 +205,9 @@ export function useNavigation() {
 					应用管理增强<n-badge offset={[25, 2]} value='开发中'></n-badge>
 				</>
 			),
+			isShow() {
+				return false;
+			},
 			routeName: 'app-management',
 			href: '/app-management',
 			icon: () => (
@@ -317,6 +323,9 @@ export function useNavigation() {
 					应用管理增强<n-badge offset={[25, 2]} value='开发中'></n-badge>
 				</>
 			),
+			isShow() {
+				return false;
+			},
 			routeName: 'app-management',
 			href: '/app-management',
 			icon: () => (

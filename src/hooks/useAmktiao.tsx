@@ -70,6 +70,8 @@ export function useAmktiao() {
 
 	const currentGameModeAutoTask = ref<boolean>(false);
 
+	const isProjectTrebleSupportXiaomiPen = ref<boolean>(false);
+
 	const loading = ref<boolean>(true);
 
 	const isInit = ref<boolean>(false);
@@ -964,6 +966,15 @@ export function useAmktiao() {
 	};
 
 	const fetchData = async () => {
+		const [, getProjectTrebleSupportAmktiaoXiaomiPenRes] = await $to<string, string>(
+			deviceApi.getProjectTrebleSupportAmktiaoXiaomiPen(),
+		);
+		if (
+			getProjectTrebleSupportAmktiaoXiaomiPenRes &&
+			String(getProjectTrebleSupportAmktiaoXiaomiPenRes) === 'true'
+		) {
+			isProjectTrebleSupportXiaomiPen.value = true;
+		}
 		const [, getHasPenUpdateControlRes] = await $to<string, string>(deviceApi.getHasPenUpdateControl());
 		if (getHasPenUpdateControlRes) {
 			hasPenUpdateControl.value = true;
@@ -1068,6 +1079,7 @@ export function useAmktiao() {
 		currentKeyboardMode,
 		currentLiuqinPenEnableSelect,
 		liuqinPenEnableOptions,
+		isProjectTrebleSupportXiaomiPen,
 		keyboardModeOptions,
 		currentKeyboardModeSelect,
 		changeKeyboardMode,

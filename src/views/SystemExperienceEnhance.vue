@@ -709,7 +709,10 @@ const enhanceList: EnhanceItemInfo[] = [
 				</n-alert>
 			</>
 		),
-		isShow: () => ['tablet'].includes(deviceStore.deviceType) && amktiaoHook.isInit.value,
+		isShow: () =>
+			['tablet'].includes(deviceStore.deviceType) &&
+			amktiaoHook.isInit.value &&
+			!amktiaoHook.isProjectTrebleSupportXiaomiPen.value,
 	},
 	{
 		title: '禁用小米超级岛',
